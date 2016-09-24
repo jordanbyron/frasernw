@@ -1,23 +1,69 @@
-= simple_nested_form_for @division, :html => { :class => "form-horizontal ajax" } do |f|
+= simple_nested_form_for @division, html: { class: "form-horizontal" } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
 
   - if current_user.as_super_admin?
     = f.input :name
-    = f.association :cities, as: :check_boxes, :hint => 'The cities that a divisional administrator can administer'
+    = f.association :cities,
+      as: :check_boxes,
+      hint: 'The cities that a divisional administrator can administer'
 
   %h4 Primary Contacts
-  %p.no_indent These administrators will receive all emails from divisional users who use the administration@pathwaysbc.ca link at the bottom of all pages.
+  %p.no_indent
+    These administrators will receive all emails from divisional users who use
+    the administration@pathwaysbc.ca link at the bottom of all pages.
   .content
     = f.simple_fields_for :division_primary_contacts do |i|
       .row.spaced
         .span5.offset3
-          = i.association :primary_contact, as: :select, :label => false, collection: User.admin, prompt: 'Select ...', wrapper: :no_wrapper
+          = i.association :primary_contact,
+            as: :select,
+            label: false,
+            collection: User.admin,
+            prompt: 'Select ...',
+            wrapper: :no_wrapper
         .spanhalf.offsethalf
           = i.hidden_field :_destroy
           = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe
   .row
-    = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another primary contact", :division_primary_contacts, class: "btn offset3")
+    = f.link_to_add :division_primary_contacts,
+      class: "btn offset3" do
+      %i.icon-plus-sign
+      Add another primary contact
+
+  %br
+  %h4 Resource Subscriptions
+  %p.no_indent
+    Automatically include content items posted by the Provincial team for these
+    specialties:
+  .row
+    .span1
+      %table.provincial_resources_defaults.fixed_column
+        %thead
+          %tr
+            %td All Provincial Content
+        %tbody
+          %tr
+            %td= check_box_tag "division_#{Division.provincial.id}",
+              1,
+              Division.provincial,
+              name: "division[#{Division.provincial.id}]",
+              class: "division_check"
+    .span11{ style: "overflow-x:scroll" }
+      %table.provincial_resources_defaults
+        %thead
+          %tr
+            - Specialization.all.each do |specialization|
+              %td= specialization.name
+        %tbody
+          %tr
+            - Specialization.all.each do |specialization|
+              %td
+                = check_box_tag "#{Division.provincial.id}_#{specialization.id}",
+                  1,
+                  specialization,
+                  name: "divisional_specialization[#{specialization.id}]",
+                  class: "division_#{Division.provincial.id} division_specialization"
 
   %br
   %h4 Local Referral Area
@@ -30,10 +76,14 @@
             %td All Specialties
         %tbody
           - City.all.each_with_index do |city, index|
-            %tr{:class => (index % 2 == 1) && "odd"}
+            %tr{ class: (index % 2 == 1) && "odd" }
               %th= city.name
-              %td= check_box_tag "city_#{city.id}", 1, @local_referral_cities.include?(city.id) && @local_referral_cities[city.id].present?, :name => "city[#{city.id}]", :class => "city_check"
-    .span10{:style => "overflow-x:scroll"}
+              %td= check_box_tag "city_#{city.id}",
+                1,
+                included_city(city),
+                name: "city[#{city.id}]",
+                class: "city_check"
+    .span10{ style: "overflow-x:scroll" }
       %table.local_referral_area
         %thead
           %tr
@@ -41,39 +91,47 @@
               %td= specialization.name
         %tbody
           - City.all.each_with_index do |city, index|
-            %tr{:class => (index % 2 == 1) && "odd"}
+            %tr{ class: (index % 2 == 1) && "odd" }
               - Specialization.all.each do |specialization|
                 %td
-                  = check_box_tag "#{city.id}_#{specialization.id}", 1, (@local_referral_cities[city.id].present?) && (@local_referral_cities[city.id].include? specialization.id), :name => "local_referral_cities[#{city.id}][#{specialization.id}]", :class => "city_#{city.id} city_specialization"
+                  = check_box_tag "#{city.id}_#{specialization.id}",
+                    1,
+                    included_specialization(city, specialization),
+                    name: "local_referral_cities[#{city.id}][#{specialization.id}]",
+                    class: "city_#{city.id} city_specialization"
 
   %br
   %h4 Customize City Priorities
   .row
-    %div{style: "width: 100%; padding-left: 20px;"}
+    %div{ style: "width: 100%; padding-left: 20px;" }
       = f.label :use_customized_city_priorities,
         "Customize City Priorities",
         style: "display: inline-block; font-weight: bold;"
       = f.check_box :use_customized_city_priorities,
         style: "margin-left: 10px; margin-bottom: 7px;"
-      %p{style: "margin-left: 0px;"}
-        %i If enabled, cities will be sorted on specialization pages by the rankings below.
-        %i When new cities are added they will automatically be assigned the lowest priority rating (3).
-        %i If this feature is disabled, the local referral area for that specialization will be used to sort by city instead.
-        %i (Cities outside of your referral area will appear after those inside it)
+      %p{ style: "margin-left: 0px;" }
+        %i
+          If enabled, cities will be sorted on specialization pages by the
+          rankings below. When new cities are added they will automatically be
+          assigned the lowest priority rating (3). If this feature is disabled,
+          the local referral area for that specialization will be used to sort
+          by city instead. (Cities outside of your referral area will appear
+          after those inside it)
       %br
       #city_priority_checkboxes
-        %p{style: "margin-left: 0px;"}
+        %p{ style: "margin-left: 0px;" }
           %strong City Priority Customization
         - @city_priorities.each do |priority|
-          %div{style: "margin-top: 10px; display: inline-block; width: 100px;"}
-            = label_tag "city_priorities[#{priority[:city_id]}]", priority[:city_name]
+          %div{ style: "margin-top: 10px; display: inline-block; width: 100px;" }
+            = label_tag "city_priorities[#{priority[:city_id]}]",
+              priority[:city_name]
             = select_tag "city_priorities[#{priority[:city_id]}]",
               priority[:options_for_select].html_safe,
               style: "width: 100px;"
 
   .form-actions
-    = f.button :submit, :class => "btn btn-primary"
-    %a.btn.btn-danger.ajax{"href" => divisions_path} Cancel
+    = f.button :submit, class: "btn btn-primary"
+    %a.btn.btn-danger{ href: divisions_path } Cancel
 
 :javascript
   window.pathways.checkboxSlidedown({
@@ -81,51 +139,60 @@
     checkboxId: "division_use_customized_city_priorities"
   })
 
-  function city_checked(checkbox)
+  function selection_checked(checkbox)
   {
-    var city_class = "." + $(checkbox).prop('id');
-    $(city_class).prop('checked',($(checkbox).prop('checked')));
+    var selection_class = "." + $(checkbox).prop('id');
+    $(selection_class).prop('checked',($(checkbox).prop('checked')));
     return true;
   }
 
-  $('.city_check').click(function() {
-    city_checked(this);
+  $('.division_check').click(function() {
+    selection_checked(this);
   });
 
-  function update_city(city)
-  {
-    var city_id = "#" + city;
-    var city_class = "." + city;
+  $('.city_check').click(function() {
+    selection_checked(this);
+  });
 
+  function update_selection(selection)
+  {
+    var selection_id = "#" + selection;
+    var selection_class = "." + selection;
     var all = true;
     var none = true;
-    $(city_class).each(function(){ if ($(this).prop('checked')) { none = false; } else { all = false; } });
-
-    if (all)
-    {
-      $(city_id).prop('checked', true);
-      $(city_id).prop('indeterminate', false);
+    $(selection_class).each(function() {
+      if ($(this).prop('checked')) { none = false; } else { all = false; }
+    });
+    if (all) {
+      $(selection_id).prop('checked', true);
+      $(selection_id).prop('indeterminate', false);
+    } else if (none) {
+      $(selection_id).prop('checked', false);
+      $(selection_id).prop('indeterminate', false);
+    } else {
+      $(selection_id).prop('checked', true);
+      $(selection_id).prop('indeterminate', true);
     }
-    else if (none)
-    {
-      $(city_id).prop('checked', false);
-      $(city_id).prop('indeterminate', false);
-    }
-    else
-    {
-      $(city_id).prop('checked', true);
-      $(city_id).prop('indeterminate', true);
-    }
-
     return true;
   }
+
+  function divisional_specialization_checked(checkbox)
+  {
+    var division_id = "division_" + $(checkbox).prop('id').split('_')[0];
+    return update_selection(division_id)
+  }
+  $('.division_specialization').click(function() {
+    divisional_specialization_checked(this);
+  });
+  $(document).ready(function() {
+    update_selection("division_#{Division.provincial.id}")
+  });
 
   function city_specialization_checked(checkbox)
   {
     var city_id = "city_" + $(checkbox).prop('id').split('_')[0];
-    return update_city(city_id)
+    return update_selection(city_id)
   }
-
   $('.city_specialization').click(function() {
     city_specialization_checked(this);
   });
@@ -133,5 +200,5 @@
 - City.all.each do |city|
   :javascript
     $(document).ready(function() {
-      update_city("city_#{city.id}");
+      update_selection("city_#{city.id}");
     });

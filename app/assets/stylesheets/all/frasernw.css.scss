@@ -935,6 +935,81 @@ body.loading #email
     }
   }
 
+  table.provincial_resources_defaults
+  {
+    width: 100%;
+    thead td
+    {
+      vertical-align: bottom;
+      height: 150px;
+      margin: 0;
+      padding: 0;
+      text-align: left;
+      -ms-transform: rotate(-90deg);
+      -ms-transform-origin: top left;
+      -moz-transform:rotate(-90deg);
+      -moz-transform-origin: top left;
+      -webkit-transform: rotate(-90deg);
+      -webkit-transform-origin: top left;
+      -o-transform: rotate(-90deg);
+      -o-transform-origin: top left;
+      transform: rotate(-90deg);
+      transform-origin: top left;
+      position:relative;
+      top:150px;
+      left: -125px;
+      width: 30px;
+      max-width: 30px;
+      white-space: nowrap;
+    }
+    th
+    {
+      font-weight: bold;
+      text-align: right;
+      vertical-align: middle;
+      white-space: nowrap;
+      height: 25px;
+      margin: 0;
+      padding: 0;
+    }
+    tbody td
+    {
+      vertical-align: middle;
+      text-align: center;
+      height: 25px;
+      margin: 0;
+      padding: 0;
+
+      input
+      {
+      vertical-align: middle;
+        margin: 0;
+        padding: 0;
+      }
+    }
+    tbody tr.odd
+    {
+      background-color: $FNW_LIGHT_GRAY;
+    }
+  }
+
+  table.provincial_resources_defaults.fixed_column
+  {
+    td
+    {
+      font-weight: bold;
+    }
+    th
+    {
+      font-weight: bold;
+      text-align: right;
+      white-space: nowrap;
+      height: 20px;
+      margin: 0;
+      padding: 0 10px;
+    }
+  }
+
   .form-horizontal
   {
     h1, h2, h3, h4, h5, h6
