@@ -7,15 +7,10 @@
 
   - ScCategory.front_page.each do |category|
     %h4= category.name
-    - contents = @division.featured_contents.select do |content|
-      - content.sc_category_id == category.id
-    - items = category.all_sc_items_in_divisions([@division]).sort_by(&:name)
-    = f.simple_fields_for :featured_contents, contents do |fields|
+    = f.simple_fields_for :featured_contents,
+      @division.featured_contents.where(sc_category_id: category.id) do |fields|
       = fields.association :sc_item,
-        as: :grouped_select,
-        collection: featured_contents_options(items),
-        group_method: :last,
-        group_label_method: :first,
+        collection: featured_contents_options(category, @division),
         label: false,
         label_method: ->(item){ item.new? ? item.title + " (NEW)" : item.title },
         input_html: { class: "span12" }
