@@ -251,10 +251,6 @@ class ScItem < ActiveRecord::Base
     end
   end
 
-  def decorated_title
-    new? ? title + " NEW" : title
-  end
-
   TYPE_LINK = 1
   TYPE_MARKDOWN = 2
   TYPE_DOCUMENT = 3

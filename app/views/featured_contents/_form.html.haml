@@ -12,9 +12,12 @@
     - items = category.all_sc_items_in_divisions([@division]).sort_by(&:name)
     = f.simple_fields_for :featured_contents, contents do |fields|
       = fields.association :sc_item,
-        collection: items,
+        as: :grouped_select,
+        collection: featured_contents_options(items),
+        group_method: :last,
+        group_label_method: :first,
         label: false,
-        label_method: :decorated_title,
+        label_method: ->(item){ item.new? ? item.title + " (NEW)" : item.title },
         input_html: { class: "span12" }
       = fields.input :sc_category_id, as: :hidden
       = fields.input :division_id, as: :hidden
