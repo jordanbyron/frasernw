@@ -21,6 +21,7 @@ module LocationsHelper
           flatten.
           reject do |location|
             location.empty? ||
+              !location.city.present? ||
               ![location.city.divisions].include?(current_user.as_divisions)
           end
     end.map do |location|
