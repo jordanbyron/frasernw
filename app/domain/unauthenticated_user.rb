@@ -11,7 +11,9 @@ class UnauthenticatedUser
 
   [
     :divisions,
-    :as_divisions
+    :as_divisions,
+    :administering,
+    :as_administering
   ].each do |mname|
     define_method mname do
       []

@@ -233,4 +233,8 @@ module ApplicationHelper
       root_path
     end
   end
+
+  def as_administering
+    current_user.as_administering
+  end
 end

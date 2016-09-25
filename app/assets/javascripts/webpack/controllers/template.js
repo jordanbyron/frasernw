@@ -36,7 +36,8 @@ const Template = React.createClass({
 
     return nextUi.searchTerm === thisUi.searchTerm &&
       nextUi.selectedSearchResult === thisUi.selectedSearchResult &&
-      nextUi.highlightSelectedSearchResult === thisUi.highlightSelectedSearchResult
+      nextUi.highlightSelectedSearchResult === thisUi.highlightSelectedSearchResult &&
+      nextUi.searchTimerId === thisUi.searchTimerId;
   },
   render: function() {
     let model = this.props.model;
