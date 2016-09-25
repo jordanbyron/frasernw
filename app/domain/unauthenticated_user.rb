@@ -46,4 +46,8 @@ class UnauthenticatedUser
       false
     end
   end
+
+  def role
+    "unauthenticated"
+  end
 end
