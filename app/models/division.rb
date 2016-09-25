@@ -202,6 +202,6 @@ class Division < ActiveRecord::Base
       from_specialization_options.map(&owner_type).uniq
     else
       primary_contacts
-    end
+    end.select(&:active?).select(&:admin_or_super?)
   end
 end

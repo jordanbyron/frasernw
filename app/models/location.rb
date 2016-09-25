@@ -10,6 +10,7 @@ class Location < ActiveRecord::Base
   has_many :locations_in, foreign_key: :location_in_id, class_name: "Location"
 
   include PaperTrailable
+  include DivisionAdministered
 
   def empty?
     a = resolved_address

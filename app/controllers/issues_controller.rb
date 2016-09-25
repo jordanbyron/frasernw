@@ -68,7 +68,9 @@ class IssuesController < ApplicationController
 
       if !before_update_is_complete && @issue.completed?
         @issue.subscriptions.each do |subscription|
-          IssuesMailer.completed(subscription).deliver
+          if subscription.subscriber.active? && subscription.subscriber.admin_or_super?
+            IssuesMailer.completed(subscription).deliver
+          end
         end
       end
 

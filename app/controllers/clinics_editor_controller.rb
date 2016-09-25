@@ -60,7 +60,7 @@ class ClinicsEditorController < ApplicationController
       review_item: review_item
     ).exec
 
-    EventMailer.mail_review_queue_entry(review_item).deliver
+    ReviewItemsMailer.user_edited(review_item).deliver
 
     render
   end

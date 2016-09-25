@@ -52,7 +52,7 @@ Clockwork.every(
   at: '14:30',
   tz: 'UTC'
 ) do
-  SubscriptionWorker.delay.mail_availability_notifications
+  CourtesyWorker.delay.mail_availability_notifications
 end
 
 # Mails subscriptions DAILY at 2:30pm UTC (14:30), 6:30 am PST

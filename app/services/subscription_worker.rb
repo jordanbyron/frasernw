@@ -1,8 +1,6 @@
-# TODO remove: end_date = DateTime.civil(2016, 8, 29, 7, 0, 0, "-7")
-
 class SubscriptionWorker
   def self.mail_notifications_for_interval(date_interval, end_datetime = DateTime.current)
-    User.with_subscriptions.each do |user|
+    User.active.admin_or_super.with_subscriptions.each do |user|
       Subscription::TARGET_CLASSES.map do |klassname, label|
         begin
           subscriptions = user.
@@ -36,6 +34,8 @@ class SubscriptionWorker
     item = klass_name.constantize.find(id)
 
     users = User.
+      active.
+      admin_or_super.
       with_subscriptions.
       where("subscriptions.interval = (?)", Subscription::INTERVAL_IMMEDIATELY)
 
@@ -53,21 +53,5 @@ class SubscriptionWorker
     end
 
     true
-  end
-
-  def self.mail_availability_notifications
-    Specialist.select do |specialist|
-      (specialist.status_mask == 6) &&
-        (specialist.unavailable_to == Date.current + 1.weeks)
-    end.each do |specialist|
-      User.select do |user|
-        user.admin? && user.divisions == specialist.divisions
-      end.each do |user|
-        CourtesyMailer.availability_update(
-          user.id,
-          specialist.id
-        ).deliver
-      end
-    end
   end
 end

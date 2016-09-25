@@ -149,6 +149,10 @@ class User < ActiveRecord::Base
     ).user_divisions.create(division_id: division_id)
   end
 
+  def self.admin_or_super
+    where(role: ["admin", "super"])
+  end
+
   def self.user
     where("users.role = 'user'")
   end
