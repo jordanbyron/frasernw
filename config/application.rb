@@ -23,17 +23,17 @@ module Frasernw
       (ENV['SYSTEM_NOTIFICATION_RECIPIENTS'] || "").split(";")
 
     # Reusable use cases
-    config.autoload_paths << "#{config.root}/app/services"
+    config.eager_load_paths << "#{config.root}/app/services"
 
     # Classes that we could use outside of this app
-    config.autoload_paths << "#{config.root}/lib"
+    config.eager_load_paths << "#{config.root}/lib"
 
     # Domain objects ("things") that don't have a directly corresponding table
-    config.autoload_paths << "#{config.root}/app/domain"
+    config.eager_load_paths << "#{config.root}/app/domain"
 
     # Mixins for domain objects, regardless of whether
     # they inherit from ActiveSupport::Concern or not
-    config.autoload_paths << "#{config.root}/app/concerns"
+    config.eager_load_paths << "#{config.root}/app/concerns"
 
     config.assets.precompile += ["error_catching.js"]
     config.assets.paths << "#{Rails.root}/app/assets/fonts"

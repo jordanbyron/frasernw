@@ -40,7 +40,10 @@ class NewsItem < ActiveRecord::Base
   end
 
   def self.bust_cache_for(*divisions)
-    LatestUpdates.delay.recache_for_groups(User.division_groups_for(*divisions))
+    RecacheLatestUpdatesInDivisions.call(
+      division_groups: User.division_groups_for(*divisions),
+      delay: true
+    )
     User.division_groups_for(*divisions).each do |division_group|
       ExpireFragment.call "front_#{Specialization.cache_key}_#{division_group.join('_')}"
     end

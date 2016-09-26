@@ -1,5 +1,5 @@
-class CourtesyWorker
-  def self.mail_availability_notifications
+class MailAvailabilityNotifications < ServiceObject
+  def call
     Specialist.select do |specialist|
       (specialist.status_mask == 6) &&
         (specialist.unavailable_to == Date.current + 1.weeks)

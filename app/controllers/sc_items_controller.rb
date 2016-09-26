@@ -39,7 +39,11 @@ class ScItemsController < ApplicationController
           )
         end
       end
-      SubscriptionWorker.delay.mail_notifications_for_item("ScItem", @sc_item.id)
+      Subscription::MailImmediateNotifications.call(
+        klass_name: "ScItem",
+        id: @sc_item.id,
+        delay: true
+      )
       redirect_to sc_item_path(@sc_item), notice: "Successfully created content item."
     else
       new_sc_item_preload
