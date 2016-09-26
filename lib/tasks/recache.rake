@@ -48,13 +48,13 @@ namespace :pathways do
       },
       latest_updates: -> {
         LatestUpdates.recache_for_groups(
-          viewable_division_combinations,
+          ViewableDivisionCombinations.call,
           force_automatic: true
         )
       },
       application_layout: -> {
         ExpireFragment.call("ie_compatibility_warning")
-        viewable_division_combinations.each do |division_group|
+        ViewableDivisionCombinations.call.each do |division_group|
           ExpireFragment.call(
             "resources_dropdown_categories_#{division_group.join('_')}"
           )
