@@ -15,6 +15,8 @@
         window.localStorage.pathwaysGlobalData = vendor.lzString.compressToUTF16(JSON.stringify(data));
         window.localStorage.pathwaysGlobalDataExpiration = expiryKey(cacheVersion);
       }, 200);
+    }).fail(function(response, textStatus, error) {
+      throw error;
     })
   };
 

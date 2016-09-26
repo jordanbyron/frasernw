@@ -30,6 +30,16 @@ module Analytics
       end
     end
 
+    def self.snoop_browser(user_id)
+      Analytics::ApiAdapter.get(
+        metrics: [:page_views],
+        dimensions: [:browser, :browser_version],
+        filters: {user_id: user_id},
+        start_date: (Date.today - 3.days),
+        end_date: (Date.today + 1.day)
+      )
+    end
+
     def self.user_type_keys
       self.user_type_hash.keys
     end

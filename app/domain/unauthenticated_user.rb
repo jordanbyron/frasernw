@@ -50,4 +50,8 @@ class UnauthenticatedUser
   def role
     "unauthenticated"
   end
+
+  def name
+    "Unauthenticated User"
+  end
 end
