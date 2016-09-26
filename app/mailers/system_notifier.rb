@@ -69,6 +69,10 @@ module SystemNotifier
 
   # takes {tag: <:sym>, subject: <"str">, body: <{}>}
   def self.notify(options)
-    SystemMailer.notification(options).deliver
+    begin
+      SystemMailer.notification(options).deliver
+    rescue Net::SMTPAuthenticationError
+      NotifyInBackground.call(options: options, delay: true)
+    end
   end
 end
