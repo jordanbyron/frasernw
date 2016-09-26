@@ -70,7 +70,7 @@ module Clockwork
     tz: 'UTC'
   ) do
     Subscription::MailIntervalNotifications.call(
-      interval: Subscription::INTERVAL_DAILY,
+      date_interval: Subscription::INTERVAL_DAILY,
       delay: true
     )
   end
@@ -83,7 +83,7 @@ module Clockwork
     tz: 'UTC'
   ) do
     Subscription::MailIntervalNotifications.call(
-      interval: Subscription::INTERVAL_WEEKLY,
+      date_interval: Subscription::INTERVAL_WEEKLY,
       delay: true
     )
   end
@@ -97,7 +97,7 @@ module Clockwork
     if: lambda { |t| t.day == 1 }
   ) do
     Subscription::MailIntervalNotifications.call(
-      interval: Subscription::INTERVAL_MONTLY,
+      date_interval: Subscription::INTERVAL_MONTLY,
       delay: true
     )
   end

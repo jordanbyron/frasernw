@@ -1,5 +1,5 @@
 class ServiceObject
-  include Virtus.model
+  include Virtus.model(strict: true)
   include ApplicationJob
 
   def self.call(args = {})

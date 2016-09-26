@@ -58,7 +58,7 @@ class SpecialistsEditorController < ApplicationController
       review_item: review_item
     ).exec
 
-    ReviewItemsMailer.user_edited(review_item).deliver
+    MailReviewNotification.call(review_item_id: review_item.id, delay: true)
 
     render
   end

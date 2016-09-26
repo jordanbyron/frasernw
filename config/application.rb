@@ -64,6 +64,9 @@ module Frasernw
       :authentication       => "plain",
       :enable_starttls_auto => true
     }
+    # To mask the emails of patients who are being mailed content
+    # TODO: figure out why specifying on a per- mailer class basis isn't working
+    config.action_mailer.logger = nil
 
     _default_url_options = {
       host: ENV['DOMAIN'],

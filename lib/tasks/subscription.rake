@@ -4,7 +4,7 @@ namespace :pathways do
     task daily: :environment do
       puts "Mailing Daily subscriptions..... "
       Subscription::MailIntervalNotifications.call(
-        interval: Subscription::INTERVAL_DAILY
+        date_interval: Subscription::INTERVAL_DAILY
       )
       puts "Daily subscriptions sent!"
     end
@@ -12,7 +12,7 @@ namespace :pathways do
     task weekly: :environment do
       puts "Mailing Weekly subscriptions..... "
       Subscription::MailIntervalNotifications.call(
-        interval: Subscription::INTERVAL_WEEKLY
+        date_interval: Subscription::INTERVAL_WEEKLY
       )
       puts "Weekly subscriptions sent!"
     end
@@ -20,7 +20,7 @@ namespace :pathways do
     task monthly: :environment do
       puts "Mailing Monthly subscriptions..... "
       Subscription::MailIntervalNotifications.call(
-        interval: Subscription::INTERVAL_MONTHLY,
+        date_interval: Subscription::INTERVAL_MONTHLY,
       )
       puts "Monthly subscriptions sent!"
     end
@@ -28,7 +28,7 @@ namespace :pathways do
     task immediately: :environment do
       puts "Mailing Immediately subscriptions..... "
       Subscription::MailIntervalNotifications.call(
-        interval: Subscription::INTERVAL_IMMEDIATE
+        date_interval: Subscription::INTERVAL_IMMEDIATE
       )
       puts "Immediate subscriptions sent!"
     end

@@ -261,7 +261,7 @@ class User < ActiveRecord::Base
 
   def deliver_password_reset_instructions!
     reset_perishable_token!
-    PasswordResetMailer.password_reset_instructions(self).deliver
+    MailPasswordResetEmail.call(user_id: self.id, delay: true)
   end
 
   LAST_REQUEST_FORMATS = {
