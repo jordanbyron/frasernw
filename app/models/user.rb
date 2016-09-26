@@ -339,17 +339,19 @@ class User < ActiveRecord::Base
   def self.csv_import(file, divisions, type_mask, role)
     users = []
     CSV.foreach(file.path) do |row|
-      user = User.new(
-        name: row[0],
-        divisions: divisions,
-        type_mask: type_mask,
-        role: role
-      )
-      # so we can avoid setting up with emails or passwords
-      if user.save validate: false
-        users << user
-      else
-        puts "ERROR SETTING UP #{row[0]}"
+      if row[0].present?
+        user = User.new(
+          name: row[0],
+          divisions: divisions,
+          type_mask: type_mask,
+          role: role
+        )
+        # so we can avoid setting up with emails or passwords
+        if user.save validate: false
+          users << user
+        else
+          puts "ERROR SETTING UP #{row[0]}"
+        end
       end
     end
     users
