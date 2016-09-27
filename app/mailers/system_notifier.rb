@@ -71,7 +71,10 @@ module SystemNotifier
   def self.notify(options)
     begin
       SystemMailer.notification(options).deliver
-    rescue Net::SMTPAuthenticationError
+    rescue Net::SMTPAuthenticationError, EOFError, Net::SMTPUnknownError
+      # rescuing EOFError b.c. that can be triggered by SMTP issues
+      # http://stackoverflow.com/questions/3038852/ruby-mailer-is-coming-up-with-an-eoferror
+
       NotifyInBackground.call(options: options, delay: true)
     end
   end
