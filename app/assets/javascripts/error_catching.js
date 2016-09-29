@@ -1,4 +1,5 @@
 var startErrorLog = function() {
+  return false;
   window.onerror = function(message,file,line,column,errorObject) {
     var column = column || (window.event && window.event.errorCharacter);
     var stack = errorObject ? errorObject.stack : null;
