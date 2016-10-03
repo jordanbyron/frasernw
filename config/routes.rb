@@ -259,6 +259,4 @@ Frasernw::Application.routes.draw do
   scope '/specialists/:id/:token', controller: 'specialists' do
     get :refresh_cache
   end
-
-  post '/notifications' => 'notifications#notify'
 end
