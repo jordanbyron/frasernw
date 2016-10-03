@@ -97,7 +97,7 @@ module Clockwork
     if: lambda { |t| t.day == 1 }
   ) do
     Subscription::MailIntervalNotifications.call(
-      date_interval: Subscription::INTERVAL_MONTLY,
+      date_interval: Subscription::INTERVAL_MONTHLY,
       delay: true
     )
   end
