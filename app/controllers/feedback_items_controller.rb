@@ -23,6 +23,10 @@ class FeedbackItemsController < ApplicationController
     @feedback_item = FeedbackItem.find(params[:id])
   end
 
+  def new
+    @feedback_item = FeedbackItem.new
+  end
+
   def create
     if current_user.authenticated?
       @feedback_item = FeedbackItem.new(params[:feedback_item].merge(
@@ -37,7 +41,10 @@ class FeedbackItemsController < ApplicationController
 
       @feedback_item.save
 
-      MailFeedbackNotifications.call(feedback_item_id: @feedback_item.id, delay: true)
+      MailFeedbackNotifications.call(
+        feedback_item_id: @feedback_item.id,
+        delay: true
+      )
 
       render nothing: true, status: 200
     else
