@@ -26,7 +26,7 @@ module Referrable
     red_x: "Not accepting new referrals"
   }
 
-  def referral_icon
+  def referral_icon_classes
     REFERRAL_ICONS[referral_icon_key]
   end
 

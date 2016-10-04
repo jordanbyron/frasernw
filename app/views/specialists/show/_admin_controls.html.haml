@@ -40,24 +40,6 @@
         method: :delete,
         class: "btn")
 
-
-- if current_user.as_admin_or_super?
-  #share.collapse
-
-  :javascript
-    window.pathways.attachSecretEditLinks({
-      containerId: "share",
-      props: {
-        addLink: '#{secret_tokens_path}',
-        accessibleId: #{@specialist.id},
-        accessibleType: "Specialist",
-        currentUserName: "#{@current_user.name}",
-        links: #{@specialist.valid_secret_edit_links(current_user).to_json},
-        canEdit: #{can?(:edit, @specialist)},
-        modal: { isVisible: false }
-      }
-    })
-
 - if (can? :update, @specialist) && current_user.as_admin? # fake out delete msg
   #delete-specialist-msg.collapse
     .alert.alert-info{ style: "margin-top: 10px" }

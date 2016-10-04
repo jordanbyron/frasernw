@@ -1,0 +1,44 @@
+- if show_clinic_section?(@clinic, section_key)
+  %h6 Clinic Information
+
+  - @clinic.clinic_locations.select(&:has_data?).sort_by(&:created_at).each do |cl|
+    - address = cl.resolved_address
+
+    %p.space
+      %strong= cl.phone_only if cl.phone_only.present?
+    %p= "Fax: #{cl.fax}" if cl.fax.present?
+    %p= "Public e-mail (okay for patient use): #{mail_to cl.public_email, cl.public_email, target: '_blank'}".html_safe if cl.public_email.present?
+    %p= "Private e-mail (for physician office use only): #{mail_to cl.email, cl.email, target: '_blank'}".html_safe if cl.email.present?
+    %p= "Website: #{link_to cl.url, cl.url, target: '_blank'}".html_safe if cl.url.present?
+    %p= cl.contact_details.convert_newlines_to_br if cl.contact_details.present?
+    - if cl.location.present? && cl.location.in_hospital?
+      - hospital = cl.location.hospital_in
+      %p
+        = "In #{link_to hospital.name, hospital_path(hospital)}".html_safe
+        = "(#{cl.sector})" if cl.sector_info_available?
+      %p
+        = link_to address.address,
+          address.map_url,
+          target: "_blank" if address.present? && !address.empty?
+      %p= cl.location.in_details if cl.location.in_details.present?
+    - elsif address.present? && !address.empty?
+      %p= "(#{cl.sector})" if cl.sector_info_available?
+      %p= link_to address.address, address.map_url, target: "_blank"
+    - if cl.location_opened.present?
+      %p
+        This clinic opened at this location
+        = cl.location_opened == "Prior to 2010" ? "prior to 2010." : "in #{cl.location_opened}."
+    %p= "Wheelchair accessible." if cl.wheelchair_accessible?
+    - if cl.scheduled?
+      %p
+        %strong Schedule:
+        = cl.schedule.collapsed_days_and_hours.join(". ").end_with_period
+
+  - if @clinic.languages.present?
+    %p.space.languages
+      = @clinic.languages.map{ |x| "<a href='#{language_path(x)}'>#{x.name}</a>" }.to_sentence.html_safe
+      = "#{@clinic.languages.count == 1 ? 'is' : 'are' } spoken at this clinic."
+
+  - if @clinic.interpreter_available
+    %p
+      Interpreter available upon request.

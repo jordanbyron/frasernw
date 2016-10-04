@@ -22,9 +22,9 @@
     %h5= "MSP ##{@specialist.padded_billing_number}"
 
   %p.space.no_indent
-    %i{ class: @specialist.availability_summary(:icon) }
+    %i{ class: @specialist.referral_icon_classes }
 
-    %strong= @specialist.availability_summary(:show)
+    %strong= @specialist.referral_summary
 
     - if @specialist.deceased? && @specialist.status_details.present?
       %p.no_indent

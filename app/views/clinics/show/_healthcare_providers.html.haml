@@ -1,0 +1,8 @@
+- if @clinic.healthcare_providers.present?
+
+  %h6 Healthcare providers
+
+  %p
+    %strong Healthcare providers
+    who see patients at the clinic:
+    = @clinic.healthcare_providers.ordered_by_name.map{ |x| x.name }.join(", ")

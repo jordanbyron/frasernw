@@ -1,0 +1,26 @@
+- favorite_class = logged_in? ? (Favorite.find_by(user_id: current_user.id,
+  favoritable_id: @clinic.id,
+  favoritable_type: "Clinic").present? ? "icon-red" : "icon-text") : "icon-text"
+
+:javascript
+  $(document).ready(function() {
+    $('.tt').tooltip({trigger: 'manual'});
+    $('#user_favorite_specialists_#{@specialist.id}').addClass('#{favorite_class}');
+  });
+
+- if current_user.as_admin_or_super?
+  #share.collapse
+
+  :javascript
+    window.pathways.attachSecretEditLinks({
+      containerId: "share",
+      props: {
+        addLink: '#{secret_tokens_path}',
+        accessibleId: #{@specialist.id},
+        accessibleType: "Specialist",
+        currentUserName: "#{@current_user.name}",
+        links: #{@specialist.valid_secret_edit_links(current_user).to_json},
+        canEdit: #{can?(:edit, @specialist)},
+        modal: { isVisible: false }
+      }
+    })

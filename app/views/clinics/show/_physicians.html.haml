@@ -1,0 +1,12 @@
+- if show_clinic_section?(@clinic, :physicians)
+
+  %h6 Physicians who see patients at the clinic
+
+  %ul.attending_specialists
+    - @clinic.visible_attendances.each do |attendance|
+      - if attendance.is_specialist
+        = physician_attending(attendance)
+      - else
+        %li
+          = attendance.freeform_name
+          = "- #{attendance.area_of_focus}" if attendance.area_of_focus.present?

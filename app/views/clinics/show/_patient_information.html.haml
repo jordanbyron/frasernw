@@ -1,0 +1,12 @@
+- if @clinic.patient_instructions.present? || @clinic.cancellation_policy.present?
+  %h6 Patient Information
+
+  - if @clinic.patient_instructions.present?
+    %p.space
+      %strong Patient instructions:
+      = @clinic.patient_instructions.end_with_period.convert_newlines_to_br
+
+  - if @clinic.cancellation_policy.present?
+    %p.space
+      %strong Cancellation policy:
+      = @clinic.cancellation_policy.end_with_period.convert_newlines_to_br

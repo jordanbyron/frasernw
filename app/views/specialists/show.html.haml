@@ -1,16 +1,7 @@
 - set_page_specific_title "#{@specialist.name}"
 
-- favorite_class = logged_in? ? (Favorite.find_by(user_id: current_user.id,
-  favoritable_id: @specialist.id,
-  favoritable_type: "Specialist").present? ? "icon-red" : "icon-text") : "icon-text"
-
 = render "partials/body_panel_nav",
   specialization: dropdown_specialization(@specialist, current_user)
-
-- specialist_offices = @specialist.specialist_offices.order(:created_at).reject{ |specialist_office| specialist_office.empty? }
-- has_office = specialist_offices.length > 0
-
-- specialist_clinics = @specialist.clinics.order(:created_at)
 
 .content-wrapper
 
@@ -45,8 +36,4 @@
 
   = render "specialists/show/admin_controls"
 
-  :javascript
-    $(document).ready(function() {
-      $('.tt').tooltip({trigger: 'manual'});
-      $('#user_favorite_specialists_#{@specialist.id}').addClass('#{favorite_class}');
-    });
+= render "specialists/show/scripts"

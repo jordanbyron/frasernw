@@ -1,0 +1,39 @@
+.headline-header
+.headline
+
+  %h2.profile_header__title{ class: (@clinic.hidden? ? "hidden-from-users" : "") }
+    = @clinic.name
+    %a{ href: "javascript:void(0)",
+      onclick: "favorite('clinics',#{@clinic.id},'#{escape_javascript(@clinic.name)}')",
+      title: "Favourite / un-favourite" }
+      %i.icon-heart{ id: "user_favorite_clinics_#{@clinic.id}" }
+  - if @clinic.hidden?
+    %h5= " (Hidden from users)"
+
+  %h3.specialty_links
+    = clinic_specializations_listing(@clinic)
+
+  %p.space.no_indent
+    %i{ class: @clinic.referral_icon_classes }
+    %strong= @clinic.referral_summary
+    - if !@clinic.returned_completed_survey?
+      %p
+        It may be out of our current catchment area, or in a
+        speciality we have yet to fully survey.
+
+    - if @clinic.specialists.any?
+      %p.space.no_indent.attending_specialists
+        %strong Specialists that work in this clinic:
+        != specialists_who_work_in(@clinic)
+
+    - if @clinic.returned_completed_survey? && @clinic.open?
+      - if @clinic.status_details.present?
+        %p.no_indent
+          %strong Details:
+          = @clinic.status_details.end_with_period.convert_newlines_to_br
+      - if @clinic.limitations.present?
+        %p.no_indent
+          %strong Limitations:
+          = @clinic.limitations.end_with_period.convert_newlines_to_br
+
+.headline-footer
