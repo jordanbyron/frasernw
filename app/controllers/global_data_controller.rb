@@ -19,7 +19,8 @@ class GlobalDataController < ApplicationController
 
     response.headers["Content-Type"] = "application/json"
     response.headers["Cache-Control"] = "public, max-age=86400"
+    response.headers["Content-Encoding"] = "gzip"
 
-    render text: json
+    render text: ActiveSupport::Gzip.compress(json)
   end
 end
