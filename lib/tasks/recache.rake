@@ -32,6 +32,7 @@ namespace :pathways do
       },
       serialized_indices: -> {
         Denormalized.regenerate_all
+        Setting.increment(:localstorage_cache_version)
       },
       front: -> {
         viewable_division_combinations.each do |division_group|

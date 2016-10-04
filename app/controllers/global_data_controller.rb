@@ -1,5 +1,5 @@
-class DataTablesController < ApplicationController
-  def global_data
+class GlobalDataController < ApplicationController
+  def show
     authorize! :get, :global_data
 
     json = Oj.dump({
@@ -16,6 +16,10 @@ class DataTablesController < ApplicationController
       referentStatusIcons: Specialist::STATUS_CLASS_HASH.invert
     })
 
-    render text: json, content_type: "application/json"
+
+    response.headers["Content-Type"] = "application/json"
+    response.headers["Cache-Control"] = "public, max-age=86400"
+
+    render text: json
   end
 end

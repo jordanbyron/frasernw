@@ -13,7 +13,7 @@ import updateUrlHash from "middlewares/update_url_hash";
 import { route } from "controller_helpers/routing";
 import {
   parseRenderedData,
-  integrateLocalStorageData,
+  integrateGlobalData,
   parseUrl
 } from "action_creators";
 import FeedbackModal from "controllers/feedback_modal";
@@ -76,7 +76,7 @@ const bootstrapReact = function() {
 
     if(window.pathways.globalDataLoaded){
       window.pathways.globalDataLoaded.done(function(data) {
-        integrateLocalStorageData(store.dispatch, data);
+        integrateGlobalData(store.dispatch, data);
       })
     }
 

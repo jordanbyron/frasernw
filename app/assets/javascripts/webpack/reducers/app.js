@@ -6,7 +6,7 @@ const app = (model = {}, action) => {
     var appData = action.data.map(_.property("app")).filter(_.identity)
 
     return _.assign(...[{}, model].concat(appData));
-  case "INTEGRATE_LOCALSTORAGE_DATA":
+  case "INTEGRATE_GLOBAL_DATA":
     return _.assign(
       {},
       model,

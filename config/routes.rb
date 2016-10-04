@@ -17,12 +17,7 @@ Frasernw::Application.routes.draw do
     end
   end
 
-  # temporary endpoint to develop the fnw datatable
-  resources :data_tables, only: [] do
-    collection do
-      get :global_data
-    end
-  end
+  get "/global_data/:cache_version" => "global_data#show"
 
   resources :specializations, path: 'specialties' do
     resources :specialists

@@ -46,7 +46,7 @@
       });
 
     :javascript
-      window.pathways.loadGlobalData(#{localstorage_cache_version})
+      window.pathways.globalDataLoaded = window.pathways.loadGlobalData(#{localstorage_cache_version})
 
     = render "partials/analytics_setup"
 

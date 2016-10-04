@@ -75,9 +75,9 @@ export function locationChanged(dispatch, newLocation) {
   });
 }
 
-export function integrateLocalStorageData(dispatch, data) {
+export function integrateGlobalData(dispatch, data) {
   dispatch({
-    type: "INTEGRATE_LOCALSTORAGE_DATA",
+    type: "INTEGRATE_GLOBAL_DATA",
     data: data
   });
 }
