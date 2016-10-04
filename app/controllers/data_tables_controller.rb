@@ -13,7 +13,8 @@ class DataTablesController < ApplicationController
       specializations: Denormalized.fetch(:specializations),
       contentItems: Denormalized.fetch(:content_items),
       divisions: Denormalized.fetch(:divisions),
-      referentStatusIcons: Specialist::STATUS_CLASS_HASH.invert
+      referralIcons: Referrable::REFERRAL_ICONS,
+      referralTooltips: Referrable::REFERRAL_TOOLTIPS
     })
 
     render text: json, content_type: "application/json"

@@ -82,7 +82,7 @@ module Denormalized
             name: specialist.name,
             firstName: specialist.firstname,
             lastName: specialist.lastname,
-            statusClassKey: specialist.status_class_hash,
+            referralIconKey: specialist.referral_icon_key,
             divisionIds: specialist.divisions.map(&:id),
             waittime: masked_waittime(specialist),
             cityIds: specialist.cities.reject{ |city| city.hidden }.map(&:id),
@@ -156,8 +156,7 @@ module Denormalized
           memo.merge(clinic.id => {
             id: clinic.id,
             name: clinic.name,
-            statusClassKey: clinic.status_class_hash,
-            statusMask: (clinic.status_mask || 0),
+            referralIconKey: clinic.referral_icon_key,
             waittime: masked_waittime(clinic),
             cityIds: clinic.cities.reject{ |city| city.hidden }.map(&:id),
             collectionName: "clinics",

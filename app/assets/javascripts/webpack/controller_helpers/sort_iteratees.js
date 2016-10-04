@@ -79,7 +79,7 @@ const unboundIteratees = (model) => {
 }
 
 const referrals = (decoratedRecord, model) => {
-  return (STATUS_CLASS_KEY_RANKINGS[decoratedRecord.raw.statusClassKey] || 99);
+  return (REFERRAL_STATUS_RANKINGS[decoratedRecord.raw.referralIconKey] || 99);
 };
 
 const waittimes = (decoratedRecord, model) => {
@@ -121,14 +121,14 @@ const pageViews = (decoratedRecord, model) => {
   return decoratedRecord.raw.pageViews;
 }
 
-const STATUS_CLASS_KEY_RANKINGS = {
-  1: 1,
-  2: 5,
-  3: 3,
-  4: 6,
-  5: 4,
-  6: 99,
-  7: 2
+const REFERRAL_STATUS_RANKINGS = {
+  "green_check": 1,
+  "blue_arrow": 5,
+  "orange_warning": 3,
+  "red_x": 6,
+  "question_mark": 4,
+  "none": 99,
+  "orange_check": 2
 };
 
 const WAITTIME_RANKINGS = {
