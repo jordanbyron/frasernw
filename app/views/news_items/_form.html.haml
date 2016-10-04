@@ -1,42 +1,48 @@
-= simple_form_for @news_item, :html => { :class => "form-horizontal ajax" } do |f|
+= simple_form_for @news_item, html: { class: "form-horizontal" } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
 
   - if current_user.as_super_admin?
-    = f.association :owner_division, as: :select, :collection => Division.all, :include_blank => false
+    = f.association :owner_division,
+      as: :select,
+      collection: Division.all,
+      include_blank: false
   - elsif current_user.as_divisions.length > 1
-    = f.association :owner_division, as: :select, :collection => current_user.as_divisions
+    = f.association :owner_division,
+      as: :select,
+      collection: current_user.as_divisions
   - else
-    = f.association :owner_division, as: :hidden, :input_html => { :value => current_user.as_divisions.first.id }
+    = f.association :owner_division,
+      as: :hidden,
+      input_html: { value: current_user.as_divisions.first.id }
 
   = f.input :title
   = f.input :type_mask,
-    :as => :select,
-    :collection => NewsItem::TYPE_HASH,
+    as: :select,
+    collection: NewsItem::TYPE_HASH,
     label_method: :last,
     value_method: :first,
-    :include_blank => false
+    include_blank: false
   = f.input :start_date,
-    :as => :datepicker
+    as: :datepicker
   = f.input :show_start_date
   = f.input :end_date,
-    :as => :datepicker
+    as: :datepicker
   = f.input :show_end_date,
-    :hint => "The end date can be blank: if no end date is provided, the news item will expire after the start date, otherwise it will expire after the end date."
+    hint: "The end date can be blank: if no end date is provided, the news item will expire after the start date, otherwise it will expire after the end date."
   = f.input :body,
-    :hint => "Accepts Markdown.  When adding a link to external website URLs, please link using <strong>http<u>s</u>://</strong> rather than http:// when possible to help protect the security & privacy of our users.".html_safe
+    hint: "Accepts Markdown. When adding a link to a Pathways page, please use a relative path (e.g. '/clinics/clinic_number' rather than 'https://pathwaysbc.ca/clinics/clinic_number'). When adding a link to external website URLs, please link using <strong>http<u>s</u>://</strong> rather than http:// when possible to help protect the security & privacy of our users.".html_safe
   - if current_user.as_super_admin?
     = f.association :divisions,
       as: :check_boxes,
       collection: @divisions,
-      label: "Show this item to the following divisions.  (Any changes made to this item will be reflected in those divisions.)"
+      label: "Show this item to the following divisions. (Any changes made to this item will be reflected in those divisions.)"
 
   .form-actions
-    = f.button :submit, :class => "btn btn-primary"
-    = link_to 'Cancel', news_items_path, :class => "btn btn-danger ajax"
+    = f.button :submit, class: "btn btn-primary"
+    = link_to 'Cancel', news_items_path, class: "btn btn-danger"
 
-  %script{"type" => "text/javascript"}
-    :plain
-      $(document).ready(function() {
-        $("input.datepicker").datepicker({ dateFormat: 'yy-mm-dd' });
-      });
+  :javascript
+    $(document).ready(function() {
+      $("input.datepicker").datepicker({ dateFormat: 'yy-mm-dd' });
+    });
