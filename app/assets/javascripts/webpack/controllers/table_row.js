@@ -12,6 +12,7 @@ import * as filterValues from "controller_helpers/filter_values";
 import { selectRecord, deselectRecord } from "action_creators";
 import { memoizePerRender } from "utils";
 import ChangeRequestRow from "controllers/table_row/change_request";
+import EntityPageViewRow from "controllers/table_row/entity_page_view";
 import IssueRow from "controllers/table_row/issue";
 import ReferentRow from "controllers/table_row/referent";
 import Tags from "component_helpers/tags";
@@ -63,11 +64,8 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
   }
   else if (route === "/reports/entity_page_views") {
     return(
-      <tr key={decoratedRecord.reactKey}>
-        <td dangerouslySetInnerHTML={{__html: decoratedRecord.raw.link}}/>
-        <td key="count">{ decoratedRecord.raw.usage }</td>
-      </tr>
-    )
+      <EntityPageViewRow decoratedRecord={decoratedRecord} model={model}/>
+    );
   }
   else if (route === "/reports/page_views_by_user") {
     return(
@@ -131,4 +129,5 @@ const ContentItemTitle = ({decoratedRecord}) => {
     </td>
   )
 }
+
 export default TableRow;

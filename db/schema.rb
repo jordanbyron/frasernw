@@ -11,37 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160906030056) do
+ActiveRecord::Schema.define(version: 20160922143318) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "pg_stat_statements"
-
-  create_table "activities", force: true do |t|
-    t.integer  "trackable_id"
-    t.string   "trackable_type"
-    t.integer  "owner_id"
-    t.string   "owner_type"
-    t.string   "key"
-    t.text     "parameters"
-    t.integer  "recipient_id"
-    t.string   "recipient_type"
-    t.string   "update_classification_type"
-    t.integer  "type_mask"
-    t.text     "type_mask_description"
-    t.integer  "format_type"
-    t.text     "format_type_description"
-    t.integer  "parent_id"
-    t.string   "parent_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "activities", ["owner_id", "owner_type"], name: "index_activities_on_owner_id_and_owner_type", using: :btree
-  add_index "activities", ["parent_id", "parent_type"], name: "index_activities_on_parent_id_and_parent_type", using: :btree
-  add_index "activities", ["recipient_id", "recipient_type"], name: "index_activities_on_recipient_id_and_recipient_type", using: :btree
-  add_index "activities", ["trackable_id", "trackable_type"], name: "index_activities_on_trackable_id_and_trackable_type", using: :btree
-  add_index "activities", ["type_mask", "type_mask_description"], name: "index_activities_on_type_mask_and_type_mask_description", using: :btree
 
   create_table "addresses", force: true do |t|
     t.string   "address1"
@@ -487,24 +461,6 @@ ActiveRecord::Schema.define(version: 20160906030056) do
   add_index "locations", ["locatable_id", "locatable_type"], name: "index_locations_on_locatable_id_and_locatable_type", using: :btree
   add_index "locations", ["locatable_id", "location_in_id"], name: "index_locations_on_locatable_id_and_location_in_id", using: :btree
   add_index "locations", ["location_in_id"], name: "index_locations_on_location_in_id", using: :btree
-
-  create_table "metrics", force: true do |t|
-    t.integer  "month_stamp",                    null: false
-    t.integer  "division_id"
-    t.string   "page_path"
-    t.integer  "user_type_key"
-    t.integer  "sessions"
-    t.integer  "page_views"
-    t.integer  "visitor_accounts_min5sessions"
-    t.integer  "visitor_accounts_min10sessions"
-    t.integer  "visitor_accounts"
-    t.integer  "average_session_duration"
-    t.integer  "average_page_view_duration"
-    t.datetime "created_at",                     null: false
-    t.datetime "updated_at",                     null: false
-  end
-
-  add_index "metrics", ["user_type_key", "division_id", "page_path"], name: "metrics_dimensions", using: :btree
 
   create_table "news_items", force: true do |t|
     t.date     "start_date"
@@ -954,7 +910,7 @@ ActiveRecord::Schema.define(version: 20160906030056) do
 
   create_table "subscriptions", force: true do |t|
     t.integer  "user_id"
-    t.string   "classification"
+    t.string   "target_class"
     t.string   "news_type"
     t.datetime "created_at"
     t.datetime "updated_at"

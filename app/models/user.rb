@@ -149,6 +149,10 @@ class User < ActiveRecord::Base
     ).user_divisions.create(division_id: division_id)
   end
 
+  def self.admin_or_super
+    where(role: ["admin", "super"])
+  end
+
   def self.user
     where("users.role = 'user'")
   end
@@ -257,7 +261,7 @@ class User < ActiveRecord::Base
 
   def deliver_password_reset_instructions!
     reset_perishable_token!
-    PasswordResetMailer.password_reset_instructions(self).deliver
+    MailPasswordResetEmail.call(user_id: self.id, delay: true)
   end
 
   LAST_REQUEST_FORMATS = {
@@ -288,8 +292,8 @@ class User < ActiveRecord::Base
     errors.add(:agree_to_toc, "must be agreed to") if agree_to_toc.blank?
   end
 
-  def subscriptions_by_interval_and_target(interval, target_type)
-    subscriptions.where(interval: interval, classification: target_type)
+  def subscriptions_by_interval_and_target(interval, target_klass)
+    subscriptions.where(interval: interval, target_class: target_klass)
   end
 
   TYPES = {
@@ -335,17 +339,19 @@ class User < ActiveRecord::Base
   def self.csv_import(file, divisions, type_mask, role)
     users = []
     CSV.foreach(file.path) do |row|
-      user = User.new(
-        name: row[0],
-        divisions: divisions,
-        type_mask: type_mask,
-        role: role
-      )
-      # so we can avoid setting up with emails or passwords
-      if user.save validate: false
-        users << user
-      else
-        puts "ERROR SETTING UP #{row[0]}"
+      if row[0].present?
+        user = User.new(
+          name: row[0],
+          divisions: divisions,
+          type_mask: type_mask,
+          role: role
+        )
+        # so we can avoid setting up with emails or passwords
+        if user.save validate: false
+          users << user
+        else
+          puts "ERROR SETTING UP #{row[0]}"
+        end
       end
     end
     users
@@ -397,7 +403,8 @@ class User < ActiveRecord::Base
     :user?,
     :introspective?,
     :role_label,
-    :role
+    :role,
+    :administering
   ].each do |method_name|
     define_method "as_#{method_name}" do
       if mask.present? && mask.persisted?

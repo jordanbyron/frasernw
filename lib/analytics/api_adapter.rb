@@ -1,3 +1,6 @@
+# V3 API reference:
+# https://developers.google.com/analytics/devguides/reporting/core/v3/reference
+
 # Handles construction of request params from simple query api and parsing of responses
 module Analytics
   class ApiAdapter
@@ -25,6 +28,16 @@ module Analytics
       else
         wrapped_response.parse_rows
       end
+    end
+
+    def self.snoop_browser(user_id)
+      Analytics::ApiAdapter.get(
+        metrics: [:page_views],
+        dimensions: [:browser, :browser_version],
+        filters: {user_id: user_id},
+        start_date: (Date.today - 3.days),
+        end_date: (Date.today + 1.day)
+      )
     end
 
     def self.user_type_keys
@@ -95,7 +108,9 @@ module Analytics
       page_path: "ga:pagePath",
       event_category: "ga:eventCategory",
       event_label: "ga:eventLabel",
-      event_action: "ga:eventAction"
+      event_action: "ga:eventAction",
+      browser: "ga:browser",
+      browser_version: "ga:browserVersion"
     }
     def self.format_dimensions(dimensions)
       dimensions.map do |elem|

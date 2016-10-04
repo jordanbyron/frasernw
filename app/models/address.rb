@@ -122,6 +122,10 @@ class Address < ActiveRecord::Base
       "zoom=#{zoom}&scale=#{scale}&sensor=false&markers=#{search} Canada"
   end
 
+  def divisions
+    city.present? ? city.divisions : []
+  end
+
   def to_s
     return address
   end

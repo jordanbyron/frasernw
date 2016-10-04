@@ -18,7 +18,7 @@ module Denormalized
         }
       else
         {
-          role: "unauthenticated"
+          role: current_user.role
         }
       end
     end

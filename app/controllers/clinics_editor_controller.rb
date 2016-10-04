@@ -60,7 +60,7 @@ class ClinicsEditorController < ApplicationController
       review_item: review_item
     ).exec
 
-    EventMailer.mail_review_queue_entry(review_item).deliver
+    MailReviewNotification.call(review_item_id: review_item.id, delay: true)
 
     render
   end

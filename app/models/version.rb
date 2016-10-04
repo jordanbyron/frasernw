@@ -50,4 +50,8 @@ class Version < PaperTrail::Version
       UnknownUser
     )
   end
+
+  after_commit do
+    PerformExtrajurisdictionalNotification.call(version_id: self.id, delay: true)
+  end
 end

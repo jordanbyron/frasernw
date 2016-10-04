@@ -11,6 +11,12 @@ class ReviewItemsController < ApplicationController
   end
 
   def destroy
+    # temporary logging to find where this is getting called
+    begin
+      $redis.lpush("referers_destroying_review_items", request.referer)
+    rescue
+    end
+
     @review_item = ReviewItem.find(params[:id])
     @review_item.destroy
     redirect_to review_items_url, notice: "Successfully discarded changes."
