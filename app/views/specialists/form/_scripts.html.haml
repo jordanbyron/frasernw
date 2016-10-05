@@ -1,8 +1,7 @@
 - if @review_item.present?
   :javascript
-    // pass variables to the review script
-    window.pathways = window.pathways || {};
     (function( formData ) {
+      formData.overlayChanges = true;
       formData.baseReviewItem = #{@review_item.transformed_base_object(@specialist) || 'null'};
       formData.reviewItem = #{@review_item.transformed_review_object(@specialist) || 'null'};
       formData.maxLocations = #{Specialist::MAX_OFFICES};
@@ -10,32 +9,19 @@
       formData.recordKey = "specialist";
     }( window.pathways.formData = {} ));
 
-  = javascript_include_tag "views/form_review"
-
 :javascript
   $(document).ready(function() {
-    $("select").not('.no-print').each(function(i){
-      var $el = $(this);
-      var $options = $el.find("option");
-      $el.after("<div class='print-only'><ul id=sel"+i+"></ul></div>");
-      var $curPrintBox = $("#sel"+i);
-      $options.each(function() {
-        var selected = $(this).prop('selected') ? "class='selected'" : "";
-        $curPrintBox.append("<li " + selected + ">"+$(this).text()+"</li>");
-      });
-    });
+    window.pathways.referentForms.setupFormForPrinting();
+
+    if(window.pathways.formData && window.pathways.formData.overlayChanges){
+      window.pathways.referentForms.overlayFormChanges(formData);
+    }
+
+    window.pathways.referentForms.emphasizeLocationTabs();
+    window.pathways.referentForms.stashPreEditForm();
+    window.pathways.referentForms.setupVisibilityToggles.specialist();
   });
+
   $(window).load(function() {
     document.getElementById("hiding-container").classList.remove("hidden");
   });
-
-- if @specialization
-  :javascript
-    $(document).ready(function() {
-      var specialty_checkbox_id = "#specialist_specialization_ids_#{@specialization.id}";
-      $(specialty_checkbox_id).prop("checked", true);
-    });
-
-- content_for(:javascript_footer) do
-  = javascript_include_tag "views/location_tabs"
-  = javascript_include_tag "views/form_data_manager"

@@ -293,23 +293,12 @@ class Clinic < ActiveRecord::Base
     false #to line up with specialists; all are "available" if they exist
   end
 
-  def city_old
-    l = locations.first
-    return nil if l.blank?
-    return l.city
-  end
-
   def cities
-    return locations.map{ |l| l.city }.reject{ |c| c.blank? }.uniq
-  end
-
-  def resolved_address_old
-    return location.resolved_address if location
-    return nil
+    locations.map(&:city).reject(&:blank?).uniq
   end
 
   def divisions
-    return cities.map{ |city| city.divisions }.flatten.uniq
+    cities.map(&:divisions).flatten.uniq
   end
 
   def attendances?
@@ -345,7 +334,7 @@ class Clinic < ActiveRecord::Base
   def referral_icon_key
     if !returned_completed_survey?
       :question_mark
-    if open? && accepting_new_referrals?
+    elsif open? && accepting_new_referrals?
       :green_check
     elsif open? && accepting_limited_referrals?
       :orange_check

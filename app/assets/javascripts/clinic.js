@@ -21,8 +21,9 @@ var hideShowPhysicians = function()
     $(lastname).show();
   }
 }
-
-$(".is_specialist").live("change", hideShowPhysicians );
+$(document).ready(function() {
+  $(".is_specialist").on("change", hideShowPhysicians );
+})
 
 var clinic_categorization_changed = function()
 {
@@ -144,19 +145,3 @@ _.times(9, function(index) {
     return clinic_address_location_changed(index);
   });
 })
-
-
-var clinic_status_changed = function()
-{
-  if ( $(this).val() == "4" )
-  {
-    //closed
-    $(".unavailable_from").show();
-  }
-  else
-  {
-    $(".unavailable_from").hide();
-  }
-}
-
-$("#clinic_status_mask").live("change", clinic_status_changed );
