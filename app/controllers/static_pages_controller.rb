@@ -2,9 +2,9 @@ class StaticPagesController < ApplicationController
   skip_before_filter :require_authentication
   skip_authorization_check
 
-  def contact
+  def contact_form
     @feedback_item = FeedbackItem.new
-    render :contact
+    render :contact_form
   end
 
   def pathways_info

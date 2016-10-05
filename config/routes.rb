@@ -207,7 +207,7 @@ Frasernw::Application.routes.draw do
   get :terms_and_conditions, controller: 'static_pages'
   get :info, to: 'static_pages#pathways_info', as: :pathways_info
 
-  get :contact, to: 'static_pages#contact', as: :contact
+  get :contact, to: 'static_pages#contact_form', as: :contact
   post :contact, to: 'feedback_items#create', as: :submit_contact
 
   resources :user_sessions, only: [:new, :create, :destroy]

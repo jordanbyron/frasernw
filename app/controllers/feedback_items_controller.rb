@@ -42,9 +42,17 @@ class FeedbackItemsController < ApplicationController
         delay: true
       )
 
-      render nothing: true, status: 200
+      if request.path == contact_path
+
+      else
+        render nothing: true, status: 200
+      end
     else
-      render nothing: true, status: 500
+      if request.path == contact_path
+        render "static_pages/contact_form"
+      else
+        render nothing: true, status: 500
+      end
     end
   end
 
