@@ -1,23 +1,24 @@
 %h3 General Information
 = f.input :name
-.no-print
-  = f.input :categorization_mask,
-    as: :select,
-    hint: @form_modifier.categorization_hint,
-    collection: Clinic::CATEGORIZATION_LABELS,
-    label_method: :last,
-    value_method: :first,
-    include_blank: false
-  - if current_user.as_admin_or_super?
-    = f.input :hidden, label: "Hide from users"
-.no-print
-  = f.association :specializations,
-    as: :check_boxes,
-    hint: @form_modifier.specializations_hint,
-    disabled: @form_modifier.restrict_editing?,
-    label: @form_modifier.specializations_label_text
-  - if @form_modifier.show_comment_boxes?
-    = f.input :specializations_comments,
-      label: @form_modifier.specialization_comments_label,
-      input_html: { value: "" },
-      as: :text
+= f.input :returned_completed_survey
+= f.input :is_open
+= f.input :accepting_new_referrals,
+  label: "Accepting new_referrals?",
+  wrapper_html: { class: "form__wrapper--indented" }
+= f.input :referrals_limited,
+  label: "Referrals limited by geography or # of patients?",
+  wrapper_html: { class: "form__wrapper--double-indented" }
+- if current_user.as_admin_or_super?
+  = f.input :hidden, label: "Hide from users"
+= f.input :status_details
+= f.input :limitations
+= f.association :specializations,
+  as: :check_boxes,
+  hint: @form_modifier.specializations_hint,
+  disabled: @form_modifier.restrict_editing?,
+  label: @form_modifier.specializations_label_text
+- if @form_modifier.show_comment_boxes?
+  = f.input :specializations_comments,
+    label: @form_modifier.specialization_comments_label,
+    input_html: { value: "" },
+    as: :text

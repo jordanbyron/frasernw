@@ -6,7 +6,7 @@
     action: @form_modifier.form_action },
     method: @form_modifier.method,
     html: { class: "form-horizontal clinic_form" } do |f|
-    - if not f.error_messages.blank?
+    - if !f.error_messages.blank?
       .alert.alert-error= f.error_messages
 
     = render "clinics/form/general_information"
@@ -15,7 +15,7 @@
 
     = render "clinics/form/senior_contact"
 
-    = render "clinics/form/status"
+    = render "clinics/form/languages"
 
     = render "clinics/form/areas_of_practice"
 
