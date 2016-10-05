@@ -1,0 +1,44 @@
+:javascript
+  $(document).ready(function() {
+    $("select").not('.no-print').each(function(i){
+      var $el = $(this);
+      var $options = $el.find("option");
+      $el.after("<div class='print-only'><ul id=sel"+i+"></ul></div>");
+      var $curPrintBox = $("#sel"+i);
+      $options.each(function() {
+        var selected = $(this).prop('selected') ? "class='selected'" : "";
+        $curPrintBox.append("<li " + selected + ">"+$(this).text()+"</li>");
+      });
+    });
+  });
+  $(document).ready( $("#clinic_categorization_mask").each(clinic_categorization_changed) );
+  $(window).load(function() {
+    document.getElementById("hiding-container").classList.remove("hidden");
+  });
+
+- if @review_item.present?
+  :javascript
+    // pass variables to the review script
+    window.pathways = window.pathways || {};
+    (function( formData ) {
+      formData.baseReviewItem = #{@review_item.transformed_base_object(@clinic) || 'null'};
+      formData.reviewItem = #{@review_item.transformed_review_object(@clinic) || 'null'};
+      formData.maxLocations = #{Clinic::MAX_LOCATIONS};
+      formData.interactionType = "#{@form_modifier.interaction_type.to_s}";
+      formData.recordKey = "clinic";
+    }( window.pathways.formData = {} ));
+
+  = javascript_include_tag "views/form_review"
+
+- if @specialization
+  :javascript
+    $(document).ready(function() {
+      var specialty_checkbox_id = "#clinic_specialization_ids_#{@specialization.id}";
+      $(specialty_checkbox_id).prop("checked", true);
+    });
+
+- content_for(:javascript_footer) do
+  = javascript_include_tag "views/location_tabs"
+
+  - if @form_modifier.token_edit?
+    = javascript_include_tag "views/form_data_manager"

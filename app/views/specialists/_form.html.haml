@@ -1,24 +1,3 @@
-- if @review_item.present?
-  :javascript
-    // pass variables to the review script
-    window.pathways = window.pathways || {};
-    (function( formData ) {
-      formData.baseReviewItem = #{@review_item.transformed_base_object(@specialist) || 'null'};
-      formData.reviewItem = #{@review_item.transformed_review_object(@specialist) || 'null'};
-      formData.maxLocations = #{Specialist::MAX_OFFICES};
-      formData.interactionType = "#{@form_modifier.interaction_type.to_s}";
-      formData.recordKey = "specialist";
-    }( window.pathways.formData = {} ));
-
-  = javascript_include_tag "views/form_review"
-
-- if @specialization
-  :javascript
-    $(document).ready(function() {
-      var specialty_checkbox_id = "#specialist_specialization_ids_#{@specialization.id}";
-      $(specialty_checkbox_id).prop("checked", true);
-    });
-
 = render "specialists/form/top_matter"
 
 .form-wrapper.hidden#hiding-container
@@ -29,7 +8,6 @@
     html: { class: "form-horizontal specialist_form" } do |f|
     - if not f.error_messages.blank?
       .alert.alert-error= f.error_messages
-
 
     = render "specialists/form/general_information", f: f
 
@@ -61,42 +39,6 @@
       user: current_user,
       form: f
 
-    .form-actions
-      - if @form_modifier.token_edit?
-        = f.button :submit,
-          'Update Specialist with My Changes',
-          class: "btn btn-primary submit-referents-form",
-          disabled: true
-        = f.button :submit,
-          'There are No Updates to this Specialist',
-          class: "btn btn-success submit-referents-form",
-          name: 'no_updates',
-          disabled: true
-      - elsif @form_modifier.admin_rereview?
-        = link_to "Back to record",
-          specialist_path(@specialist),
-          class: "btn btn-primary"
-      - else
-        = f.button :submit, class: "btn btn-primary"
-        = link_to 'Cancel', @form_modifier.cancel_path, class: "btn btn-danger"
+    = render "specialists/form/buttons", f: f
 
-:javascript
-  $(document).ready(function() {
-    $("select").not('.no-print').each(function(i){
-      var $el = $(this);
-      var $options = $el.find("option");
-      $el.after("<div class='print-only'><ul id=sel"+i+"></ul></div>");
-      var $curPrintBox = $("#sel"+i);
-      $options.each(function() {
-        var selected = $(this).prop('selected') ? "class='selected'" : "";
-        $curPrintBox.append("<li " + selected + ">"+$(this).text()+"</li>");
-      });
-    });
-  });
-  $(window).load(function() {
-    document.getElementById("hiding-container").classList.remove("hidden");
-  });
-
-- content_for(:javascript_footer) do
-  = javascript_include_tag "views/location_tabs"
-  = javascript_include_tag "views/form_data_manager"
+= render "specialists/form/scripts"

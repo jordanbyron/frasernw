@@ -1,0 +1,65 @@
+#section_referrals
+
+  %h3 Referral Details
+
+  %label How does this clinic accept requests for standard referrals?
+  = f.input :referral_fax, as: :boolean, wrapper: :bootstrap_tight
+  = f.input :referral_phone, as: :boolean, wrapper: :bootstrap_tight
+  = f.input :referral_other_details
+  = f.input :referral_details
+
+  = f.input :referral_form_mask,
+    as: :radio_buttons,
+    collection: Clinic::BOOLEAN_HASH,
+    label_method: :last,
+    value_method: :first,
+    label: "Does this clinic have a referral form?",
+    hint: @form_modifier.token_edit? ? "If you would like to add or correct any referral forms, please email them to #{ @clinic.owners.map{ |owner| "#{owner.name} at #{mail_to owner.email}"}.join(' or ') }".html_safe : ""
+
+  - if @form_modifier.token_edit? && @clinic.referral_form_mask == 1 && @clinic.referral_forms.reject{ |referral_form| referral_form.form.blank? }.present?
+
+    .control-group
+      .controls
+
+        %ul
+          - @clinic.referral_forms.each do |referral_form|
+            - next if not referral_form.form.present?
+            - type = referral_form.file_format
+            %li
+              = link_to "#{referral_form.description} (#{type})",
+                referral_form.form.url,
+                target: "_blank"
+
+  = f.input :lagtime_mask,
+    as: :select,
+    collection: Clinic::LAGTIME_LABELS,
+    label_method: :last,
+    value_method: :first
+
+  = f.input :waittime_mask,
+    as: :select,
+    collection: Clinic::WAITTIME_LABELS,
+    label_method: :last,
+    value_method: :first
+
+  %label Our clinic will respond to referral requests:
+  = f.input :respond_by_fax, as: :boolean, wrapper: :bootstrap_tight
+  = f.input :respond_by_phone, as: :boolean, wrapper: :bootstrap_tight
+  = f.input :respond_by_mail, as: :boolean, wrapper: :bootstrap_tight
+  = f.input :respond_to_patient, as: :boolean
+
+  = f.input :patient_can_book_mask,
+    as: :radio_buttons,
+    collection: Clinic::BOOLEAN_HASH,
+    label_method: :last,
+    value_method: :first
+
+  = f.input :red_flags, as: :text
+
+  %label Optimal method of referral for urgent appointments
+  = f.input :urgent_fax, as: :boolean, wrapper: :bootstrap_tight
+  = f.input :urgent_phone, as: :boolean, wrapper: :bootstrap_tight
+  = f.input :urgent_other_details
+  = f.input :urgent_details
+
+= render "teleservices/form_fields", f: f
