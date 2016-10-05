@@ -32,27 +32,18 @@ class FeedbackItemsController < ApplicationController
       @feedback_item = FeedbackItem.new(params[:feedback_item])
     end
 
-    if ((@feedback_item.contact_us? && @feedback_item.user.nil?) ||
-      current_user.authenticated?)
-
+    if (
+      (@feedback_item.contact_us? && @feedback_item.user.nil?) ||
+        current_user.authenticated?
+    )
       @feedback_item.save
-
       MailFeedbackNotifications.call(
         feedback_item_id: @feedback_item.id,
         delay: true
       )
-
-      if request.path == contact_path
-
-      else
-        render nothing: true, status: 200
-      end
+      render nothing: true, status: 200
     else
-      if request.path == contact_path
-        render "static_pages/contact_form"
-      else
-        render nothing: true, status: 500
-      end
+      render nothing: true, status: 500
     end
   end
 
