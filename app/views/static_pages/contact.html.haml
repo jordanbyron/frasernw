@@ -1,36 +1,24 @@
 - set_page_specific_title "Contact Us"
 
 .content-wrapper
-  .content
-    .row
-      #contact-us.inner
-        <form onSubmit={this.handleSubmit}>
-          <label style={{fontWeight: "bold"}}>
-            <Invitation model={this.props.model}/>
-            <input
-              type={freeformInputType(this.props.model)}
-              ref="name"
-              placeholder="Name"
-              style={{marginTop: "10px"}}
-            />
-            <input
-              type={freeformInputType(this.props.model)}
-              ref="email"
-              placeholder="Email"
-            />
-            <textarea
-              ref="feedback"
-              style={{width: "100%", height: "150px", marginTop: "10px"}}
-            ></textarea>
-          </label>
-          <div className="form-actions">
-            <input type="submit"
-              className="btn btn-primary"
-              value={ submitText(this.props.model) }
-            />
-            <a className="btn btn-danger"
-              onClick={_.partial(handleClose, this.props.dispatch)}
-              style={{marginLeft: "2px"}}
-            >Cancel</a>
-          </div>
-        </form>
+  %h2 Contact Pathways Administration
+
+  = simple_form_for @feedback_item,
+    url: submit_contact_path,
+    html: { class: "form-horizontal" } do |f|
+
+    = f.input :freeform_name,
+      label: "Your name",
+      placeholder: "Name",
+      input_html: {value: current_user.authenticated? ? current_user.name : ""}
+    = f.input :freeform_email,
+      label: "Your email",
+      placeholder: "Email",
+      input_html: {value: current_user.authenticated? ? current_user.email : ""}
+    = f.input :feedback,
+      label: "How can we help?",
+      as: :text,
+      input_html: { cols: 400, rows: 5, style: "width: 500px;" }
+
+    .form-actions
+      = f.button :submit, "Submit", class: "btn btn-primary"

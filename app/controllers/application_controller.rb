@@ -5,6 +5,8 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   check_authorization
 
+  helper_method :omit_contact_modal
+
   rescue_from CanCan::AccessDenied do |exception|
     if current_user.as_introspective?
       redirect_to index_own_clinics_path,
@@ -44,4 +46,9 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  protected
+
+  def omit_contact_modal
+    false
+  end
 end

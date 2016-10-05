@@ -2,7 +2,7 @@ class Ability
   include CanCan::Ability
 
   def initialize(user)
-    can [:create], FeedbackItem
+    can [:new, :create], FeedbackItem
     can :notify, :notifications
 
     if !user.authenticated?

@@ -23,10 +23,6 @@ class FeedbackItemsController < ApplicationController
     @feedback_item = FeedbackItem.find(params[:id])
   end
 
-  def new
-    @feedback_item = FeedbackItem.new
-  end
-
   def create
     if current_user.authenticated?
       @feedback_item = FeedbackItem.new(params[:feedback_item].merge(
