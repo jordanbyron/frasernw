@@ -24,8 +24,7 @@
       - cloc = clocs[index]
       .tab-pane{ class: (index == 0) ? "active" : "",
         id: "location_tab_#{index}" }
-        %h4.print-only= "Location #{index+1}"
-        .control-group.no-print{ style: (!cloc.empty? && @form_modifier.token_edit? ? "visibility: hidden; position: absolute;" : "") }
+        .control-group{ style: (!cloc.empty? && @form_modifier.token_edit? ? "visibility: hidden; position: absolute;" : "") }
           = cl.input :location_is,
             as: :radio_buttons,
             collection: ClinicLocation::LOCATION_IS_OPTIONS,
@@ -48,12 +47,6 @@
           = cl.input :url,
             input_html: { class: "span3" },
             hint: "Remember 'http://'"
-        .control-group.print-only
-          %label.control-label Address
-          .controls
-            - if cloc.location.present? && cloc.location.resolved_address.present?
-              - text_address = cloc.location.resolved_address.address
-            %input{ type: "text", value: "#{text_address}" }
         = cl.simple_fields_for :location, nested_wrapper: false do |l|
           %div{ class: "address_#{index}" }
             = l.simple_fields_for :address do |a|
@@ -129,21 +122,19 @@
                     label: day.to_s.capitalize_first_letter,
                     wrapper: :bootstrap_tight do
                     = d.input_field :scheduled, class: "scheduled span1"
-                    .hours.no-print
+                    .hours
                       .changed_wrapper
                         .from from
                         = d.input_field :from,
-                          class: "auto no-print",
+                          class: "auto",
                           minute_step: 15,
                           include_blank: true
                       .changed_wrapper
                         .to to
                         = d.input_field :to,
-                          class: "auto no-print",
+                          class: "auto",
                           minute_step: 15,
                           include_blank: true
-                    .print-only
-                      from:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to:
 
         :javascript
           $(document).ready( clinic_address_location_changed(#{index}) );

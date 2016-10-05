@@ -21,8 +21,7 @@
       nested_wrapper: false do |so|
       .tab-pane{ class: (index == 0) ? "active" : "",
         id: "location_tab_#{index}" }
-        %h4.print-only= "Location #{index+1}"
-        .control-group.no-print{ style: (!so.object.empty? && @form_modifier.token_edit? ? "visibility: hidden; position: absolute;" : "") }
+        .control-group{ style: (!so.object.empty? && @form_modifier.token_edit? ? "visibility: hidden; position: absolute;" : "") }
           = so.input :location_is,
             as: :radio_buttons,
             collection: so.object.location_is_options,
@@ -51,24 +50,18 @@
           = so.input :url,
             input_html: { class: "span3" },
             hint: "Remember 'http://'"
-        %div.no-print{ class: "office_#{index}" }
+        %div{ class: "office_#{index}" }
           = so.association :office,
             as: :select,
             collection: @offices,
             include_blank: true,
-            input_html: { class: "chzn-select no-print" },
+            input_html: { class: "chzn-select" },
             disabled: @form_modifier.restrict_editing?
           - if @form_modifier.show_comment_boxes?
             = so.input :comments,
               label: "If you have any updates to this office, or the office has closed, please provide details here.",
               input_html: { value: "" },
               as: :text
-        .control-group.print-only
-          %label.control-label Address
-          .controls
-            - if so.object.location.present? && so.object.location.resolved_address.present?
-              - text_address = so.object.location.resolved_address.address
-            %input{ type: "text", value: "#{text_address}" }
         = so.simple_fields_for :office, nested_wrapper: false do |o|
           - next unless so.object.new_record?
           = o.simple_fields_for :location, nested_wrapper: false do |l|
@@ -131,43 +124,34 @@
                     label: day.to_s.capitalize_first_letter,
                     wrapper: :bootstrap_tight do
                     = d.input_field :scheduled, class: "scheduled span1"
-                    .hours.no-print
+                    .hours
                       .changed_wrapper
                         .from from
                         = d.input_field :from,
-                          class: "auto no-print",
+                          class: "auto",
                           minute_step: 15,
                           include_blank: true
                       .changed_wrapper
                         .to to
                         = d.input_field :to,
-                          class: "auto no-print",
+                          class: "auto",
                           minute_step: 15,
                           include_blank: true
-                    .break.no-print
+                    .break
                       .changed_wrapper
                         .from closed for lunch from
                         = d.input_field :break_from,
-                          class: "auto no-print",
+                          class: "auto",
                           minute_step: 15,
                           include_blank: true
                       .changed_wrapper
                         .to to
                         = d.input_field :break_to,
-                          class: "auto no-print",
+                          class: "auto",
                           minute_step: 15,
                           include_blank: true
-                    .print-only
-                      from:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to:
 
-          :javascript
-            $(".scheduled").each(scheduled_changed)
-
-        :javascript
-          $(document).ready( address_location_changed(#{index}) );
         - index += 1
-  :javascript
-    $(document).ready( $(".chzn-select").chosen() );
 
 - if @form_modifier.admin_review? || @form_modifier.admin_rereview?
   = f.input :address_update,

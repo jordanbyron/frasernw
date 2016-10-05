@@ -8,18 +8,18 @@
 
   = f.simple_fields_for :clinic_locations, cl do |clf|
     .row.spaced
-      .span1.no-print Specialist?
+      .span1 Specialist?
       .span2 Name
       .span5
         Area of focus (if not the same for all physicians working in the
         clinic).
     = clf.simple_fields_for :attendances do |i|
       .row.spaced
-        .span1.no-print
+        .span1
           = i.input :is_specialist,
             label: false,
             wrapper: :no_wrapper,
-            input_html: { class: "is_specialist span1 no-print" }
+            input_html: { class: "is_specialist span1" }
         .span2
           = i.association :specialist,
             as: :select,
@@ -27,7 +27,7 @@
             collection: @clinic_specialists,
             prompt: 'Select ...',
             wrapper: :no_wrapper,
-            input_html: { class: "specialist_list span2 no-print force-print" }
+            input_html: { class: "specialist_list span2" }
           = i.input :freeform_firstname,
             label: false,
             wrapper: :no_wrapper,
@@ -38,12 +38,12 @@
             label: false,
             wrapper: :no_wrapper,
             input_html: { class: "span5" }
-        .spanhalf.no-print
+        .spanhalf
           = i.hidden_field :_destroy
           = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe,
             class: "spanhalf"
 
-    .row.no-print
+    .row
       = clf.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another physician",
         :attendances,
         class: "btn offset3")

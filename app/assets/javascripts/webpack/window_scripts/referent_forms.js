@@ -5,19 +5,6 @@ import * as setupVisibilityToggles from
 export const overlayFormChanges;
 export const setupVisibilityToggles;
 
-export const setupFormForPrinting = () => {
-  $("select").not('.no-print').each(function(i){
-    var $el = $(this);
-    var $options = $el.find("option");
-    $el.after("<div class='print-only'><ul id=sel"+i+"></ul></div>");
-    var $curPrintBox = $("#sel"+i);
-    $options.each(function() {
-      var selected = $(this).prop('selected') ? "class='selected'" : "";
-      $curPrintBox.append("<li " + selected + ">"+$(this).text()+"</li>");
-    });
-  });
-}
-
 export const emphasizeLocationTabs = () => {
   $("input.location").change(function(e){
     location_name = $(e.target).attr("name");
