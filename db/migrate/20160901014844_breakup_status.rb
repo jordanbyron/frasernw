@@ -1,6 +1,6 @@
 class BreakupStatus < ActiveRecord::Migration
   def up
-    add_column :specialists, :returned_completed_survey, :boolean
+    add_column :specialists, :completed_survey, :boolean
 
     add_column :specialists, :has_offices, :boolean
     add_column :specialists, :accepting_new_direct_referrals, :boolean
@@ -24,7 +24,7 @@ class BreakupStatus < ActiveRecord::Migration
   end
 
   NEW_SPECIALIST_ATTRIBUTES = {
-    returned_completed_survey: ->(specialist) {
+    completed_survey: ->(specialist) {
       #purposely not surveyed, not responded to survey
       ![4, 2].include?(specialist.categorization_mask)
     },

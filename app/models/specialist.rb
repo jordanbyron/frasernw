@@ -74,7 +74,7 @@ class Specialist < ActiveRecord::Base
     :referral_forms_attributes,
     :review_object,
     :hidden,
-    :returned_completed_survey,
+    :completed_survey,
     :has_offices,
     :accepting_new_direct_referrals,
     :direct_referrals_limited,
@@ -399,208 +399,6 @@ class Specialist < ActiveRecord::Base
     ).uniq
   end
 
-  def self.in_cities_and_specialization(c, specialization)
-  # (IGNORE, not used in actual project but may be used)
-  # for specialists that haven't responded or are purosely not yet surveyed we just
-  # try to grab any city that makes sense
-    city_ids = Array.wrap(c).map{ |city| city.id }.sort
-    from_own_office = joins(
-      'INNER JOIN "specialist_offices" '\
-        'ON "specialists"."id" = "specialist_offices"."specialist_id" '\
-        'INNER JOIN "offices" '\
-        'ON "specialist_offices".office_id = "offices".id '\
-        'INNER JOIN "locations" AS "direct_location" '\
-        'ON "offices".id = "direct_location".locatable_id '\
-        'INNER JOIN "addresses" AS "direct_address" '\
-        'ON "direct_location".address_id = "direct_address".id '\
-        'INNER JOIN "specialist_specializations" '\
-        'ON "specialist_specializations".specialist_id = "specialists".id'
-    ).where(
-      '"direct_location".locatable_type = (?) '\
-        'AND "direct_address".city_id IN (?) '\
-        'AND "direct_location".hospital_in_id IS NULL '\
-        'AND "direct_location".location_in_id IS NULL '\
-        'AND "specialists".has_offices = (?) '\
-        'AND "specialist_specializations".specialization_id = (?)',
-      "Office",
-      city_ids,
-      true,
-      specialization.id
-    )
-
-    from_own_office_in_hospital = joins(
-      'INNER JOIN "specialist_offices" '\
-        'ON "specialists"."id" = "specialist_offices"."specialist_id" '\
-        'INNER JOIN "offices" '\
-        'ON "specialist_offices".office_id = "offices".id '\
-        'INNER JOIN "locations" AS "direct_location" '\
-        'ON "offices".id = "direct_location".locatable_id '\
-        'INNER JOIN "hospitals" '\
-        'ON "hospitals".id = "direct_location".hospital_in_id '\
-        'INNER JOIN "locations" AS "hospital_in_location" '\
-        'ON "hospitals".id = "hospital_in_location".locatable_id '\
-        'INNER JOIN "addresses" AS "hospital_address" '\
-        'ON "hospital_in_location".address_id = "hospital_address".id '\
-        'INNER JOIN "specialist_specializations" '\
-        'ON "specialist_specializations".specialist_id = "specialists".id'
-    ).where(
-      '"direct_location".locatable_type = (?) '\
-        'AND "hospital_in_location".locatable_type = (?) '\
-        'AND "hospital_address".city_id IN (?) '\
-        'AND "specialists".has_offices = (?) '\
-        'AND "specialist_specializations".specialization_id = (?)',
-      "Office",
-      "Hospital",
-      city_ids,
-      true,
-      specialization.id
-    )
-
-    from_own_office_in_clinic = joins(
-      'INNER JOIN "specialist_offices" '\
-        'ON "specialists"."id" = "specialist_offices"."specialist_id" '\
-        'INNER JOIN "offices" '\
-        'ON "specialist_offices".office_id = "offices".id '\
-        'INNER JOIN "locations" AS "direct_location" '\
-        'ON "offices".id = "direct_location".locatable_id '\
-        'INNER JOIN "locations" AS "clinic_location" '\
-        'ON "clinic_location".id = "direct_location".location_in_id '\
-        'INNER JOIN "addresses" AS "clinic_address" '\
-        'ON "clinic_location".address_id = "clinic_address".id '\
-        'INNER JOIN "specialist_specializations" '\
-        'ON "specialist_specializations".specialist_id = "specialists".id'
-    ).where(
-      '"direct_location".locatable_type = (?) '\
-        'AND "direct_location".hospital_in_id IS NULL '\
-        'AND "clinic_location".locatable_type = (?) '\
-        'AND "clinic_location".hospital_in_id IS NULL '\
-        'AND "clinic_address".city_id IN (?) '\
-        'AND "specialists".has_offices = (?) '\
-        'AND "specialist_specializations".specialization_id = (?)',
-      "Office",
-      "ClinicLocation",
-      city_ids,
-      true,
-      specialization.id
-    )
-
-    from_own_office_in_clinic_in_hospital = joins(
-      'INNER JOIN "specialist_offices" '\
-        'ON "specialists"."id" = "specialist_offices"."specialist_id" '\
-        'INNER JOIN "offices" '\
-        'ON "specialist_offices".office_id = "offices".id '\
-        'INNER JOIN "locations" AS "direct_location" '\
-        'ON "offices".id = "direct_location".locatable_id '\
-        'INNER JOIN "locations" AS "clinic_location" '\
-        'ON "clinic_location".id = "direct_location".location_in_id '\
-        'INNER JOIN "hospitals" '\
-        'ON "clinic_location".hospital_in_id = "hospitals".id '\
-        'INNER JOIN "locations" AS "hospital_in_location" '\
-        'ON "hospitals".id = "hospital_in_location".locatable_id '\
-        'INNER JOIN "addresses" AS "hospital_address" '\
-        'ON "hospital_in_location".address_id = "hospital_address".id '\
-        'INNER JOIN "specialist_specializations" '\
-        'ON "specialist_specializations".specialist_id = "specialists".id'
-    ).where(
-      '"direct_location".locatable_type = (?) '\
-        'AND "direct_location".hospital_in_id IS NULL '\
-        'AND "clinic_location".locatable_type = (?) '\
-        'AND "hospital_in_location".locatable_type = (?) '\
-        'AND "hospital_address".city_id IN (?) '\
-        'AND "specialists".has_offices = (?) '\
-        'AND "specialist_specializations".specialization_id = (?)',
-      "Office",
-      "ClinicLocation",
-      "Hospital",
-      city_ids,
-      true,
-      specialization.id
-    )
-
-    from_hospital = joins(
-      'INNER JOIN "privileges" '\
-        'ON "specialists"."id" = "privileges"."specialist_id" '\
-        'INNER JOIN "hospitals" '\
-        'ON "privileges".hospital_id = "hospitals".id '\
-        'INNER JOIN "locations" AS "hospital_in_location" '\
-        'ON "hospitals".id = "hospital_in_location".locatable_id '\
-        'INNER JOIN "addresses" AS "hospital_address" '\
-        'ON "hospital_in_location".address_id = "hospital_address".id '\
-        'INNER JOIN "specialist_specializations" '\
-        'ON "specialist_specializations".specialist_id = "specialists".id'
-    ).where(
-      '"hospital_in_location".locatable_type = (?) '\
-        'AND "hospital_address".city_id IN (?) '\
-        'AND "specialists".has_offices = (?) '\
-        'AND "specialist_specializations".specialization_id = (?)',
-      "Hospital",
-      city_ids,
-      false,
-      specialization.id
-    )
-
-    from_clinic = joins(
-      'INNER JOIN "attendances" '\
-        'ON "specialists"."id" = "attendances"."specialist_id" '\
-        'INNER JOIN "clinic_locations" AS "clinic_in_clinic_location" '\
-        'ON "clinic_in_clinic_location".id = "attendances".clinic_location_id '\
-        'INNER JOIN "locations" AS "clinic_in_location" '\
-        'ON "clinic_in_location".locatable_id = "clinic_in_clinic_location".id '\
-        'INNER JOIN "addresses" AS "clinic_address" '\
-        'ON "clinic_in_location".address_id = "clinic_address".id '\
-        'INNER JOIN "specialist_specializations" '\
-        'ON "specialist_specializations".specialist_id = "specialists".id'
-    ).where(
-      '"clinic_in_location".locatable_type = (?) '\
-        'AND "clinic_address".city_id IN (?) '\
-        'AND "clinic_in_location".hospital_in_id IS NULL '\
-        'AND "specialists".has_offices = (?) '\
-        'AND "specialist_specializations".specialization_id = (?)',
-      "ClinicLocation",
-      city_ids,
-      false,
-      specialization.id
-    )
-
-    from_clinic_in_hospital = joins(
-      'INNER JOIN "attendances" '\
-        'ON "specialists"."id" = "attendances"."specialist_id" '\
-        'INNER JOIN "clinic_locations" AS "clinic_in_clinic_location" '\
-        'ON "attendances".clinic_location_id = "clinic_in_clinic_location".id '\
-        'INNER JOIN "locations" AS "clinic_location" '\
-        'ON "clinic_location".locatable_id = "clinic_in_clinic_location".id '\
-        'INNER JOIN "hospitals" '\
-        'ON "clinic_location".hospital_in_id = "hospitals".id '\
-        'INNER JOIN "locations" AS "hospital_in_location" '\
-        'ON "hospitals".id = "hospital_in_location".locatable_id '\
-        'INNER JOIN "addresses" AS "hospital_address" '\
-        'ON "hospital_in_location".address_id = "hospital_address".id '\
-        'INNER JOIN "specialist_specializations" '\
-        'ON "specialist_specializations".specialist_id = "specialists".id'
-    ).where(
-      '"clinic_location".locatable_type = (?) '\
-        'AND "hospital_in_location".locatable_type = (?) '\
-        'AND "hospital_address".city_id IN (?) '\
-        'AND "specialists".has_offices = (?) '\
-        'AND "specialist_specializations".specialization_id = (?)',
-      "ClinicLocation",
-      "Hospital",
-      city_ids,
-      false,
-      specialization.id
-    )
-
-    (
-      from_own_office +
-      from_own_office_in_hospital +
-      from_own_office_in_clinic +
-      from_own_office_in_clinic_in_hospital +
-      from_hospital +
-      from_clinic +
-      from_clinic_in_hospital
-    ).uniq
-  end
-
   def self.in_divisions(divisions)
     divs = Array.wrap(divisions)
 
@@ -623,12 +421,6 @@ class Specialist < ActiveRecord::Base
       includes(specialist_specializations: :specialization).
       includes_specialist_offices.
       select{ |specialist| specialist.divisions.count > 1 }
-  end
-
-  def self.filter(specialists, filter)
-    specialists.select do |specialist|
-      specialist.divisions.include? filter[:division]
-    end
   end
 
   def photo_delete
@@ -682,15 +474,15 @@ class Specialist < ActiveRecord::Base
   }
 
   def referral_icon_key
-    if !returned_completed_survey? || !availability_known?
+    if !completed_survey? || !availability_known?
       :question_mark
-    elsif available? && indirect_referrals_only?
+    elsif available? && !accepting_new_direct_referrals?
       :blue_arrow
-    elsif available? && accepting_new_referrals? && referrals_limited?
+    elsif available? && accepting_new_direct_referrals? && referrals_limited?
       :orange_check
-    elsif available? && (temporarily_unavailable_soon? || retiring_soon?)
+    elsif available? && (leave_scheduled? || retirement_scheduled?)
       :orange_warning
-    elsif available? && accepting_new_referrals?
+    elsif available? && accepting_new_direct_referrals?
       :green_check
     else
       :red_x
@@ -698,22 +490,22 @@ class Specialist < ActiveRecord::Base
   end
 
   def referral_summary
-    if !returned_completed_survey? || !availability_known?
+    if !completed_survey? || !availability_known?
       "Referral status unknown."
-    elsif available? && indirect_referrals_only? && accepting_new_referrals?
+    elsif available? && !accepting_new_direct_referrals? && accepting_new_direct_referrals?
       ("This specialist only accepts referrals through " +
         "#{works_out_of_label}, and in general all referrals should be made " +
         "through #{referrals_through_label}.")
-    elsif available? && accepting_new_referrals? && referrals_limited?
+    elsif available? && accepting_new_direct_referrals? && referrals_limited?
       ("This specialist is accepting limited new referrals by geography " +
           "or number of patients.")
-    elsif available? && temporarily_unavailable_soon?
+    elsif available? && leave_scheduled?
       ("This specialist will be unavailable between " +
         "#{unavailable_from.to_s(:long_ordinal)} and" +
         " #{unavailable_to.to_s(:long_ordinal)}.")
-    elsif available? && retiring_soon?
+    elsif available? && retirement_scheduled?
       "This specialist will retire on #{retirement_date.to_s(:long_ordinal)}."
-    elsif available? && accepting_new_referrals?
+    elsif available? && accepting_new_direct_referrals?
       "This specialist is accepting new referrals"
     elsif deceased?
       "This specialist is deceased."
@@ -769,7 +561,7 @@ class Specialist < ActiveRecord::Base
   end
 
   def show_waittimes?
-    has_offices? && accepting_new_referrals?
+    has_offices? && accepting_new_direct_referrals?
   end
 
   def unavailable_for_awhile?
@@ -1078,7 +870,7 @@ class Specialist < ActiveRecord::Base
 
   def print_clinic_info?
     valid_clinic_locations.any? &&
-      (!has_offices? || indirect_referrals_only?)
+      (!has_offices? || !accepting_new_direct_referrals?)
   end
 
   def valid_clinic_locations

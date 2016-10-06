@@ -50,7 +50,7 @@ const setupSections = () => {
   ].forEach((section) => {
     setupClinicVisibilityToggle(
       [
-        { name: "returned_completed_survey", truthyVal: true }
+        { name: "completed_survey", truthyVal: true }
       ],
       section
     )

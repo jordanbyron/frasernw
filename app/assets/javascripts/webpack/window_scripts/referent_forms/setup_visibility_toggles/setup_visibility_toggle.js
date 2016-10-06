@@ -1,4 +1,4 @@
-const setupVisibilityToggle = (parentFields, effected, recordType) => {
+export default function setupVisibilityToggle(parentFields, effected, recordType){
   const parentInputSelector = parentFields.map(function(field){
     return `#${recordType}_${field.name}`;
   }).join(", ");

@@ -57,7 +57,7 @@
       .tab-pane{ id: "no_division_tab" }
         %table.table.table-condensed.table-striped
           - @specializations.each do |specialization|
-            - if specialization.clinics.no_division?
+            - if specialization.clinics.no_division.any?
               %tr
                 %th{ style: "width:100%" }= specialization.name
                 %th.admin

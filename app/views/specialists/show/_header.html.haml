@@ -30,7 +30,7 @@
       %p.no_indent
         = @specialist.status_details.end_with_period.convert_newlines_to_br
 
-    - elsif !@specialist.surveyed?
+    - elsif !@specialist.completed_survey?
       %p.space.no_indent
         = "They may be out of our current catchment area, or in a speciality we " + |
           "have yet to fully survey." |

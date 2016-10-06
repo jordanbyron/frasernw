@@ -1,6 +1,6 @@
 class BreakupClinicStatus < ActiveRecord::Migration
   def up
-    add_column :clinics, :returned_completed_survey, :boolean
+    add_column :clinics, :completed_survey, :boolean
 
     add_column :clinics, :accepting_new_referrals, :boolean
     add_column :clinics, :referrals_limited, :boolean
@@ -18,7 +18,7 @@ class BreakupClinicStatus < ActiveRecord::Migration
   end
 
   NEW_CLINIC_ATTRIBUTES = {
-    returned_completed_survey: ->(clinic){
+    completed_survey: ->(clinic){
       #purposely not surveyed, not responded
       ![2, 3].include?(clinic.categorization_mask)
     },
