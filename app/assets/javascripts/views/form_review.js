@@ -295,6 +295,14 @@
       }
     }
   }
+
+  var highlightNewNote = function(review_item) {
+    if (review_item["review_item_note"]) {
+      $('div[edit_source_id="' + review_item.secret_token_id + '"]').
+        addClass('changed');
+    }
+  }
+
   var mimicBeforeEdit = function() {
     overlayFormData(
       [formData.recordKey],
@@ -341,7 +349,7 @@
       mimicBeforeEdit();
     }
     overlayUserChanges();
-
+    highlightNewNote(formData.reviewItem);
     maskLocationInputs();
 
     // I have no idea about this one

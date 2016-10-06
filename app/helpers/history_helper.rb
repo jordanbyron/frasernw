@@ -45,4 +45,12 @@ module HistoryHelper
       case_adjusted_verb
     end
   end
+
+  def edit_source_id(node)
+    if node.raw.target.respond_to?(:edit_source_id)
+      node.raw.target.edit_source_id
+    else
+      ""
+    end
+  end
 end
