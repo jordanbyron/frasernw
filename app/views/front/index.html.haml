@@ -77,9 +77,9 @@
 
           %p
             If you have any comments or questions while using the site, please
-            contact us at
-            = mail_to "administration@pathwaysbc.ca",
-              "administration@pathwaysbc.ca" + "."
+            contact us here.
+            = link_to "contact us here",
+              contact_path + "."
 
         %h2 Latest Specialist and Clinic Updates
         - if ENV["HIDE_LATEST_UPDATES"] != "true"
