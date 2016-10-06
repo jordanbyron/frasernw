@@ -11,16 +11,14 @@
 
 :javascript
   $(document).ready(function() {
-    window.pathways.referentForms.setupFormForPrinting();
-
     if(window.pathways.formData && window.pathways.formData.overlayChanges){
       window.pathways.referentForms.overlayFormChanges(formData);
     }
 
     window.pathways.referentForms.emphasizeLocationTabs();
     window.pathways.referentForms.stashPreEditForm();
-    window.pathways.referentForms.setupVisibilityToggles.specialist();
     $(".chzn-select").chosen()
+    window.pathways.referentForms.setupVisibilityToggles.specialist();
   });
 
   $(window).load(function() {

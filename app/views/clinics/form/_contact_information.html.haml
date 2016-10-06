@@ -29,7 +29,9 @@
             as: :radio_buttons,
             collection: ClinicLocation::LOCATION_IS_OPTIONS,
             label_method: :last,
-            value_method: :first
+            value_method: :first,
+            "data-location-index" => index,
+            input_html: { class: "location_is" }
         %div{ class: "numbers_#{index}" }
           = cl.input :phone do
             = cl.input_field :phone, class: "span3"
@@ -135,13 +137,4 @@
                           class: "auto",
                           minute_step: 15,
                           include_blank: true
-
-        :javascript
-          $(document).ready( clinic_address_location_changed(#{index}) );
         - index += 1
-
-  :javascript
-    $(".scheduled").each(scheduled_changed)
-
-  :javascript
-    $(document).ready( $(".chzn-select").chosen() );

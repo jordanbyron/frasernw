@@ -1,17 +1,9 @@
-:javascript
-  $(document).ready(function() {
-    window.pathways.setupFormsForPrinting;
-  });
-  $(document).ready( $("#clinic_categorization_mask").each(clinic_categorization_changed) );
-  $(window).load(function() {
-    document.getElementById("hiding-container").classList.remove("hidden");
-  });
-
 - if @review_item.present?
   :javascript
     // pass variables to the review script
     window.pathways = window.pathways || {};
     (function( formData ) {
+      formData.overlayChanges = true;
       formData.baseReviewItem = #{@review_item.transformed_base_object(@clinic) || 'null'};
       formData.reviewItem = #{@review_item.transformed_review_object(@clinic) || 'null'};
       formData.maxLocations = #{Clinic::MAX_LOCATIONS};
@@ -19,17 +11,18 @@
       formData.recordKey = "clinic";
     }( window.pathways.formData = {} ));
 
-  = javascript_include_tag "views/form_review"
+:javascript
+  $(document).ready(function(){
+    if(window.pathways.formData && window.pathways.formData.overlayChanges){
+      window.pathways.referentForms.overlayFormChanges(formData);
+    }
 
-- if @specialization
-  :javascript
-    $(document).ready(function() {
-      var specialty_checkbox_id = "#clinic_specialization_ids_#{@specialization.id}";
-      $(specialty_checkbox_id).prop("checked", true);
-    });
+    window.pathways.referentForms.emphasizeLocationTabs();
+    window.pathways.referentForms.stashPreEditForm();
+    $(".chzn-select").chosen()
+    window.pathways.referentForms.setupVisibilityToggles.clinic();
+  })
 
-- content_for(:javascript_footer) do
-  = javascript_include_tag "views/location_tabs"
-
-  - if @form_modifier.token_edit?
-    = javascript_include_tag "views/form_data_manager"
+  $(window).load(function() {
+    document.getElementById("hiding-container").classList.remove("hidden");
+  });
