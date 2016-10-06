@@ -1,7 +1,6 @@
 class BreakupClinicStatus < ActiveRecord::Migration
   def up
-    add_column :clinics, :surveyed, :boolean
-    add_column :clinics, :responded_to_survey, :boolean
+    add_column :clinics, :returned_completed_survey, :boolean
 
     add_column :clinics, :accepting_new_referrals, :boolean
     add_column :clinics, :referrals_limited, :boolean

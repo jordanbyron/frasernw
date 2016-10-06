@@ -68,7 +68,11 @@ class Clinic < ActiveRecord::Base
     :referral_forms_attributes,
     :clinic_locations_attributes,
     :review_object,
-    :hidden
+    :hidden,
+    :returned_completed_survey,
+    :accepting_new_referrals,
+    :referrals_limited,
+    :is_open
 
   has_many :clinic_specializations, dependent: :destroy
   has_many :specializations, through: :clinic_specializations
