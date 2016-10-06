@@ -1,3 +1,16 @@
+export default function overlayFormChanges(formData){
+  if (formData.interactionType == 'rereview')
+  {
+    // roll back to the version the user would have seen before they started editing
+    mimicBeforeEdit(formData);
+  }
+  overlayUserChanges(formData);
+
+  maskLocationInputs(formData);
+
+  $(".scheduled").each(scheduled_changed);
+}
+
 const show_old_value = (form_element, old_value_formatted) => {
   form_element.closest('div.control-group, div.changed_wrapper').addClass('changed');
   help_span = $(document.createElement('span'));
@@ -156,7 +169,7 @@ const compareFormElement = (form_element_id_array, new_entry_value, options) => 
   }
 }
 
-const overlayFormData(id_array, review_item, options) => {
+const overlayFormData = (id_array, review_item, options) => {
   $.each(review_item, function(entry_key, new_entry_value) {
     local_id_array = id_array.slice(0); //array copy
     entry_key = entry_key.replace("(","_").replace(")",""); //fix up ids that look like part1(part2) into part1_part2
@@ -326,18 +339,3 @@ const overlayUserChanges = function(formData) {
     );
   }
 }
-
-const overlayFormChanges = (formData) => {
-  if (formData.interactionType == 'rereview')
-  {
-    // roll back to the version the user would have seen before they started editing
-    mimicBeforeEdit(formData);
-  }
-  overlayUserChanges(formData);
-
-  maskLocationInputs(formData);
-
-  $(".scheduled").each(scheduled_changed);
-}
-
-export default overlayFormChanges;

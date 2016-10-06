@@ -33,7 +33,7 @@ const setupGeneralInformation = () => {
   );
   setupClinicVisibilityToggle(
     [
-      { name: "is_open", truthyVal: true }
+      { name: "is_open", truthyVal: true },
       { name: "accepting_new_referrals", truthyVal: true }
     ],
     "referrals_limited"

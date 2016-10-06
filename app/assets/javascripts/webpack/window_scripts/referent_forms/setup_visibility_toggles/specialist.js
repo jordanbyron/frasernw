@@ -25,14 +25,14 @@ const setupGeneralInformation = () => {
   setupSpecialistVisibilityToggle(
     [
       { name: "availability", truthyVal: "13"},
-      { name: "has_own_offices", truthyVal: true }
+      { name: "has_offices", truthyVal: true }
     ],
     "accepting_new_direct_referrals"
   );
   setupSpecialistVisibilityToggle(
     [
       { name:  "availability", truthyVal: "13" },
-      { name: "has_own_offices", truthyVal: true },
+      { name: "has_offices", truthyVal: true },
       { name: "accepting_new_direct_referrals", truthyVal: true }
     ],
     "direct_referrals_limited"
@@ -58,42 +58,42 @@ const setupGeneralInformation = () => {
 }
 
 const setupSectionToggles = () => {
-  setupSpecialistVisibilityToggle([
+  setupSpecialistVisibilityToggle(
     [
-      { name: "has_own_offices", truthyVal: true }
+      { name: "has_offices", truthyVal: true }
     ],
     "section_contact"
   );
   setupSpecialistVisibilityToggle(
     [
-      { name: "has_own_offices", truthyVal: true }
+      { name: "has_offices", truthyVal: true }
     ],
     "section_moa"
   );
   setupSpecialistVisibilityToggle(
     [
-      { name: "has_own_offices", truthyVal: true }
+      { name: "has_offices", truthyVal: true }
     ],
     "section_languages"
   );
   // review
   setupSpecialistVisibilityToggle(
     [
-      { name: "has_own_offices", truthyVal: false },
+      { name: "has_offices", truthyVal: false },
       { name: "accepting_new_direct_referrals", truthyVal: false },
     ],
     "section_hospital_clinic_details"
   );
   setupSpecialistVisibilityToggle(
     [
-      { name: "has_own_offices", truthyVal: true },
+      { name: "has_offices", truthyVal: true },
       { name: "accepting_new_direct_referrals", truthyVal: true },
     ],
     "section_referrals"
   );
   setupSpecialistVisibilityToggle(
     [
-      { name: "has_own_offices", truthyVal: true }
+      { name: "has_offices", truthyVal: true }
     ],
     "section_for_patients"
   );

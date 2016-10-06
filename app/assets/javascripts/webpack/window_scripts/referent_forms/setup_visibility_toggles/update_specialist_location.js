@@ -6,7 +6,6 @@ export default function updateSpecialistLocation(){
   const locationIndex = this.getAttribute("data-location-index");
 
   if (locationIsKey === 0) {
-  {
     $('.numbers_' + locationIndex).hide();
     $('.office_' + locationIndex).hide();
     $('.address_' + locationIndex).hide();
@@ -19,8 +18,7 @@ export default function updateSpecialistLocation(){
     resetClinic(locationIndex);
     resetNumbers(locationIndex);
   }
-  else if (locationIsKey === 2)
-  {
+  else if (locationIsKey === 2){
     $('.numbers_' + locationIndex).show();
     $('.office_' + locationIndex).hide();
     $('.address_' + locationIndex).show();
@@ -31,8 +29,7 @@ export default function updateSpecialistLocation(){
     resetHospital(locationIndex);
     resetClinic(locationIndex);
   }
-  else if locationIsKey === 1 || locationIsKey === 5)
-  {
+  else if (locationIsKey === 1 || locationIsKey === 5){
     $('.numbers_' + locationIndex).show();
     $('.office_' + locationIndex).show();
     $('.address_' + locationIndex).hide();
@@ -43,8 +40,7 @@ export default function updateSpecialistLocation(){
     resetHospital(locationIndex);
     resetClinic(locationIndex);
   }
-  else if (locationIsKey === 3)
-  {
+  else if (locationIsKey === 3){
     $('.numbers_' + locationIndex).show();
     $('.office_' + locationIndex).hide();
     $('.address_' + locationIndex).hide();
@@ -55,8 +51,7 @@ export default function updateSpecialistLocation(){
     resetOffice(locationIndex);
     resetClinic(locationIndex);
   }
-  else if (locationIsKey === 4)
-  {
+  else if (locationIsKey === 4){
     $('.numbers_' + locationIndex).show();
     $('.office_' + locationIndex).hide();
     $('.address_' + locationIndex).hide();

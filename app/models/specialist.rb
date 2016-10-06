@@ -76,7 +76,7 @@ class Specialist < ActiveRecord::Base
     :hidden,
     :surveyed,
     :responded_to_survey,
-    :has_own_offices,
+    :has_offices,
     :accepting_new_direct_referrals,
     :direct_referrals_limited,
     :availability,
@@ -243,7 +243,7 @@ class Specialist < ActiveRecord::Base
         'AND "direct_address".city_id IN (?) '\
         'AND "direct_location".hospital_in_id IS NULL '\
         'AND "direct_location".location_in_id IS NULL '\
-        'AND "specialists".has_own_offices = (?)',
+        'AND "specialists".has_offices = (?)',
       "Office",
       city_ids,
       true
@@ -266,7 +266,7 @@ class Specialist < ActiveRecord::Base
       '"direct_location".locatable_type = (?) '\
         'AND "hospital_in_location".locatable_type = (?) '\
         'AND "hospital_address".city_id IN (?) '\
-        'AND "specialists".has_own_offices = (?)',
+        'AND "specialists".has_offices = (?)',
       "Office",
       "Hospital",
       city_ids,
@@ -290,7 +290,7 @@ class Specialist < ActiveRecord::Base
         'AND "clinic_location".locatable_type = (?) '\
         'AND "clinic_location".hospital_in_id IS NULL '\
         'AND "clinic_address".city_id IN (?) '\
-        'AND "specialists".has_own_offices = (?)',
+        'AND "specialists".has_offices = (?)',
       "Office",
       "ClinicLocation",
       city_ids,
@@ -318,7 +318,7 @@ class Specialist < ActiveRecord::Base
         'AND "clinic_location".locatable_type = (?) '\
         'AND "hospital_in_location".locatable_type = (?) '\
         'AND "hospital_address".city_id IN (?) '\
-        'AND "specialists".has_own_offices = (?)',
+        'AND "specialists".has_offices = (?)',
       "Office",
       "ClinicLocation",
       "Hospital",
@@ -340,7 +340,7 @@ class Specialist < ActiveRecord::Base
     ).where(
       '"hospital_in_location".locatable_type = (?) '\
         'AND "hospital_address".city_id IN (?) '\
-        'AND "specialists".has_own_offices = (?)',
+        'AND "specialists".has_offices = (?)',
       "Hospital",
       city_ids,
       false
@@ -359,7 +359,7 @@ class Specialist < ActiveRecord::Base
       '"clinic_in_location".locatable_type = (?) '\
         'AND "clinic_address".city_id IN (?) '\
         'AND "clinic_in_location".hospital_in_id IS NULL '\
-        'AND "specialists".has_own_offices = (?)',
+        'AND "specialists".has_offices = (?)',
       "ClinicLocation",
       city_ids,
       false
@@ -382,7 +382,7 @@ class Specialist < ActiveRecord::Base
       '"clinic_location".locatable_type = (?) '\
         'AND "hospital_in_location".locatable_type = (?) '\
         'AND "hospital_address".city_id IN (?) '\
-        'AND "specialists".has_own_offices = (?)',
+        'AND "specialists".has_offices = (?)',
       "ClinicLocation",
       "Hospital",
       city_ids,
@@ -421,7 +421,7 @@ class Specialist < ActiveRecord::Base
         'AND "direct_address".city_id IN (?) '\
         'AND "direct_location".hospital_in_id IS NULL '\
         'AND "direct_location".location_in_id IS NULL '\
-        'AND "specialists".has_own_offices = (?) '\
+        'AND "specialists".has_offices = (?) '\
         'AND "specialist_specializations".specialization_id = (?)',
       "Office",
       city_ids,
@@ -448,7 +448,7 @@ class Specialist < ActiveRecord::Base
       '"direct_location".locatable_type = (?) '\
         'AND "hospital_in_location".locatable_type = (?) '\
         'AND "hospital_address".city_id IN (?) '\
-        'AND "specialists".has_own_offices = (?) '\
+        'AND "specialists".has_offices = (?) '\
         'AND "specialist_specializations".specialization_id = (?)',
       "Office",
       "Hospital",
@@ -476,7 +476,7 @@ class Specialist < ActiveRecord::Base
         'AND "clinic_location".locatable_type = (?) '\
         'AND "clinic_location".hospital_in_id IS NULL '\
         'AND "clinic_address".city_id IN (?) '\
-        'AND "specialists".has_own_offices = (?) '\
+        'AND "specialists".has_offices = (?) '\
         'AND "specialist_specializations".specialization_id = (?)',
       "Office",
       "ClinicLocation",
@@ -508,7 +508,7 @@ class Specialist < ActiveRecord::Base
         'AND "clinic_location".locatable_type = (?) '\
         'AND "hospital_in_location".locatable_type = (?) '\
         'AND "hospital_address".city_id IN (?) '\
-        'AND "specialists".has_own_offices = (?) '\
+        'AND "specialists".has_offices = (?) '\
         'AND "specialist_specializations".specialization_id = (?)',
       "Office",
       "ClinicLocation",
@@ -532,7 +532,7 @@ class Specialist < ActiveRecord::Base
     ).where(
       '"hospital_in_location".locatable_type = (?) '\
         'AND "hospital_address".city_id IN (?) '\
-        'AND "specialists".has_own_offices = (?) '\
+        'AND "specialists".has_offices = (?) '\
         'AND "specialist_specializations".specialization_id = (?)',
       "Hospital",
       city_ids,
@@ -555,7 +555,7 @@ class Specialist < ActiveRecord::Base
       '"clinic_in_location".locatable_type = (?) '\
         'AND "clinic_address".city_id IN (?) '\
         'AND "clinic_in_location".hospital_in_id IS NULL '\
-        'AND "specialists".has_own_offices = (?) '\
+        'AND "specialists".has_offices = (?) '\
         'AND "specialist_specializations".specialization_id = (?)',
       "ClinicLocation",
       city_ids,
@@ -582,7 +582,7 @@ class Specialist < ActiveRecord::Base
       '"clinic_location".locatable_type = (?) '\
         'AND "hospital_in_location".locatable_type = (?) '\
         'AND "hospital_address".city_id IN (?) '\
-        'AND "specialists".has_own_offices = (?) '\
+        'AND "specialists".has_offices = (?) '\
         'AND "specialist_specializations".specialization_id = (?)',
       "ClinicLocation",
       "Hospital",
@@ -648,7 +648,7 @@ class Specialist < ActiveRecord::Base
 
   def cities(force: false)
     Rails.cache.fetch([self.class.name, self.id, "cities"], force: force) do
-      if has_own_offices?
+      if has_offices?
         offices.map(&:city).reject(&:blank?).uniq
       else
         (
@@ -770,7 +770,7 @@ class Specialist < ActiveRecord::Base
   end
 
   def show_waittimes?
-    has_own_offices? && accepting_new_referrals?
+    has_offices? && accepting_new_referrals?
   end
 
   def unavailable_for_awhile?
@@ -1079,7 +1079,7 @@ class Specialist < ActiveRecord::Base
 
   def print_clinic_info?
     valid_clinic_locations.any? &&
-      (!has_own_offices? || indirect_referrals_only?)
+      (!has_offices? || indirect_referrals_only?)
   end
 
   def valid_clinic_locations

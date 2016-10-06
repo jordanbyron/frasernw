@@ -61,7 +61,7 @@ module SpecialistsHelper
           specialist.hospitals.any?)
     when :expanded_associations
       specialist.available? &&
-        !specialist.has_own_offices?
+        !specialist.has_offices?
     end
   end
 end

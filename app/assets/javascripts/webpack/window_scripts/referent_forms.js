@@ -2,8 +2,8 @@ import overlayFormChanges from "window_scripts/referent_forms/overlay_form_chang
 import * as setupVisibilityToggles from
   "window_scripts/referent_forms/setup_visibility_toggles"
 
-export const overlayFormChanges;
-export const setupVisibilityToggles;
+export { overlayFormChanges };
+export { setupVisibilityToggles };
 
 export const emphasizeLocationTabs = () => {
   $("input.location").change(function(e){
