@@ -46,18 +46,18 @@ class BreakupStatus < ActiveRecord::Migration
     availability: -> (specialist){
       case specialist.status_mask
       when 1 # accepting new referrals
-        Specialist::AVAILABILITY_LABELS.key(:available)
+        Specialist::AVAILABILITY_LABELS.key(:available_for_work)
       when 2 # only doing follow up
-        Specialist::AVAILABILITY_LABELS.key(:available)
+        Specialist::AVAILABILITY_LABELS.key(:available_for_work)
       when 4 #retired as of
         Specialist::AVAILABILITY_LABELS.key(:retired)
       when 5 #retiring as of
-        Specialist::AVAILABILITY_LABELS.key(:available)
+        Specialist::AVAILABILITY_LABELS.key(:available_for_work)
       when 6 #unavailable between
         if specialist.unavailable_from < Date.today && specialist.unavailable_to > Date.today
           Specialist::AVAILABILITY_LABELS.key(:temporarily_unavailable)
         else
-          Specialist::AVAILABILITY_LABELS.key(:available)
+          Specialist::AVAILABILITY_LABELS.key(:available_for_work)
         end
       when 7 #didn't answer
         Specialist::AVAILABILITY_LABELS.key(:unknown)
@@ -68,7 +68,7 @@ class BreakupStatus < ActiveRecord::Migration
       when 10 #moved away
         Specialist::AVAILABILITY_LABELS.key(:moved_away)
       when 11 #limited referrals
-        Specialist::AVAILABILITY_LABELS.key(:available)
+        Specialist::AVAILABILITY_LABELS.key(:available_for_work)
       when 12 #deceased
         Specialist::AVAILABILITY_LABELS.key(:deceased)
       else

@@ -9,21 +9,21 @@
     - if !f.error_messages.blank?
       .alert.alert-error= f.error_messages
 
-    = render "clinics/form/general_information"
+    = render "clinics/form/general_information", f: f
 
-    = render "clinics/form/contact_information"
+    = render "clinics/form/contact_information", f: f
 
-    = render "clinics/form/senior_contact"
+    = render "clinics/form/senior_office", f: f
 
-    = render "clinics/form/languages"
+    = render "clinics/form/languages", f: f
 
-    = render "clinics/form/areas_of_practice"
+    = render "clinics/form/areas_of_practice", f: f
 
-    = render "clinics/form/referral_details"
+    = render "clinics/form/referral_details", f: f
 
-    = render "clinics/form/info_for_patients"
+    = render "clinics/form/info_for_patients", f: f
 
-    = render "clinics/form/association"
+    = render "clinics/form/associations", f: f
 
     = hidden_field_tag :pre_edit_form_data
     = hidden_field_tag :secret_token_id, @secret_token_id
@@ -34,6 +34,6 @@
       user: current_user,
       form: f
 
-    = render "clinics/form/buttons"
+    = render "clinics/form/buttons", f: f
 
 = render "clinics/form/scripts"

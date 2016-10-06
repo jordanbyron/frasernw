@@ -35,13 +35,13 @@
         = "They may be out of our current catchment area, or in a speciality we " + |
           "have yet to fully survey." |
 
-    - elsif !@specialist.has_offices? || @specialist.indirect_referrals_only? && @specialist.hospital_clinic_details.present?
+    - elsif show_specialist_section?(@specialist, :hospital_clinic_details)
 
       %p.space.no_indent
         %strong Details:
         = @specialist.hospital_clinic_details
 
-    - elsif @specialist.available?
+    - elsif @specialist.available_for_work?
       - if @specialist.status_details.present?
         %p.no_indent
           %strong Details:

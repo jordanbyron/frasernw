@@ -13,7 +13,7 @@ export default function clinic() {
   $(".scheduled").on("change", updateScheduleDay);
 
   $(".is_specialist").each(updateAttendances);
-  $(".is_specialist").on("change", updateAttendances );
+  $(".is_specialist").on("change", updateAttendances);
 
   $(".location_is").each(updateClinicLocation);
   $(".location_is").on("change", updateClinicLocation);
@@ -42,11 +42,11 @@ const setupGeneralInformation = () => {
 
 const setupSections = () => {
   [
-    "#section_contact",
-    "#section_moa",
-    "#section_status",
-    "#section_referrals",
-    "#section_for_patients"
+    "section_contact",
+    "section_moa",
+    "section_status",
+    "section_referrals",
+    "section_for_patients"
   ].forEach((section) => {
     setupClinicVisibilityToggle(
       [
@@ -55,9 +55,9 @@ const setupSections = () => {
       section
     )
   })
-}
+};
 
-const updateAttendances = () => {
+const updateAttendances = function(){
   var currentId = $(this).attr('id');
 
   var specialists = "#" + currentId.replace("is_specialist","specialist_id");
@@ -78,4 +78,4 @@ const updateAttendances = () => {
     $(firstname).show();
     $(lastname).show();
   }
-}
+};

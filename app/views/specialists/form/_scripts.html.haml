@@ -1,6 +1,6 @@
 - if @review_item.present?
   :javascript
-    (function( formData ) {
+    (function(formData) {
       formData.overlayChanges = true;
       formData.baseReviewItem = #{@review_item.transformed_base_object(@specialist) || 'null'};
       formData.reviewItem = #{@review_item.transformed_review_object(@specialist) || 'null'};
@@ -12,7 +12,7 @@
 :javascript
   $(document).ready(function() {
     if(window.pathways.formData && window.pathways.formData.overlayChanges){
-      window.pathways.referentForms.overlayFormChanges(formData);
+      window.pathways.referentForms.overlayFormChanges(window.pathways.formData);
     }
 
     window.pathways.referentForms.emphasizeLocationTabs();

@@ -1,4 +1,4 @@
-- if show_clinic_section?(@clinic, section_key)
+- if show_clinic_section?(@clinic, :clinic_information)
   %h6 Clinic Information
 
   - @clinic.clinic_locations.select(&:has_data?).sort_by(&:created_at).each do |cl|

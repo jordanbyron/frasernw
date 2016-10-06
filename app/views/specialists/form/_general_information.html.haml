@@ -23,9 +23,9 @@
   label_method: ->(pair){ pair.last.to_s.humanize },
   include_blank: false
 = f.input :has_offices,
-  label: "Has own offices?"
+  label: "Has offices?"
 = f.input :accepting_new_direct_referrals,
-  label: "Accepting direct referrals (to own offices)?",
+  label: "Accepting direct referrals (to offices)?",
   wrapper_html: { class: "form__wrapper--indented" }
 = f.input :direct_referrals_limited,
   label: "Direct referrals limited by geography or number of patients?",

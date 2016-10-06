@@ -73,7 +73,7 @@
       %td= specialists.select{ |s| s.responded_to_survey? }.length
       %td= specialists.select{ |s| s.surveyed && !s.responded_to_survey? }.length
       %td= specialists.reject{ |s| !s.completed_survey? }.length
-      %td= specialists.select{ |s| s.available? && !s.has_offices? }.length
+      %td= specialists.select{ |s| s.available_for_work? && !s.has_offices? }.length
       %td= specialists.reject{ |s| !s.moved_away? }.length
       %td= specialists.reject{ |s| !s.retired? }.length
     %tr
@@ -145,7 +145,7 @@
         %td= @specialization_specialists.select{ |s| s.responded_to_survey? }.length
         %td= @specialization_specialists.select{ |s| s.surveyed && !s.responded_to_survey? }.length
         %td= @specialization_specialists.reject{ |s| !s.completed_survey? }.length
-        %td= @specialization_specialists.select{ |s| s.available? && !s.has_offices? }.length
+        %td= @specialization_specialists.select{ |s| s.available_for_work? && !s.has_offices? }.length
         %td= @specialization_specialists.reject{ |s| !s.moved_away? }.length
         %td= @specialization_specialists.reject{ |s| !s.retired? }.length
       %th

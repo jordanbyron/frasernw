@@ -222,7 +222,7 @@ class Clinic < ActiveRecord::Base
   end
 
   def show_waittimes?
-    is_open? && responded? && accepting_new_referrals?
+    is_open? && completed_survey? && accepting_new_referrals?
   end
 
   def cities
@@ -242,6 +242,20 @@ class Clinic < ActiveRecord::Base
       :green_check
     else
       :red_x
+    end
+  end
+
+  def referral_summary
+    if !completed_survey?
+      "It is unknown whether this clinic is accepting new referrals."
+    elsif is_open? && accepting_new_referrals? && referrals_limited?
+      "This clinic is accepting limited new referrals by geography or number of patients."
+    elsif is_open? && accepting_new_referrals?
+      "This clinic is accepting new referrals."
+    elsif is_open?
+      "This clinic is only doing follow-up on previous patients"
+    else
+      "This clinic is closed"
     end
   end
 

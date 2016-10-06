@@ -1,9 +1,10 @@
 %h3 General Information
 = f.input :name
 = f.input :completed_survey
-= f.input :is_open
+= f.input :is_open,
+  label: "Is open?"
 = f.input :accepting_new_referrals,
-  label: "Accepting new_referrals?",
+  label: "Accepting new referrals?",
   wrapper_html: { class: "form__wrapper--indented" }
 = f.input :referrals_limited,
   label: "Referrals limited by geography or # of patients?",

@@ -463,26 +463,25 @@ class Specialist < ActiveRecord::Base
   end
 
   AVAILABILITY_LABELS = {
-    4 => :retired,
-    8 => :indefinitely_unavailable,
-    7 => :unknown,
-    9 => :permanently_unavailable,
-    10 => :moved_away,
-    12 => :deceased,
-    13 => :available,
-    14 => :temporarily_unavailable
+    1 => :available_for_work,
+    2 => :temporarily_unavailable,
+    3 => :retired,
+    4 => :indefinitely_unavailable,
+    5 => :moved_away,
+    6 => :deceased,
+    8 => :unknown
   }
 
   def referral_icon_key
     if !completed_survey? || !availability_known?
       :question_mark
-    elsif available? && !accepting_new_direct_referrals?
-      :blue_arrow
-    elsif available? && accepting_new_direct_referrals? && referrals_limited?
-      :orange_check
-    elsif available? && (leave_scheduled? || retirement_scheduled?)
+    elsif available_for_work? && (leave_scheduled? || retirement_scheduled?)
       :orange_warning
-    elsif available? && accepting_new_direct_referrals?
+    elsif available_for_work? && !accepting_new_direct_referrals?
+      :blue_arrow
+    elsif available_for_work? && accepting_new_direct_referrals? && direct_referrals_limited?
+      :orange_check
+    elsif available_for_work? && accepting_new_direct_referrals?
       :green_check
     else
       :red_x
@@ -491,21 +490,21 @@ class Specialist < ActiveRecord::Base
 
   def referral_summary
     if !completed_survey? || !availability_known?
-      "Referral status unknown."
-    elsif available? && !accepting_new_direct_referrals? && accepting_new_direct_referrals?
+      "It is unknown whether this specialist is accepting new referrals."
+    elsif available_for_work? && !accepting_new_direct_referrals? && accepting_new_direct_referrals?
       ("This specialist only accepts referrals through " +
         "#{works_out_of_label}, and in general all referrals should be made " +
         "through #{referrals_through_label}.")
-    elsif available? && accepting_new_direct_referrals? && referrals_limited?
+    elsif available_for_work? && accepting_new_direct_referrals? && direct_referrals_limited?
       ("This specialist is accepting limited new referrals by geography " +
           "or number of patients.")
-    elsif available? && leave_scheduled?
+    elsif available_for_work? && leave_scheduled?
       ("This specialist will be unavailable between " +
         "#{unavailable_from.to_s(:long_ordinal)} and" +
         " #{unavailable_to.to_s(:long_ordinal)}.")
-    elsif available? && retirement_scheduled?
+    elsif available_for_work? && retirement_scheduled?
       "This specialist will retire on #{retirement_date.to_s(:long_ordinal)}."
-    elsif available? && accepting_new_direct_referrals?
+    elsif available_for_work? && accepting_new_direct_referrals?
       "This specialist is accepting new referrals"
     elsif deceased?
       "This specialist is deceased."
@@ -513,6 +512,10 @@ class Specialist < ActiveRecord::Base
       "This specialist is retired."
     elsif moved_away?
       "This specialist has moved away."
+    elsif temporarily_unavailable?
+      ("This specialist is unavailable from " +
+        "#{unavailable_from.to_s(:long_ordinal)} to" +
+        " #{unavailable_to.to_s(:long_ordinal)}.")
     else
       "This specialist is not accepting new referrals"
     end
@@ -570,7 +573,7 @@ class Specialist < ActiveRecord::Base
   end
 
   def retiring?
-    available? && retirement_date && retirement_date > Date.current
+    available_for_work? && retirement_date && retirement_date > Date.current
   end
 
   WAITTIME_LABELS = {

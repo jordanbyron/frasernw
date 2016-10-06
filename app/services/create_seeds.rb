@@ -184,7 +184,7 @@ class CreateSeeds < ServiceObject
     latest_updates = []
 
     specialists = Specialist.
-      select{ |specialist| specialist.accepting_new_referrals? }.
+      select{ |specialist| specialist.accepting_new_direct_referrals? }.
       select{ |specialist| specialist.cities.any? }.
       shuffle.
       first(1)

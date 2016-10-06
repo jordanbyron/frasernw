@@ -26,7 +26,7 @@
         %strong Specialists that work in this clinic:
         != specialists_who_work_in(@clinic)
 
-    - if @clinic.completed_survey? && @clinic.open?
+    - if @clinic.completed_survey? && @clinic.is_open?
       - if @clinic.status_details.present?
         %p.no_indent
           %strong Details:

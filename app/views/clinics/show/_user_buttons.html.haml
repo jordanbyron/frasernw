@@ -1,3 +1,4 @@
+- clinic_locations = @clinic.clinic_locations.sort_by(&:created_at).reject(&:empty?)
 .btn-group
   - if clinic_locations.length == 1
     %a.btn{ href: clinic_location_information_path(@clinic,

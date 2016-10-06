@@ -106,7 +106,7 @@ module Metrics
           @specialists.select{|s| s.responded_to_survey?}.length,
           @specialists.select{|s| s.surveyed && !s.responded_to_survey?}.length,
           @specialists.reject{|s| s.completed_survey? }.length,
-          @specialists.select{|s| s.available? && !s.has_offices? }.length,
+          @specialists.select{|s| s.available_for_work? && !s.has_offices? }.length,
           @specialists.reject{|s| !s.moved_away?}.length,
           @specialists.reject{|s| !s.retired?}.length,
           @specialists.reject{|s| !s.deceased?}.length
@@ -164,7 +164,7 @@ module Metrics
           @specialization_specialists.select{|s| s.responded_to_survey?}.length,
           @specialization_specialists.select{|s| s.surveyed && !s.responded_to_survey?}.length,
           @specialization_specialists.reject{|s| s.completed_survey? }.length,
-          @specialization_specialists.select{|s| s.available? && !s.has_offices? }.length,
+          @specialization_specialists.select{|s| s.available_for_work? && !s.has_offices? }.length,
           @specialization_specialists.reject{|s| !s.moved_away?}.length,
           @specialization_specialists.reject{|s| !s.retired?}.length,
           @specialization_specialists.reject{|s| !s.deceased?}.length

@@ -4,12 +4,12 @@ export default function setupVisibilityToggle(parentFields, effected, recordType
   }).join(", ");
 
   $(parentInputSelector).change(function(e){
-    doSideEffects(parentFields, effected);
+    doSideEffects(parentFields, effected, recordType);
   });
-  doSideEffects(parentFields, effected)
+  doSideEffects(parentFields, effected, recordType)
 }
 
-const doSideEffects = (parentFields, effected) => {
+const doSideEffects = (parentFields, effected, recordType) => {
   if(parentFields.every(function(field) {
     return typeAdjustedInputValue(field.name, recordType) == field.truthyVal
   })){
@@ -45,7 +45,7 @@ const hideEffected = (effected, recordType) =>{
 }
 
 const typeAdjustedInputValue = (fieldname, recordType) => {
-  field = $(`#${recordType}_${fieldname}`)
+  const field = $(`#${recordType}_${fieldname}`)
 
   if (field.attr("type") === "checkbox"){
     return field.prop("checked");

@@ -1,6 +1,6 @@
 - favorite_class = logged_in? ? (Favorite.find_by(user_id: current_user.id,
-  favoritable_id: @clinic.id,
-  favoritable_type: "Clinic").present? ? "icon-red" : "icon-text") : "icon-text"
+  favoritable_id: @specialist.id,
+  favoritable_type: "Specialist").present? ? "icon-red" : "icon-text") : "icon-text"
 
 :javascript
   $(document).ready(function() {
@@ -9,7 +9,6 @@
   });
 
 - if current_user.as_admin_or_super?
-  #share.collapse
 
   :javascript
     window.pathways.attachSecretEditLinks({

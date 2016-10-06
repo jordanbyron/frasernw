@@ -5,15 +5,11 @@ export default function overlayFormChanges(formData){
     mimicBeforeEdit(formData);
   }
   overlayUserChanges(formData);
-
-  maskLocationInputs(formData);
-
-  $(".scheduled").each(scheduled_changed);
 }
 
 const show_old_value = (form_element, old_value_formatted) => {
   form_element.closest('div.control-group, div.changed_wrapper').addClass('changed');
-  help_span = $(document.createElement('span'));
+  let help_span = $(document.createElement('span'));
   help_span.addClass('help-inline');
   help_span.text("Was: " + old_value_formatted);
   form_element.parent().append(help_span);
@@ -29,10 +25,10 @@ const compareFormElement = (form_element_id_array, new_entry_value, options) => 
   if ( $.isArray( new_entry_value ) )
   {
     //try as array of checkboxes
-    checkbox_selector = "input:checkbox[name='" + generate_button_name(form_element_id_array) + "[]']"
+    let checkbox_selector = "input:checkbox[name='" + generate_button_name(form_element_id_array) + "[]']"
     // console.log(checkbox_selector);
 
-    form_element = $(checkbox_selector);
+    let form_element = $(checkbox_selector);
 
     if (form_element)
     {
@@ -66,12 +62,12 @@ const compareFormElement = (form_element_id_array, new_entry_value, options) => 
   }
 
   //try just as id
-  form_element = $('#' + form_element_id_array.join('_'));
+  let form_element = $('#' + form_element_id_array.join('_'));
 
   if (!form_element || form_element.length != 1)
   {
     //try as radio button
-    radio_selector = "input:radio[name='" + generate_button_name(form_element_id_array) + "']:checked"
+    let radio_selector = "input:radio[name='" + generate_button_name(form_element_id_array) + "']:checked"
     form_element = $(radio_selector);
   }
 
@@ -83,6 +79,7 @@ const compareFormElement = (form_element_id_array, new_entry_value, options) => 
 
   //console.log("tag: " + form_element.prop("tagName"));
 
+  let old_entry_value;
   switch(form_element.prop("tagName"))
   {
     case('INPUT'):
@@ -98,7 +95,7 @@ const compareFormElement = (form_element_id_array, new_entry_value, options) => 
             $("input:radio[name='" + generate_button_name(form_element_id_array) + "'][value='" + new_entry_value + "']").prop('checked', true);              //check new value
             if (highlight_changes)
             {
-              old_value_formatted = form_element.closest('label').text()
+              let old_value_formatted = form_element.closest('label').text()
               show_old_value(form_element, old_value_formatted);
             }
           }
@@ -145,7 +142,7 @@ const compareFormElement = (form_element_id_array, new_entry_value, options) => 
         form_element.val(new_entry_value);
         if (highlight_changes)
         {
-          old_value_formatted = old_entry_value != "" ? old_entry_value : "blank";
+          let old_value_formatted = old_entry_value != "" ? old_entry_value : "blank";
           show_old_value(form_element, old_value_formatted);
         }
       }
@@ -158,7 +155,7 @@ const compareFormElement = (form_element_id_array, new_entry_value, options) => 
         form_element.val(new_entry_value);
         if (highlight_changes)
         {
-          old_value_formatted = old_entry_value != "" ? $('#' + form_element_id_array.join('_') + ' option[value=\'' + old_entry_value + '\']').text(): "blank";
+          let old_value_formatted = old_entry_value != "" ? $('#' + form_element_id_array.join('_') + ' option[value=\'' + old_entry_value + '\']').text(): "blank";
           show_old_value(form_element, old_value_formatted);
         }
       }
@@ -171,7 +168,7 @@ const compareFormElement = (form_element_id_array, new_entry_value, options) => 
 
 const overlayFormData = (id_array, review_item, options) => {
   $.each(review_item, function(entry_key, new_entry_value) {
-    local_id_array = id_array.slice(0); //array copy
+    let local_id_array = id_array.slice(0); //array copy
     entry_key = entry_key.replace("(","_").replace(")",""); //fix up ids that look like part1(part2) into part1_part2
     local_id_array.push(entry_key);
     //console.log("traverse: " + local_id_array + " : " + new_entry_value);
@@ -283,22 +280,6 @@ const overlayCapacitiesFormData = (review_item, options) => {
       review_item["capacities_lagtime"],
       { highlightChanges: options.highlightChanges }
     );
-  }
-}
-
-// 'location_is' may have changed; update inputs accordingly
-const maskLocationInputs = function(formData) {
-  for (var i = 0; i < formData.maxLocations; ++i)
-  {
-    if ($('#location_tab_' + i + ' .changed').length !== 0)
-    {
-      $('a[href="#location_tab_' + i + '"]').addClass('changed');
-      if (formData.recordKey === "clinic") {
-        clinic_address_location_changed(i);
-      } else if (formData.recordKey === "specialist") {
-        address_location_changed(i);
-      }
-    }
   }
 }
 

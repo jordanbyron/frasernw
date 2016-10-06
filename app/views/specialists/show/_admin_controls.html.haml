@@ -40,6 +40,8 @@
         method: :delete,
         class: "btn")
 
+  #share.collapse
+
 - if (can? :update, @specialist) && current_user.as_admin? # fake out delete msg
   #delete-specialist-msg.collapse
     .alert.alert-info{ style: "margin-top: 10px" }

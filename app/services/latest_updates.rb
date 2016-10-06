@@ -348,7 +348,7 @@ class LatestUpdates < ServiceObject
       end
 
       def specialist_office_events
-        return [] unless specialist.accepting_new_referrals?
+        return [] unless specialist.accepting_new_direct_referrals?
 
         specialist.specialist_offices.inject([]) do |memo, specialist_office|
           if specialist_office.opened_recently?

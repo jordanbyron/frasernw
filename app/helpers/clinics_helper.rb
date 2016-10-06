@@ -42,12 +42,12 @@ module ClinicsHelper
   def show_clinic_section?(clinic, section_key)
     case section_key
     when :clinic_information
-      clinic.open? &&
+      clinic.is_open? &&
         (clinic.clinic_locations.select(&:has_data?).any? ||
           clinic.languages.any? ||
           clinic.interpreter_available)
     when :referrals
-      clinic.opens? &&
+      clinic.is_open? &&
         (clinic.accepts_referrals_via.present? ||
           clinic.responds_via.present? ||
           clinic.referral_form_mask != 3  ||
@@ -56,13 +56,13 @@ module ClinicsHelper
           clinic.lagtime.present? ||
           clinic.patient_can_book_mask != 3)
     when :urgent_referrals
-      clinic.open? &&
+      clinic.is_open? &&
         (clinic.red_flags.present? || clinic.urgent_referrals_via.present?)
     when :physicians
-      clinic.open? &&
+      clinic.is_open? &&
         clinic.visible_attendances.any?
     when :sidebar
-      clinic.open?
+      clinic.is_open?
     end
   end
 end
