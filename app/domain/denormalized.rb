@@ -106,7 +106,6 @@ module Denormalized
             isNew: specialist.new?,
             createdAt: specialist.created_at.to_date.to_s,
             updatedAt: specialist.updated_at.to_date.to_s,
-            showInTable: specialist.show_in_table?,
             hospitalsWithOfficesInIds: specialist.hospitals_with_offices_in.map(&:id),
             billingNumber: specialist.padded_billing_number,
             teleserviceFeeTypes: specialist.
@@ -121,7 +120,7 @@ module Denormalized
               try(:convert_newlines_to_br),
             isAvailable: specialist.available_for_work?,
             availabilityKnown: specialist.availability_known?,
-            unavailableForAwhile: clinic.unavailable_for_awhile?,
+            unavailableForAwhile: specialist.unavailable_for_awhile?,
             hidden: specialist.hidden?,
           })
         end
@@ -177,7 +176,6 @@ module Denormalized
             isNew: clinic.new?,
             createdAt: clinic.created_at.to_date.to_s,
             updatedAt: clinic.updated_at.to_date.to_s,
-            showInTable: clinic.show_in_table?,
             hospitalsInIds: clinic.hospitals_in.map(&:id),
             teleserviceFeeTypes: clinic.
               teleservices.
@@ -190,7 +188,6 @@ module Denormalized
               sanitize(clinic.not_performed).
               try(:convert_newlines_to_br),
             availabilityKnown: clinic.availability_known?,
-            unavailableForAwhile: clinic.unavailable_for_awhile?,
             hidden: clinic.hidden?
           })
         end

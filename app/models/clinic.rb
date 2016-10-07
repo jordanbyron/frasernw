@@ -443,8 +443,8 @@ class Clinic < ActiveRecord::Base
     (created_at > 3.week.ago.utc) && opened_recently?
   end
 
-  def unavailable_for_awhile?
-    !is_open? && (unavailable_from <= (Date.current - 2.years))
+  def availability_known?
+    is_open != nil
   end
 
   def token

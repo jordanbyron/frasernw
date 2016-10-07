@@ -568,8 +568,7 @@ class Specialist < ActiveRecord::Base
   end
 
   def unavailable_for_awhile?
-    (retired? || moved_away? || permanently_unavailable?) &&
-      (unavailable_from <= (Date.current - 2.years))
+    moved_away? || (retired? && retirement_date <= (Date.current - 2.years))
   end
 
   def retiring?

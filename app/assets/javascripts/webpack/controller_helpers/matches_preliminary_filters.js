@@ -5,11 +5,16 @@ import { collectionShownName } from "controller_helpers/collection_shown";
 import { memoizePerRender } from "utils"
 
 export const preliminaryFilterKeys = ((collectionName) => {
-  if(_.includes(["specialists", "clinics"], collectionName)){
-
+  if(collectionName === "specialists"){
     return [
       "availabilityKnown",
-      "showInTable",
+      "notHidden",
+      "unavailableForAwhile"
+    ];
+  }
+  else if (collectionName === "clinics"){
+    return [
+      "availabilityKnown",
       "notHidden"
     ];
   }
