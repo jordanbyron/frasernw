@@ -62,7 +62,15 @@ module SeedCreators
       is_gp: :pass_through,
       is_internal_medicine: :pass_through,
       sees_only_children: :pass_through,
-      hidden: :pass_through
+      hidden: :pass_through,
+      completed_survey: Proc.new{ rand() < 0.95 },
+      has_offices: Proc.new{ rand() < 0.8 },
+      accepting_new_direct_referrals: Proc.new{ rand() < 0.75 },
+      direct_referrals_limited: Proc.new{ rand() < 0.03 },
+      availability: Proc.new{ (rand() < 0.95) ? 1 : (2..7).sample },
+      retirement_scheduled: Proc.new{ false },
+      retirement_date: Proc.new{ nil },
+      leave_scheduled: Proc.new{ false }
     }
   end
 end

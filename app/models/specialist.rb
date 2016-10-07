@@ -469,7 +469,7 @@ class Specialist < ActiveRecord::Base
     4 => :indefinitely_unavailable,
     5 => :moved_away,
     6 => :deceased,
-    8 => :unknown
+    7 => :unknown
   }
 
   def referral_icon_key
