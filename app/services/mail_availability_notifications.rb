@@ -1,7 +1,8 @@
 class MailAvailabilityNotifications < ServiceObject
   def call
     Specialist.select do |specialist|
-      (specialist.status_mask == 6) &&
+      (specialist.availability ==
+        Specialist::AVAILABILITY_LABELS.key(:temporarily_unavailable)) &&
         (specialist.unavailable_to == Date.current + 1.weeks)
     end.each do |specialist|
       specialist.owners.each do |user|

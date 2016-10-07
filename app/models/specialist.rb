@@ -462,7 +462,7 @@ class Specialist < ActiveRecord::Base
     end.last
   end
 
-  AVAILABILITY_LABELS = {
+  AVAILABILITY_LABELS = StrictHash.new({
     1 => :available_for_work,
     2 => :temporarily_unavailable,
     3 => :retired,
@@ -470,7 +470,7 @@ class Specialist < ActiveRecord::Base
     5 => :moved_away,
     6 => :deceased,
     7 => :unknown
-  }
+  })
 
   def referral_icon_key
     if !completed_survey? || !availability_known?

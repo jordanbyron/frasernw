@@ -101,4 +101,26 @@ module Clockwork
       delay: true
     )
   end
+
+  every(
+    1.day,
+    'Mail out Monthly Subscriptions job',
+    at: '16:00',
+    tz: 'UTC',
+    if: lambda { |t| t.day == 1 }
+  ) do
+    Subscription::MailIntervalNotifications.call(
+      date_interval: Subscription::INTERVAL_MONTHLY,
+      delay: true
+    )
+  end
+
+  every(
+    1.day,
+    'Update specialist availability statuses',
+    at: '3:00',
+    tz: 'Pacific Time (US & Canada)'
+  ) do
+    UpdateSpecialistAvailability.call(delay: true)
+  end
 end
