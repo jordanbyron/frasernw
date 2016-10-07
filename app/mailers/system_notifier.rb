@@ -22,31 +22,6 @@ module SystemNotifier
     )
   end
 
-  def self.javascript_error(error_data, options = {})
-    notify(
-      tag: "Exception - Client-side",
-      subject: error_data[:message],
-      timestamp: DateTime.now.to_s(:long_ordinal),
-      body: {
-        userId: error_data[:userId],
-        userMask: error_data[:userMask],
-        userName: error_data[:userName],
-        browserName: error_data[:browserName],
-        majorVersion: error_data[:majorVersion],
-        errorName: error_data[:name],
-        message: error_data[:message],
-        file: error_data[:file],
-        line: error_data[:line],
-        column: error_data[:column],
-        url: error_data[:url],
-        errorStack: error_data[:errorStack],
-        appName: error_data[:appName],
-        userAgent: error_data[:userAgent],
-        fullVersion: error_data[:fullVersion]
-      }
-    )
-  end
-
   def self.migrations_pending(number)
     notify(
       tag: "Deploy - Migrations pending",
@@ -72,10 +47,7 @@ module SystemNotifier
     begin
       SystemMailer.notification(options).deliver
     rescue Net::SMTPAuthenticationError, EOFError, Net::SMTPUnknownError
-      # rescuing EOFError b.c. that can be triggered by SMTP issues
-      # http://stackoverflow.com/questions/3038852/ruby-mailer-is-coming-up-with-an-eoferror
-
-      # NotifyInBackground.call(options: options, delay: true)
+      NotifyInBackground.call(options: options, delay: true)
     end
   end
 end
