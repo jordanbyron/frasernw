@@ -589,12 +589,6 @@ class Clinic < ActiveRecord::Base
     name
   end
 
-  def visible_attendances
-    @visible_attendances ||= attendances.select do |attendance|
-      attendance.show?
-    end
-  end
-
   alias_method :cities_for_front_page, :cities
 
   def specialists_with_offices_in
@@ -619,5 +613,12 @@ class Clinic < ActiveRecord::Base
       map(&:hospital_in).
       reject(&:nil?).
       uniq
+  end
+
+  def locations_showing_attendances
+    @locations_showing_attendances ||= clinic_locations.select do |location|
+      location.resolved_address.present? &&
+        location.attendances.select(&:show?).any?
+    end
   end
 end
