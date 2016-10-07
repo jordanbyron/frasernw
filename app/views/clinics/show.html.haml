@@ -251,20 +251,19 @@
               %h6 Physicians who see patients at the clinic
 
               %ul.attending_specialists
-                - @clinic.clinic_locations.each do |clinic_location|
-                  - if clinic_location.resolved_address.present?
+                - @clinic.visible_attendances.group_by(&:clinic_location).each do |location, attendances|
+                  - if location.resolved_address.present?
                     - if (@clinic.visible_attendances.map(&:clinic_location_id).uniq).length > 1
                       .location_attendances
                         Physicians who see patients at
-                        = clinic_location.resolved_address.short_address
-                    - @clinic.visible_attendances.each do |attendance|
-                      - if clinic_location.id == attendance.clinic_location_id
-                        - if attendance.is_specialist
-                          = physician_attending(attendance)
-                        - else
-                          %li
-                            = attendance.freeform_name
-                            = "- #{attendance.area_of_focus}" if attendance.area_of_focus.present?
+                        = location.resolved_address.short_address
+                    - attendances.each do |attendance|
+                      - if attendance.is_specialist
+                        = physician_attending(attendance)
+                      - else
+                        %li
+                          = attendance.freeform_name
+                          = "- #{attendance.area_of_focus}" if attendance.area_of_focus.present?
 
         - if show_details || show_areas_of_practice
 
