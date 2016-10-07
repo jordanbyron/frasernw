@@ -1,20 +1,25 @@
-# Sample localization file for English. Add more files in this directory for other locales.
-# See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
+# See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale
 
 en:
   authlogic:
     error_messages:
       login_blank: Your e-mail address can not be blank
       login_not_found: This e-mail address is not valid
-      login_invalid: Your email address should use only letters, numbers, spaces, and .-_@ please.
-      consecutive_failed_logins_limit_exceeded: Consecutive failed logins limit exceeded, your account has been disabled for two hours. Please reset your password if you don't remember it.
+      login_invalid: >
+        Your email address should use only letters, numbers, spaces,
+          and .-_@ please.
+      consecutive_failed_logins_limit_exceeded: >
+        Consecutive failed logins limit exceeded, your account has been
+          disabled for two hours. Please reset your password if you don't
+          remember it.
       email_invalid: Sorry, your e-mail address must look like an email address.
       password_blank: can not be blank
       password_invalid: is not valid
       not_active: Your account is not active
       not_confirmed: Your account is not confirmed
       not_approved: Your account is not approved
-      no_authentication_details: You did not provide any details for authentication.
+      no_authentication_details: >
+        You did not provide any details for authentication.
       general_credentials_error: Login/Password combination is not valid
     models:
       user_session: UserSession
@@ -26,7 +31,7 @@ en:
         remember_me: remember me
   activerecord:
     errors:
-      header: "Error"
+      header: Error
       message: "Please note the following and try again:"
     values:
       specialist:
@@ -36,161 +41,183 @@ en:
           "3": "Semi-retired"
           "4": "Retired"
     models:
-      specialization: "Specialty"
-      procedure: "Area of Practice"
-      sc_category: "Content Category"
-      sc_item: "Content Item"
+      specialization: Specialty
+      procedure: Area of Practice
+      sc_category: Content Category
+      sc_item: Content Item
     attributes:
       address:
-        address1: "Address line 1"
-        address2: "Address line 2"
-        suite: "Suite"
-        city: "City"
-        province: "Province"
-        postalcode: "Postal code"
+        address1: Address line 1
+        address2: Address line 2
+        suite: Suite
+        city: City
+        province: Province
+        postalcode: Postal code
       capacity:
-        procedure: "Area of practice"
-        investigation: "Required investigations"
+        procedure: Area of practice
+        investigation: Required investigations
       clinic:
-        admin_notes: "Admin only notes"
-        categorization_mask: "Categorization"
-        contact_name: "Name"
-        contact_email: "Email"
-        contact_phone: "Phone"
-        contact_notes: "Notes"
-        healthcare_providers: "Healthcare providers who see patients at the clinic"
-        lagtime_mask: "On average, how long does it take the clinic to advise the GP office that an appointment has been booked for their patient?"
-        limitations: "Clinic limitations (if any)"
-        languages: "Languages spoken in the clinic"
-        not_performed: "Clinic does not see or do"
-        patient_can_book_mask: "After you receive our referral, will the clinic accept direct calls from patients to book their own appointments?"
-        red_flags: "What conditions (red flags) does the clinic feel warrant urgent consultation?"
-        referral_form_mask: "Does the clinic have a referral form?"
-        referral_fax: "Fax"
-        referral_phone: "Phone"
-        referral_other_details: "Other method"
-        referral_details: "Additional referral details"
-        respond_by_fax: "By fax to referring office"
-        respond_by_phone: "By phone to referring office"
-        respond_by_mail: "By mail to referring office"
-        respond_to_patient: "Directly to the patient"
-        required_investigations: "Required information / investigations for ALL referrals."
-        status_details: "Additional details (if any)"
-        status_mask: "Current status"
-        urgent_fax: "Fax"
-        urgent_phone: "Phone"
-        urgent_other_details: "Other method"
-        urgent_details: "Additional urgent referral details"
-        waittime_mask: "On average, what is the clinic’s normal wait time from request for a consultation to the appointment itself?"
+        admin_notes: Admin only notes
+        categorization_mask: Categorization
+        contact_name: Name
+        contact_email: Email
+        contact_phone: Phone
+        contact_notes: Notes
+        healthcare_providers: >
+          Healthcare providers who see patients at the clinic
+        lagtime_mask: >
+          On average, how long does it take the clinic to advise the GP office
+            that an appointment has been booked for their patient?
+        limitations: Clinic limitations (if any)
+        languages: Languages spoken in the clinic
+        not_performed: Clinic does not see or do
+        patient_can_book_mask: >
+          After you receive our referral, will the clinic accept direct calls
+            from patients to book their own appointments?
+        red_flags: >
+          What conditions (red flags) does the clinic feel warrant urgent
+            consultation?
+        referral_form_mask: Does the clinic have a referral form?
+        referral_fax: Fax
+        referral_phone: Phone
+        referral_other_details: Other method
+        referral_details: Additional referral details
+        respond_by_fax: By fax to referring office
+        respond_by_phone: By phone to referring office
+        respond_by_mail: By mail to referring office
+        respond_to_patient: Directly to the patient
+        required_investigations: >
+          Required information / investigations for ALL referrals.
+        status_details: Additional details (if any)
+        status_mask: Current status
+        urgent_fax: Fax
+        urgent_phone: Phone
+        urgent_other_details: Other method
+        urgent_details: Additional urgent referral details
+        waittime_mask: >
+          On average, what is the clinic’s normal (non-urgent) wait time from
+            request for a consultation to the appointment itself?
       clinic_location:
-        contact_details: "Additional contact details"
-        email: "Private e-mail"
-        location_opened: "Clinic opened at this location"
-        public_email: "Public e-mail"
-        sector_mask: "Public or private"
-        url: "Website address"
-        wheelchair_accessible_mask: "Wheelchair accessible?"
+        contact_details: Additional contact details
+        email: Private e-mail
+        location_opened: Clinic opened at this location
+        public_email: Public e-mail
+        sector_mask: Public or private
+        url: Website address
+        wheelchair_accessible_mask: Wheelchair accessible?
       city:
         hidden: "Hide from search / filtering?"
       division:
         cities: Cities Encompassed
       location:
-        details_in: "Additional directions or details"
-        hospital_in: "Hospital"
-        location_in: "Clinic"
-        suite_in: "Suite"
+        details_in: Additional directions or details
+        hospital_in: Hospital
+        location_in: Clinic
+        suite_in: Suite
       news_item:
-        body: "Message body"
-        breaking: "Show as breaking news"
-        end_date: "End date"
-        type_mask: "News Type"
+        body: Message body
+        breaking: Show as breaking news
+        end_date: End date
+        type_mask: News Type
       sc_category:
-        index_display_format: "Display items"
-        filterable: "Filterable"
-        in_global_navigation: "Display in global navigation in resources dropdown menu"
-        show_on_front_page: "Display featured items on front page"
-        evidential: "Has Levels of Evidence"
+        index_display_format: Display items
+        filterable: Filterable
+        in_global_navigation: >
+          Display in global navigation in resources dropdown menu
+        show_on_front_page: Display featured items on front page
+        evidential: Has Levels of Evidence
       sc_item:
-        inline: "Show content inline on specialty pages"
-        sc_category: "Content category"
-        title: "Content title"
-        tool: "Show in tools menu"
-        searchable: "Searchable (by title)"
-        shareable: "Shareable with other divisions"
-        shared_care: "From a Shared Care Initiative"
-        type_mask: "Content type"
-        evidence_id: "Level of Evidence"
-        url: "Content URL"
-        can_email: "Can email content item to patient"
+        inline: Show content inline on specialty pages
+        sc_category: Content category
+        title: Content title
+        tool: Show in tools menu
+        searchable: Searchable (by title)
+        shareable: Shareable with other divisions
+        shared_care: From a Shared Care Initiative
+        type_mask: Content type
+        evidence_id: Level of Evidence
+        url: Content URL
+        can_email: Can email content item to patient
       specialist:
-        firstname: "First name"
-        lastname: "Last name"
-        admin_notes: "Admin only notes"
-        billing_number: "MSP billing number"
-        categorization_mask: "Categorization"
-        clinics: "Sub-specialty clinics"
-        contact_name: "Name"
-        contact_email: "Email"
-        contact_phone: "Phone"
-        contact_notes: "Notes"
-        goes_by_name: "Goes by"
-        hospitals: "Hospital privileges"
-        hospital_clinic_details: "Additional details"
-        is_gp: "Is a GP"
-        is_internal_medicine: "Has a fellowship in General Internal Medicine and does not have an Internal Medicine Sub-Specialty fellowship"
-        sees_only_children: "Does not see adult patients"
-        status_mask: "Current status"
-        status_details: "Additional details (if any)"
-        practise_limitations: "Other practice limitations (if any)"
-        languages: "Languages spoken in the practice"
-        required_investigations: "Required information / investigations for ALL referrals"
-        interest: "I am most interested in"
-        not_performed: "I do not see or do"
-        referral_clinic: "Through clinic"
-        referral_form_mask: "Does the office have a referral form?"
-        referral_fax: "Fax"
-        referral_phone: "Phone"
-        referral_other_details: "Other method"
-        referral_details: "Additional referral details"
-        respond_by_fax: "By fax to referring office"
-        respond_by_phone: "By phone to referring office"
-        respond_by_mail: "By mail to referring office"
-        respond_to_patient: "Directly to the patient"
-        sex_mask: "Sex"
-        specializations_including_in_progress: "Specialties"
-        urgent_fax: "Fax"
-        urgent_phone: "Phone"
-        urgent_other_details: "Other method"
-        urgent_details: "Additional urgent referral details"
-        lagtime_mask: "On average, how long does it take the office to advise the GP office that an appointment has been booked for their patient?"
-        waittime_mask: "On average, what is the office's normal wait time from request for a consultation to the appointment itself?"
-        patient_can_book_mask: "After you receive our referral, will the office accept direct calls from patients to book their own appointments?"
-        red_flags: "What conditions (red flags) does the office feel warrant urgent consultation?"
-        specialist_specializations: "Specialities"
-        specializations: "Areas of Specialty"
+        firstname: First name
+        lastname: Last name
+        admin_notes: Admin only notes
+        billing_number: MSP billing number
+        categorization_mask: Categorization
+        clinics: Sub-specialty clinics
+        contact_name: Name
+        contact_email: Email
+        contact_phone: Phone
+        contact_notes: Notes
+        goes_by_name: Goes by
+        hospitals: Hospital privileges
+        hospital_clinic_details: Additional details
+        is_gp: Is a GP
+        is_internal_medicine: >
+          Has a fellowship in General Internal Medicine and does not have an
+            Internal Medicine Sub-Specialty fellowship
+        sees_only_children: Does not see adult patients
+        status_mask: Current status
+        status_details: Additional details (if any)
+        practise_limitations: Other practice limitations (if any)
+        languages: Languages spoken in the practice
+        required_investigations: >
+          Required information / investigations for ALL referrals
+        interest: I am most interested in
+        not_performed: I do not see or do
+        referral_clinic: Through clinic
+        referral_form_mask: Does the office have a referral form?
+        referral_fax: Fax
+        referral_phone: Phone
+        referral_other_details: Other method
+        referral_details: Additional referral details
+        respond_by_fax: By fax to referring office
+        respond_by_phone: By phone to referring office
+        respond_by_mail: By mail to referring office
+        respond_to_patient: Directly to the patient
+        sex_mask: Sex
+        specializations_including_in_progress: Specialties
+        urgent_fax: Fax
+        urgent_phone: Phone
+        urgent_other_details: Other method
+        urgent_details: Additional urgent referral details
+        lagtime_mask: >
+          On average, how long does it take the office to advise the GP office
+            that an appointment has been booked for their patient?
+        waittime_mask: >
+          On average, what is the office's normal (non-urgent) wait time from
+            request for a consultation to the appointment itself?
+        patient_can_book_mask: >
+          After you receive our referral, will the office accept direct calls
+            from patients to book their own appointments?
+        red_flags: >
+          What conditions (red flags) does the office feel warrant urgent
+            consultation?
+        specialist_specializations: Specialities
+        specializations: Areas of Specialty
       specialist_office:
-        sector_mask: "Public or private"
-        direct_phone: "Direct number"
-        email: "Private e-mail"
-        location_opened: "Practice opened at this location"
-        public_email: "Public e-mail"
-        open_saturday: "Open Saturday?"
-        open_sunday: "Open Sunday?"
-        url: "Website address"
+        sector_mask: Public or private
+        direct_phone: Direct number
+        email: Private e-mail
+        location_opened: Practice opened at this location
+        public_email: Public e-mail
+        open_saturday: Open Saturday?
+        open_sunday: Open Sunday?
+        url: Website address
       specialization:
-        name: "Speciality (e.g. Allergy)"
-        member_name: "Specialist in the speciality (e.g. Allergist)"
+        name: Speciality (e.g. Allergy)
+        member_name: Specialist in the speciality (e.g. Allergist)
       procedure:
-        parent_id: "Parent Area of Practice"
+        parent_id: Parent Area of Practice
       report:
-        name: "Report name"
-        type_mask: "About"
-        level_mask: "Region"
-        user_type_mask: "User type"
-        time_frame_mask: "Time period"
+        name: Report name
+        type_mask: About
+        level_mask: Region
+        user_type_mask: User type
+        time_frame_mask: Time period
       user:
-        email: "E-mail address"
-        email_confirmation: "E-mail confirmation"
-        password: "Password"
-        saved_token: "Access key"
-        type_mask: "User type"
+        email: E-mail address
+        email_confirmation: E-mail confirmation
+        password: Password
+        saved_token: Access key
+        type_mask: User type
