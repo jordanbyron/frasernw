@@ -173,7 +173,8 @@ module GenerateSpreadsheet
         user_row = [
           user.divisions.first.name,
           user.id,
-          user.name
+          user.name,
+          user.role
         ]
         user.controlled_clinics.each do |clinic|
           user_row.push(clinic.id)
@@ -189,6 +190,7 @@ module GenerateSpreadsheet
         "User Divisions",
         "User ID",
         "User name",
+        "User role",
         "Clinic ID",
         "Clinic name"
       ]

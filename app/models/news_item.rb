@@ -16,7 +16,7 @@ class NewsItem < ActiveRecord::Base
   belongs_to :owner_division, class_name: "Division"
   has_many :divisions, through: :division_display_news_items
   has_many :division_display_news_items, dependent: :destroy
-  has_one :demoable_news_item
+  has_one :demoable_news_item, dependent: :destroy
 
   def self.not_demoable
     joins(<<-SQL)
@@ -40,7 +40,10 @@ class NewsItem < ActiveRecord::Base
   end
 
   def self.bust_cache_for(*divisions)
-    LatestUpdates.delay.recache_for_groups(User.division_groups_for(*divisions))
+    RecacheLatestUpdatesInDivisions.call(
+      division_groups: User.division_groups_for(*divisions),
+      delay: true
+    )
     User.division_groups_for(*divisions).each do |division_group|
       ExpireFragment.call "front_#{Specialization.cache_key}_#{division_group.join('_')}"
     end

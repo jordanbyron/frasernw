@@ -12,7 +12,12 @@ namespace :deploy do
     namespace config[0] do
       task :push do
         puts "Deploying site to #{config[0].capitalize}"
-        print_exec "git push https://git.heroku.com/#{config[1]}.git #{config[2]}:master"
+
+        flags = config[0] == "test" ? "-f" : ""
+
+        print_exec "git push #{flags} https://git.heroku.com/#{config[1]}.git "\
+          "#{config[2]}:master"
+
         puts "Checking for pending migrations ..."
         print_exec "heroku run rake check_migrations --app #{config[1]}"
       end

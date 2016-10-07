@@ -222,6 +222,7 @@ class ScItem < ActiveRecord::Base
   end
 
   def mail_to_patient(current_user, patient_email)
+    # DO NOT delay: we don't want patient emails ending up in the delayed_jobs table
     MailToPatientMailer.mail_to_patient(self, current_user, patient_email).deliver
   end
 

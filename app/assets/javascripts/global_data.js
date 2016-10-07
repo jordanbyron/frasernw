@@ -17,6 +17,8 @@
 
         $("#heartbeat-loader-position").remove();
       }, 200);
+    }).fail(function(response, textStatus, error) {
+      throw error;
     })
   };
 

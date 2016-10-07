@@ -53,7 +53,7 @@ class DivisionsController < ApplicationController
 
       CreateSpecializationOptions.call(division: @division)
 
-      Denormalized.delay.regenerate(:divisions)
+      RegenerateDenormalizedDivisions.call(delay: true)
 
       redirect_to @division, notice: "Successfully created division."
     else
@@ -100,7 +100,7 @@ class DivisionsController < ApplicationController
           drcs.destroy
         end
       end
-      Denormalized.delay.regenerate(:divisions)
+      RegenerateDenormalizedDivisions.call(delay: true)
       @division.city_rankings(force: true)
 
       redirect_to @division, notice: "Successfully updated division."
