@@ -102,7 +102,7 @@ class UsersController < ApplicationController
       elsif @user.active == false
         redirect_to login_url,
           alert: "Sorry, your access key is no longer active. "\
-            "Please <a href='#{contact_path}'>contact us here</a>"\
+            "Please <a href='#{contact_path}'>contact us</a>"\
             " to have your account access key reactivated.".
           html_safe
       else

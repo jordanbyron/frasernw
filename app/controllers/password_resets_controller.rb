@@ -32,7 +32,7 @@ class PasswordResetsController < ApplicationController
           notice: "We do not have any account associated with "\
             "#{params[:user][:email]}. Please check the e-mail address you "\
             "used and try again. Email addresses are case sensitive. "\
-            "Please <a href='#{contact_path}'>contact us here</a> if you "\
+            "Please <a href='#{contact_path}'>contact us</a> if you "\
             "continue encountering problems."
       end
     end
@@ -54,7 +54,7 @@ class PasswordResetsController < ApplicationController
         layout: 'user_sessions',
         notice: "We had problems updating your password. Please try again. "\
           "If you continue to encounter problems please "\
-          "<a href='#{contact_path}'>contact us here</a>."
+          "<a href='#{contact_path}'>contact us</a>."
     end
   end
 

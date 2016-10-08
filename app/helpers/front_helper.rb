@@ -20,4 +20,20 @@ module FrontHelper
       "Pathways Newsletter"
     end
   end
+
+  def news_item_class(news_item)
+    news_item.date.present? ? "news_item_title" : "news_item_date"
+  end
+
+  def front_top_margin_style(current_user)
+    current_user.as_admin_or_super? && 'margin-top: -15px'
+  end
+
+  def front_specialty_class(specialization, *divisions)
+    if specialization.hidden_in?(*divisions)
+      "hidden-from-users"
+    else
+      "hoverlabel"
+    end
+  end
 end
