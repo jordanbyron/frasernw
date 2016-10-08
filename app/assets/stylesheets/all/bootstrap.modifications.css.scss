@@ -356,7 +356,7 @@
 
     .row.changed label,
     .changed > label,
-    .changed .history__note,
+    .history__note.changed,
     .changed .help-block,
     .changed .help-inline {
       color: $FNW_ORANGE;

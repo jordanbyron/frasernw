@@ -49,8 +49,6 @@ module HistoryHelper
   def edit_source_id(node)
     if node.raw.target.respond_to?(:edit_source_id)
       node.raw.target.edit_source_id
-    else
-      ""
     end
   end
 end
