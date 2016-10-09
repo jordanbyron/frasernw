@@ -54,4 +54,8 @@ class UnauthenticatedUser
   def name
     "Unauthenticated User"
   end
+
+  def email
+    ""
+  end
 end

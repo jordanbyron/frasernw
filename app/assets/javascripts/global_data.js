@@ -14,6 +14,8 @@
       setTimeout(function(){
         window.localStorage.pathwaysGlobalData = vendor.lzString.compressToUTF16(JSON.stringify(data));
         window.localStorage.pathwaysGlobalDataExpiration = expiryKey(cacheVersion);
+
+        $("#heartbeat-loader-position").remove();
       }, 200);
     }).fail(function(response, textStatus, error) {
       throw error;
@@ -33,10 +35,13 @@
         deferred.resolve(
           JSON.parse(vendor.lzString.decompressFromUTF16(window.localStorage.pathwaysGlobalData))
         );
-      } else {
+
         $(document).ready(function() {
-          fetchGlobalData(deferred, cacheVersion);
+          $("#heartbeat-loader-position").remove();
         });
+
+      } else {
+        fetchGlobalData(deferred, cacheVersion);
       }
 
       return deferred.promise();
