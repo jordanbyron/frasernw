@@ -16,7 +16,7 @@ class NewsItem < ActiveRecord::Base
   belongs_to :owner_division, class_name: "Division"
   has_many :divisions, through: :division_display_news_items
   has_many :division_display_news_items, dependent: :destroy
-  has_one :demoable_news_item
+  has_one :demoable_news_item, dependent: :destroy
 
   def self.not_demoable
     joins(<<-SQL)

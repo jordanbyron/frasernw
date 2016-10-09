@@ -6,9 +6,9 @@ class ReviewItemsMailer < ActionMailer::Base
     @verb = @review_item.no_updates? ? "confirmed as accurate" : "edited"
     @whodunnit = begin
       if @review_item.secret_edit?
-        "using a secret edit link"
+        "using a secret edit link."
       else
-        "by #{@review_item.editor.name}"
+        "by #{@review_item.editor.name}."
       end
     end
 
@@ -16,7 +16,8 @@ class ReviewItemsMailer < ActionMailer::Base
     mail(
       to: item.owners.map(&:email),
       from: 'noreply@pathwaysbc.ca',
-      subject: "Pathways: #{item.name} has had been edited and is in the review queue"
+      subject: "Pathways: #{item.name} has been edited and is in the review "\
+        "queue."
     )
   end
 
