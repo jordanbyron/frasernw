@@ -170,8 +170,9 @@
               - if @clinic.show_waittimes?
                 -if @clinic.waittime.present?
                   %p.space
-                    Average non-urgent patient wait time from referral to
-                    appointment:
+                    Average
+                    %strong non-urgent
+                    patient wait time from referral to appointment:
                     %strong= @clinic.waittime
 
                 -if @clinic.lagtime.present?
@@ -188,8 +189,9 @@
 
                     -if focus.waittime.present?
                       %p
-                        Average non-urgent patient wait time from referral to
-                        appointment:
+                        Average
+                        %strong non-urgent
+                        patient wait time from referral to appointment:
                         %strong= focus.waittime
 
                     -if focus.lagtime.present?

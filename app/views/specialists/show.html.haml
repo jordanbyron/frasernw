@@ -315,7 +315,9 @@
               - if @specialist.show_waittimes?
                 -if @specialist.waittime.present?
                   %p.space
-                    Average non-urgent patient wait time from referral to appointment:
+                    Average
+                    %strong non-urgent
+                    patient wait time from referral to appointment:
                     %strong= @specialist.waittime
 
                 -if @specialist.lagtime.present?
@@ -333,7 +335,9 @@
 
                     -if capacity.waittime.present?
                       %p
-                        Average non-urgent patient wait time from referral to appointment:
+                        Average
+                        %strong non-urgent
+                        patient wait time from referral to appointment:
                         %strong= capacity.waittime
 
                     -if capacity.lagtime.present?
