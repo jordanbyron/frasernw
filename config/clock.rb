@@ -123,4 +123,13 @@ module Clockwork
   ) do
     UpdateSpecialistAvailability.call(delay: true)
   end
+
+  every(
+    1.day,
+    'Update specialist availability statuses',
+    at: '3:00',
+    tz: 'Pacific Time (US & Canada)'
+  ) do
+    UpdateClinicClosure.call(delay: true)
+  end
 end

@@ -131,11 +131,11 @@ class ClinicsController < ApplicationController
   end
 
   def update
-    params[:clinic][:procedure_ids] ||= []
     @clinic = Clinic.find(params[:id])
     ExpireFragment.call clinic_path(@clinic)
 
     parsed_params = ParamParser::Clinic.new(params).exec
+
     if @clinic.update_attributes(parsed_params[:clinic])
       UpdateClinicFocuses.exec(@clinic, parsed_params)
       @clinic.save

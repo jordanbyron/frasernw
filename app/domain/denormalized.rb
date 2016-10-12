@@ -188,7 +188,8 @@ module Denormalized
               sanitize(clinic.not_performed).
               try(:convert_newlines_to_br),
             availabilityKnown: clinic.availability_known?,
-            hidden: clinic.hidden?
+            hidden: clinic.hidden?,
+            unavailableForAwhile: clinic.unavailable_for_awhile?,
           })
         end
       end

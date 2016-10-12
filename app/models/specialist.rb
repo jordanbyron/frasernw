@@ -22,7 +22,6 @@ class Specialist < ActiveRecord::Base
     :sees_only_children,
     :practise_limitations,
     :interest,
-    :procedure_ids,
     :direct_phone_old,
     :direct_phone_extension_old,
     :red_flags,

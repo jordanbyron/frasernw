@@ -23,7 +23,6 @@ class Clinic < ActiveRecord::Base
     :deprecated_wheelchair_accessible_mask,
     :status,
     :status_details,
-    :unavailable_from,
     :referral_criteria,
     :referral_process,
     :contact_name,
@@ -72,7 +71,9 @@ class Clinic < ActiveRecord::Base
     :completed_survey,
     :accepting_new_referrals,
     :referrals_limited,
-    :is_open
+    :is_open,
+    :closure_scheduled,
+    :closure_date
 
   has_many :clinic_specializations, dependent: :destroy
   has_many :specializations, through: :clinic_specializations
@@ -488,5 +489,9 @@ class Clinic < ActiveRecord::Base
       map(&:hospital_in).
       reject(&:nil?).
       uniq
+  end
+
+  def unavailable_for_awhile?
+    !is_open? && closure_date.present? && closure_date <= (Date.current - 2.years)
   end
 end

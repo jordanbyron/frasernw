@@ -5,6 +5,9 @@ class BreakupClinicStatus < ActiveRecord::Migration
     add_column :clinics, :accepting_new_referrals, :boolean
     add_column :clinics, :referrals_limited, :boolean
 
+    add_column :clinics, :closure_scheduled, :boolean
+    rename_column :clinics, :unavailable_from, :closure_date
+
     add_column :clinics, :is_open, :boolean
 
     Clinic.all.each do |clinic|

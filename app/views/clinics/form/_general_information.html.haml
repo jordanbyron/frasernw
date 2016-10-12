@@ -3,6 +3,13 @@
 = f.input :completed_survey
 = f.input :is_open,
   label: "Is open?"
+= f.input :closure_scheduled,
+  label: "Closure scheduled?"
+.clinic_closure_date.form__wrapper--indented
+  = f.input :closure_date,
+    wrapper: false,
+    label: false,
+    input_html: {style: "width: auto; float: left; margin: 0px 6px 12px 0px"}
 = f.input :accepting_new_referrals,
   label: "Accepting new referrals?",
   wrapper_html: { class: "form__wrapper--indented" }

@@ -38,6 +38,13 @@ const setupGeneralInformation = () => {
     ],
     "referrals_limited"
   );
+
+  setupClinicVisibilityToggle(
+    [
+      { name: "closure_scheduled", truthyVal: true }
+    ],
+    "closure_date"
+  );
 };
 
 const setupSections = () => {

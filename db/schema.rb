@@ -175,11 +175,12 @@ ActiveRecord::Schema.define(version: 20160922143318) do
     t.text     "status_details"
     t.string   "deprecated_url"
     t.string   "deprecated_email"
-    t.date     "unavailable_from"
+    t.date     "closure_date"
     t.boolean  "hidden",                                default: false
     t.boolean  "completed_survey"
     t.boolean  "accepting_new_referrals"
     t.boolean  "referrals_limited"
+    t.boolean  "closure_scheduled"
     t.boolean  "is_open"
   end
 
