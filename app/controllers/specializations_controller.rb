@@ -8,9 +8,6 @@ class SpecializationsController < ApplicationController
   def show
     @layout_heartbeat_loader = false
     @specialization = Specialization.find(params[:id])
-    @init_data = {
-      app: FilterTableAppState.call
-    }
   end
 
   def new

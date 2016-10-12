@@ -14,7 +14,15 @@ class DataTablesController < ApplicationController
       contentItems: Denormalized.fetch(:content_items),
       divisions: Denormalized.fetch(:divisions),
       referralIcons: Referrable::REFERRAL_ICONS,
-      referralTooltips: Referrable::REFERRAL_TOOLTIPS
+      referralTooltips: Referrable::REFERRAL_TOOLTIPS,
+      respondsWithinOptions: Denormalized.fetch(:respondsWithinOptions),
+      respondsWithinSummaryLabels: Denormalized.fetch(:respondsWithinSummaryLabels),
+      dayKeys: Schedule::DAY_HASH,
+      careProviders: Denormalized.fetch(:healthcare_providers),
+      waittimeLabels: Specialist::WAITTIME_LABELS,
+      teleserviceFeeTypes: Teleservice::SERVICE_TYPES.map do |key, value|
+        [ key, value.downcase ]
+      end.to_h
     })
 
     render text: json, content_type: "application/json"
