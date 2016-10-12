@@ -24,14 +24,14 @@ const setupSpecialistVisibilityToggle = _.partialRight(
 const setupGeneralInformation = () => {
   setupSpecialistVisibilityToggle(
     [
-      { name: "availability", truthyVal: "13"},
+      { name: "availability", truthyVal: "1"},
       { name: "has_offices", truthyVal: true }
     ],
     "accepting_new_direct_referrals"
   );
   setupSpecialistVisibilityToggle(
     [
-      { name:  "availability", truthyVal: "13" },
+      { name:  "availability", truthyVal: "1" },
       { name: "has_offices", truthyVal: true },
       { name: "accepting_new_direct_referrals", truthyVal: true }
     ],

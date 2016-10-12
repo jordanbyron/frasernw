@@ -20,15 +20,20 @@ const generate_button_name = (form_element_id_array) =>{
 }
 
 const compareFormElement = (form_element_id_array, new_entry_value, options) => {
-  var highlight_changes = options.highlightChanges;
+  let highlight_changes = options.highlightChanges;
+  let form_element;
+  let old_value_formatted;
+  let checkbox_selector;
+  let old_entry_value;
+  let radio_selector;
   // console.log(form_element_id_array + " : " + new_entry_value)
   if ( $.isArray( new_entry_value ) )
   {
     //try as array of checkboxes
-    let checkbox_selector = "input:checkbox[name='" + generate_button_name(form_element_id_array) + "[]']"
+    checkbox_selector = "input:checkbox[name='" + generate_button_name(form_element_id_array) + "[]']"
     // console.log(checkbox_selector);
 
-    let form_element = $(checkbox_selector);
+    form_element = $(checkbox_selector);
 
     if (form_element)
     {
@@ -62,12 +67,12 @@ const compareFormElement = (form_element_id_array, new_entry_value, options) => 
   }
 
   //try just as id
-  let form_element = $('#' + form_element_id_array.join('_'));
+  form_element = $('#' + form_element_id_array.join('_'));
 
   if (!form_element || form_element.length != 1)
   {
     //try as radio button
-    let radio_selector = "input:radio[name='" + generate_button_name(form_element_id_array) + "']:checked"
+    radio_selector = "input:radio[name='" + generate_button_name(form_element_id_array) + "']:checked"
     form_element = $(radio_selector);
   }
 
@@ -79,7 +84,6 @@ const compareFormElement = (form_element_id_array, new_entry_value, options) => 
 
   //console.log("tag: " + form_element.prop("tagName"));
 
-  let old_entry_value;
   switch(form_element.prop("tagName"))
   {
     case('INPUT'):
@@ -95,7 +99,7 @@ const compareFormElement = (form_element_id_array, new_entry_value, options) => 
             $("input:radio[name='" + generate_button_name(form_element_id_array) + "'][value='" + new_entry_value + "']").prop('checked', true);              //check new value
             if (highlight_changes)
             {
-              let old_value_formatted = form_element.closest('label').text()
+              old_value_formatted = form_element.closest('label').text()
               show_old_value(form_element, old_value_formatted);
             }
           }
@@ -142,7 +146,7 @@ const compareFormElement = (form_element_id_array, new_entry_value, options) => 
         form_element.val(new_entry_value);
         if (highlight_changes)
         {
-          let old_value_formatted = old_entry_value != "" ? old_entry_value : "blank";
+          old_value_formatted = old_entry_value != "" ? old_entry_value : "blank";
           show_old_value(form_element, old_value_formatted);
         }
       }
@@ -155,7 +159,7 @@ const compareFormElement = (form_element_id_array, new_entry_value, options) => 
         form_element.val(new_entry_value);
         if (highlight_changes)
         {
-          let old_value_formatted = old_entry_value != "" ? $('#' + form_element_id_array.join('_') + ' option[value=\'' + old_entry_value + '\']').text(): "blank";
+          old_value_formatted = old_entry_value != "" ? $('#' + form_element_id_array.join('_') + ' option[value=\'' + old_entry_value + '\']').text(): "blank";
           show_old_value(form_element, old_value_formatted);
         }
       }

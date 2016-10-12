@@ -14,7 +14,7 @@
 :javascript
   $(document).ready(function(){
     if(window.pathways.formData && window.pathways.formData.overlayChanges){
-      window.pathways.referentForms.overlayFormChanges(formData);
+      window.pathways.referentForms.overlayFormChanges(window.pathways.formData);
     }
 
     window.pathways.referentForms.emphasizeLocationTabs();
