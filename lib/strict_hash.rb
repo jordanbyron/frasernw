@@ -1,11 +1,21 @@
-class StrictHash
-  def initialize(wrapped)
-    @wrapped = Hash.new{|hash, key| raise "Key #{key} doesn't exist" }.update(
-      wrapped
-    )
+class StrictHash < Hash
+  def initialize(hsh)
+    super.update(hsh)
   end
 
-  def method_missing(method, *args)
-    @wrapped.send(method, *args)
+  def [](key)
+    if self.include?(key)
+      super(key)
+    else
+      raise "Key '#{key}' not found"
+    end
+  end
+
+  def key(val)
+    if super(val).nil?
+      raise "Key not found for value '#{val}'"
+    else
+      super(val)
+    end
   end
 end

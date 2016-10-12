@@ -72,7 +72,7 @@ class BreakupStatus < ActiveRecord::Migration
       when 12 #deceased
         Specialist::AVAILABILITY_LABELS.key(:deceased)
       else
-        Specialist::AVAILABILITY_LABELS.key(:available)
+        Specialist::AVAILABILITY_LABELS.key(:available_for_work)
       end
     },
     retirement_date: ->(specialist){
