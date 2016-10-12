@@ -272,7 +272,7 @@
   }
 
   var highlightNewNote = function(review_item) {
-    $('div[edit_source_id="' + review_item.secret_token_id + '"]').
+    $('li[review_node_id="' + review_item.review_id + '"]').
       addClass('changed');
   }
 

@@ -1,19 +1,18 @@
--# (item, nodes)
+/ (item, nodes)
 
 %ol
   - nodes.each_with_index do |history_node, index|
-    %li.history__node{ style: "margin-bottom: 30px" }
+    %li.history__node{ style: "margin-bottom: 30px",
+    review_node_id: review_node_id(history_node) }
       %p.history__line_item{ id: "history_node_#{index}" }
         - if history_node.review?
           %span= history_node.user
           %span= "accepted changes made by"
           %span= history_node.secret_editor.name
-          %span= "(#{history_node.date})"
         - elsif history_node.target_is?(item)
           %span= history_verb(history_node, item, capitalize: true)
           %span= " by "
           %span= history_node.user
-          %span= "(#{history_node.date})"
         - else
           %span= history_node.user
           %span= history_verb(history_node, item)
@@ -25,11 +24,10 @@
             - else
               = history_node.target
           %span= history_node.annotation
-          %span= "(#{history_node.date})"
+        %span= "(#{history_node.date})"
       - if history_node.has_note?
         .well{ style: "width: 400px" }
-          .history__note{ id: "history_note_#{index}",
-            edit_source_id: edit_source_id(history_node) }
+          .history__note{ id: "history_note_#{index}" }
             - if history_node.raw.target.is_a?(Note)
               = BlueCloth.new(history_node.note).to_html.html_safe
             - else

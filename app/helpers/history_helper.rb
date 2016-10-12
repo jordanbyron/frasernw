@@ -46,9 +46,9 @@ module HistoryHelper
     end
   end
 
-  def edit_source_id(node)
-    if node.raw.target.respond_to?(:edit_source_id)
-      node.raw.target.edit_source_id
+  def review_node_id(node)
+    if node.has_note? && node.raw.target.respond_to?(:id)
+      node.raw.target.id.to_s
     end
   end
 end
