@@ -13,7 +13,7 @@
   - if @specialist.hidden?
     %h5= " (Hidden from users)"
   %h3.specialty_links
-    = specialist_specializations_listing(@specialist)
+    = specialist_specializations_listing(@specialist).html_safe
   - if @specialist.sex? && @specialist.padded_billing_number.present?
     %h5= " #{@specialist.sex}, MSP ##{@specialist.padded_billing_number}"
   - elsif @specialist.sex?

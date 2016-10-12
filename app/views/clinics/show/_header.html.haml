@@ -11,7 +11,7 @@
     %h5= " (Hidden from users)"
 
   %h3.specialty_links
-    = clinic_specializations_listing(@clinic)
+    = clinic_specializations_listing(@clinic).html_safe
 
   %p.space.no_indent
     %i{ class: @clinic.referral_icon_classes }
@@ -20,11 +20,6 @@
       %p
         It may be out of our current catchment area, or in a
         speciality we have yet to fully survey.
-
-    - if @clinic.specialists.any?
-      %p.space.no_indent.attending_specialists
-        %strong Specialists that work in this clinic:
-        != specialists_who_work_in(@clinic)
 
     - if @clinic.completed_survey? && @clinic.is_open?
       - if @clinic.status_details.present?

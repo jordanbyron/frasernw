@@ -1,6 +1,6 @@
 module SpecialistsHelper
   def clinic_associations(clinics)
-    clinics.map do |clinic|
+    clinics.uniq.map do |clinic|
       if clinic.hidden?
         clinic.name
       else
@@ -27,7 +27,7 @@ module SpecialistsHelper
       )
     end
 
-    listing.html_safe
+    listing
   end
 
   def show_specialist_section?(specialist, section_key)
