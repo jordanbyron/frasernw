@@ -16,7 +16,7 @@ class StaticPagesController < ApplicationController
 
   private
 
-  def omit_contact_modal
-    true
+  def show_contact_modal
+    false
   end
 end

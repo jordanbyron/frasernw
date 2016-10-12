@@ -6,7 +6,7 @@
   $(document).ready(function() { update_favorites() });
 
 .content-wrapper
-  .content#front{ style: front_top_margin_style(current_user) }
+  .content#front{ style: current_user.as_admin_or_super? && 'margin-top: -15px' }
 
     - if current_user.as_admin_or_super?
       .row
@@ -24,7 +24,7 @@
           - @news_items.each do |news_item|
             .news_item.breaking
               .news_item_date= news_item.date if news_item.date.present?
-              %div{ class: news_item_class(news_item) }
+              %div{ class: FrontHelper.news_item_class(news_item) }
                 = news_item.title if news_item.title.present?
               .news_item_body
                 = BlueCloth.new(news_item.body).to_html.html_safe
@@ -39,7 +39,8 @@
             %li
               = link_to specialization.name,
                 specialization,
-                class: front_specialty_class(specialization, *@as_divisions)
+                class: FrontHelper.specialty_class(specialization,
+                  *@as_divisions)
               - if specialization.new_for_divisions?(@as_divisions)
                 %span.new new
 
@@ -127,7 +128,7 @@
 
             .news_item
               .news_item_date= news_item.date if news_item.date.present?
-              %div{ class: news_item_class(news_item) }
+              %div{ class: FrontHelper.news_item_class(news_item) }
                 = news_item.title if news_item.title.present?
               .news_item_body
                 = BlueCloth.new(news_item.body).to_html.html_safe
@@ -147,7 +148,7 @@
 
             .news_item
               .news_item_date= news_item.date if news_item.date.present?
-              %div{ class: news_item_class(news_item) }
+              %div{ class: FrontHelper.news_item_class(news_item) }
                 = news_item.title if news_item.title.present?
               .news_item_body
                 = BlueCloth.new(news_item.body).to_html.html_safe
@@ -169,7 +170,7 @@
 
             .news_item
               .news_item_date= news_item.date if news_item.date.present?
-              %div{ class: news_item_class(news_item) }
+              %div{ class: FrontHelper.news_item_class(news_item) }
                 = news_item.title if news_item.title.present?
               .news_item_body
                 = BlueCloth.new(news_item.body).to_html.html_safe

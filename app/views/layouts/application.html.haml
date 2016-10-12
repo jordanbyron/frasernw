@@ -510,7 +510,7 @@
               .alert.alert-success= msg
             = yield
 
-      - unless omit_contact_modal
+      - if show_contact_modal
         .row
           #email.content-wrapper
             = link_to "Contact Us",

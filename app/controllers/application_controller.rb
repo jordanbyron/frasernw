@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   check_authorization
 
-  helper_method :omit_contact_modal
+  helper_method :show_contact_modal
 
   rescue_from CanCan::AccessDenied do |exception|
     if current_user.as_introspective?
@@ -48,7 +48,7 @@ class ApplicationController < ActionController::Base
 
   protected
 
-  def omit_contact_modal
-    false
+  def show_contact_modal
+    true
   end
 end
