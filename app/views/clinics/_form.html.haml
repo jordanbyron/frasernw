@@ -23,7 +23,8 @@
 
     = render "clinics/form/info_for_patients", f: f
 
-    = render "clinics/form/associations", f: f
+    - if current_user.as_admin_or_super? && !@form_modifier.token_edit?
+      = render "clinics/form/associations", f: f
 
     = hidden_field_tag :pre_edit_form_data
     = hidden_field_tag :secret_token_id, @secret_token_id
