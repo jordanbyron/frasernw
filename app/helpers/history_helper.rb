@@ -47,7 +47,7 @@ module HistoryHelper
   end
 
   def review_node_id(node)
-    if node.has_note? && node.raw.target.respond_to?(:id)
+    if node.target_klass == ReviewItem && node.has_note?
       node.raw.target.id.to_s
     end
   end

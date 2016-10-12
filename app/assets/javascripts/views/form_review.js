@@ -271,8 +271,8 @@
     }
   }
 
-  var highlightNewNote = function(review_item) {
-    $('li[review_node_id="' + review_item.review_id + '"]').
+  var highlightNewNote = function(formData) {
+    $('li[review_node_id="' + formData.reviewId + '"]').
       addClass('changed');
   }
 
@@ -320,7 +320,7 @@
       mimicBeforeEdit();
     }
     overlayUserChanges();
-    highlightNewNote(formData.reviewItem);
+    highlightNewNote(formData);
     maskLocationInputs();
 // ensure edited '.scheduled' elements are visible
     $(".scheduled").each(scheduled_changed);

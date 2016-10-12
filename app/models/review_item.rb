@@ -58,7 +58,7 @@ class ReviewItem < ActiveRecord::Base
     encode form_data_matcher(parent).new(
       decoded_review_object,
       parent
-    ).exec.to_hash.merge({ review_id: self.id })
+    ).exec.to_hash
   end
 
   def form_data_matcher(parent)
