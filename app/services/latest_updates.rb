@@ -309,7 +309,8 @@ class LatestUpdates < ServiceObject
               item_type: "Specialist",
               event_code: LatestUpdates.event_code(:retired),
               division_id: division.id,
-              date: LatestUpdates.event_date(specialist, :retired?),
+              date: (specialist.retirement_date ||
+                LatestUpdates.event_date(specialist, :retired?)),
               markup: LatestUpdates::MARKUP["Specialist"][:retired].call(specialist)
             }
           }
@@ -322,7 +323,7 @@ class LatestUpdates < ServiceObject
               item_type: "Specialist",
               event_code: LatestUpdates.event_code(:retiring),
               division_id: division.id,
-              date: LatestUpdates.event_date(specialist, :retiring?),
+              date: LatestUpdates.event_date(specialist, :retirement_scheduled?),
               markup: LatestUpdates::MARKUP["Specialist"][:retiring].call(specialist)
             }
           }

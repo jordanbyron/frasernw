@@ -570,10 +570,6 @@ class Specialist < ActiveRecord::Base
     moved_away? || (retired? && retirement_date <= (Date.current - 2.years))
   end
 
-  def retiring?
-    available_for_work? && retirement_date && retirement_date > Date.current
-  end
-
   WAITTIME_LABELS = {
     1 => "Within one week",
     2 => "1-2 weeks",
