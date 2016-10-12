@@ -15,7 +15,7 @@
         %i (No details available)
     - else
       %p.space
-        %i{ class: clinic.status_class }
+        %i{ class: clinic.referral_icon_classes }
         %strong.status= clinic.status.end_with_period
       - if clinic.status_details.present?
         %p

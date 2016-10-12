@@ -36,7 +36,7 @@ module SpecialistsHelper
       specialist.available_for_work? &&
         (specialist.non_empty_offices.any? ||
           specialist.languages.any? ||
-          specialist.interpreter_avialable)
+          specialist.interpreter_available)
     when :referrals
       specialist.available_for_work? &&
       specialist.accepting_new_direct_referrals? &&
