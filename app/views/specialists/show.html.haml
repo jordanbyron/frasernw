@@ -402,7 +402,7 @@
 
           - elsif show_clinic_details
 
-            - @specialist.clinics.reject(&:closed?).each do |clinic|
+            - @specialist.clinics.reject(&:closed?).uniq.each do |clinic|
 
               - clinic_locations = clinic.clinic_locations.sort_by(&:created_at).reject(&:empty?).select{ |cl| @specialist.clinic_locations.include?(cl) }
 
