@@ -316,7 +316,7 @@ class LatestUpdates < ServiceObject
           }
         },
         {
-          test: -> (specialist) { specialist.retiring? },
+          test: -> (specialist) { specialist.retirement_scheduled? },
           event: -> (specialist, division) {
             {
               item_id: specialist.id,
