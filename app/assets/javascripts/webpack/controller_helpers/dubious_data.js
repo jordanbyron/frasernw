@@ -48,7 +48,8 @@ export const DubiousDateRanges = [
     label: (model) => {
       return(
         "Due to a programming error, content item page views for June 2016 " +
-        "may be slightly inflated."
+        "may be slightly inflated.  By extrapolating from trends, we estimate " +
+        "the error to be about 20% inflation."
       );
     }
   }

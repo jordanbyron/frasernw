@@ -891,7 +891,7 @@ class Specialist < ActiveRecord::Base
   end
 
   def open_clinics
-    @open_clinics ||= clinics.select(&:is_open?)
+    @open_clinics ||= clinics.select(&:is_open?).uniq
   end
 
 private
