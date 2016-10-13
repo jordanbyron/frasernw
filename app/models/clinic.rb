@@ -489,15 +489,14 @@ class Clinic < ActiveRecord::Base
       uniq
   end
 
-<<<<<<< HEAD
   def unavailable_for_a_while?
     !is_open? && closure_date.present? && closure_date <= (Date.current - 2.years)
-=======
+  end
+  
   def locations_showing_attendances
     @locations_showing_attendances ||= clinic_locations.select do |location|
       location.resolved_address.present? &&
         location.attendances.select(&:show?).any?
     end
->>>>>>> attendances-by-location
   end
 end

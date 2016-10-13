@@ -4,6 +4,7 @@ export default function overlayFormChanges(formData){
     // roll back to the version the user would have seen before they started editing
     mimicBeforeEdit(formData);
   }
+  highlightNewNote(formData);
   overlayUserChanges(formData);
 }
 
@@ -13,6 +14,11 @@ const show_old_value = (form_element, old_value_formatted) => {
   help_span.addClass('help-inline');
   help_span.text("Was: " + old_value_formatted);
   form_element.parent().append(help_span);
+}
+
+const highlightNewNote = function(formData) {
+  $('li[review_node_id="' + formData.reviewId + '"]').
+    addClass('changed');
 }
 
 const generate_button_name = (form_element_id_array) =>{
