@@ -20,4 +20,16 @@ module FrontHelper
       "Pathways Newsletter"
     end
   end
+
+  def self.news_item_class(news_item)
+    news_item.date.present? ? "news_item_title" : "news_item_date"
+  end
+
+  def self.specialty_class(specialization, *divisions)
+    if specialization.hidden_in?(*divisions)
+      "hidden-from-users"
+    else
+      "hoverlabel"
+    end
+  end
 end

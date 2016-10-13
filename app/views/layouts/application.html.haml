@@ -510,11 +510,12 @@
               .alert.alert-success= msg
             = yield
 
-      .row
-        #email.content-wrapper
-          = link_to "Contact Us",
-            "javascript:void(0)",
-            onclick: open_feedback_modal
+      - if show_contact_modal
+        .row
+          #email.content-wrapper
+            = link_to "Contact Us",
+              "javascript:void(0)",
+              onclick: open_feedback_modal
     #loading
       #loading-spinner
 
