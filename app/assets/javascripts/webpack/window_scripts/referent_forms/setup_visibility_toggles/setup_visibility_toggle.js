@@ -1,43 +1,43 @@
-export default function setupVisibilityToggle(parentFields, effected, recordType){
+export default function setupVisibilityToggle(parentFields, affected, recordType){
   const parentInputSelector = parentFields.map(function(field){
     return `#${recordType}_${field.name}`;
   }).join(", ");
 
   $(parentInputSelector).change(function(e){
-    doSideEffects(parentFields, effected, recordType);
+    doSideEffects(parentFields, affected, recordType);
   });
-  doSideEffects(parentFields, effected, recordType)
+  doSideEffects(parentFields, affected, recordType)
 }
 
-const doSideEffects = (parentFields, effected, recordType) => {
+const doSideEffects = (parentFields, affected, recordType) => {
   if(parentFields.every(function(field) {
     return typeAdjustedInputValue(field.name, recordType) == field.truthyVal
   })){
-    showAffected(effected, recordType);
+    showAffected(affected, recordType);
   }
   else {
-    hideAffected(effected, recordType);
+    hideAffected(affected, recordType);
   }
 }
 
-const showAffected = (effected, recordType) => {
-  if(effected.indexOf("section") !== -1){
-    $(`#${effected}`).show();
+const showAffected = (affected, recordType) => {
+  if(affected.indexOf("section") !== -1){
+    $(`#${affected}`).show();
   }
   else{
-    $(`.${recordType}_${effected}`).show()
+    $(`.${recordType}_${affected}`).show()
   }
 }
 
-const hideAffected = (effected, recordType) =>{
-  if(effected.indexOf("section") !== -1){
-    $(`#${effected}`).hide();
+const hideAffected = (affected, recordType) =>{
+  if(affected.indexOf("section") !== -1){
+    $(`#${affected}`).hide();
   }
   else{
-    $(`.${recordType}_${effected}`).
+    $(`.${recordType}_${affected}`).
       hide()
 
-    const childCheckbox = $(`#${recordType}_${effected}`)[0]
+    const childCheckbox = $(`#${recordType}_${affected}`)[0]
     if (childCheckbox){
       $(childCheckbox).attr("checked", false)
     }
