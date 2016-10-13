@@ -80,7 +80,7 @@
               %th= city.name
               %td= check_box_tag "city_#{city.id}",
                 1,
-                included_city(city),
+                @local_referral_cities.include?(city.id) && @local_referral_cities[city.id].present?,
                 name: "city[#{city.id}]",
                 class: "city_check"
     .span10{ style: "overflow-x:scroll" }
@@ -96,7 +96,7 @@
                 %td
                   = check_box_tag "#{city.id}_#{specialization.id}",
                     1,
-                    included_specialization(city, specialization),
+                    (@local_referral_cities[city.id].present?) && (@local_referral_cities[city.id].include? specialization.id),
                     name: "local_referral_cities[#{city.id}][#{specialization.id}]",
                     class: "city_#{city.id} city_specialization"
 
@@ -139,8 +139,7 @@
     checkboxId: "division_use_customized_city_priorities"
   })
 
-  function selection_checked(checkbox)
-  {
+  function selection_checked(checkbox) {
     var selection_class = "." + $(checkbox).prop('id');
     $(selection_class).prop('checked',($(checkbox).prop('checked')));
     return true;
@@ -154,8 +153,7 @@
     selection_checked(this);
   });
 
-  function update_selection(selection)
-  {
+  function update_selection(selection) {
     var selection_id = "#" + selection;
     var selection_class = "." + selection;
     var all = true;
@@ -176,20 +174,15 @@
     return true;
   }
 
-  function divisional_specialization_checked(checkbox)
-  {
+  function divisional_specialization_checked(checkbox) {
     var division_id = "division_" + $(checkbox).prop('id').split('_')[0];
     return update_selection(division_id)
   }
   $('.division_specialization').click(function() {
     divisional_specialization_checked(this);
   });
-  $(document).ready(function() {
-    update_selection("division_#{Division.provincial.id}")
-  });
 
-  function city_specialization_checked(checkbox)
-  {
+  function city_specialization_checked(checkbox) {
     var city_id = "city_" + $(checkbox).prop('id').split('_')[0];
     return update_selection(city_id)
   }
@@ -197,8 +190,10 @@
     city_specialization_checked(this);
   });
 
-- City.all.each do |city|
-  :javascript
-    $(document).ready(function() {
-      update_selection("city_#{city.id}");
+  var all_city_ids = #{City.select(&:id).map(&:id)};
+  $(document).ready(function() {
+    update_selection("division_#{Division.provincial.id}");
+    all_city_ids.forEach(function(city_id) {
+      update_selection("city_" + city_id);
     });
+  });
