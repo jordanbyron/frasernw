@@ -17,10 +17,13 @@
           = render "specialists/show/office_information"
 
           = render "specialists/show/referrals"
+
           = render "specialists/show/urgent_referrals"
 
           - if @specialist.available_for_work? && @specialist.teleservices.any?(&:offered?)
             = render "teleservices/index", provider: @specialist
+
+          = render "specialists/show/patient_information"
 
           = render "specialists/show/basic_associations"
 

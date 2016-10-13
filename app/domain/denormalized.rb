@@ -120,7 +120,7 @@ module Denormalized
               try(:convert_newlines_to_br),
             isAvailable: specialist.available_for_work?,
             availabilityKnown: specialist.availability_known?,
-            unavailableForAwhile: specialist.unavailable_for_awhile?,
+            unavailableForAWhile: specialist.unavailable_for_a_while?,
             hidden: specialist.hidden?,
           })
         end
@@ -189,7 +189,7 @@ module Denormalized
               try(:convert_newlines_to_br),
             availabilityKnown: clinic.availability_known?,
             hidden: clinic.hidden?,
-            unavailableForAwhile: clinic.unavailable_for_awhile?,
+            unavailableForAWhile: clinic.unavailable_for_a_while?,
           })
         end
       end

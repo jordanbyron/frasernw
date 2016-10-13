@@ -221,12 +221,7 @@ class Specialist < ActiveRecord::Base
   end
 
   def self.in_cities(c)
-  #for specialists that haven't responded or are purosely not yet surveyed we just
-  # try to grab any city that makes sense
-    city_ids = Array.wrap(c).map{ |city| city.id }.sort
-
-    # responded_* location searches exclude specialist with CATEGORIZATION_3:
-    # "Only works out of hospitals or clinics"
+    city_ids = Array.wrap(c).map(&:id).sort
     from_own_office = joins(
       'INNER JOIN "specialist_offices" '\
         'ON "specialists"."id" = "specialist_offices"."specialist_id" '\
@@ -324,8 +319,6 @@ class Specialist < ActiveRecord::Base
       true
     )
 
-    # hoc_* location searches exclude specialists with CATEGORIZATION_1:
-    # "Responded to survey"
     from_hospital = joins(
       'INNER JOIN "privileges" '\
         'ON "specialists"."id" = "privileges"."specialist_id" '\
@@ -495,7 +488,7 @@ class Specialist < ActiveRecord::Base
         "#{works_out_of_label}, and in general all referrals should be made " +
         "through #{referrals_through_label}.")
     elsif available_for_work? && accepting_new_direct_referrals? && direct_referrals_limited?
-      ("This specialist is accepting limited new referrals by geography " +
+      ("This specialist is accepting new referrals limited by geography " +
           "or number of patients.")
     elsif available_for_work? && leave_scheduled?
       ("This specialist will be unavailable between " +
@@ -566,7 +559,7 @@ class Specialist < ActiveRecord::Base
     has_offices? && accepting_new_direct_referrals?
   end
 
-  def unavailable_for_awhile?
+  def unavailable_for_a_while?
     moved_away? || (retired? && retirement_date <= (Date.current - 2.years))
   end
 

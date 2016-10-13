@@ -9,7 +9,7 @@ export const preliminaryFilterKeys = ((collectionName) => {
     return [
       "availabilityKnown",
       "notHidden",
-      "unavailableForAwhile"
+      "unavailableForAWhile"
     ];
   }
   else if (collectionName === "contentItems") {

@@ -4,8 +4,8 @@ export const availabilityKnown = (record) => {
   return record.availabilityKnown;
 }
 
-export const unavailableForAwhile = (record) => {
-  return !record.unavailableForAwhile;
+export const unavailableForAWhile = (record) => {
+  return !record.unavailableForAWhile;
 }
 
 export const matchesUserDivisions = (record, model) => {

@@ -25,6 +25,10 @@
           - if @clinic.teleservices.any?(&:offered?)
             = render "teleservices/index", provider: @clinic
 
+          = render "clinics/show/patient_information"
+
+          = render "clinics/show/healthcare_provider"
+
           = render "clinics/show/physicians"
 
         = render "clinics/show/sidebar"

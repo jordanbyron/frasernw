@@ -250,7 +250,7 @@ class Clinic < ActiveRecord::Base
     if !completed_survey?
       "It is unknown whether this clinic is accepting new referrals."
     elsif is_open? && accepting_new_referrals? && referrals_limited?
-      "This clinic is accepting limited new referrals by geography or number of patients."
+      "This clinic is accepting new referrals limited by geography or number of patients."
     elsif is_open? && accepting_new_referrals?
       "This clinic is accepting new referrals."
     elsif is_open?
@@ -491,7 +491,7 @@ class Clinic < ActiveRecord::Base
       uniq
   end
 
-  def unavailable_for_awhile?
+  def unavailable_for_a_while?
     !is_open? && closure_date.present? && closure_date <= (Date.current - 2.years)
   end
 end

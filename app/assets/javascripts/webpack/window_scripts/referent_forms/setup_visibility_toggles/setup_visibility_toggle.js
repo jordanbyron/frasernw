@@ -13,14 +13,14 @@ const doSideEffects = (parentFields, effected, recordType) => {
   if(parentFields.every(function(field) {
     return typeAdjustedInputValue(field.name, recordType) == field.truthyVal
   })){
-    showEffected(effected, recordType);
+    showAffected(effected, recordType);
   }
   else {
-    hideEffected(effected, recordType);
+    hideAffected(effected, recordType);
   }
 }
 
-const showEffected = (effected, recordType) => {
+const showAffected = (effected, recordType) => {
   if(effected.indexOf("section") !== -1){
     $(`#${effected}`).show();
   }
@@ -29,7 +29,7 @@ const showEffected = (effected, recordType) => {
   }
 }
 
-const hideEffected = (effected, recordType) =>{
+const hideAffected = (effected, recordType) =>{
   if(effected.indexOf("section") !== -1){
     $(`#${effected}`).hide();
   }
