@@ -45,7 +45,7 @@
 
       %p.space
         %strong Referrals:
-        %span{ class: @specialist.status_class }
+        %span{ class: @specialist.referral_icon_classes }
         = "<a href='#{clinic_path(clinic)}'>Full contact and referral details</a>".html_safe
 
   - if @specialist.hospitals.any?
