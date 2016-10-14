@@ -19,6 +19,7 @@ class BreakupClinicStatus < ActiveRecord::Migration
     end
 
     UpdateClinicClosure.call
+    Clinic.where(completed_survey: false).update_all(hidden: true)
   end
 
   NEW_CLINIC_ATTRIBUTES = {

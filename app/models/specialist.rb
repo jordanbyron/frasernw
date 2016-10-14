@@ -517,7 +517,7 @@ class Specialist < ActiveRecord::Base
     if open_clinics.none? && hospitals.none?
       _returning = ", but we do not yet have data on which ones"
     else
-      _returning = ". For referral information please see "
+      _returning = ". For referral information please see the profiles for "
 
       if open_clinics.one? && hospitals.none?
         _returning += "this clinic."

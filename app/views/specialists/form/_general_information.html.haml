@@ -13,8 +13,9 @@
 = f.input :billing_number,
   as: :string,
   input_html: { value: @specialist.padded_billing_number }
-= f.input :completed_survey,
-  label: "Responded to survey?"
+= f.input :completed_survey
+- if current_user.as_admin_or_super?
+  = f.input :hidden, label: "Hide from users"
 = f.input :availability,
   label: "Available for work?",
   as: :select,
@@ -58,7 +59,6 @@
 = f.input :is_gp
 
 - if current_user.as_admin_or_super?
-  = f.input :hidden, label: "Hide from users"
   = f.input :is_internal_medicine,
     label: "Show 'Internal Medicine' Tag",
     hint: "Please only use this tag when linking an Internal Medicine specialist to another specialty in which they do not have a fellowship."

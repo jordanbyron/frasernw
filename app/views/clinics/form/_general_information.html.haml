@@ -1,6 +1,8 @@
 %h3 General Information
 = f.input :name
 = f.input :completed_survey
+- if current_user.as_admin_or_super?
+  = f.input :hidden, label: "Hide from users"
 = f.input :is_open,
   label: "Is open?"
 = f.input :closure_scheduled,
@@ -16,8 +18,6 @@
 = f.input :referrals_limited,
   label: "Referrals limited by geography or # of patients?",
   wrapper_html: { class: "form__wrapper--double-indented" }
-- if current_user.as_admin_or_super?
-  = f.input :hidden, label: "Hide from users"
 = f.input :status_details
 = f.input :limitations
 = f.association :specializations,

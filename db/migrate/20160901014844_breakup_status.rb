@@ -23,6 +23,7 @@ class BreakupStatus < ActiveRecord::Migration
     end
 
     UpdateSpecialistAvailability.call
+    Specialist.where(completed_survey: false).update_all(hidden: true)
   end
 
   NEW_SPECIALIST_ATTRIBUTES = {
