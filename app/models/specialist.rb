@@ -483,17 +483,17 @@ class Specialist < ActiveRecord::Base
   def referral_summary
     if !completed_survey? || !availability_known?
       "It is unknown whether this specialist is accepting new referrals."
-    elsif available_for_work? && !accepting_new_direct_referrals? && accepting_new_direct_referrals?
-      "This specialist only works out of #{works_out_of_label}."
-    elsif available_for_work? && accepting_new_direct_referrals? && direct_referrals_limited?
-      ("This specialist is accepting new referrals limited by geography " +
-          "or number of patients.")
     elsif available_for_work? && leave_scheduled?
       ("This specialist will be unavailable between " +
         "#{unavailable_from.to_s(:long_ordinal)} and" +
         " #{unavailable_to.to_s(:long_ordinal)}.")
     elsif available_for_work? && retirement_scheduled?
       "This specialist will retire on #{retirement_date.to_s(:long_ordinal)}."
+    elsif available_for_work? && !accepting_new_direct_referrals?
+      "This specialist only works out of #{works_out_of_label}."
+    elsif available_for_work? && accepting_new_direct_referrals? && direct_referrals_limited?
+      ("This specialist is accepting new referrals limited by geography " +
+          "or number of patients.")
     elsif available_for_work? && accepting_new_direct_referrals?
       "This specialist is accepting new referrals"
     elsif deceased?
