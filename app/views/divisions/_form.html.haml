@@ -190,7 +190,7 @@
     city_specialization_checked(this);
   });
 
-  var all_city_ids = #{City.select(&:id).map(&:id)};
+  var all_city_ids = #{City.all.map(&:id)};
   $(document).ready(function() {
     update_selection("division_#{Division.provincial.id}");
     all_city_ids.forEach(function(city_id) {
