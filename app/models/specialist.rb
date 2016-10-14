@@ -484,9 +484,7 @@ class Specialist < ActiveRecord::Base
     if !completed_survey? || !availability_known?
       "It is unknown whether this specialist is accepting new referrals."
     elsif available_for_work? && !accepting_new_direct_referrals? && accepting_new_direct_referrals?
-      ("This specialist only accepts referrals through " +
-        "#{works_out_of_label}, and in general all referrals should be made " +
-        "through #{referrals_through_label}.")
+      "This specialist only works out of #{works_out_of_label}."
     elsif available_for_work? && accepting_new_direct_referrals? && direct_referrals_limited?
       ("This specialist is accepting new referrals limited by geography " +
           "or number of patients.")
