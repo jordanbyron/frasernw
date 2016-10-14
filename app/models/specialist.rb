@@ -469,7 +469,7 @@ class Specialist < ActiveRecord::Base
       :question_mark
     elsif available_for_work? && (leave_scheduled? || retirement_scheduled?)
       :orange_warning
-    elsif available_for_work? && !accepting_new_direct_referrals?
+    elsif available_for_work? && !has_offices?
       :blue_arrow
     elsif available_for_work? && accepting_new_direct_referrals? && direct_referrals_limited?
       :orange_check
@@ -489,8 +489,10 @@ class Specialist < ActiveRecord::Base
         " #{unavailable_to.to_s(:long_ordinal)}.")
     elsif available_for_work? && retirement_scheduled?
       "This specialist will retire on #{retirement_date.to_s(:long_ordinal)}."
+    elsif available_for_work? && !has_offices?
+      "This specialist only works out of #{works_out_of_label}#{referrals_through_label}"
     elsif available_for_work? && !accepting_new_direct_referrals?
-      "This specialist only works out of #{works_out_of_label}."
+      "This specialist is only doing follow up on previous patients."
     elsif available_for_work? && accepting_new_direct_referrals? && direct_referrals_limited?
       ("This specialist is accepting new referrals limited by geography " +
           "or number of patients.")
@@ -513,26 +515,32 @@ class Specialist < ActiveRecord::Base
 
   def referrals_through_label
     if open_clinics.none? && hospitals.none?
-      "but we do not yet have data on which ones"
-    elsif open_clinics.one? && hospitals.none?
-      "and in general all referrals should be made through this clinic"
-    elsif hospital.one? && open_clinics.none?
-      "and in general all referrals should be made through this hospital"
-    elsif hospitals.many? && open_clinics.none?
-      "and in general all referrals should be made through these hospitals"
-    elsif open_clinics.many? && hospitals.none?
-      "and in general all referrals should be made through these clinics"
+      _returning = ", but we do not yet have data on which ones"
     else
-      "and in general all referrals should be made through these hospitals and clinics"
+      _returning = ". For referral information please see "
+
+      if open_clinics.one? && hospitals.none?
+        _returning += "this clinic."
+      elsif hospitals.one? && open_clinics.none?
+        _returning += "this hospital."
+      elsif hospitals.many? && open_clinics.none?
+        _returning += "these hospitals."
+      elsif open_clinics.many? && hospitals.none?
+        _returning += "these clinics."
+      elsif open_clinics.many? && hospitals.many?
+        _returning += "these hospitals and clinics"
+      end
     end
+
+    _returning
   end
 
   def works_out_of_label
     if open_clinics.none? && hospitals.none?
-      ""
+      "hospitals or clinics."
     elsif open_clinics.one? && hospitals.none?
       "a clinic"
-    elsif hospital.one? && open_clinics.none?
+    elsif hospitals.one? && open_clinics.none?
       "a hospital"
     elsif hospitals.many? && open_clinics.none?
       "hospitals"

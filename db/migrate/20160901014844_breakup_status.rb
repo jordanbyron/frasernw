@@ -21,6 +21,8 @@ class BreakupStatus < ActiveRecord::Migration
       end
 
     end
+
+    UpdateSpecialistAvailability.call
   end
 
   NEW_SPECIALIST_ATTRIBUTES = {

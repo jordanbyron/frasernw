@@ -20,12 +20,12 @@ module SpecialistsHelper
       end
     end
 
-    specialist.specializations.not_family_practice.each do |specialization|
-      listing += link_to(
+    listing += specialist.specializations.not_family_practice.map do |specialization|
+      link_to(
         specialization.name,
         specialization_path(specialization)
       )
-    end
+    end.to_sentence
 
     listing
   end
@@ -64,6 +64,10 @@ module SpecialistsHelper
       specialist.available_for_work? &&
         !specialist.has_offices? &&
         specialist.hospital_clinic_details.present?
+    when :patient_information
+      specialist.available_for_work? &&
+        (specialist.patient_instructions.present? ||
+          specialist.cancellation_policy.present?)
     end
   end
 end

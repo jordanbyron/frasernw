@@ -16,8 +16,9 @@ class BreakupClinicStatus < ActiveRecord::Migration
           NEW_CLINIC_ATTRIBUTES.map{ |k, v| [ k, v.call(clinic) ] }.to_h
         )
       end
-
     end
+
+    UpdateClinicClosure.call
   end
 
   NEW_CLINIC_ATTRIBUTES = {
