@@ -455,7 +455,7 @@ class Specialist < ActiveRecord::Base
   end
 
   AVAILABILITY_LABELS = StrictHash.new({
-    1 => :available_for_work,
+    1 => :working,
     2 => :temporarily_unavailable,
     3 => :retired,
     4 => :indefinitely_unavailable,
@@ -467,13 +467,13 @@ class Specialist < ActiveRecord::Base
   def referral_icon_key
     if !completed_survey? || !availability_known?
       :question_mark
-    elsif available_for_work? && (leave_scheduled? || retirement_scheduled?)
+    elsif working? && (leave_scheduled? || retirement_scheduled?)
       :orange_warning
-    elsif available_for_work? && !has_offices?
+    elsif working? && !has_offices?
       :blue_arrow
-    elsif available_for_work? && accepting_new_direct_referrals? && direct_referrals_limited?
+    elsif working? && accepting_new_direct_referrals? && direct_referrals_limited?
       :orange_check
-    elsif available_for_work? && accepting_new_direct_referrals?
+    elsif working? && accepting_new_direct_referrals?
       :green_check
     else
       :red_x
@@ -483,33 +483,33 @@ class Specialist < ActiveRecord::Base
   def referral_summary
     if !completed_survey? || !availability_known?
       "It is unknown whether this specialist is accepting new referrals."
-    elsif available_for_work? && leave_scheduled?
-      ("This specialist will be unavailable between " +
+    elsif working? && leave_scheduled?
+      ("Will be unavailable between " +
         "#{unavailable_from.to_s(:long_ordinal)} and" +
         " #{unavailable_to.to_s(:long_ordinal)}.")
-    elsif available_for_work? && retirement_scheduled?
-      "This specialist will retire on #{retirement_date.to_s(:long_ordinal)}."
-    elsif available_for_work? && !has_offices?
-      "This specialist only works out of #{works_out_of_label}#{referrals_through_label}"
-    elsif available_for_work? && !accepting_new_direct_referrals?
-      "This specialist is only doing follow up on previous patients."
-    elsif available_for_work? && accepting_new_direct_referrals? && direct_referrals_limited?
-      ("This specialist is accepting new referrals limited by geography " +
+    elsif working? && retirement_scheduled?
+      "Will retire on #{retirement_date.to_s(:long_ordinal)}."
+    elsif working? && !has_offices?
+      "Only works out of #{works_out_of_label}#{referrals_through_label}"
+    elsif working? && !accepting_new_direct_referrals?
+      "Only doing follow up on previous patients."
+    elsif working? && accepting_new_direct_referrals? && direct_referrals_limited?
+      ("Accepting new referrals limited by geography " +
           "or number of patients.")
-    elsif available_for_work? && accepting_new_direct_referrals?
-      "This specialist is accepting new referrals"
+    elsif working? && accepting_new_direct_referrals?
+      "Accepting new referrals"
     elsif deceased?
-      "This specialist is deceased."
+      "Deceased."
     elsif retired?
-      "This specialist is retired."
+      "Retired."
     elsif moved_away?
-      "This specialist has moved away."
+      "Moved away."
     elsif temporarily_unavailable?
-      ("This specialist is unavailable from " +
+      ("Unavailable from " +
         "#{unavailable_from.to_s(:long_ordinal)} to" +
         " #{unavailable_to.to_s(:long_ordinal)}.")
     else
-      "This specialist is not accepting new referrals"
+      "Not accepting new referrals"
     end
   end
 

@@ -27,8 +27,7 @@
             collection: so.object.location_is_options,
             label_method: :last,
             value_method: :first,
-            input_html: { class: "location_is" },
-            "data-location-index" => index
+            input_html: { class: "location_is", "data-location-index" => index }
         %div{ class: "numbers_#{index}" }
           = so.input :phone do
             = so.input_field :phone, class: "span3"

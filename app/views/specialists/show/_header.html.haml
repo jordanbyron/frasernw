@@ -41,7 +41,7 @@
         %strong Details:
         = @specialist.hospital_clinic_details
 
-    - elsif @specialist.available_for_work?
+    - elsif @specialist.working?
       - if @specialist.status_details.present?
         %p.no_indent
           %strong Details:

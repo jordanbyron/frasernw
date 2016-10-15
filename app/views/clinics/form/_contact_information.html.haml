@@ -30,8 +30,7 @@
             collection: ClinicLocation::LOCATION_IS_OPTIONS,
             label_method: :last,
             value_method: :first,
-            "data-location-index" => index,
-            input_html: { class: "location_is" }
+            input_html: { class: "location_is", "data-location-index" => index }
         %div{ class: "numbers_#{index}" }
           = cl.input :phone do
             = cl.input_field :phone, class: "span3"

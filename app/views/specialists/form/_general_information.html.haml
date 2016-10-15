@@ -17,7 +17,7 @@
 - if current_user.as_admin_or_super?
   = f.input :hidden, label: "Hide from users"
 = f.input :availability,
-  label: "Available for work?",
+  label: "Availability",
   as: :select,
   collection: Specialist::AVAILABILITY_LABELS,
   value_method: :first,

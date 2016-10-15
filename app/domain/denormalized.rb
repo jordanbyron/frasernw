@@ -118,7 +118,7 @@ module Denormalized
             notPerformed: Denormalized.
               sanitize(specialist.not_performed).
               try(:convert_newlines_to_br),
-            isAvailable: specialist.available_for_work?,
+            isAvailable: specialist.working?,
             availabilityKnown: specialist.availability_known?,
             unavailableForAWhile: specialist.unavailable_for_a_while?,
             hidden: specialist.hidden?,
