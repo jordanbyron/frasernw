@@ -19,7 +19,7 @@
       %li
         %a{ href: "#no_division_tab", data: { toggle: "tab" } }
           %i.icon-warning-sign
-          %span= "No Division #{@no_division_specialists.length}"
+          %span= "No Division (#{@no_division_specialists.length})"
     .tab-content
       - @divisions_specialists.each do |division, specialists|
         .tab-pane{ id: "#{division.id}_tab" }

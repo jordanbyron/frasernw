@@ -398,7 +398,7 @@ class Specialist < ActiveRecord::Base
   end
 
   def self.no_division
-    @_specialist_no_division ||= self.all - self.in_divisions(Division.all)
+    self.all - self.in_divisions(Division.all)
   end
 
   def self.in_multiple_specialties

@@ -1,5 +1,5 @@
 - specialists = filter_specialists(specialization, division_specialists)
-- specialization_is_hidden = false
+- specialization_is_hidden = specialization.hidden_divisions.include?(division)
 - if specialists.any?
   %tr{ class: specialization_is_hidden ? "hidden-from-users" : "" }
     %th{:style => "width:100%"}= "#{specialization.name} (#{specialists.count})"

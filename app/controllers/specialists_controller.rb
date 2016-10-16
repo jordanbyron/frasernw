@@ -22,19 +22,15 @@ class SpecialistsController < ApplicationController
     end
 
     @divisions_specialists = Division.all.map do |division|
-      division_specialists = @specialists.select do |specialist|
-        (division.cities & specialist.cities).any?
-      end
+      division_specialists = @specialists.in_divisions(division)
 
       [
         division,
         division_specialists
       ]
     end.to_h
-    @no_division_specialists = @specialists.select do |specialist|
-      specialist.cities.none?
-    end
-    @user_divisions = current_user.as_divisions
+    @no_division_specialists = @specialists.no_division
+    @user_divisions = current_user.as_divisions.to_a
   end
 
   def show
