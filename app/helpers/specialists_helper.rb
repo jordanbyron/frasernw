@@ -70,4 +70,10 @@ module SpecialistsHelper
           specialist.cancellation_policy.present?)
     end
   end
+
+  def filter_specialists(specialization, specialists)
+    specialists.select do |specialist|
+      specialist.specializations.include?(specialization)
+    end
+  end
 end

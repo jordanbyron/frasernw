@@ -1,97 +1,49 @@
 - set_page_specific_title "Specialists"
 
 .content-wrapper
-  - if @specializations.length > 1
+  - if params[:specialization_id].present?
     %h2
-      All Specialists
-      = "<small>(#{Specialist.count} total)</small>".html_safe
+      %span= "All"
+      %span= @specialization.member_name.pluralize
+      %small= "#{@specialization.specialists.count} total)"
   - else
     %h2
-      All
-      = @specializations.first.member_name.pluralize
-      = "<small>(#{@specializations.first.specialists.count} total)</small>".html_safe
+      %span= "All Specialists"
+      %small= "(#{Specialist.count} total)"
   .tabbable
     %ul#content_tabs.nav.nav-tabs
-      - @all_divisions.each do |division|
+      - @divisions_specialists.each do |division, specialists|
         %li
-          - if @specializations.length > 1
-            %a{ href: "##{division.id}_tab", data: { toggle: "tab" } }
-              = "#{division.name} (#{Specialist.in_divisions(division).count})"
-          - else
-            %a{ href: "##{division.id}_tab", data: { toggle: "tab" } }
-              = "#{division.name} (#{@specializations.first.specialists.in_divisions(division).count})"
+          %a{ href: "##{division.id}_tab", data: { toggle: "tab" } }
+            = "#{division.name} (#{specialists.count})"
       %li
         %a{ href: "#no_division_tab", data: { toggle: "tab" } }
           %i.icon-warning-sign
-          No Division
-          - if @specializations.length > 1
-            = "(#{Specialist.no_division.count})"
-          - else
-            = "(#{@specializations.first.specialists.reject{|s| s.divisions.present?}.count})"
+          %span= "No Division #{@no_division_specialists.length}"
     .tab-content
-      - @all_divisions.each do |division|
-        - can_edit = @user_divisions.include? division
+      - @divisions_specialists.each do |division, specialists|
         .tab-pane{ id: "#{division.id}_tab" }
           %table.table.table-condensed.table-striped
-            - if @specializations.length > 1
-              %h3{ style: "font-family: bitter;" }
-                = division.present? ? division.name : "No Division"
-                Specialists
-                = "<small>(#{Specialist.in_divisions(division).count} total)</small>".html_safe
-            - else
-              %h3{ style: "font-family: bitter;" }
-                = @specializations.first.member_name.pluralize
-                in
-                = division.present? ? division.name : "No Division"
-                = "<small>(#{@specializations.first.specialists.in_divisions(division).count} total)</small>".html_safe
+            %h3{ style: "font-family: bitter;" }
+              %span= "#{division.name} Specialists"
+              %small= specialists.count
             - @specializations.each do |specialization|
-              - cache("specialists_index_#{specialization.cache_key}_#{specialization.specialists.cache_key}_#{division.cache_key}_#{can_edit}") do
-                - specialists = specialization.specialists.in_divisions([division]).sort{ |a,b| (a.lastname || "zzz") <=> (b.lastname || "zzz") }
-                - next if specialists.blank?
-                %tr{ class: specialization.hidden_in?(division) ? "hidden-from-users" : "" }
-                  %th{:style => "width:100%"}= "#{specialization.name} (#{specialists.count})"
-                  - if can_edit
-                    %th.admin
-
-                - specialists.each do |specialist|
-                  %tr
-                    %td= link_to specialist.name, specialist_path(specialist)
-                    - if can_edit
-                      %td{ style: "min-width: 60px" }
-                        = link_to edit_specialist_path(specialist),
-                          class: "btn btn-mini" do
-                          %i.icon-pencil
-                          %span= " Edit"
+              = render "specialists/index/division_specialization",
+                division_specialists: specialists,
+                division: division,
+                specialization: specialization,
+                user_divisions: @user_divisions
       .tab-pane{ id: "no_division_tab" }
         %table.table.table-condensed.table-striped
-          - if @specializations.length > 1
-            %h3{ style: "font-family: bitter;" }
-              No Division Specialists
-              = "<small>(#{Specialist.no_division.count} total)</small>".html_safe
-          - else
-            %h3{ style: "font-family: bitter;" }
-              = @specializations.first.member_name.pluralize
-              with No Division
-              = "<small>(#{@specializations.first.no_division_specialists.count} total)</small>".html_safe
-          - @specializations.select(&:no_division_specialists?).each do |specialization|
-            - cache("specialists_index_no_division_tab_#{specialization.cache_key}_#{specialization.specialists.cache_key}",
-              expires_in: 7.days) do
-              / expires_in used only as a fail safe in case recache fails
-              %tr
-                %th{ style: "width:100%" }
-                  = "#{specialization.name} (#{specialization.no_division_specialists.count})"
-                %th.admin
-
-              - specialization.no_division_specialists.sort_by{|specialist| [ specialist.lastname,
-                specialist.firstname ] }.each do |specialist|
-                %tr
-                  %td= link_to specialist.name, specialist_path(specialist)
-                  %td{ style: "min-width: 60px" }
-                    = link_to edit_specialist_path(specialist),
-                      class: "btn btn-mini" do
-                      %i.icon-pencil
-                      %span= " Edit"
-
+          %h3{ style: "font-family: bitter;" }
+            %span= "No Division Specialists"
+            %small= @no_division_specialists.count
+          - @specializations.each do |specialization|
+            = render "specialists/index/division_specialization",
+              division_specialists: @no_division_specialists,
+              division: nil,
+              specialization: specialization,
+              user_divisions: @user_divisions
 
 :javascript
   window.pathways.setupTabHistory();

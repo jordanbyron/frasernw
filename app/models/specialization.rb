@@ -29,6 +29,11 @@ class Specialization < ActiveRecord::Base
     through: :specialization_options,
     class_name: "User"
 
+  has_many :hidden_divisions,
+    -> { where(specialization_options: { hide_from_division_users: true}) },
+    through: :specialization_options,
+    source: :division
+
   has_many :division_referral_city_specializations, dependent: :destroy
 
   after_commit :flush_cache

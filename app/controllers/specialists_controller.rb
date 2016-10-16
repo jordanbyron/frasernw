@@ -9,13 +9,32 @@ class SpecialistsController < ApplicationController
 
   def index
     if params[:specialization_id].present?
-      @specializations = [Specialization.find(params[:specialization_id])]
+      @specialization = Specialization.
+        includes(:hidden_divisions).
+        find(params[:specialization_id])
+      @specializations = [ @specialization ]
+      @specialists = @specialization.
+        specialists.
+        includes(:specializations)
     else
-      @specializations = Specialization.all
+      @specializations = Specialization.all.includes(:hidden_divisions)
+      @specialists = Specialist.includes(:specializations)
     end
-    @all_divisions = Division.all
+
+    @divisions_specialists = Division.all.map do |division|
+      division_specialists = @specialists.select do |specialist|
+        (division.cities & specialist.cities).any?
+      end
+
+      [
+        division,
+        division_specialists
+      ]
+    end.to_h
+    @no_division_specialists = @specialists.select do |specialist|
+      specialist.cities.none?
+    end
     @user_divisions = current_user.as_divisions
-    @first_division = @user_divisions.first
   end
 
   def show
