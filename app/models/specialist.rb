@@ -527,7 +527,9 @@ class Specialist < ActiveRecord::Base
         _returning += "these hospitals."
       elsif open_clinics.many? && hospitals.none?
         _returning += "these clinics."
-      elsif open_clinics.many? && hospitals.many?
+      elsif ((open_clinics.many? && hospitals.many?) ||
+        (open_clinics.one? && hospitals.one?))
+
         _returning += "these hospitals and clinics"
       end
     end

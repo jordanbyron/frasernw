@@ -75,7 +75,12 @@ class BreakupStatus < ActiveRecord::Migration
       when 12 #deceased
         Specialist::AVAILABILITY_LABELS.key(:deceased)
       when nil
-        Specialist::AVAILABILITY_LABELS.key(:unknown)
+        # responded, not responded, not surveyed
+        if [1, 2, 4].include?(specialist.categorization_mask)
+          Specialist::AVAILABILITY_LABELS.key(:unknown)
+        else
+          Specialist::AVAILABILITY_LABELS.key(:working)
+        end
       else
         raise "shouldn't be here"
       end
