@@ -22,7 +22,7 @@
   collection: Specialist::AVAILABILITY_LABELS,
   value_method: :first,
   label_method: ->(pair){ pair.last.to_s.humanize },
-  include_blank: false
+  include_blank: true
 = f.input :has_offices,
   label: "Has offices?"
 = f.input :accepting_new_direct_referrals,

@@ -65,7 +65,7 @@ class BreakupStatus < ActiveRecord::Migration
           Specialist::AVAILABILITY_LABELS.key(:working)
         end
       when 7 #didn't answer
-        Specialist::AVAILABILITY_LABELS.key(:unknown)
+        nil
       when 8 #indefinitely unavailable
         Specialist::AVAILABILITY_LABELS.key(:indefinitely_unavailable)
       when 9 #permanently unavailable
@@ -79,7 +79,7 @@ class BreakupStatus < ActiveRecord::Migration
       when nil
         # responded, not responded, not surveyed
         if [1, 2, 4].include?(specialist.categorization_mask)
-          Specialist::AVAILABILITY_LABELS.key(:unknown)
+          nil
         else
           Specialist::AVAILABILITY_LABELS.key(:working)
         end

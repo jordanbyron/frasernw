@@ -460,8 +460,7 @@ class Specialist < ActiveRecord::Base
     3 => :retired,
     4 => :indefinitely_unavailable,
     5 => :moved_away,
-    6 => :deceased,
-    7 => :unknown
+    6 => :deceased
   })
 
   def referral_icon_key
@@ -553,14 +552,14 @@ class Specialist < ActiveRecord::Base
     end
   end
 
-  AVAILABILITY_LABELS.values.except(:unknown).each do |value|
+  AVAILABILITY_LABELS.values.each do |value|
     define_method "#{value}?" do
       availability == AVAILABILITY_LABELS.key(value)
     end
   end
 
   def availability_known?
-    availability != 7
+    availability != nil
   end
 
   def show_waittimes?
