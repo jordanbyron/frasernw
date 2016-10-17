@@ -13,6 +13,8 @@ class BreakupStatus < ActiveRecord::Migration
 
     add_column :specialists, :leave_scheduled, :boolean
 
+    Specialist.reset_column_information
+
     Specialist.all.each do |specialist|
       specialist.without_versioning do
         specialist.update_attributes(

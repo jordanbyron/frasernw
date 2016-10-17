@@ -10,6 +10,8 @@ class BreakupClinicStatus < ActiveRecord::Migration
 
     add_column :clinics, :is_open, :boolean
 
+    Clinic.reset_column_information
+
     Clinic.all.each do |clinic|
       clinic.without_versioning do
         clinic.update_attributes(
