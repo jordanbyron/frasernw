@@ -496,30 +496,72 @@ class Specialist < ActiveRecord::Base
   end
 
   def referral_icon_key
-    if completed_survey?
-      if practicing?
-        if practice_end_scheduled?
-          :orange_warning
-        else
-          if has_offices?
-            if accepting_new_direct_referrals?
-              if direct_referrals_limited?
-                :orange_check
-              else
-                :green_check
-              end
-            elsif !accepting_new_direct_referrals
-              :red_x
-            end
-          elsif !has_offices?
-            :blue_arrow
-          end
-        end
-      elsif !practicing?
-        :red_x
-      end
-    elsif !completed_survey?
+    if !completed_survey?
       :question_mark
+    elsif !practicing?
+      :red_x
+    elsif practice_end_scheduled?
+      :orange_warning
+    elsif !has_offices?
+      :blue_arrow
+    elsif !accepting_new_direct_referrals
+      :red_x
+    elsif direct_referrals_limited?
+      :orange_check
+    else
+      :green_check
+    end
+  end
+
+  def referral_summary
+    if !completed_survey?
+      "It is unknown whether this specialist is accepting new referrals."
+    elsif !practicing?
+      not_practicing_details
+    elsif practice_end_scheduled?
+      not_practicing_soon_details
+    elsif !has_offices?
+      "Only works out of #{works_out_of_label}#{referrals_through_label}."
+    elsif !accepting_new_direct_referrals?
+      "Only doing follow up on previous patients."
+    elsif direct_referrals_limited?
+      ("Accepting new referrals limited by geography " +
+        "or number of patients.")
+    else
+      "Accepting new referrals."
+    end
+  end
+
+  def not_practicing_details
+    if deceased?
+      "Deceased."
+    elsif retired?
+      "Retired."
+    elsif moved_away?
+      "Moved away."
+    elsif went_on_leave?
+      if practice_restart_scheduled?
+        "On leave until #{practice_restart_date.to_s(:long_ordinal)}."
+      else
+        "On leave."
+      end
+    end
+  end
+
+  def not_practicing_soon_details
+    if going_on_leave?
+      if practice_restart_scheduled?
+        ("Going on leave from " +
+          "#{practice_end_date.to_s(:long_ordinal)} to" +
+          " #{practice_restart_date.to_s(:long_ordinal)}.")
+      else
+        ("Going on leave from " +
+          "#{practice_end_date.to_s(:long_ordinal)}." +
+      end
+    elsif moving_away?
+      "Moving away on #{practice_end_date.to_s(:long_ordinal)}."
+    elsif retiring?
+      "Retiring on #{practice_end_date.to_s(:long_ordinal)}."
     end
   end
 
@@ -527,66 +569,6 @@ class Specialist < ActiveRecord::Base
     !practice_end_scheduled ||
       practice_end_date > Date.current ||
       practice_restart_scheduled? && practice_restart_date < Date.current
-  end
-
-  def referral_icon
-    if !completed_survey
-      :question_mark
-    elsif completed_survey &&
-  end
-
-  def referral_summary
-    if completed_survey?
-      if practicing?
-        if practice_end_scheduled?
-          if going_on_leave?
-            if practice_restart_scheduled?
-              ("Going on leave from " +
-                "#{practice_end_date.to_s(:long_ordinal)} to" +
-                " #{practice_restart_date.to_s(:long_ordinal)}.")
-            else
-              ("Going on leave from " +
-                "#{practice_end_date.to_s(:long_ordinal)}." +
-            end
-          elsif moving_away?
-            "Moving away on #{practice_end_date.to_s(:long_ordinal)}."
-          elsif retiring?
-            "Retiring on #{practice_end_date.to_s(:long_ordinal)}."
-          end
-        else
-          if has_offices?
-            if accepting_new_direct_referrals?
-              if direct_referrals_limited?
-                ("Accepting new referrals limited by geography " +
-                    "or number of patients.")
-              else
-                "Accepting new referrals."
-              end
-            else
-              "Only doing follow up on previous patients."
-            end
-          else
-            "Only works out of #{works_out_of_label}#{referrals_through_label}."
-          end
-        end
-      elsif !practicing?
-        if deceased?
-          "Deceased."
-        elsif retired?
-          "Retired."
-        elsif moved_away?
-          "Moved away."
-        elsif went_on_leave?
-          if practice_restart_scheduled?
-            "On leave until #{practice_restart_date.to_s(:long_ordinal)}."
-          else
-            "On leave."
-          end
-        end
-      end
-    elsif !completed_survey?
-      "It is unknown whether this specialist is accepting new referrals."
-    end
   end
 
   def referrals_through_label
