@@ -2,7 +2,8 @@ class DivisionsController < ApplicationController
   load_and_authorize_resource
   skip_authorize_resource only: [:shared_sc_items, :update_shared]
   skip_authorization_check only: [:shared_sc_items, :update_shared]
-  before_filter :authorize_division_for_user, only: [:shared_sc_items, :update_shared]
+  before_filter :authorize_division_for_user,
+    only: [:shared_sc_items, :update_shared]
 
   def index
     @divisions = Division.all
@@ -10,13 +11,15 @@ class DivisionsController < ApplicationController
 
   def show
     @division = Division.find(params[:id])
+    @resource_subscriptions = @division.divisional_resource_subscriptions
     @local_referral_cities = generate_local_referral_cities(@division)
     @division_referral_cities_by_priority =
       DivisionReferralCity.
         includes(:city).
         where(division_id: @division.id).
         order("priority asc")
-    @priority_rankings = @division_referral_cities_by_priority.map(&:priority).uniq
+    @priority_rankings =
+      @division_referral_cities_by_priority.map(&:priority).uniq
   end
 
   def new
@@ -74,6 +77,7 @@ class DivisionsController < ApplicationController
         @division,
         params[:city_priorities]
       )
+      UpdateDivisionalResourceSubscriptions.exec(@division, params)
       if params[:local_referral_cities].present?
         @division.division_referral_city_specializations.reject do |drcs|
           params[:local_referral_cities].keys.include?(drcs.city_id.to_s) &&
@@ -153,10 +157,12 @@ class DivisionsController < ApplicationController
 
     Specialization.all.each do |specialization|
       specialization_option = (
-        specialization.specialization_options.where(division_id: @division.id).first ||
+        specialization.
+          specialization_options.
+          where(division_id: @division.id).
+          first ||
         specialization.specialization_options.create(division_id: @division.id)
       )
-
 
       specialization_option.update_attributes(params[:permission_type] => @user)
     end
@@ -169,7 +175,7 @@ class DivisionsController < ApplicationController
   def authorize_division_for_user
     if (
       !current_user.as_super_admin? &&
-      !current_user.as_divisions.include?(Division.find(params[:id]))
+        !current_user.as_divisions.include?(Division.find(params[:id]))
     )
       redirect_to root_url, notice: "You are not allowed to access this page"
     end

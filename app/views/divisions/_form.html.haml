@@ -61,8 +61,8 @@
               %td
                 = check_box_tag "#{Division.provincial.id}_#{specialization.id}",
                   1,
-                  specialization,
-                  name: "divisional_specialization[#{specialization.id}]",
+                  @division.divisional_resource_subscriptions[specialization.id].present?,
+                  name: "divisional_resource_subscriptions[#{specialization.id}]",
                   class: "division_#{Division.provincial.id} division_specialization"
 
   %br
