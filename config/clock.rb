@@ -59,7 +59,7 @@ module Clockwork
     at: '14:30',
     tz: 'UTC'
   ) do
-    MailAvailabilityNotifications.call(delay: true)
+    MailLeaveEndingNotifications.call(delay: true)
   end
 
   # Mails subscriptions DAILY at 2:30pm UTC (14:30), 6:30 am PST
@@ -113,23 +113,5 @@ module Clockwork
       date_interval: Subscription::INTERVAL_MONTHLY,
       delay: true
     )
-  end
-
-  every(
-    1.day,
-    'Update specialist availability statuses',
-    at: '0:01',
-    tz: 'Pacific Time (US & Canada)'
-  ) do
-    UpdateSpecialistAvailability.call(delay: true)
-  end
-
-  every(
-    1.day,
-    'Update specialist availability statuses',
-    at: '0:01',
-    tz: 'Pacific Time (US & Canada)'
-  ) do
-    UpdateClinicClosure.call(delay: true)
   end
 end

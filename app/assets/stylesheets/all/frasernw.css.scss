@@ -949,21 +949,6 @@ body.loading #email
       margin-left: 0;
     }
 
-    #availability
-    {
-      select.unavailable_from, span.unavailable_to, select.unavailable_to
-      {
-        width: auto;
-        float: left;
-        margin: 0 6px 12px 0;
-      }
-
-      select.unavailable_to:first-child
-      {
-        clear: both;
-      }
-    }
-
     .hours, .break
     {
       .changed_wrapper

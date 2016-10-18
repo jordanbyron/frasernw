@@ -118,10 +118,8 @@ module Denormalized
             notPerformed: Denormalized.
               sanitize(specialist.not_performed).
               try(:convert_newlines_to_br),
-            isAvailable: specialist.working?,
-            availabilityKnown: specialist.availability_known?,
-            unavailableForAWhile: specialist.unavailable_for_a_while?,
-            hidden: specialist.hidden?,
+            isPracticing: specialist.practicing?,
+            hidden: specialist.hidden?
           })
         end
       end
@@ -187,9 +185,8 @@ module Denormalized
             notPerformed: Denormalized.
               sanitize(clinic.not_performed).
               try(:convert_newlines_to_br),
-            availabilityKnown: clinic.availability_known?,
             hidden: clinic.hidden?,
-            unavailableForAWhile: clinic.unavailable_for_a_while?,
+            isOpen: #TODO
           })
         end
       end

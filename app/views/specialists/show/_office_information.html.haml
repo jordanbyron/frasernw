@@ -10,7 +10,7 @@
     %p= "Private e-mail (for physician office use only): #{mail_to specialist_office.email, specialist_office.email, target: '_blank'}".html_safe if specialist_office.email.present?
     %p= "Website: #{link_to specialist_office.url, specialist_office.url, target: '_blank'}".html_safe if specialist_office.url.present?
     - if specialist_office.office.present?
-      - num_specialists = specialist_office.office.specialists.reject{ |s| !s.working? || s.hidden? }.count
+      - num_specialists = specialist_office.office.specialists.reject{ |s| !s.practicing? || s.hidden? }.count
       - location = specialist_office.office.location
       - next if !location
       - address = location.resolved_address
@@ -27,7 +27,7 @@
             %a.tt{ id: "tt#{specialist_office.office.id}",
               href: "javascript:void(0)",
               onclick: "$('#tt#{specialist_office.office.id}').tooltip('toggle')",
-              title: "<ul>#{specialist_office.office.specialists.reject{|s| (s.id == @specialist.id) || !s.working? || s.hidden?}.map{|s| "<li>#{link_to "#{s.name} - #{s.specializations.map{ |sp| sp.name }.to_sentence}",
+              title: "<ul>#{specialist_office.office.specialists.reject{|s| (s.id == @specialist.id) || !s.practicing? || s.hidden?}.map{|s| "<li>#{link_to "#{s.name} - #{s.specializations.map{ |sp| sp.name }.to_sentence}",
               specialist_path(s)}</li>"}.join('').html_safe}</ul>",
               data: { toggle: 'tooltip',
               'original-title' => 'Can be emailed',
@@ -52,7 +52,7 @@
             %a.tt{ id: "tt#{specialist_office.office.id}",
               href: "javascript:void(0)",
               onclick: "$('#tt#{specialist_office.office.id}').tooltip('toggle')",
-              title: "<ul>#{specialist_office.office.specialists.reject{|s| (s.id == @specialist.id) || !s.working? || s.hidden?}.map{|s| "<li>#{link_to "#{s.name} - #{s.specializations.map{ |sp| sp.name }.to_sentence}",
+              title: "<ul>#{specialist_office.office.specialists.reject{|s| (s.id == @specialist.id) || !s.practicing? || s.hidden?}.map{|s| "<li>#{link_to "#{s.name} - #{s.specializations.map{ |sp| sp.name }.to_sentence}",
               specialist_path(s)}</li>"}.join('').html_safe}</ul>",
               data: { toggle: 'tooltip',
               'original-title' => 'Can be emailed',
@@ -74,7 +74,7 @@
             %a.tt{ id: "tt#{specialist_office.office.id}",
               href: "javascript:void(0)",
               onclick: "$('#tt#{specialist_office.office.id}').tooltip('toggle')",
-              title: "<ul>#{specialist_office.office.specialists.reject{|s| (s.id == @specialist.id) || !s.working? || s.hidden?}.map{|s| "<li>#{link_to "#{s.name} - #{s.specializations.map{ |sp| sp.name }.to_sentence}",
+              title: "<ul>#{specialist_office.office.specialists.reject{|s| (s.id == @specialist.id) || !s.practicing? || s.hidden?}.map{|s| "<li>#{link_to "#{s.name} - #{s.specializations.map{ |sp| sp.name }.to_sentence}",
               specialist_path(s)}</li>"}.join('').html_safe}</ul>",
               data: { toggle: 'tooltip',
               'original-title' => 'Can be emailed',

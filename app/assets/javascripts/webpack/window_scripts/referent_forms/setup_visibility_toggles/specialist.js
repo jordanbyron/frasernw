@@ -24,14 +24,12 @@ const setupSpecialistVisibilityToggle = _.partialRight(
 const setupGeneralInformation = () => {
   setupSpecialistVisibilityToggle(
     [
-      { name: "availability", truthyVal: "1"},
       { name: "has_offices", truthyVal: true }
     ],
     "accepting_new_direct_referrals"
   );
   setupSpecialistVisibilityToggle(
     [
-      { name:  "availability", truthyVal: "1" },
       { name: "has_offices", truthyVal: true },
       { name: "accepting_new_direct_referrals", truthyVal: true }
     ],
@@ -45,15 +43,22 @@ const setupGeneralInformation = () => {
   );
   setupSpecialistVisibilityToggle(
     [
-      { name: "leave_scheduled", truthyVal: true }
+      { name: "practice_end_scheduled", truthyVal: true }
     ],
-    "unavailable_from"
+    "practice_end_date"
   );
   setupSpecialistVisibilityToggle(
     [
-      { name: "leave_scheduled", truthyVal: true }
+      { name: "practice_end_scheduled", truthyVal: true }
     ],
-    "unavailable_to"
+    "practice_restart_scheduled"
+  );
+  setupSpecialistVisibilityToggle(
+    [
+      { name: "practice_end_scheduled", truthyVal: true }
+      { name: "practice_restart_scheduled", truthyVal: true }
+    ],
+    "practice_restart_date"
   );
 }
 

@@ -444,10 +444,6 @@ class Clinic < ActiveRecord::Base
     (created_at > 3.week.ago.utc) && opened_recently?
   end
 
-  def availability_known?
-    is_open != nil
-  end
-
   def token
     if self.saved_token
       return self.saved_token
@@ -492,7 +488,7 @@ class Clinic < ActiveRecord::Base
   def unavailable_for_a_while?
     !is_open? && closure_date.present? && closure_date <= (Date.current - 2.years)
   end
-  
+
   def locations_showing_attendances
     @locations_showing_attendances ||= clinic_locations.select do |location|
       location.resolved_address.present? &&

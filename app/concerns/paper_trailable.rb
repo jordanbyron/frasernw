@@ -53,6 +53,12 @@ module PaperTrailable
     self.class.paper_trail_ignored_attributes
   end
 
+  def change_date(&block)
+    item.versions.order(:created_at).find_last do |version|
+      !version.reify.present? || !block.call(version.reify)
+    end.try(:created_at).try(:to_date)
+  end
+
   module ClassMethods
     def paper_trail_ignored_attributes
       if defined?(self::PAPER_TRAIL_IGNORED_ATTRIBUTES)

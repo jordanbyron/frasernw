@@ -7,9 +7,8 @@
       = "Hi #{@user.name},"
     %br
     %p
-      The period of unavailability of
       = @specialist.formal_name + ","
-      a specialist in your district, will end next week, on
+      a specialist in your district, will return to practice this week, on
       = @specialist.unavailable_to.strftime("%B %d, %Y") + "."
     %p
       You can check if #{@specialist.formal_name}'s profile is still current

@@ -16,42 +16,26 @@
 = f.input :completed_survey
 - if current_user.as_admin_or_super?
   = f.input :hidden, label: "Hide from users"
-= f.input :availability,
-  label: "Availability",
-  as: :select,
-  collection: Specialist::AVAILABILITY_LABELS,
-  value_method: :first,
-  label_method: ->(pair){ pair.last.to_s.humanize },
-  include_blank: true
+= f.input :practice_end_scheduled,
+  label: "Physician has stopped practicing in B.C. or physician plans to stop practicing in B.C.",
+  hint: "This option is applicable for leave, retirement, death, or move away."
+= f.input :practice_end_reason,
+  label: "Reason for practice ending",
+  include_blank: false
+= f.input :practice_end_date,
+  label: "Practice ended or will end on"
+= f.input :practice_restart_scheduled,
+  label: "Physician plans to begin practicing in B.C. again"
+= f.input :practice_restart_date,
+  label: "Physician will begin practicing again on"
 = f.input :has_offices,
-  label: "Has offices?"
+  label: "Has offices"
 = f.input :accepting_new_direct_referrals,
   label: "Accepting direct referrals (to offices)?",
   wrapper_html: { class: "form__wrapper--indented" }
 = f.input :direct_referrals_limited,
   label: "Direct referrals limited by geography or number of patients?",
   wrapper_html: { class: "form__wrapper--double-indented" }
-= f.input :retirement_scheduled,
-  label: "Retirement scheduled?"
-.specialist_retirement_date.form__wrapper--indented
-  = f.input :retirement_date,
-    wrapper: false,
-    label: false,
-    input_html: {style: "width: auto; float: left; margin: 0px 6px 12px 0px"}
-= f.input :leave_scheduled,
-  label: "Leave scheduled?"
-#availability
-  .specialist_unavailable_from.form__wrapper--indented
-    = f.input :unavailable_from,
-      label: false,
-      wrapper: false,
-      input_html: { class: "unavailable_from"}
-    %span{style: "margin-left: 5px"}= "to"
-  .specialist_unavailable_to.form__wrapper--indented
-    = f.input :unavailable_to,
-      label: false,
-      wrapper: false,
-      input_html: { class: "unavailable_to"}
 
 = f.input :status_details
 = f.input :practise_limitations

@@ -56,8 +56,6 @@ class Specialist < ActiveRecord::Base
     :waittime_mask,
     :referral_form_old,
     :referral_form_mask,
-    :unavailable_from,
-    :unavailable_to,
     :patient_instructions,
     :cancellation_policy,
     :hospital_clinic_details,
@@ -77,10 +75,11 @@ class Specialist < ActiveRecord::Base
     :has_offices,
     :accepting_new_direct_referrals,
     :direct_referrals_limited,
-    :availability,
-    :retirement_date,
-    :retirement_scheduled,
-    :leave_scheduled
+    :practice_end_date,
+    :practice_restart_date,
+    :practice_end_scheduled,
+    :practice_restart_scheduled,
+    :practice_end_reason_key
 
   # specialists can have multiple specializations
   has_many :specialist_specializations, dependent: :destroy
@@ -454,61 +453,139 @@ class Specialist < ActiveRecord::Base
     end.last
   end
 
-  AVAILABILITY_LABELS = StrictHash.new({
-    1 => :working,
-    2 => :temporarily_unavailable,
-    3 => :retired,
-    4 => :indefinitely_unavailable,
-    5 => :moved_away,
-    6 => :deceased
+  PRACTICE_END_REASONS = StrictHash.new({
+    1 => :retirement,
+    2 => :leave,
+    3 => :move_away,
+    4 => :death
   })
 
-  def referral_icon_key
-    if !completed_survey? || !availability_known?
-      :question_mark
-    elsif working? && (leave_scheduled? || retirement_scheduled?)
-      :orange_warning
-    elsif working? && !has_offices?
-      :blue_arrow
-    elsif working? && accepting_new_direct_referrals? && direct_referrals_limited?
-      :orange_check
-    elsif working? && accepting_new_direct_referrals?
-      :green_check
-    else
-      :red_x
+  def practice_end_reason
+    PRACTICE_END_REASON[practice_end_reason_key]
+  end
+
+  PRACTICE_ENDED_REASONS = StrictHash.new({
+    retirement: "retired",
+    leave: "went on leave",
+    move_away: "moved away",
+    death: "died"
+  })
+
+  PRACTICE_ENDED_REASONS.each do |_practice_end_reason, _practice_ended_reason|
+    define_method "#{_practice_ended_reason.gsub(" ", "_")}?" do
+      practice_end_scheduled &&
+        practice_end_reason == _practice_end_reason &&
+        practice_end_date < Date.current &&
+        (!practice_restart_scheduled? || practice_restart_date > Date.current)
     end
   end
 
+  def practice_ended_reason
+    PRACTICE_ENDED_REASONS[practice_end_reason]
+  end
+
+  PRACTICE_ENDING_REASONS = StrictHash.new({
+    retirement: "retiring",
+    leave: "going on leave",
+    move_away: "moving away",
+    death: "data entry error"
+  })
+
+  def practice_ending_reason
+    PRACTICE_ENDING_REASONS[practice_ending_reason]
+  end
+
+  def referral_icon_key
+    if completed_survey?
+      if practicing?
+        if practice_end_scheduled?
+          :orange_warning
+        else
+          if has_offices?
+            if accepting_new_direct_referrals?
+              if direct_referrals_limited?
+                :orange_check
+              else
+                :green_check
+              end
+            elsif !accepting_new_direct_referrals
+              :red_x
+            end
+          elsif !has_offices?
+            :blue_arrow
+          end
+        end
+      elsif !practicing?
+        :red_x
+      end
+    elsif !completed_survey?
+      :question_mark
+    end
+  end
+
+  def practicing?
+    !practice_end_scheduled ||
+      practice_end_date > Date.current ||
+      practice_restart_scheduled? && practice_restart_date < Date.current
+  end
+
+  def referral_icon
+    if !completed_survey
+      :question_mark
+    elsif completed_survey &&
+  end
+
   def referral_summary
-    if !completed_survey? || !availability_known?
+    if completed_survey?
+      if practicing?
+        if practice_end_scheduled?
+          if going_on_leave?
+            if practice_restart_scheduled?
+              ("Going on leave from " +
+                "#{practice_end_date.to_s(:long_ordinal)} to" +
+                " #{practice_restart_date.to_s(:long_ordinal)}.")
+            else
+              ("Going on leave from " +
+                "#{practice_end_date.to_s(:long_ordinal)}." +
+            end
+          elsif moving_away?
+            "Moving away on #{practice_end_date.to_s(:long_ordinal)}."
+          elsif retiring?
+            "Retiring on #{practice_end_date.to_s(:long_ordinal)}."
+          end
+        else
+          if has_offices?
+            if accepting_new_direct_referrals?
+              if direct_referrals_limited?
+                ("Accepting new referrals limited by geography " +
+                    "or number of patients.")
+              else
+                "Accepting new referrals."
+              end
+            else
+              "Only doing follow up on previous patients."
+            end
+          else
+            "Only works out of #{works_out_of_label}#{referrals_through_label}."
+          end
+        end
+      elsif !practicing?
+        if deceased?
+          "Deceased."
+        elsif retired?
+          "Retired."
+        elsif moved_away?
+          "Moved away."
+        elsif went_on_leave?
+          if practice_restart_scheduled?
+            "On leave until #{practice_restart_date.to_s(:long_ordinal)}."
+          else
+            "On leave."
+          end
+        end
+      end
+    elsif !completed_survey?
       "It is unknown whether this specialist is accepting new referrals."
-    elsif working? && leave_scheduled?
-      ("Will be unavailable between " +
-        "#{unavailable_from.to_s(:long_ordinal)} and" +
-        " #{unavailable_to.to_s(:long_ordinal)}.")
-    elsif working? && retirement_scheduled?
-      "Will retire on #{retirement_date.to_s(:long_ordinal)}."
-    elsif working? && !has_offices?
-      "Only works out of #{works_out_of_label}#{referrals_through_label}"
-    elsif working? && !accepting_new_direct_referrals?
-      "Only doing follow up on previous patients."
-    elsif working? && accepting_new_direct_referrals? && direct_referrals_limited?
-      ("Accepting new referrals limited by geography " +
-          "or number of patients.")
-    elsif working? && accepting_new_direct_referrals?
-      "Accepting new referrals"
-    elsif deceased?
-      "Deceased."
-    elsif retired?
-      "Retired."
-    elsif moved_away?
-      "Moved away."
-    elsif temporarily_unavailable?
-      ("Unavailable from " +
-        "#{unavailable_from.to_s(:long_ordinal)} to" +
-        " #{unavailable_to.to_s(:long_ordinal)}.")
-    else
-      "Not accepting new referrals"
     end
   end
 
@@ -552,22 +629,8 @@ class Specialist < ActiveRecord::Base
     end
   end
 
-  AVAILABILITY_LABELS.values.each do |value|
-    define_method "#{value}?" do
-      availability == AVAILABILITY_LABELS.key(value)
-    end
-  end
-
-  def availability_known?
-    availability != nil
-  end
-
   def show_waittimes?
     has_offices? && accepting_new_direct_referrals?
-  end
-
-  def unavailable_for_a_while?
-    moved_away? || (retired? && retirement_date <= (Date.current - 2.years))
   end
 
   WAITTIME_LABELS = {
