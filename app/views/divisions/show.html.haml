@@ -27,24 +27,32 @@
               edit_permissions_division_path(@division, permission_type: type)
 
   %p.no_indent.space
-    %strong Subscriptions to Provincial Resources
+    %strong Subscriptions to Provincial Content
+  %br
   - if @resource_subscriptions.none?
-    %p No resouce subscriptions
+    %p No provincial content will be borrowed by default
   - elsif @resource_subscriptions.count == Specialization.all.count
-    %p All provincial resources
+    %p Available provincial content in any specialty will be borrowed by default
   - else
-    %div{ style: "overflow-x:scroll" }
-      %table.provincial_resources_defaults
-        %thead
-          %tr
-            %td
-            - Specialization.all.each do |specialization|
-              %td= specialization.name
-        %tbody
-          %tr
-            - Specialization.all.each do |specialization|
-              %td
-                = (@resource_subscriptions[specialization.id].present?) ? "&#10004;".html_safe : ""
+    %p Provincial content in these specialties will be borrowed by default:
+    - if @resource_subscriptions.count <= 6
+      %ul
+        - @resource_subscriptions.each do |subscription|
+          %li= subscription.specialization.name
+    - else
+      %div{ style: "overflow-x:scroll" }
+        %table.provincial_resources_defaults
+          %thead
+            %tr
+              - Specialization.all.each do |specialization|
+                %td= specialization.name
+          %tbody
+            %tr
+              - Specialization.all.each do |specialization|
+                %td
+                  - if @resource_subscriptions.map(&:specialization_id).
+                    - include?(specialization.id)
+                    = "&#10004;".html_safe
   %br
 
   %p.no_indent.space
@@ -62,7 +70,9 @@
             %td{ style: "white-space:nowrap" }= city.name
             - Specialization.all.each do |specialization|
               %td
-                = (@local_referral_cities[city.id].present?) && (@local_referral_cities[city.id].include? specialization.id) ? "&#10004;".html_safe : ""
+                - if (@local_referral_cities[city.id].present?) &&
+                  - (@local_referral_cities[city.id].include? specialization.id)
+                  = "&#10004;".html_safe
   %br
 
   %p.no_indent.space

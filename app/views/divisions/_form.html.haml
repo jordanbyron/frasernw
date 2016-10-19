@@ -44,11 +44,12 @@
             %td All Provincial Content
         %tbody
           %tr
-            %td= check_box_tag "division_#{Division.provincial.id}",
-              1,
-              Division.provincial,
-              name: "division[#{Division.provincial.id}]",
-              class: "division_check"
+            %td
+              = check_box_tag "division_#{Division.provincial.id}",
+                1,
+                :provincial_division,
+                name: "provincial_division",
+                class: "division_check"
     .span11{ style: "overflow-x:scroll" }
       %table.provincial_resources_defaults
         %thead
@@ -59,9 +60,12 @@
           %tr
             - Specialization.all.each do |specialization|
               %td
+                = hidden_field_tag "#{Division.provincial.id}_#{specialization.id}",
+                  0,
+                  name: "divisional_resource_subscriptions[#{specialization.id}]"
                 = check_box_tag "#{Division.provincial.id}_#{specialization.id}",
                   1,
-                  @division.divisional_resource_subscriptions[specialization.id].present?,
+                  @division.divisional_resource_subscriptions.map(&:specialization_id).include?(specialization.id),
                   name: "divisional_resource_subscriptions[#{specialization.id}]",
                   class: "division_#{Division.provincial.id} division_specialization"
 
