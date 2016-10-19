@@ -5,17 +5,15 @@
   = f.input :hidden, label: "Hide from users"
 = f.input :closure_scheduled,
   label: "Clinic is closed or clinic plans to close?"
-.clinic_closure_date.form__wrapper--indented
-  = f.input :closure_date,
-    wrapper: false,
-    label: false,
-    input_html: {style: "width: auto; float: left; margin: 0px 6px 12px 0px"}
+= f.input :closure_date,
+  label: "Clinic closed or will close on",
+  wrapper_html: { style: "display: inline-block;", class: "form__wrapper--indented"},
+  input_html: { style: "width: 100px;" }
 = f.input :accepting_new_referrals,
-  label: "Accepting new referrals?",
-  wrapper_html: { class: "form__wrapper--indented" }
+  label: "Accepting new referrals?"
 = f.input :referrals_limited,
   label: "Referrals limited by geography or # of patients?",
-  wrapper_html: { class: "form__wrapper--double-indented" }
+  wrapper_html: { class: "form__wrapper--indented" }
 = f.input :status_details
 = f.input :limitations
 = f.association :specializations,

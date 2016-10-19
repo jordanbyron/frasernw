@@ -25,7 +25,11 @@ class BreakupStatus < ActiveRecord::Migration
     end
 
     # TODO: run this by admins
+    # make them 'not responded?'
     Specialist.where(status_mask: nil, categorization_mask: 1).update_all(
+      hidden: true
+    )
+    Specialist.where(status_mask: 7, categorization_mask: 1).update_all(
       hidden: true
     )
     Specialist.where(completed_survey: false).update_all(hidden: true)
@@ -87,13 +91,14 @@ class BreakupStatus < ActiveRecord::Migration
       [4, 5, 6, 8, 9, 10, 12].include?(specialist.status_mask)
     },
     practice_end_date: ->(specialist){
-      if [4, 5, 6].include?(specialist.status_mask)
-        # retired, retiring, unavailable between -- explicit
-
+      if [5, 6].include?(specialist.status_mask)
+        # retiring as of, unavailable between
         raise "no end date specified" if specialist.practice_end_date.nil?
 
         specialist.practice_end_date
-      elsif [8, 9, 10, 12].include?(specialist.status_mask)
+      elsif [4, 8, 9, 10, 12].include?(specialist.status_mask)
+        # retired, indefinitely unavailable, permanently unavailable
+        # moved away, deceased
         specialist.change_date do |reified_version|
           reified_version.status_mask == specialist.status_mask
         end
