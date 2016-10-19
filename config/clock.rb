@@ -114,4 +114,14 @@ module Clockwork
       delay: true
     )
   end
+
+  every(
+    1.day,
+    'Hide perenially unavailable specialists',
+    at: '12:01',
+    tz: "Pacific Time (US & Canada)",
+    if: lambda { |t| t.day == 1 }
+  ) do
+    HidePerenniallyUnavailableProfiles.call(delay: true)
+  end
 end

@@ -17,8 +17,12 @@
 - if current_user.as_admin_or_super?
   = f.input :hidden, label: "Hide from users"
 = f.input :practice_end_scheduled,
-  label: "Physician has stopped or has plans to stop practicing in B.C.",
+  label: "Physician has stopped practicing in B.C. or physician has plans to stop practicing in B.C.",
   hint: "(This option is applicable for leave, retirement, death, or a move away.)"
+= f.input :practice_end_date,
+  label: "Practice ended or will end on",
+  wrapper_html: { style: "display: inline-block;", class: "form__wrapper--indented"},
+  input_html: { style: "width: 100px;" }
 = f.input :practice_end_reason_key,
   as: :select,
   collection: Specialist::PRACTICE_END_REASONS,
@@ -27,10 +31,6 @@
   label: "Reason for end of practice",
   wrapper_html: { class: "form__wrapper--indented" },
   include_blank: false
-= f.input :practice_end_date,
-  label: "Practice ended or will end on",
-  wrapper_html: { style: "display: inline-block;", class: "form__wrapper--indented"},
-  input_html: { style: "width: 100px;" }
 = f.input :practice_restart_scheduled,
   label: "Physician plans to begin practicing in B.C. again",
   wrapper_html: { class: "form__wrapper--indented" }

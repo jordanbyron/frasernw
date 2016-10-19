@@ -150,8 +150,6 @@ class Specialist < ActiveRecord::Base
   after_commit :expire_cache
   after_touch  :expire_cache
 
-  scope :deceased, -> { where(status_mask: STATUS_MASK_DECEASED) }
-
   def self.with_cities
     includes({
       hospitals: { location: {address: :city } },
@@ -468,7 +466,7 @@ class Specialist < ActiveRecord::Base
     retirement: "retired",
     leave: "went on leave",
     move_away: "moved away",
-    death: "died"
+    death: "is deceased"
   })
 
   PRACTICE_ENDED_REASONS.each do |_practice_end_reason, _practice_ended_reason|
@@ -541,7 +539,7 @@ class Specialist < ActiveRecord::Base
   end
 
   def not_practicing_details
-    if deceased?
+    if is_deceased?
       "Deceased."
     elsif retired?
       "Retired."
@@ -951,7 +949,7 @@ class Specialist < ActiveRecord::Base
   end
 
   def open_clinics
-    @open_clinics ||= clinics.select(&:is_open?)
+    @open_clinics ||= clinics.select(&:open?)
   end
 
 private

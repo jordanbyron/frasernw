@@ -71,7 +71,6 @@ class Clinic < ActiveRecord::Base
     :completed_survey,
     :accepting_new_referrals,
     :referrals_limited,
-    :is_open,
     :closure_scheduled,
     :closure_date
 
@@ -223,7 +222,7 @@ class Clinic < ActiveRecord::Base
   end
 
   def show_waittimes?
-    is_open? && completed_survey? && accepting_new_referrals?
+    open? && completed_survey? && accepting_new_referrals?
   end
 
   def cities
@@ -237,9 +236,9 @@ class Clinic < ActiveRecord::Base
   def referral_icon_key
     if !completed_survey?
       :question_mark
-    elsif is_open? && accepting_new_referrals? && referrals_limited?
+    elsif open? && accepting_new_referrals? && referrals_limited?
       :orange_check
-    elsif is_open? && accepting_new_referrals?
+    elsif open? && accepting_new_referrals?
       :green_check
     else
       :red_x
@@ -249,11 +248,11 @@ class Clinic < ActiveRecord::Base
   def referral_summary
     if !completed_survey?
       "It is unknown whether this clinic is accepting new referrals."
-    elsif is_open? && accepting_new_referrals? && referrals_limited?
+    elsif open? && accepting_new_referrals? && referrals_limited?
       "This clinic is accepting new referrals limited by geography or number of patients."
-    elsif is_open? && accepting_new_referrals?
+    elsif open? && accepting_new_referrals?
       "This clinic is accepting new referrals."
-    elsif is_open?
+    elsif open?
       "This clinic is only doing follow-up on previous patients"
     else
       "This clinic is closed"
@@ -486,7 +485,7 @@ class Clinic < ActiveRecord::Base
   end
 
   def unavailable_for_a_while?
-    !is_open? && closure_date.present? && closure_date <= (Date.current - 2.years)
+    !open? && closure_date.present? && closure_date <= (Date.current - 2.years)
   end
 
   def locations_showing_attendances
@@ -494,5 +493,13 @@ class Clinic < ActiveRecord::Base
       location.resolved_address.present? &&
         location.attendances.select(&:show?).any?
     end
+  end
+
+  def open?
+    !closed?
+  end
+
+  def closed?
+    closure_scheduled? && closure_date <= Date.current
   end
 end

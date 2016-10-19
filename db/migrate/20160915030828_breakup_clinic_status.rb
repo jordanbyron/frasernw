@@ -5,10 +5,8 @@ class BreakupClinicStatus < ActiveRecord::Migration
     add_column :clinics, :accepting_new_referrals, :boolean
     add_column :clinics, :referrals_limited, :boolean
 
-    add_column :clinics, :closure_scheduled, :boolean
+    add_column :clinics, :closure_scheduled, :boolean, default: false
     rename_column :clinics, :unavailable_from, :closure_date
-
-    add_column :clinics, :is_open, :boolean
 
     Clinic.reset_column_information
 
@@ -20,8 +18,8 @@ class BreakupClinicStatus < ActiveRecord::Migration
       end
     end
 
-    UpdateClinicClosure.call
     Clinic.where(completed_survey: false).update_all(hidden: true)
+    HidePerenniallyUnavailableProfiles.call
   end
 
   NEW_CLINIC_ATTRIBUTES = {
@@ -37,17 +35,17 @@ class BreakupClinicStatus < ActiveRecord::Migration
       clinic.categorization_mask == 1 && #responded to survey
         clinic.status_mask == 7 #accepting limited new referrals
     },
-    is_open: ->(clinic){
-      case clinic.status_mask
-      when 3
-        nil
-      when nil
-        nil
-      when 4
-        false
+    closure_date: ->(clinic){
+      if clinic.status_mask == 4
+        clinic.closure_date || clinic.event_date do |reified_clinic|
+          reified_clinic.status_mask == 4
+        end
       else
-        true
+        nil
       end
+    },
+    closure_scheduled: ->(clinic){
+      clinic.status_mask == 4
     }
   }
 end

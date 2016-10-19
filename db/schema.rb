@@ -180,8 +180,7 @@ ActiveRecord::Schema.define(version: 20160922143318) do
     t.boolean  "completed_survey",                      default: true
     t.boolean  "accepting_new_referrals"
     t.boolean  "referrals_limited"
-    t.boolean  "closure_scheduled"
-    t.boolean  "is_open"
+    t.boolean  "closure_scheduled",                     default: false
   end
 
   create_table "contacts", force: true do |t|
@@ -836,8 +835,8 @@ ActiveRecord::Schema.define(version: 20160922143318) do
     t.boolean  "has_offices"
     t.boolean  "accepting_new_direct_referrals"
     t.boolean  "direct_referrals_limited"
-    t.boolean  "practice_end_scheduled"
-    t.boolean  "practice_restart_scheduled"
+    t.boolean  "practice_end_scheduled",         default: false
+    t.boolean  "practice_restart_scheduled",     default: false
     t.integer  "practice_end_reason_key",        default: 2
   end
 

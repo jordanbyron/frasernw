@@ -109,7 +109,7 @@ module Metrics
           @specialists.select{|s| s.practicing? && !s.has_offices? }.length,
           @specialists.reject{|s| !s.moved_away?}.length,
           @specialists.reject{|s| !s.retired?}.length,
-          @specialists.reject{|s| !s.deceased?}.length
+          @specialists.reject{|s| !s.is_deceased?}.length
         ],
         [
           ""
@@ -167,7 +167,7 @@ module Metrics
           @specialization_specialists.select{|s| s.practicing? && !s.has_offices? }.length,
           @specialization_specialists.reject{|s| !s.moved_away?}.length,
           @specialization_specialists.reject{|s| !s.retired?}.length,
-          @specialization_specialists.reject{|s| !s.deceased?}.length
+          @specialization_specialists.reject{|s| !s.is_deceased?}.length
         ]
       end
 

@@ -3,10 +3,8 @@
 = f.input :completed_survey
 - if current_user.as_admin_or_super?
   = f.input :hidden, label: "Hide from users"
-= f.input :is_open,
-  label: "Is open?"
 = f.input :closure_scheduled,
-  label: "Closure scheduled?"
+  label: "Clinic is closed or clinic plans to close?"
 .clinic_closure_date.form__wrapper--indented
   = f.input :closure_date,
     wrapper: false,

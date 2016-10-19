@@ -9,8 +9,8 @@ class BreakupStatus < ActiveRecord::Migration
     rename_column :specialists, :unavailable_from, :practice_end_date
     rename_column :specialists, :unavailable_to, :practice_restart_date
 
-    add_column :specialists, :practice_end_scheduled, :boolean
-    add_column :specialists, :practice_restart_scheduled, :boolean
+    add_column :specialists, :practice_end_scheduled, :boolean, default: false
+    add_column :specialists, :practice_restart_scheduled, :boolean, default: false
 
     add_column :specialists, :practice_end_reason_key, :integer, default: 2
 
