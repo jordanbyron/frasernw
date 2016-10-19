@@ -1,0 +1,5 @@
+%h3 Data Quality
+
+= f.input :completed_survey
+- if current_user.as_admin_or_super?
+  = f.input :hidden, label: "Hide from users"
