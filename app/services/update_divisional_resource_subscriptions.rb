@@ -14,7 +14,11 @@ class UpdateDivisionalResourceSubscriptions
     return unless params[:divisional_resource_subscriptions].present?
 
     division.divisional_resource_subscriptions.each do |subscription|
-      if params[:divisional_resource_subscriptions][subscription.specialization_id.to_s] == "0"
+      if (
+        params[:divisional_resource_subscriptions][
+          subscription.specialization_id.to_s
+        ]
+      ) == "0"
         subscription.destroy
       end
     end

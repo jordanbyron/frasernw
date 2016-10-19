@@ -39,6 +39,7 @@ class ScItemsController < ApplicationController
           )
         end
       end
+      UpdateScItemSharing.update_divisional_resource_subscriptions(sc_item: @sc_item)
       Subscription::MailImmediateNotifications.call(
         klass_name: "ScItem",
         id: @sc_item.id,
@@ -96,6 +97,10 @@ class ScItemsController < ApplicationController
             procedure_specialization_id: ps_id
           )
         end
+      end
+      if @sc_item.shareable_changed? && @sc_item.sharable?
+        puts "SUCH UPDATE"
+        UpdateScItemSharing.update_divisional_resource_subscriptions(sc_item: @sc_item)
       end
       redirect_to @sc_item, notice: "Successfully updated content item."
     else
