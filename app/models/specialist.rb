@@ -72,7 +72,7 @@ class Specialist < ActiveRecord::Base
     :review_object,
     :hidden,
     :completed_survey,
-    :has_offices,
+    :works_from_offices,
     :accepting_new_direct_referrals,
     :direct_referrals_limited,
     :practice_end_date,
@@ -233,7 +233,7 @@ class Specialist < ActiveRecord::Base
         'AND "direct_address".city_id IN (?) '\
         'AND "direct_location".hospital_in_id IS NULL '\
         'AND "direct_location".location_in_id IS NULL '\
-        'AND "specialists".has_offices = (?)',
+        'AND "specialists".works_from_offices = (?)',
       "Office",
       city_ids,
       true
@@ -256,7 +256,7 @@ class Specialist < ActiveRecord::Base
       '"direct_location".locatable_type = (?) '\
         'AND "hospital_in_location".locatable_type = (?) '\
         'AND "hospital_address".city_id IN (?) '\
-        'AND "specialists".has_offices = (?)',
+        'AND "specialists".works_from_offices = (?)',
       "Office",
       "Hospital",
       city_ids,
@@ -280,7 +280,7 @@ class Specialist < ActiveRecord::Base
         'AND "clinic_location".locatable_type = (?) '\
         'AND "clinic_location".hospital_in_id IS NULL '\
         'AND "clinic_address".city_id IN (?) '\
-        'AND "specialists".has_offices = (?)',
+        'AND "specialists".works_from_offices = (?)',
       "Office",
       "ClinicLocation",
       city_ids,
@@ -308,7 +308,7 @@ class Specialist < ActiveRecord::Base
         'AND "clinic_location".locatable_type = (?) '\
         'AND "hospital_in_location".locatable_type = (?) '\
         'AND "hospital_address".city_id IN (?) '\
-        'AND "specialists".has_offices = (?)',
+        'AND "specialists".works_from_offices = (?)',
       "Office",
       "ClinicLocation",
       "Hospital",
@@ -328,7 +328,7 @@ class Specialist < ActiveRecord::Base
     ).where(
       '"hospital_in_location".locatable_type = (?) '\
         'AND "hospital_address".city_id IN (?) '\
-        'AND "specialists".has_offices = (?)',
+        'AND "specialists".works_from_offices = (?)',
       "Hospital",
       city_ids,
       false
@@ -347,7 +347,7 @@ class Specialist < ActiveRecord::Base
       '"clinic_in_location".locatable_type = (?) '\
         'AND "clinic_address".city_id IN (?) '\
         'AND "clinic_in_location".hospital_in_id IS NULL '\
-        'AND "specialists".has_offices = (?)',
+        'AND "specialists".works_from_offices = (?)',
       "ClinicLocation",
       city_ids,
       false
@@ -370,7 +370,7 @@ class Specialist < ActiveRecord::Base
       '"clinic_location".locatable_type = (?) '\
         'AND "hospital_in_location".locatable_type = (?) '\
         'AND "hospital_address".city_id IN (?) '\
-        'AND "specialists".has_offices = (?)',
+        'AND "specialists".works_from_offices = (?)',
       "ClinicLocation",
       "Hospital",
       city_ids,
@@ -428,7 +428,7 @@ class Specialist < ActiveRecord::Base
 
   def cities(force: false)
     Rails.cache.fetch([self.class.name, self.id, "cities"], force: force) do
-      if has_offices?
+      if works_from_offices?
         offices.map(&:city).reject(&:blank?).uniq
       else
         (
@@ -508,7 +508,7 @@ class Specialist < ActiveRecord::Base
       :red_x
     elsif practice_end_scheduled?
       :orange_warning
-    elsif !has_offices?
+    elsif !works_from_offices?
       :blue_arrow
     elsif !accepting_new_direct_referrals
       :red_x
@@ -526,7 +526,7 @@ class Specialist < ActiveRecord::Base
       not_practicing_details
     elsif practice_end_scheduled?
       not_practicing_soon_details
-    elsif !has_offices?
+    elsif !works_from_offices?
       "Only works out of #{works_out_of_label}#{referrals_through_label}"
     elsif !accepting_new_direct_referrals?
       "Only doing follow up on previous patients."
@@ -618,7 +618,7 @@ class Specialist < ActiveRecord::Base
   end
 
   def show_waittimes?
-    has_offices? && accepting_new_direct_referrals?
+    works_from_offices? && accepting_new_direct_referrals?
   end
 
   WAITTIME_LABELS = {
@@ -918,7 +918,7 @@ class Specialist < ActiveRecord::Base
 
   def print_clinic_info?
     valid_clinic_locations.any? &&
-      (!has_offices? || !accepting_new_direct_referrals?)
+      (!works_from_offices? || !accepting_new_direct_referrals?)
   end
 
   def valid_clinic_locations
@@ -951,6 +951,11 @@ class Specialist < ActiveRecord::Base
   def open_clinics
     @open_clinics ||= clinics.select(&:open?)
   end
+
+  WORKS_FROM_OFFICES_OPTIONS = [
+    ["Works out of offices", true],
+    ["Only works out of hospitals or clinics", false]
+  ]
 
 private
 

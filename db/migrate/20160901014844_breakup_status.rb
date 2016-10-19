@@ -2,7 +2,7 @@ class BreakupStatus < ActiveRecord::Migration
   def up
     add_column :specialists, :completed_survey, :boolean, default: true
 
-    add_column :specialists, :has_offices, :boolean
+    add_column :specialists, :works_from_offices, :boolean
     add_column :specialists, :accepting_new_direct_referrals, :boolean
     add_column :specialists, :direct_referrals_limited, :boolean
 
@@ -50,7 +50,7 @@ class BreakupStatus < ActiveRecord::Migration
         specialist.specialist_offices.select(&:has_data?).any? &&
         specialist.status_mask == 11 #accepting limited new referrals
     },
-    has_offices: -> (specialist){
+    works_from_offices: -> (specialist){
        #responded to survey, only accepts referrals through hospitals, clinics
       [1, 5].include?(specialist.categorization_mask) &&
         specialist.specialist_offices.select(&:has_data?).any?

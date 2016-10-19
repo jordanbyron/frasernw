@@ -1,12 +1,16 @@
 export default function setupVisibilityToggle(parentFields, affected, recordType){
-  const parentInputSelector = parentFields.map(function(field){
-    return `#${recordType}_${field.name}`;
+  const parentInputSelectors = parentFields.map(function(field){
+    return parentInputSelector(recordType, field.name);
   }).join(", ");
 
-  $(parentInputSelector).change(function(e){
+  $(parentInputSelectors).change(function(e){
     doSideEffects(parentFields, affected, recordType);
   });
   doSideEffects(parentFields, affected, recordType)
+}
+
+const parentInputSelector = (recordType, fieldName) => {
+  return `[name='${recordType}[${fieldName}]']`;
 }
 
 const doSideEffects = (parentFields, affected, recordType) => {
@@ -45,12 +49,17 @@ const hideAffected = (affected, recordType) =>{
 }
 
 const typeAdjustedInputValue = (fieldname, recordType) => {
-  const field = $(`#${recordType}_${fieldname}`)
+  const fields = $(parentInputSelector(recordType, fieldname))
 
-  if (field.attr("type") === "checkbox"){
-    return field.prop("checked");
+  if (fields.filter("[type='checkbox']")[0]){
+    // we do this because the hidden fields are dragged in too
+
+    return fields.filter("[type='checkbox']").prop("checked");
+  }
+  else if (fields.attr("type") === "radio"){
+    return fields.filter("[checked='checked']").val();
   }
   else {
-    return field.val();
+    return fields.val();
   }
 }

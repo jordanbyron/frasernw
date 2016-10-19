@@ -1,6 +1,10 @@
 %h3 Basic Practice Information
-= f.input :has_offices,
-  label: "Has offices"
+= f.input :works_from_offices,
+  as: :radio_buttons,
+  collection: Specialist::WORKS_FROM_OFFICES_OPTIONS,
+  label_method: :first,
+  value_method: :last,
+  label: "Practice Location"
 = f.input :accepting_new_direct_referrals,
   label: "Accepting direct referrals (to offices)?",
   wrapper_html: { class: "form__wrapper--indented" }

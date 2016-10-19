@@ -62,7 +62,7 @@ module SeedCreators
       sees_only_children: :pass_through,
       hidden: :pass_through,
       completed_survey: Proc.new{ rand() < 0.95 },
-      has_offices: Proc.new{ rand() < 0.8 },
+      works_from_offices: Proc.new{ rand() < 0.8 },
       accepting_new_direct_referrals: Proc.new{ rand() < 0.75 },
       direct_referrals_limited: Proc.new{ rand() < 0.03 },
       practice_end_scheduled: Proc.new{ rand() < 0.05 },

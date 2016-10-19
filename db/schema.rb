@@ -832,7 +832,7 @@ ActiveRecord::Schema.define(version: 20160922143318) do
     t.boolean  "sees_only_children",             default: false
     t.boolean  "hidden",                         default: false
     t.boolean  "completed_survey",               default: true
-    t.boolean  "has_offices"
+    t.boolean  "works_from_offices"
     t.boolean  "accepting_new_direct_referrals"
     t.boolean  "direct_referrals_limited"
     t.boolean  "practice_end_scheduled",         default: false

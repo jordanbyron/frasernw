@@ -59,10 +59,10 @@ module SpecialistsHelper
           specialist.hospitals.any?)
     when :expanded_associations
       specialist.practicing? &&
-        !specialist.has_offices?
+        !specialist.works_from_offices?
     when :hospital_clinic_details
       specialist.practicing? &&
-        !specialist.has_offices? &&
+        !specialist.works_from_offices? &&
         specialist.hospital_clinic_details.present?
     when :patient_information
       specialist.practicing? &&
