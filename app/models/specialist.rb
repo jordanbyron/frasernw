@@ -527,7 +527,7 @@ class Specialist < ActiveRecord::Base
     elsif practice_end_scheduled?
       not_practicing_soon_details
     elsif !has_offices?
-      "Only works out of #{works_out_of_label}#{referrals_through_label}."
+      "Only works out of #{works_out_of_label}#{referrals_through_label}"
     elsif !accepting_new_direct_referrals?
       "Only doing follow up on previous patients."
     elsif direct_referrals_limited?
@@ -579,22 +579,22 @@ class Specialist < ActiveRecord::Base
 
   def referrals_through_label
     if open_clinics.none? && hospitals.none?
-      _returning = ", but we do not yet have data on which ones"
+      _returning = ", but we do not yet have data on which ones."
     else
-      _returning = ". For referral information please see the profiles for "
+      _returning = ". For referral information please see the "
 
       if open_clinics.one? && hospitals.none?
-        _returning += "this clinic."
+        _returning += "profile for this clinic."
       elsif hospitals.one? && open_clinics.none?
-        _returning += "this hospital."
+        _returning += "profile for this hospital."
       elsif hospitals.many? && open_clinics.none?
-        _returning += "these hospitals."
+        _returning += "profiles for these hospitals."
       elsif open_clinics.many? && hospitals.none?
-        _returning += "these clinics."
+        _returning += "profiles for these clinics."
       elsif ((open_clinics.many? && hospitals.many?) ||
         (open_clinics.one? && hospitals.one?))
 
-        _returning += "these hospitals and clinics"
+        _returning += "profiles for these hospitals and clinics."
       end
     end
 
