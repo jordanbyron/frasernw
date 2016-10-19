@@ -49,13 +49,20 @@ const setupGeneralInformation = () => {
   );
   setupSpecialistVisibilityToggle(
     [
-      { name: "practice_end_scheduled", truthyVal: true }
+      { name: "practice_end_scheduled", truthyVal: true },
+      { name: "practice_end_reason", truthyVal: "2" }
     ],
     "practice_restart_scheduled"
   );
   setupSpecialistVisibilityToggle(
     [
       { name: "practice_end_scheduled", truthyVal: true }
+    ],
+    "practice_end_reason_key"
+  );
+  setupSpecialistVisibilityToggle(
+    [
+      { name: "practice_end_scheduled", truthyVal: true },
       { name: "practice_restart_scheduled", truthyVal: true }
     ],
     "practice_restart_date"

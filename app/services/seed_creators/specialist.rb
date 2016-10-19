@@ -66,7 +66,7 @@ module SeedCreators
       accepting_new_direct_referrals: Proc.new{ rand() < 0.75 },
       direct_referrals_limited: Proc.new{ rand() < 0.03 },
       practice_end_scheduled: Proc.new{ rand() < 0.05 },
-      practice_end_reason_key: Proc.new{ Specialist::PRACTICE_END_REASONS.keys.sample }
+      practice_end_reason_key: Proc.new{ Specialist::PRACTICE_END_REASONS.keys.sample },
       practice_end_date: Proc.new{ rand(Date.civil(2012, 1, 26)..Date.civil(2017, 4, 1)) },
       practice_restart_date: Proc.new{ rand(Date.civil(2012, 1, 26)..Date.civil(2017, 4, 1)) },
       practice_restart_scheduled: Proc.new{ false }

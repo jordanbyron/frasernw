@@ -186,7 +186,7 @@ module Denormalized
               sanitize(clinic.not_performed).
               try(:convert_newlines_to_br),
             hidden: clinic.hidden?,
-            isOpen: #TODO
+            isOpen: clinic.is_open?
           })
         end
       end

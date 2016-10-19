@@ -461,7 +461,7 @@ class Specialist < ActiveRecord::Base
   })
 
   def practice_end_reason
-    PRACTICE_END_REASON[practice_end_reason_key]
+    PRACTICE_END_REASONS[practice_end_reason_key]
   end
 
   PRACTICE_ENDED_REASONS = StrictHash.new({
@@ -476,7 +476,7 @@ class Specialist < ActiveRecord::Base
       practice_end_scheduled &&
         practice_end_reason == _practice_end_reason &&
         practice_end_date < Date.current &&
-        (!practice_restart_scheduled? || practice_restart_date > Date.current)
+        (!practice_restart_scheduled? || practice_restart_date >= Date.current)
     end
   end
 
@@ -490,6 +490,14 @@ class Specialist < ActiveRecord::Base
     move_away: "moving away",
     death: "data entry error"
   })
+
+  PRACTICE_ENDING_REASONS.each do |_practice_end_reason, _practice_ending_reason|
+    define_method "#{_practice_ending_reason.gsub(" ", "_")}?" do
+      practice_end_scheduled &&
+        practice_end_reason == _practice_end_reason &&
+        practice_end_date > Date.current
+    end
+  end
 
   def practice_ending_reason
     PRACTICE_ENDING_REASONS[practice_ending_reason]
@@ -556,7 +564,7 @@ class Specialist < ActiveRecord::Base
           " #{practice_restart_date.to_s(:long_ordinal)}.")
       else
         ("Going on leave from " +
-          "#{practice_end_date.to_s(:long_ordinal)}." +
+          "#{practice_end_date.to_s(:long_ordinal)}.")
       end
     elsif moving_away?
       "Moving away on #{practice_end_date.to_s(:long_ordinal)}."

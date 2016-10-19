@@ -54,7 +54,7 @@ module PaperTrailable
   end
 
   def change_date(&block)
-    item.versions.order(:created_at).find_last do |version|
+    versions.order(:created_at).find_last do |version|
       !version.reify.present? || !block.call(version.reify)
     end.try(:created_at).try(:to_date)
   end
