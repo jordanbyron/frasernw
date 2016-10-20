@@ -41,8 +41,6 @@ module SeedCreators
       billing_number: Proc.new{ (5000..6000).to_a.sample },
       referral_form_mask: :pass_through,
       patient_can_book_mask: :pass_through,
-      unavailable_from: Proc.new{ rand(Date.civil(2012, 1, 26)..Date.civil(2017, 4, 1)) },
-      unavailable_to: Proc.new{ rand(Date.civil(2012, 1, 26)..Date.civil(2017, 4, 1)) },
       urgent_details: Proc.new{ "Some details." },
       goes_by_name: Proc.new{ "" },
       direct_phone_extension_old: Proc.new{ Faker::PhoneNumber.extension },
@@ -64,13 +62,14 @@ module SeedCreators
       sees_only_children: :pass_through,
       hidden: :pass_through,
       completed_survey: Proc.new{ rand() < 0.95 },
-      has_offices: Proc.new{ rand() < 0.8 },
+      works_from_offices: Proc.new{ rand() < 0.8 },
       accepting_new_direct_referrals: Proc.new{ rand() < 0.75 },
       direct_referrals_limited: Proc.new{ rand() < 0.03 },
-      availability: Proc.new{ (rand() < 0.95) ? 1 : (2..7).sample },
-      retirement_scheduled: Proc.new{ false },
-      retirement_date: Proc.new{ nil },
-      leave_scheduled: Proc.new{ false }
+      practice_end_scheduled: Proc.new{ rand() < 0.05 },
+      practice_end_reason_key: Proc.new{ Specialist::PRACTICE_END_REASONS.keys.sample },
+      practice_end_date: Proc.new{ rand(Date.civil(2012, 1, 26)..Date.civil(2017, 4, 1)) },
+      practice_restart_date: Proc.new{ rand(Date.civil(2012, 1, 26)..Date.civil(2017, 4, 1)) },
+      practice_restart_scheduled: Proc.new{ false }
     }
   end
 end

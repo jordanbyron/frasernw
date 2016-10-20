@@ -177,11 +177,10 @@ ActiveRecord::Schema.define(version: 20160922143318) do
     t.string   "deprecated_email"
     t.date     "closure_date"
     t.boolean  "hidden",                                default: false
-    t.boolean  "completed_survey"
+    t.boolean  "completed_survey",                      default: true
     t.boolean  "accepting_new_referrals"
     t.boolean  "referrals_limited"
-    t.boolean  "closure_scheduled"
-    t.boolean  "is_open"
+    t.boolean  "closure_scheduled",                     default: false
   end
 
   create_table "contacts", force: true do |t|
@@ -810,8 +809,8 @@ ActiveRecord::Schema.define(version: 20160922143318) do
     t.integer  "billing_number"
     t.integer  "referral_form_mask",             default: 3
     t.integer  "patient_can_book_mask",          default: 3
-    t.date     "unavailable_from"
-    t.date     "unavailable_to"
+    t.date     "practice_end_date"
+    t.date     "practice_restart_date"
     t.text     "urgent_details"
     t.string   "goes_by_name"
     t.string   "direct_phone_extension_old"
@@ -832,14 +831,13 @@ ActiveRecord::Schema.define(version: 20160922143318) do
     t.boolean  "is_internal_medicine",           default: false
     t.boolean  "sees_only_children",             default: false
     t.boolean  "hidden",                         default: false
-    t.boolean  "completed_survey"
-    t.boolean  "has_offices"
+    t.boolean  "completed_survey",               default: true
+    t.boolean  "works_from_offices"
     t.boolean  "accepting_new_direct_referrals"
     t.boolean  "direct_referrals_limited"
-    t.integer  "availability"
-    t.boolean  "retirement_scheduled"
-    t.date     "retirement_date"
-    t.boolean  "leave_scheduled"
+    t.boolean  "practice_end_scheduled",         default: false
+    t.boolean  "practice_restart_scheduled",     default: false
+    t.integer  "practice_end_reason_key",        default: 2
   end
 
   add_index "specialists", ["referral_clinic_id"], name: "index_specialists_on_referral_clinic_id", using: :btree

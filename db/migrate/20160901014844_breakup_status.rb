@@ -1,17 +1,20 @@
 class BreakupStatus < ActiveRecord::Migration
   def up
-    add_column :specialists, :completed_survey, :boolean
+    add_column :specialists, :completed_survey, :boolean, default: true
 
-    add_column :specialists, :has_offices, :boolean
+    add_column :specialists, :works_from_offices, :boolean
     add_column :specialists, :accepting_new_direct_referrals, :boolean
     add_column :specialists, :direct_referrals_limited, :boolean
 
-    add_column :specialists, :availability, :integer
+    rename_column :specialists, :unavailable_from, :practice_end_date
+    rename_column :specialists, :unavailable_to, :practice_restart_date
 
-    add_column :specialists, :retirement_scheduled, :boolean
-    add_column :specialists, :retirement_date, :date
+    add_column :specialists, :practice_end_scheduled, :boolean, default: false
+    add_column :specialists, :practice_restart_scheduled, :boolean, default: false
 
-    add_column :specialists, :leave_scheduled, :boolean
+    add_column :specialists, :practice_end_reason_key, :integer, default: 2
+
+    Specialist.reset_column_information
 
     Specialist.all.each do |specialist|
       specialist.without_versioning do
@@ -19,8 +22,17 @@ class BreakupStatus < ActiveRecord::Migration
           NEW_SPECIALIST_ATTRIBUTES.map{ |k, v| [ k, v.call(specialist) ] }.to_h
         )
       end
-
     end
+
+    # TODO: run this by admins
+    # make them 'not responded?'
+    Specialist.where(status_mask: nil, categorization_mask: 1).update_all(
+      hidden: true
+    )
+    Specialist.where(status_mask: 7, categorization_mask: 1).update_all(
+      hidden: true
+    )
+    Specialist.where(completed_survey: false).update_all(hidden: true)
   end
 
   NEW_SPECIALIST_ATTRIBUTES = {
@@ -38,55 +50,73 @@ class BreakupStatus < ActiveRecord::Migration
         specialist.specialist_offices.select(&:has_data?).any? &&
         specialist.status_mask == 11 #accepting limited new referrals
     },
-    has_offices: -> (specialist){
+    works_from_offices: -> (specialist){
        #responded to survey, only accepts referrals through hospitals, clinics
       [1, 5].include?(specialist.categorization_mask) &&
         specialist.specialist_offices.select(&:has_data?).any?
     },
-    availability: -> (specialist){
+    practice_end_reason_key: ->(specialist){
       case specialist.status_mask
       when 1 # accepting new referrals
-        Specialist::AVAILABILITY_LABELS.key(:available_for_work)
+        nil
       when 2 # only doing follow up
-        Specialist::AVAILABILITY_LABELS.key(:available_for_work)
+        nil
       when 4 #retired as of
-        Specialist::AVAILABILITY_LABELS.key(:retired)
+        Specialist::PRACTICE_END_REASONS.key(:retirement)
       when 5 #retiring as of
-        Specialist::AVAILABILITY_LABELS.key(:available_for_work)
+        Specialist::PRACTICE_END_REASONS.key(:retirement)
       when 6 #unavailable between
-        if specialist.unavailable_from < Date.today && specialist.unavailable_to > Date.today
-          Specialist::AVAILABILITY_LABELS.key(:temporarily_unavailable)
-        else
-          Specialist::AVAILABILITY_LABELS.key(:available_for_work)
-        end
+        Specialist::PRACTICE_END_REASONS.key(:leave)
       when 7 #didn't answer
-        Specialist::AVAILABILITY_LABELS.key(:unknown)
+        nil
       when 8 #indefinitely unavailable
-        Specialist::AVAILABILITY_LABELS.key(:indefinitely_unavailable)
+        Specialist::PRACTICE_END_REASONS.key(:leave)
       when 9 #permanently unavailable
-        Specialist::AVAILABILITY_LABELS.key(:permanently_unavailable)
+        Specialist::PRACTICE_END_REASONS.key(:retirement)
       when 10 #moved away
-        Specialist::AVAILABILITY_LABELS.key(:moved_away)
+        Specialist::PRACTICE_END_REASONS.key(:move_away)
       when 11 #limited referrals
-        Specialist::AVAILABILITY_LABELS.key(:available_for_work)
+        nil
       when 12 #deceased
-        Specialist::AVAILABILITY_LABELS.key(:deceased)
+        Specialist::PRACTICE_END_REASONS.key(:death)
+      when nil
+        nil
       else
-        Specialist::AVAILABILITY_LABELS.key(:available_for_work)
+        raise "shouldn't be here"
       end
     },
-    retirement_date: ->(specialist){
-      if [4, 5].include?(specialist.status_mask) #retiring as of, retired as of
-        specialist.unavailable_from
+    practice_end_scheduled: ->(specialist){
+      # retired, retiring, unavailable between, indefinitely unavailable,
+      # permanently unavailable, moved away, deceased
+      [4, 5, 6, 8, 9, 10, 12].include?(specialist.status_mask)
+    },
+    practice_end_date: ->(specialist){
+      if [5, 6].include?(specialist.status_mask)
+        # retiring as of, unavailable between
+        raise "no end date specified" if specialist.practice_end_date.nil?
+
+        specialist.practice_end_date
+      elsif [4, 8, 9, 10, 12].include?(specialist.status_mask)
+        # retired, indefinitely unavailable, permanently unavailable
+        # moved away, deceased
+        specialist.change_date do |reified_version|
+          reified_version.status_mask == specialist.status_mask
+        end
       else
         nil
       end
     },
-    retirement_scheduled: ->(specialist){
-      [4, 5].include?(specialist.status_mask) #retiring as of, retired as of
+    practice_restart_scheduled: ->(specialist){
+      # unavailable_between
+      specialist.status_mask == 6
     },
-    leave_scheduled: ->(specialist){
-      specialist.status_mask == 6 #unavailable between
+    practice_restart_date: ->(specialist){
+      # unavailable_between
+      if specialist.status_mask == 6
+        specialist.practice_restart_date
+      else
+        nil
+      end
     }
   }
 end

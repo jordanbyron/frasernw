@@ -7,9 +7,7 @@ import { memoizePerRender } from "utils"
 export const preliminaryFilterKeys = ((collectionName) => {
   if(_.includes(["specialists", "clinics"], collectionName)){
     return [
-      "availabilityKnown",
       "notHidden",
-      "unavailableForAWhile"
     ];
   }
   else if (collectionName === "contentItems") {

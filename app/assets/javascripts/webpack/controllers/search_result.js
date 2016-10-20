@@ -167,7 +167,7 @@ const HighlightedEntryLabel = ({decoratedRecord}) => {
 
 const cities = (record) => {
   if (record.collectionName === "clinics" ||
-    (record.isAvailable)){
+    (record.isOpen)){
 
     return record.cityIds;
   }

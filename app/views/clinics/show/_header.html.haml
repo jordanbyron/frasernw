@@ -21,7 +21,7 @@
         It may be out of our current catchment area, or in a
         speciality we have yet to fully survey.
 
-    - if @clinic.completed_survey? && @clinic.is_open?
+    - if @clinic.completed_survey? && @clinic.open?
       - if @clinic.status_details.present?
         %p.no_indent
           %strong Details:

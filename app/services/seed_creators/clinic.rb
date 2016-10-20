@@ -60,8 +60,7 @@ module SeedCreators
       hidden: :pass_through,
       completed_survey: Proc.new{ true },
       accepting_new_referrals: Proc.new{ rand() < 0.9 },
-      referrals_limited: Proc.new{ rand() < 0.05 },
-      is_open: Proc.new{ rand() < 0.95 }
+      referrals_limited: Proc.new{ rand() < 0.05 }
     }
   end
 end
