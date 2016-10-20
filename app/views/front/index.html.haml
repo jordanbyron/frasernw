@@ -24,7 +24,7 @@
           - @news_items.each do |news_item|
             .news_item.breaking
               .news_item_date= news_item.date if news_item.date.present?
-              %div{ class: news_item.date.present? ? "news_item_title" : "news_item_date" }
+              %div{ class: FrontHelper.news_item_class(news_item) }
                 = news_item.title if news_item.title.present?
               .news_item_body
                 = BlueCloth.new(news_item.body).to_html.html_safe
@@ -39,7 +39,8 @@
             %li
               = link_to specialization.name,
                 specialization,
-                class: specialization.hidden_in?(*@as_divisions) ? "hidden-from-users" : "hoverlabel"
+                class: FrontHelper.specialty_class(specialization,
+                  *@as_divisions)
               - if specialization.new_for_divisions?(@as_divisions)
                 %span.new new
 
@@ -77,9 +78,7 @@
 
           %p
             If you have any comments or questions while using the site, please
-            contact us at
-            = mail_to "administration@pathwaysbc.ca",
-              "administration@pathwaysbc.ca" + "."
+            = link_to("contact us", contact_path) + "."
 
         %h2 Latest Specialist and Clinic Updates
         - if ENV["HIDE_LATEST_UPDATES"] != "true"
@@ -94,7 +93,7 @@
             = link_to news_items_path(division_id: @as_division.id),
               class: "btn btn-mini" do
               %i.icon-pencil
-              %span= " Edit Manual Specialist and Clinic Updates"
+              Edit Manual Specialist and Clinic Updates
 
         - if @current_newsletter.present?
           %div{ style: "margin-top: 18px;" }
@@ -103,15 +102,22 @@
 
             %div{ style: "margin-top: 10px;" }
               = image_tag "pathways_newsletter.png",
-                style: "height: 120px; border: 1px solid lightgray; padding: 2px; margin-right: 10px; float: left;"
+                class: "newsletter__thumbnail"
               %p{ style: "margin-top: 0px;" }
-                = "The current Pathways newsletter (#{@current_newsletter.month} Edition) is available #{link_to('here', @current_newsletter.url, target: '_blank')}.  It includes:".html_safe
+                The current Pathways newsletter (
+                = @current_newsletter.month
+                Edition ) is available
+                = link_to @current_newsletter.url, target: '_blank' do
+                  here
+                  %span>= "."
+                %span= " It includes:"
               %ul{ style: "margin-bottom: 20px;" }
                 - @current_newsletter.description_items.each do |item|
                   %li{ style: "list-style-type: disc;" }
                     = item.description_item
               %p
-                = "You can also #{link_to('browse previous issues', newsletters_path)}.".html_safe
+                You can also
+                = link_to('browse previous issues', newsletters_path) + "."
               %div{ style: "clear: both;" }
 
         - if @divisional_updates.any?
@@ -122,7 +128,7 @@
 
             .news_item
               .news_item_date= news_item.date if news_item.date.present?
-              %div{ class: news_item.date.present? ? "news_item_title" : "news_item_date" }
+              %div{ class: FrontHelper.news_item_class(news_item) }
                 = news_item.title if news_item.title.present?
               .news_item_body
                 = BlueCloth.new(news_item.body).to_html.html_safe
@@ -132,7 +138,7 @@
             = link_to news_items_path(division_id: @as_division.id),
               class: "btn btn-mini" do
               %i.icon-pencil
-              %span= " Edit Division Updates"
+              Edit Division Updates
 
         - if @attachment_updates.any?
 
@@ -142,7 +148,7 @@
 
             .news_item
               .news_item_date= news_item.date if news_item.date.present?
-              %div{ class: news_item.date.present? ? "news_item_title" : "news_item_date" }
+              %div{ class: FrontHelper.news_item_class(news_item) }
                 = news_item.title if news_item.title.present?
               .news_item_body
                 = BlueCloth.new(news_item.body).to_html.html_safe
@@ -152,7 +158,7 @@
             = link_to news_items_path(division_id: @as_division.id),
               class: "btn btn-mini" do
               %i.icon-pencil
-              %span= " Edit Attachment Updates"
+              Edit Attachment Updates
 
         - if @shared_care_updates.any?
 
@@ -164,7 +170,7 @@
 
             .news_item
               .news_item_date= news_item.date if news_item.date.present?
-              %div{ class: news_item.date.present? ? "news_item_title" : "news_item_date" }
+              %div{ class: FrontHelper.news_item_class(news_item) }
                 = news_item.title if news_item.title.present?
               .news_item_body
                 = BlueCloth.new(news_item.body).to_html.html_safe
@@ -174,19 +180,18 @@
             = link_to news_items_path(division_id: @as_division.id),
               class: "btn btn-mini" do
               %i.icon-pencil
-              %span= " Edit Shared Care Updates"
+              Edit Shared Care Updates
 
 
       .span4.offsethalf
-
         .well
 
           %h2.center Featured Content
-
-          - cache("featured_content_#{@as_divisions.map{|d| d.id }.join('_')}") do
-            - ScCategory.front_page_for_divisions(@as_divisions).each do |category|
+          - division_ids = @as_divisions.map{ |division| division.id }.join('_')
+          - cache("featured_content_#{division_ids}") do
+            - ScCategory.front_page_for_divisions(@as_divisions).each do |cat|
               = render "front/index/featured_content_category",
-                category: category
+                category: cat
 
           .featured-content
             %i.icon-star.icon-blue
@@ -194,14 +199,14 @@
 
         - if current_user.as_admin_or_super? && @can_edit_division
           %p.admin.btn-group
-            = link_to edit_featured_contents_path(division_id: @as_divisions.first.id),
+            - first_division = @as_divisions.first.id
+            = link_to edit_featured_contents_path(division_id: first_division),
               class: "btn btn-mini" do
               %i.icon-pencil
-              %span= "Edit Featured Content"
+              Edit Featured Content
 
 :javascript
   window.pathways.favoriteFeaturedItem = function(event, id, title) {
     event.stopPropagation();
-
     favorite('content_items', id, title);
   };
