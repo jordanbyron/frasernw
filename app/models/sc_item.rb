@@ -65,6 +65,12 @@ class ScItem < ActiveRecord::Base
 
   default_scope { order('sc_items.title') }
 
+  after_commit :flush_cached_find
+
+  after_commit do
+    UpdateScItemSharing.update_divisional_resource_subscriptions(self)
+  end
+
   def self.demoable
     where(demoable: true)
   end
@@ -72,8 +78,6 @@ class ScItem < ActiveRecord::Base
   def self.provincial
     where(division_id: 13)
   end
-
-  after_commit :flush_cached_find
 
   def self.cached_find(id)
     Rails.cache.fetch([name, id]) { find(id) }

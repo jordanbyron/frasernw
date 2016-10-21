@@ -21,10 +21,13 @@ class ScItemsController < ApplicationController
   def create
     @sc_item = ScItem.new(params[:sc_item])
     params[:specialization] = {} if params[:specialization].blank?
-    params[:procedure_specialization] = {} if params[:procedure_specialization].blank?
+    params[:procedure_specialization] =
+      {} if params[:procedure_specialization].blank?
     if @sc_item.save
       params[:specialization].each do |specialization_id, set|
-        @sc_item.sc_item_specializations.create(specialization_id: specialization_id)
+        @sc_item.
+          sc_item_specializations.
+          create(specialization_id: specialization_id)
       end
       params[:procedure_specialization].each do |ps_id, set|
         specialization = ProcedureSpecialization.find(ps_id).specialization
@@ -39,13 +42,13 @@ class ScItemsController < ApplicationController
           )
         end
       end
-      UpdateScItemSharing.update_divisional_resource_subscriptions(sc_item: @sc_item)
       Subscription::MailImmediateNotifications.call(
         klass_name: "ScItem",
         id: @sc_item.id,
         delay: true
       )
-      redirect_to sc_item_path(@sc_item), notice: "Successfully created content item."
+      redirect_to sc_item_path(@sc_item),
+        notice: "Successfully created content item."
     else
       new_sc_item_preload
       render action: 'new'
@@ -60,7 +63,8 @@ class ScItemsController < ApplicationController
   def update
     @sc_item = ScItem.find(params[:id])
     params[:specialization] = {} if params[:specialization].blank?
-    params[:procedure_specialization] = {} if params[:procedure_specialization].blank?
+    params[:procedure_specialization] =
+      {} if params[:procedure_specialization].blank?
     if @sc_item.update_attributes(params[:sc_item])
       @sc_item.sc_item_specializations.each do |sis|
         #remove existing specializations that no longer exist
@@ -78,7 +82,10 @@ class ScItemsController < ApplicationController
       end
       @sc_item.sc_item_specialization_procedure_specializations.each do |sisps|
         #remove existing procedure specializations that no longer exist
-        if !params[:procedure_specialization].include? sisps.procedure_specialization_id
+        if (
+          !params[:procedure_specialization].
+            include? sisps.procedure_specialization_id
+        )
           ScItemSpecializationProcedureSpecialization.destroy(sisps.id)
         end
       end
@@ -97,10 +104,6 @@ class ScItemsController < ApplicationController
             procedure_specialization_id: ps_id
           )
         end
-      end
-      if @sc_item.shareable_changed? && @sc_item.sharable?
-        puts "SUCH UPDATE"
-        UpdateScItemSharing.update_divisional_resource_subscriptions(sc_item: @sc_item)
       end
       redirect_to @sc_item, notice: "Successfully updated content item."
     else
@@ -170,7 +173,8 @@ class ScItemsController < ApplicationController
 
   def set_form_variables!(sc_item)
     @has_specializations = sc_item.specializations.map{ |s| s.id }
-    @has_procedure_specializations = sc_item.procedure_specializations.map{ |ps| ps.id }
+    @has_procedure_specializations =
+      sc_item.procedure_specializations.map{ |ps| ps.id }
     @hierarchy = ancestry_options_limited(
       ScCategory.unscoped.arrange(order: 'name'),
       nil
@@ -180,7 +184,7 @@ class ScItemsController < ApplicationController
   def authorize_division_for_user
     if !(
       current_user.as_super_admin? ||
-      (current_user.as_divisions.include? Division.find(params[:id]))
+        (current_user.as_divisions.include? Division.find(params[:id]))
     )
       redirect_to root_url, notice: "You are not allowed to access this page"
     end

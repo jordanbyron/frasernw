@@ -9,13 +9,13 @@ class UpdateScItemSharing < ServiceObject
       current_user.as_super_admin? ||
         current_user.as_divisions.include?(division)
     )
-      update_shared(:is_shared, :division)
+      update_shared(is_shared, division)
     else
       false
     end
   end
 
-  def update_divisional_resource_subscriptions
+  def self.update_divisional_resource_subscriptions(sc_item)
     if sc_item.shareable? && (sc_item.division_id == Division.provincial.id)
       specialization_ids = sc_item.specializations.map(&:id)
       DivisionalResourceSubscription.select do |subscription|
