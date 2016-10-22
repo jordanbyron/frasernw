@@ -115,7 +115,9 @@ class BreakupStatus < ActiveRecord::Migration
     practice_end_scheduled: ->(specialist){
       # retired, retiring, unavailable between, indefinitely unavailable,
       # permanently unavailable, moved away, deceased
-      [4, 5, 6, 8, 9, 10, 12].include?(specialist.status_mask)
+      [4, 5, 6, 8, 9, 10, 12].include?(specialist.status_mask) &&
+        # responded, not responded
+        [1, 2].include?(specialist.categorization_mask)
     },
     practice_end_date: ->(specialist){
       if [5, 6].include?(specialist.status_mask)
@@ -135,7 +137,9 @@ class BreakupStatus < ActiveRecord::Migration
     },
     practice_restart_scheduled: ->(specialist){
       # unavailable_between
-      specialist.status_mask == 6
+      specialist.status_mask == 6 &&
+        # responded, not responded
+        [1, 2].include?(specialist.categorization_mask)
     },
     practice_restart_date: ->(specialist){
       # unavailable_between
