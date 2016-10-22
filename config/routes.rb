@@ -91,9 +91,11 @@ Frasernw::Application.routes.draw do
   resources :notes, only: [:create, :destroy]
   get '/history' => 'history#index'
 
-  get '/review_items/archived' => 'review_items#archived',
-    as: 'archived_review_items'
-  resources :review_items
+  resources :review_items, only: [:index] do
+    collection do
+      get :archived
+    end
+  end
 
   resources :feedback_items
 
