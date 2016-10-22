@@ -1,9 +1,14 @@
 class BreakupStatus < ActiveRecord::Migration
+  # TODO after branch is stable on prod:
+  # remove: status_mask, categorization_mask, status_details,
+  # hospital_clinic_details
+
   def up
     add_column :specialists, :completed_survey, :boolean, default: true
 
     add_column :specialists, :works_from_offices, :boolean
     add_column :specialists, :accepting_new_direct_referrals, :boolean
+    add_column :specialists, :accepting_new_indirect_referrals, :boolean
     add_column :specialists, :direct_referrals_limited, :boolean
 
     rename_column :specialists, :unavailable_from, :practice_end_date
@@ -13,6 +18,17 @@ class BreakupStatus < ActiveRecord::Migration
     add_column :specialists, :practice_restart_scheduled, :boolean, default: false
 
     add_column :specialists, :practice_end_reason_key, :integer, default: 2
+
+    add_column :specialists, :practice_details, :text
+
+    rename_column :specialists, :practise_limitations, :practice_limitations
+
+    # remove old cruft before we leave behind new cruft
+    remove_column :specialists, :direct_phone_old
+    remove_column :specialists, :location_opened_old
+    remove_column :specialists, :referral_form_old
+    remove_column :specialists, :direct_phone_extension_old
+    remove_column :specialists, :patient_can_book_old
 
     Specialist.reset_column_information
 
@@ -40,6 +56,14 @@ class BreakupStatus < ActiveRecord::Migration
       #purposely not surveyed, not responded to survey
       ![4, 2].include?(specialist.categorization_mask)
     },
+    practice_details: ->(specialist){
+      #responded to survey, only accepts referrals through hospitals, clinics
+      if [1, 5].include?(specialist.categorization_mask)
+        specialist.hospital_clinic_details
+      else
+        specialist.practice_details
+      end
+    },
     accepting_new_direct_referrals: ->(specialist){
       specialist.categorization_mask == 1 && #responded to survey
         specialist.specialist_offices.select(&:has_data?).any? &&
@@ -50,8 +74,11 @@ class BreakupStatus < ActiveRecord::Migration
         specialist.specialist_offices.select(&:has_data?).any? &&
         specialist.status_mask == 11 #accepting limited new referrals
     },
+    accepting_new_indirect_referrals: ->(specialist){
+      specialist.categorization_mask == 5
+    },
     works_from_offices: -> (specialist){
-       #responded to survey, only accepts referrals through hospitals, clinics
+      #responded to survey, only accepts referrals through hospitals, clinics
       [1, 5].include?(specialist.categorization_mask) &&
         specialist.specialist_offices.select(&:has_data?).any?
     },

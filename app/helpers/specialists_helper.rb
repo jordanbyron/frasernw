@@ -60,14 +60,18 @@ module SpecialistsHelper
     when :expanded_associations
       specialist.practicing? &&
         !specialist.works_from_offices?
-    when :hospital_clinic_details
-      specialist.practicing? &&
-        !specialist.works_from_offices? &&
-        specialist.hospital_clinic_details.present?
+    when :practice_details
+      (specialist.practicing? || specialist.is_deceased?) &&
+        specialist.practice_details.present?
     when :patient_information
       specialist.practicing? &&
         (specialist.patient_instructions.present? ||
           specialist.cancellation_policy.present?)
+    when :ongoing_care
+      specialist.practicing? &&
+        specialist.works_from_offices &&
+        specialist.indirect_referrals_only? &&
+        specialist.specialist_offices.select(&:has_data?).any?
     end
   end
 end

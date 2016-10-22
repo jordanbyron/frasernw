@@ -159,7 +159,7 @@ en:
         sees_only_children: Does not see adult patients
         status_mask: Current status
         status_details: Additional details (if any)
-        practise_limitations: Other practice limitations (if any)
+        practice_limitations: Other practice limitations (if any)
         languages: Languages spoken in the practice
         required_investigations: >
           Required information / investigations for ALL referrals

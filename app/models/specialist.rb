@@ -20,10 +20,8 @@ class Specialist < ActiveRecord::Base
     :is_gp,
     :is_internal_medicine,
     :sees_only_children,
-    :practise_limitations,
+    :practice_limitations,
     :interest,
-    :direct_phone_old,
-    :direct_phone_extension_old,
     :red_flags,
     :clinic_location_ids,
     :responds_via,
@@ -33,7 +31,6 @@ class Specialist < ActiveRecord::Base
     :contact_notes,
     :referral_criteria,
     :status_mask,
-    :location_opened_old,
     :referral_fax,
     :referral_phone,
     :referral_clinic_id,
@@ -50,11 +47,9 @@ class Specialist < ActiveRecord::Base
     :status_details,
     :required_investigations,
     :not_performed,
-    :patient_can_book_old,
     :patient_can_book_mask,
     :lagtime_mask,
     :waittime_mask,
-    :referral_form_old,
     :referral_form_mask,
     :patient_instructions,
     :cancellation_policy,
@@ -79,7 +74,8 @@ class Specialist < ActiveRecord::Base
     :practice_restart_date,
     :practice_end_scheduled,
     :practice_restart_scheduled,
-    :practice_end_reason_key
+    :practice_end_reason_key,
+    :practice_details
 
   # specialists can have multiple specializations
   has_many :specialist_specializations, dependent: :destroy
@@ -508,7 +504,7 @@ class Specialist < ActiveRecord::Base
       :red_x
     elsif practice_end_scheduled?
       :orange_warning
-    elsif !works_from_offices?
+    elsif !works_from_offices? || indirect_referrals_only?
       :blue_arrow
     elsif !accepting_new_direct_referrals
       :red_x
@@ -517,6 +513,10 @@ class Specialist < ActiveRecord::Base
     else
       :green_check
     end
+  end
+
+  def indirect_referrals_only?
+    !accepting_new_direct_referrals && accepting_new_indirect_referrals?
   end
 
   def referral_summary
@@ -528,6 +528,8 @@ class Specialist < ActiveRecord::Base
       not_practicing_soon_details
     elsif !works_from_offices?
       "Only works out of #{works_out_of_label}#{referrals_through_label}"
+    elsif indirect_referrals_only?
+      "Only accepts referrals through #{works_out_of_label}#{referrals_through_label}"
     elsif !accepting_new_direct_referrals?
       "Only doing follow up on previous patients."
     elsif direct_referrals_limited?
@@ -716,10 +718,6 @@ class Specialist < ActiveRecord::Base
     else
       billing_number
     end
-  end
-
-  def practice_limitations
-    return practise_limitations
   end
 
   def accepts_referrals_via

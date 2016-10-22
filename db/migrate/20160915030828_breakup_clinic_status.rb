@@ -1,4 +1,7 @@
 class BreakupClinicStatus < ActiveRecord::Migration
+  # TODO after branch is stable on prod:
+  # remove: status_mask, categorization_mask
+
   def up
     add_column :clinics, :completed_survey, :boolean, default: true
 
@@ -7,6 +10,13 @@ class BreakupClinicStatus < ActiveRecord::Migration
 
     add_column :clinics, :closure_scheduled, :boolean, default: false
     rename_column :clinics, :unavailable_from, :closure_date
+
+    # remove old cruft before we leave behind new cruft
+    remove_column :clinics, :location_opened_old
+    remove_column :clinics, :referral_form_old
+    remove_column :clinics, :patient_can_book_old
+
+    rename_column :clinics, :status_details, :practice_details
 
     Clinic.reset_column_information
 

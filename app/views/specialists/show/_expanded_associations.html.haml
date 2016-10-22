@@ -17,10 +17,10 @@
       %p.space
         %i{ class: clinic.referral_icon_classes }
         %strong.status= clinic.referral_summary.end_with_period
-      - if clinic.status_details.present?
+      - if clinic.practice_details.present?
         %p
           %strong Details:
-          = clinic.status_details.end_with_period.convert_newlines_to_br
+          = clinic.practice_details.end_with_period.convert_newlines_to_br
       - if clinic.limitations.present?
         %p
           %strong Limitations:

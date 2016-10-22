@@ -11,9 +11,14 @@
 = f.input :direct_referrals_limited,
   label: "Direct referrals limited by geography or number of patients?",
   wrapper_html: { class: "form__wrapper--double-indented" }
-
-= f.input :status_details
-= f.input :practise_limitations
+- if specialist.specializations.where(name: "Family Practice").any?
+  = f.input :accepting_new_indirect_referrals,
+    label: "Accepts referrals through hospitals and/or clinics"
+= f.input :practice_details,
+  label: "Additional details about practice and referrals (if any)",
+  hint: "Will be displayed on profile page in blue header."
+= f.input :practice_limitations,
+  hint: "Will be displayed on profile page in blue header."
 
 = f.input :is_gp
 
