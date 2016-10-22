@@ -6,10 +6,16 @@ class BreakupStatus < ActiveRecord::Migration
   def up
     add_column :specialists, :completed_survey, :boolean, default: true
 
-    add_column :specialists, :works_from_offices, :boolean
-    add_column :specialists, :accepting_new_direct_referrals, :boolean
-    add_column :specialists, :accepting_new_indirect_referrals, :boolean
-    add_column :specialists, :direct_referrals_limited, :boolean
+    add_column :specialists, :works_from_offices, :boolean, default: false
+    add_column :specialists,
+      :accepting_new_direct_referrals,
+      :boolean,
+      default: true
+    add_column :specialists,
+      :accepting_new_indirect_referrals,
+      :boolean,
+      default: false
+    add_column :specialists, :direct_referrals_limited, :boolean, default: false
 
     rename_column :specialists, :unavailable_from, :practice_end_date
     rename_column :specialists, :unavailable_to, :practice_restart_date
