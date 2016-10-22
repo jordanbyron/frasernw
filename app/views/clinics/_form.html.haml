@@ -8,6 +8,7 @@
       formData.maxLocations = #{Clinic::MAX_LOCATIONS};
       formData.interactionType = "#{@form_modifier.interaction_type.to_s}";
       formData.recordKey = "clinic";
+      formData.reviewId = #{@review_item.id};
     }( window.pathways.formData = {} ));
 
   = javascript_include_tag "views/form_review"
