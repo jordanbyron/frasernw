@@ -325,10 +325,14 @@ class Specialist < ActiveRecord::Base
     ).where(
       '"hospital_in_location".locatable_type = (?) '\
         'AND "hospital_address".city_id IN (?) '\
-        'AND "specialists".works_from_offices = (?)',
+        'AND ("specialists".works_from_offices = (?) OR '\
+        '("specialists".accepting_new_direct_referrals = (?) AND '\
+        '("specialists".accepting_new_indirect_referrals = (?))))',
       "Hospital",
       city_ids,
-      false
+      false,
+      false,
+      true
     )
 
     from_clinic = joins(
@@ -344,10 +348,14 @@ class Specialist < ActiveRecord::Base
       '"clinic_in_location".locatable_type = (?) '\
         'AND "clinic_address".city_id IN (?) '\
         'AND "clinic_in_location".hospital_in_id IS NULL '\
-        'AND "specialists".works_from_offices = (?)',
+        'AND ("specialists".works_from_offices = (?) OR '\
+        '("specialists".accepting_new_direct_referrals = (?) AND '\
+        '("specialists".accepting_new_indirect_referrals = (?))))',
       "ClinicLocation",
       city_ids,
-      false
+      false,
+      false,
+      true
     )
 
     from_clinic_in_hospital = joins(
@@ -367,11 +375,15 @@ class Specialist < ActiveRecord::Base
       '"clinic_location".locatable_type = (?) '\
         'AND "hospital_in_location".locatable_type = (?) '\
         'AND "hospital_address".city_id IN (?) '\
-        'AND "specialists".works_from_offices = (?)',
+        'AND ("specialists".works_from_offices = (?) OR '\
+        '("specialists".accepting_new_direct_referrals = (?) AND '\
+        '("specialists".accepting_new_indirect_referrals = (?))))',
       "ClinicLocation",
       "Hospital",
       city_ids,
-      false
+      false,
+      false,
+      true
     )
 
     (
@@ -425,7 +437,13 @@ class Specialist < ActiveRecord::Base
 
   def cities(force: false)
     Rails.cache.fetch([self.class.name, self.id, "cities"], force: force) do
-      if works_from_offices?
+      if works_from_offices? && indirect_referrals_only?
+        (
+          hospitals.map(&:city) +
+          clinic_locations.map(&:city) +
+          offices.map(&:city)
+        ).flatten.reject(&:blank?).uniq
+      elsif works_from_offices?
         offices.map(&:city).reject(&:blank?).uniq
       else
         (
