@@ -10,7 +10,7 @@ class BreakupStatus < ActiveRecord::Migration
     add_column :specialists,
       :accepting_new_direct_referrals,
       :boolean,
-      default: true
+      default: false
     add_column :specialists,
       :accepting_new_indirect_referrals,
       :boolean,
