@@ -254,11 +254,10 @@
 
               %ul.attending_specialists
                 - @clinic.locations_showing_attendances.each do |location|
-                  - if @clinic.locations_showing_attendances.many?
-                    .location_attendances
-                      Physicians who see patients at
-                      %span.location_attendances__address
-                        = location.resolved_address.short_address
+                  .location_attendances
+                    Physicians who see patients at
+                    %span.location_attendances__address
+                      = location.resolved_address.short_address
                   - location.attendances.select(&:show?).each do |attendance|
                     - if attendance.is_specialist
                       = physician_attending(attendance)
