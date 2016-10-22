@@ -75,7 +75,8 @@ class Specialist < ActiveRecord::Base
     :practice_end_scheduled,
     :practice_restart_scheduled,
     :practice_end_reason_key,
-    :practice_details
+    :practice_details,
+    :accepting_new_indirect_referrals
 
   # specialists can have multiple specializations
   has_many :specialist_specializations, dependent: :destroy
@@ -951,8 +952,8 @@ class Specialist < ActiveRecord::Base
   end
 
   WORKS_FROM_OFFICES_OPTIONS = [
-    ["Works out of offices", true],
-    ["Only works out of hospitals or clinics", false]
+    ["Offices", true],
+    ["Hospitals or clinics only", false]
   ]
 
 private

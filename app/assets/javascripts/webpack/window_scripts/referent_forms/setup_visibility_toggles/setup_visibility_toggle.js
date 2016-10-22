@@ -38,13 +38,7 @@ const hideAffected = (affected, recordType) =>{
     $(`#${affected}`).hide();
   }
   else{
-    $(`.${recordType}_${affected}`).
-      hide()
-
-    const childCheckbox = $(`#${recordType}_${affected}`)[0]
-    if (childCheckbox){
-      $(childCheckbox).attr("checked", false)
-    }
+    $(`.${recordType}_${affected}`).hide();
   }
 }
 
