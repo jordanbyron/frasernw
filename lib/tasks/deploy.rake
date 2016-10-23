@@ -21,6 +21,13 @@ namespace :deploy do
         puts "Checking for pending migrations ..."
         print_exec "heroku run rake check_migrations --app #{config[1]}"
       end
+
+      task :migrate do
+        puts "Migrating and restarting #{config[0].capitalize}"
+
+        print_exec "heroku run rake db:migrate --app #{config[1]}"
+        print_exec "heroku restart --app #{config[1]}"
+      end
     end
   end
 
