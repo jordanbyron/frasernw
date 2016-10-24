@@ -113,10 +113,11 @@ class ScItem < ActiveRecord::Base
       :sc_item_specialization_procedure_specializations,
       :procedure_specializations
     ] ).where(
-      'sc_item_specializations.id = sc_item_specialization_procedure_specializations.'\
+      'sc_item_specializations.id = '\
+        'sc_item_specialization_procedure_specializations.'\
         'sc_item_specialization_id '\
-        'AND sc_item_specialization_procedure_specializations.procedure_specialization_id'\
-        ' = procedure_specializations.id '\
+        'AND sc_item_specialization_procedure_specializations.'\
+        'procedure_specialization_id = procedure_specializations.id '\
         'AND procedure_specializations.procedure_id = (?) '\
         'AND "sc_items"."division_id" IN (?)',
       procedure.id,
@@ -128,9 +129,11 @@ class ScItem < ActiveRecord::Base
       :procedure_specializations,
       :division_display_sc_items
     ] ).where(
-      'sc_item_specializations.id = sc_item_specialization_procedure_specializations.'\
+      'sc_item_specializations.id = '\
+        'sc_item_specialization_procedure_specializations.'\
         'sc_item_specialization_id '\
-        'AND sc_item_specialization_procedure_specializations.procedure_specialization_id'\
+        'AND sc_item_specialization_procedure_specializations.'\
+        'procedure_specialization_id'\
         ' = procedure_specializations.id '\
         'AND procedure_specializations.procedure_id = (?) '\
         'AND "division_display_sc_items"."division_id" in (?) '\
@@ -226,8 +229,9 @@ class ScItem < ActiveRecord::Base
   end
 
   def mail_to_patient(current_user, patient_email)
-    # DO NOT delay: we don't want patient emails ending up in the delayed_jobs table
-    MailToPatientMailer.mail_to_patient(self, current_user, patient_email).deliver
+    # DO NOT delay: we don't want patient emails in the delayed_jobs table
+    MailToPatientMailer.
+      mail_to_patient(self, current_user, patient_email).deliver
   end
 
   def divisions
@@ -319,7 +323,8 @@ class ScItem < ActiveRecord::Base
   def format_type
     if link? || document?
       theurl = link? ? url : document.url
-      theurl = theurl.slice(theurl.rindex('.')+1..-1).downcase unless theurl.blank?
+      theurl =
+        theurl.slice(theurl.rindex('.')+1..-1).downcase unless theurl.blank?
       theurl = theurl.slice(0...theurl.rindex('?')) if theurl.rindex('?')
       theurl = theurl.slice(0...theurl.rindex('#')) if theurl.rindex('#')
       ftype = FORMAT_HASH[theurl]

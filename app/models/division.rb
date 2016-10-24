@@ -13,7 +13,7 @@ class Division < ActiveRecord::Base
   has_many :division_referral_cities, dependent: :destroy
 
   # # returns all cities in division's local referral area
-  # e.g. d.referral_cities === d.division_referral_cities.map{|drc| drc.city}
+  # e.g. d.referral_cities === d.division_referral_cities.map{ |drc| drc.city }
   has_many :referral_cities, through: :division_referral_cities, source: :city
 
   has_many :division_referral_city_specializations,
@@ -68,10 +68,6 @@ class Division < ActiveRecord::Base
     where(name: "Provincial").first
   end
 
-  def hidden?
-    name == "Vancouver (Hidden)"
-  end
-
   def flush_cached_find
     Rails.cache.delete([self.class.name, id])
   end
@@ -112,7 +108,7 @@ class Division < ActiveRecord::Base
   def local_referral_cities(specialization)
     @local_referral_cities ||= Hash.new do |h, key|
       h[key] = division_referral_city_specializations.
-        includes([:specialization, {division_referral_city: :city}]).
+        includes([:specialization, { division_referral_city: :city }]).
         where(specialization_id: key).map do |drcs|
           drcs.division_referral_city.city
         end.
@@ -165,11 +161,12 @@ class Division < ActiveRecord::Base
           memo.merge(drc.city_id => drc.priority)
         end
       else
-        City.order("name DESC").each_with_index.inject({}) do |memo, (city, index)|
-          memo.merge(
-            city.id => index
-          )
-        end
+        City.
+          order("name DESC").
+          each_with_index.
+          inject({}) do |memo, (city, index)|
+            memo.merge(city.id => index)
+          end
       end
     end
   end

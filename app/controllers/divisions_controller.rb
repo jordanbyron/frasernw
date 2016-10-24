@@ -11,7 +11,6 @@ class DivisionsController < ApplicationController
 
   def show
     @division = Division.find(params[:id])
-    @resource_subscriptions = @division.divisional_resource_subscriptions
     @local_referral_cities = generate_local_referral_cities(@division)
     @division_referral_cities_by_priority =
       DivisionReferralCity.

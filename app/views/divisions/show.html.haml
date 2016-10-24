@@ -29,15 +29,16 @@
   %p.no_indent.space
     %strong Subscriptions to Provincial Content
   %br
-  - if @resource_subscriptions.none?
+  - resource_subscriptions = @division.divisional_resource_subscriptions
+  - if resource_subscriptions.none?
     %p No provincial content will be borrowed by default
-  - elsif @resource_subscriptions.count == Specialization.all.count
+  - elsif resource_subscriptions.count == Specialization.all.count
     %p Available provincial content in any specialty will be borrowed by default
   - else
     %p Provincial content in these specialties will be borrowed by default:
-    - if @resource_subscriptions.count <= 6
+    - if resource_subscriptions.count <= 6
       %ul
-        - @resource_subscriptions.each do |subscription|
+        - resource_subscriptions.each do |subscription|
           %li= subscription.specialization.name
     - else
       %div{ style: "overflow-x:scroll" }
@@ -50,7 +51,7 @@
             %tr
               - Specialization.all.each do |specialization|
                 %td
-                  - if @resource_subscriptions.map(&:specialization_id).
+                  - if resource_subscriptions.map(&:specialization_id).
                     - include?(specialization.id)
                     = "&#10004;".html_safe
   %br
