@@ -32,8 +32,8 @@
   - resource_subscriptions = @division.divisional_resource_subscriptions
   - if resource_subscriptions.none?
     %p No provincial content will be borrowed by default
-  - elsif resource_subscriptions.count == Specialization.all.count
-    %p Available provincial content in any specialty will be borrowed by default
+  - elsif resource_subscriptions.count == (Specialization.all.count + 1)
+    %p All available provincial content will be borrowed by default
   - else
     %p Provincial content in these specialties will be borrowed by default:
     - if resource_subscriptions.count <= 6
@@ -45,10 +45,14 @@
         %table.provincial_resources_defaults
           %thead
             %tr
+              %td Content with no specialty
               - Specialization.all.each do |specialization|
                 %td= specialization.name
           %tbody
             %tr
+              %td
+                - if resource_subscriptions.map(&:specialization_id).nil?
+                  = "&#10004;".html_safe
               - Specialization.all.each do |specialization|
                 %td
                   - if resource_subscriptions.map(&:specialization_id).

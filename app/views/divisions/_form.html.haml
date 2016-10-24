@@ -54,10 +54,20 @@
       %table.provincial_resources_defaults
         %thead
           %tr
+            %td Content with no specialty
             - Specialization.all.each do |specialization|
               %td= specialization.name
         %tbody
           %tr
+            %td
+              = hidden_field_tag "#{Division.provincial.id}_#{nil}",
+                0,
+                name: "divisional_resource_subscriptions[#{nil}]"
+              = check_box_tag "#{Division.provincial.id}_#{nil}",
+                1,
+                @division.divisional_resource_subscriptions.map(&:specialization_id).include?(nil),
+                name: "divisional_resource_subscriptions[#{nil}]",
+                class: "division_#{Division.provincial.id} division_specialization"
             - Specialization.all.each do |specialization|
               %td
                 = hidden_field_tag "#{Division.provincial.id}_#{specialization.id}",
