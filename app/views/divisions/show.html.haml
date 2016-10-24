@@ -51,7 +51,7 @@
           %tbody
             %tr
               %td
-                - if resource_subscriptions.map(&:specialization_id).nil?
+                - if resource_subscriptions.map(&:nonspecialized?)
                   = "&#10004;".html_safe
               - Specialization.all.each do |specialization|
                 %td

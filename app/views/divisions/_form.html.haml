@@ -60,13 +60,13 @@
         %tbody
           %tr
             %td
-              = hidden_field_tag "#{Division.provincial.id}_#{nil}",
+              = hidden_field_tag "#{Division.provincial.id}_nonspecialized",
                 0,
-                name: "divisional_resource_subscriptions[#{nil}]"
-              = check_box_tag "#{Division.provincial.id}_#{nil}",
+                name: "divisional_resource_subscriptions[nonspecialized]"
+              = check_box_tag "#{Division.provincial.id}_nonspecialized",
                 1,
-                @division.divisional_resource_subscriptions.map(&:specialization_id).include?(nil),
-                name: "divisional_resource_subscriptions[#{nil}]",
+                @division.divisional_resource_subscriptions.map(&:nonspecialized).map(true),
+                name: "divisional_resource_subscriptions[nonspecialized]",
                 class: "division_#{Division.provincial.id} division_specialization"
             - Specialization.all.each do |specialization|
               %td
