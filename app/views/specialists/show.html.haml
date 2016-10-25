@@ -115,7 +115,7 @@
                   - if @specialist.hospital_clinic_details.present?
                     %p.space.no_indent
                       %strong Details:
-                      = @specialist.hospital_clinic_details
+                      = @specialist.hospital_clinic_details.end_with_period.convert_newlines_to_br
 
               - elsif @specialist.hospital_or_clinic_referrals_only?
 
@@ -144,7 +144,7 @@
                 - if @specialist.hospital_clinic_details.present?
                   %p.space.no_indent
                     %strong Details:
-                    = @specialist.hospital_clinic_details
+                    = @specialist.hospital_clinic_details.end_with_period.convert_newlines_to_br
 
               - else
 

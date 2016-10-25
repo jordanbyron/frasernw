@@ -91,9 +91,11 @@ Frasernw::Application.routes.draw do
   resources :notes, only: [:create, :destroy]
   get '/history' => 'history#index'
 
-  get '/review_items/archived' => 'review_items#archived',
-    as: 'archived_review_items'
-  resources :review_items
+  resources :review_items, only: [:index] do
+    collection do
+      get :archived
+    end
+  end
 
   resources :feedback_items
 
@@ -207,10 +209,9 @@ Frasernw::Application.routes.draw do
   get :terms_and_conditions, controller: 'static_pages'
   get :info, to: 'static_pages#pathways_info', as: :pathways_info
 
-  get 'contact' => "messages#new"
-  resources :messages, only: [:create]
+  get :contact, to: 'static_pages#contact_form', as: :contact
+  post :contact, to: 'feedback_items#create', as: :submit_contact
 
-  resources :messages, only: [:new, :create]
   resources :user_sessions, only: [:new, :create, :destroy]
 
   resources :users do

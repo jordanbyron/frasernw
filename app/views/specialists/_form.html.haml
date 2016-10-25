@@ -8,6 +8,7 @@
       formData.maxLocations = #{Specialist::MAX_OFFICES};
       formData.interactionType = "#{@form_modifier.interaction_type.to_s}";
       formData.recordKey = "specialist";
+      formData.reviewId = #{@review_item.id};
     }( window.pathways.formData = {} ));
 
   = javascript_include_tag "views/form_review"

@@ -32,8 +32,8 @@ class PasswordResetsController < ApplicationController
           notice: "We do not have any account associated with "\
             "#{params[:user][:email]}. Please check the e-mail address you "\
             "used and try again. Email addresses are case sensitive. "\
-            "Please contact administration@pathwaysbc.ca if you continue "\
-            "encountering problems."
+            "Please <a href='#{contact_path}'>contact us</a> if you "\
+            "continue encountering problems."
       end
     end
   end
@@ -53,8 +53,8 @@ class PasswordResetsController < ApplicationController
       render action: :edit,
         layout: 'user_sessions',
         notice: "We had problems updating your password. Please try again. "\
-          "If you continue to encounter problems please contact "\
-          "administration@pathwaysbc.ca"
+          "If you continue to encounter problems please "\
+          "<a href='#{contact_path}'>contact us</a>."
     end
   end
 

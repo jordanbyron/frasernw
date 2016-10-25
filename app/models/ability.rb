@@ -2,13 +2,11 @@ class Ability
   include CanCan::Ability
 
   def initialize(user)
-    can [:new, :create], Message
+    can [:new, :create], FeedbackItem
     can :notify, :notifications
 
     if !user.authenticated?
       can [:validate, :signup, :setup], User
-
-      can [:create], FeedbackItem
 
     elsif user.as_introspective?
       can [
@@ -33,8 +31,6 @@ class Ability
         :change_password,
         :update_password
       ], User
-
-      can [:create], FeedbackItem
 
     else
       can [:index], :front
@@ -173,8 +169,6 @@ class Ability
           :update_password
         ], User
 
-        can [:create, :show], FeedbackItem
-
         can :index, Notification
 
         can :manage, Subscription
@@ -211,8 +205,6 @@ class Ability
           :change_password,
           :update_password
         ], User
-
-        can [:create], FeedbackItem
 
         can [:update, :photo, :update_photo], Specialist do |specialist|
           specialist.controlling_users.include? user

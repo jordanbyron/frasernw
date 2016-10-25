@@ -1,22 +1,19 @@
--# (item, nodes)
+/ (item, nodes)
 
 %ol
   - nodes.each_with_index do |history_node, index|
-    %li.history__node{style: "margin-bottom: 30px"}
-      - if history_node.review?
-        %p.history__line_item
+    %li.history__node{ style: "margin-bottom: 30px",
+    review_node_id: review_node_id(history_node) }
+      %p.history__line_item{ id: "history_node_#{index}" }
+        - if history_node.review?
           %span= history_node.user
           %span= "accepted changes made by"
           %span= history_node.secret_editor.name
-          %span= "(#{history_node.date})"
-      - elsif history_node.target_is?(item)
-        %p.history__line_item
+        - elsif history_node.target_is?(item)
           %span= history_verb(history_node, item, capitalize: true)
           %span= " by "
           %span= history_node.user
-          %span= "(#{history_node.date})"
-      - else
-        %p.history__line_item
+        - else
           %span= history_node.user
           %span= history_verb(history_node, item)
           %span
@@ -27,12 +24,13 @@
             - else
               = history_node.target
           %span= history_node.annotation
-          %span= "(#{history_node.date})"
+        %span= "(#{history_node.date})"
       - if history_node.has_note?
-        .well{style: "width: 400px"}
-          - if history_node.raw.target.is_a?(Note)
-            = BlueCloth.new(history_node.note).to_html.html_safe
-          - else
-            = history_node.note
+        .well{ style: "width: 400px" }
+          .history__note{ id: "history_note_#{index}" }
+            - if history_node.raw.target.is_a?(Note)
+              = BlueCloth.new(history_node.note).to_html.html_safe
+            - else
+              = history_node.note
       - if history_node.changeset? && !history_node.archiving?
         = render "history/changeset", node: history_node

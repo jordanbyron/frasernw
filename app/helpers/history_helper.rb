@@ -45,4 +45,10 @@ module HistoryHelper
       case_adjusted_verb
     end
   end
+
+  def review_node_id(node)
+    if node.target_klass == ReviewItem && node.has_note?
+      node.raw.target.id.to_s
+    end
+  end
 end
