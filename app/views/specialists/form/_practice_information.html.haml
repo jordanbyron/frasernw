@@ -11,7 +11,7 @@
 = f.input :direct_referrals_limited,
   label: "Direct referrals limited by geography or number of patients?",
   wrapper_html: { class: "form__wrapper--double-indented" }
-- if @specialist.specializations.where(name: "Family Practice").any?
+- if show_accepts_indirect_referrals?(@specialist)
   = f.input :accepting_new_indirect_referrals,
     label: "Accepts referrals through hospitals and/or clinics"
 = f.input :practice_details,

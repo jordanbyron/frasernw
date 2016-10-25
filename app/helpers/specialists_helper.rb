@@ -79,4 +79,11 @@ module SpecialistsHelper
     specialization.id == params[:specialization_id].to_i ||
       specialist.specializations.include?(specialization)
   end
+
+  def show_accepts_indirect_referrals?(specialist)
+    specialist.specialist_specializations.find do |specialist_specialization|
+      specialist_specialization.specialization_id ==
+        Specialization.find_by(name: "Family Practice").id
+    end
+  end
 end
