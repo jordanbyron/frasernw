@@ -120,7 +120,10 @@ module GenerateSpreadsheet
       indefinitely_unavailable_specialists = []
       temporarily_unavailable_specialists = []
 
-      specialists.each do |specialist|
+      specialists.select do |specialist|
+        # 'responded to survey', 'not responded'
+        [1, 2].include?(specialist.categorization_mask)
+      end.each do |specialist|
         specialist_row = [
           specialist_id_link(specialist.id),
           specialist.name
