@@ -1,0 +1,80 @@
+- if show_specialist_section?(@specialist, :referrals)
+  %h6 Referrals
+
+  - if @specialist.accepts_referrals_via.present?
+    %p
+      %strong Accepted by:
+      = @specialist.accepts_referrals_via.html_safe
+  - if @specialist.responds_via.present?
+    %p
+      %strong Responded to by:
+      = @specialist.responds_via
+
+  - if @specialist.referral_form_mask == 1
+    - referral_form_count = @specialist.referral_forms.reject{ |referral_form| not referral_form.form.present? }.length
+    %p
+      %strong Referral form:
+      Yes.
+    %ul.referral_forms
+      - @specialist.referral_forms.each do |referral_form|
+        - next if not referral_form.form.present?
+        - type = referral_form.form_content_type.split('/').last
+        %li
+          = link_to "#{referral_form.description} (#{type})",
+            referral_form.form.url,
+            target: "_blank",
+            onclick: "window.pathways.trackForm(_gaq, #{referral_form.id})"
+  - elsif @specialist.referral_form_mask == 2
+    %p
+      %strong Referral form:
+      No.
+
+  - if @specialist.required_investigations.present?
+    %p.space
+      %strong Required information / investigations
+      for all referrals:
+      = @specialist.required_investigations.end_with_period.convert_newlines_to_br
+
+  - if @specialist.show_waittimes?
+    -if @specialist.waittime.present?
+      %p.space
+        Average
+        %strong non-urgent
+        patient wait time from referral to appointment:
+        %strong= @specialist.waittime
+
+    -if @specialist.lagtime.present?
+      %p
+        Average length of time to notify
+        = @specialist.responds_to
+        of a booking date:
+        %strong= @specialist.lagtime
+
+    - @specialist.capacities.specialist_wait_time.each do |capacity|
+
+      - if capacity.waittime.present? || capacity.lagtime.present?
+        %p.space
+          %strong= "#{capacity.procedure_specialization.procedure.full_name}:"
+
+        -if capacity.waittime.present?
+          %p
+            Average
+            %strong non-urgent
+            patient wait time from referral to appointment:
+            %strong= capacity.waittime
+
+        -if capacity.lagtime.present?
+          %p
+            Average length of time to notify
+            = @specialist.responds_to
+            of a booking date:
+            %strong= capacity.lagtime
+
+  - if @specialist.patient_can_book_mask == 1
+    %p.space
+      This office accepts direct calls from patients after referral
+      to book their own appointments.
+  - elsif @specialist.patient_can_book_mask == 2
+    %p.space
+      This office does not accept direct calls from patients after
+      referral to book their own appointments.

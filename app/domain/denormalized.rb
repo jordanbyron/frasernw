@@ -82,7 +82,7 @@ module Denormalized
             name: specialist.name,
             firstName: specialist.firstname,
             lastName: specialist.lastname,
-            statusClassKey: specialist.status_class_hash,
+            referralIconKey: specialist.referral_icon_key,
             divisionIds: specialist.divisions.map(&:id),
             waittime: masked_waittime(specialist),
             cityIds: specialist.cities.reject{ |city| city.hidden }.map(&:id),
@@ -106,7 +106,6 @@ module Denormalized
             isNew: specialist.new?,
             createdAt: specialist.created_at.to_date.to_s,
             updatedAt: specialist.updated_at.to_date.to_s,
-            showInTable: specialist.show_in_table?,
             hospitalsWithOfficesInIds: specialist.hospitals_with_offices_in.map(&:id),
             billingNumber: specialist.padded_billing_number,
             teleserviceFeeTypes: specialist.
@@ -119,9 +118,7 @@ module Denormalized
             notPerformed: Denormalized.
               sanitize(specialist.not_performed).
               try(:convert_newlines_to_br),
-            respondedToSurvey: !specialist.not_responded? &&
-              !specialist.purposely_not_yet_surveyed?,
-            isAvailable: !specialist.not_available?,
+            isPracticing: specialist.practicing?,
             hidden: specialist.hidden?
           })
         end
@@ -156,8 +153,7 @@ module Denormalized
           memo.merge(clinic.id => {
             id: clinic.id,
             name: clinic.name,
-            statusClassKey: clinic.status_class_hash,
-            statusMask: (clinic.status_mask || 0),
+            referralIconKey: clinic.referral_icon_key,
             waittime: masked_waittime(clinic),
             cityIds: clinic.cities.reject{ |city| city.hidden }.map(&:id),
             collectionName: "clinics",
@@ -178,7 +174,6 @@ module Denormalized
             isNew: clinic.new?,
             createdAt: clinic.created_at.to_date.to_s,
             updatedAt: clinic.updated_at.to_date.to_s,
-            showInTable: clinic.show_in_table?,
             hospitalsInIds: clinic.hospitals_in.map(&:id),
             teleserviceFeeTypes: clinic.
               teleservices.
@@ -190,7 +185,8 @@ module Denormalized
             notPerformed: Denormalized.
               sanitize(clinic.not_performed).
               try(:convert_newlines_to_br),
-            hidden: clinic.hidden?
+            hidden: clinic.hidden?,
+            isOpen: clinic.open?
           })
         end
       end

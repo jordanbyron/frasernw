@@ -10,9 +10,6 @@ class ProceduresController < ApplicationController
   def show
     @layout_heartbeat_loader = false
     @procedure = Procedure.find(params[:id])
-    @init_data = {
-      app: FilterTableAppState.call
-    }
   end
 
   def new

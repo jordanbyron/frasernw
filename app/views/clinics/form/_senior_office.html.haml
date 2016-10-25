@@ -1,0 +1,20 @@
+- if current_user.as_admin_or_super? || @form_modifier.token_edit?
+
+  #section_moa
+
+    %hr
+
+    %h3 Senior Office Contact Information
+    .alert.alert-info
+      %p.no_indent
+        Please note: the following Senior office contact information is
+        never shown on Pathways to users.
+      %p.space.no_indent
+        It will only be used for contact by Pathways administrators related
+        to keeping your office's information up-to-date.
+    = f.input :contact_name
+    = f.input :contact_email
+    = f.input :contact_phone
+    - if current_user.as_admin_or_super?
+      = f.input :contact_notes,
+        hint: "Include contact's role (MOA, etc.) and anything else we should know."

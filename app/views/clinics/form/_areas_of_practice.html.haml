@@ -1,0 +1,66 @@
+#section_aop
+
+  %hr
+
+  %h3 Areas of Practice
+  = f.input :required_investigations,
+    hint: "eg. XRs, MRIs, scans, blood work, etc."
+
+  %hr{ style: "visibility:hidden" }
+
+  %h4 Pertinent Areas of Practice/Expertise
+
+  .content
+    - @specializations_focuses.each do |specialization_focuses|
+      .row
+        .span12
+          %h5= specialization_focuses[:specialization_name]
+      .row
+        .span4
+          %strong Referrals accepted in the following areas of practice.
+        .span4
+          %strong
+            Additional information/investigations required for the specified
+            area of practice.
+        .span2
+          %strong Lag Time
+        .span2
+          %strong Wait Time
+
+      - specialization_focuses[:focuses].each do |f|
+        .row.spaced
+          .span4.changed_wrapper{ class: "pad#{f[:offset]}" }
+            %label{ for: "focuses_mapped_#{f[:id]}" }
+              = hidden_field_tag "focuses_mapped[#{f[:id]}]",
+                0,
+                id: "focuses_mapped_#{f[:id]}_hidden"
+              = check_box_tag "focuses_mapped[#{f[:id]}]",
+                1,
+                f[:mapped],
+                class: "focus"
+              = f[:name]
+          .span4.changed_wrapper
+            = text_field_tag "focuses_investigations[#{f[:id]}]",
+              f[:investigations],
+              class: "span4"
+          - if f[:custom_wait_time]
+            .span2.changed_wrapper.lagtime
+              = select_tag "focuses_lagtime[#{f[:id]}]",
+                options_from_collection_for_select(Clinic::LAGTIME_LABELS,
+                :first,
+                :last,
+                f[:lagtime]),
+                class: "span2",
+                include_blank: true
+            .span2.changed_wrapper.waittime
+              = select_tag "focuses_waittime[#{f[:id]}]",
+                options_from_collection_for_select(Clinic::WAITTIME_LABELS,
+                :first,
+                :last,
+                f[:waittime]),
+                class: "span2",
+                include_blank: true
+
+  %hr{ style: "visibility:hidden" }
+
+  = f.input :not_performed, as: :text

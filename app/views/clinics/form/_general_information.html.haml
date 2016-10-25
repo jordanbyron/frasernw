@@ -1,0 +1,28 @@
+%h3 General Information
+= f.input :name
+= f.input :completed_survey
+- if current_user.as_admin_or_super?
+  = f.input :hidden, label: "Hide from users"
+= f.input :closure_scheduled,
+  label: "Clinic is closed or clinic plans to close?"
+= f.input :closure_date,
+  label: "Clinic closed or will close on",
+  wrapper_html: { style: "display: inline-block;", class: "form__wrapper--indented"},
+  input_html: { style: "width: 100px;" }
+= f.input :accepting_new_referrals,
+  label: "Accepting new referrals?"
+= f.input :referrals_limited,
+  label: "Referrals limited by geography or # of patients?",
+  wrapper_html: { class: "form__wrapper--indented" }
+= f.input :practice_details
+= f.input :limitations
+= f.association :specializations,
+  as: :check_boxes,
+  hint: @form_modifier.specializations_hint,
+  disabled: @form_modifier.restrict_editing?,
+  label: @form_modifier.specializations_label_text
+- if @form_modifier.show_comment_boxes?
+  = f.input :specializations_comments,
+    label: @form_modifier.specialization_comments_label,
+    input_html: { value: "" },
+    as: :text

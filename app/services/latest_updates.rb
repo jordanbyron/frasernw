@@ -131,7 +131,7 @@ class LatestUpdates < ServiceObject
         specialist_link = link_to(specialist.name, "/specialists/#{specialist.id}")
         is_retiring =
           "(#{specialist.specializations.map{ |s| s.name }.to_sentence}) is retiring "\
-            "on #{specialist.unavailable_from.to_s(:long_ordinal)}"
+            "on #{specialist.practice_end_date.to_s(:long_ordinal)}"
 
         "#{specialist_link} #{is_retiring}".html_safe
       },
@@ -196,7 +196,7 @@ class LatestUpdates < ServiceObject
     -> (item, division) { !item.primary_specialization.present? },
     -> (item, division) { !item.primary_specialization_shown_in?([division]) },
     -> (item, division) {
-      item_cities = item.cities_for_front_page.flatten.uniq
+      item_cities = item.cities.flatten.uniq
       local_referral_cities = division.
         local_referral_cities(item.primary_specialization)
 
@@ -204,12 +204,6 @@ class LatestUpdates < ServiceObject
     },
     -> (item, division) { item.hidden? }
   ]
-
-  def self.event_date(item, event_method)
-    item.versions.order(:created_at).find_last do |version|
-      !version.reify.present? || !version.reify.send(event_method)
-    end.try(:created_at).try(:to_date)
-  end
 
   class Clinics < ServiceObject
     attribute :division, Division
@@ -236,12 +230,12 @@ class LatestUpdates < ServiceObject
       end
 
       def clinic_location_events
-        return [] unless clinic.accepting_new_patients?
+        return [] unless clinic.accepting_new_referrals?
 
         clinic.clinic_locations.inject([]) do |memo, clinic_location|
           if clinic_location.opened_recently?
             memo << {
-              date: LatestUpdates.event_date(clinic_location, :opened_recently?),
+              date: clinic_location.change_date(&:opened_recently?),
               record: clinic_location
             }
           else
@@ -296,7 +290,7 @@ class LatestUpdates < ServiceObject
               item_type: "Specialist",
               event_code: LatestUpdates.event_code(:moved_away),
               division_id: division.id,
-              date: LatestUpdates.event_date(specialist, :moved_away?),
+              date: specialist.change_date(&:moved_away?),
               markup: LatestUpdates::MARKUP["Specialist"][:moved_away].call(specialist)
             }
           }
@@ -309,20 +303,24 @@ class LatestUpdates < ServiceObject
               item_type: "Specialist",
               event_code: LatestUpdates.event_code(:retired),
               division_id: division.id,
-              date: LatestUpdates.event_date(specialist, :retired?),
+              date: (specialist.practice_end_date ||
+                specialist.change_date(&:retired?)),
               markup: LatestUpdates::MARKUP["Specialist"][:retired].call(specialist)
             }
           }
         },
         {
-          test: -> (specialist) { specialist.retiring? },
+          test: -> (specialist) {
+            specialist.retiring? &&
+              specialist.practice_end_date > Date.new(2016, 10, 18)
+          },
           event: -> (specialist, division) {
             {
               item_id: specialist.id,
               item_type: "Specialist",
               event_code: LatestUpdates.event_code(:retiring),
               division_id: division.id,
-              date: LatestUpdates.event_date(specialist, :retiring?),
+              date: specialist.change_date(&:retiring?),
               markup: LatestUpdates::MARKUP["Specialist"][:retiring].call(specialist)
             }
           }
@@ -348,13 +346,13 @@ class LatestUpdates < ServiceObject
       end
 
       def specialist_office_events
-        return [] unless specialist.accepting_new_patients?
+        return [] unless specialist.accepting_new_direct_referrals?
 
         specialist.specialist_offices.inject([]) do |memo, specialist_office|
           if specialist_office.opened_recently?
             memo << {
               record: specialist_office,
-              date: LatestUpdates.event_date(specialist_office, :opened_recently?),
+              date: specialist_office.change_date(&:opened_recently?),
             }
           else
             memo

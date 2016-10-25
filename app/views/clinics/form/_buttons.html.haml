@@ -1,0 +1,18 @@
+.form-actions
+  - if @form_modifier.token_edit?
+    = f.button :submit,
+      'Update Clinic with My Changes',
+      class: "btn btn-primary submit-referents-form",
+      disabled: true
+    = f.button :submit,
+      'There are No Updates to this Clinic',
+      class: "btn btn-success submit-referents-form",
+      :name => 'no_updates',
+      disabled: true
+  - elsif @form_modifier.admin_rereview?
+    = link_to "Back to record",
+      clinic_path(@clinic),
+      class: "btn btn-primary"
+  - else
+    = f.button :submit, class: "btn btn-primary"
+    = link_to 'Cancel', @form_modifier.cancel_path, class: "btn btn-danger"

@@ -46,6 +46,10 @@ class Specialization < ActiveRecord::Base
     # should two collections ever have matching count / max updated_at values
   end
 
+  def self.not_family_practice
+    where("specializations.name != 'Family Practice'")
+  end
+
   def self.all_cached
     @_all_specializations_cached ||= Rails.cache.
       fetch(

@@ -1,15 +1,5 @@
 @import "_globals";
 
-.no-print
-{
-  display: none !important;
-}
-
-.print-only, .force-print
-{
-  display: block !important;
-}
-
 body
 {
   margin: 5%;
@@ -71,17 +61,6 @@ body
     select
     {
       display: none;
-    }
-
-    .print-only ul
-    {
-      list-style-type: none;
-      margin: 0;
-
-      li.selected
-      {
-        font-weight: bold;
-      }
     }
   }
 }

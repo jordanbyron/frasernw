@@ -1,0 +1,19 @@
+- if @form_modifier.token_edit?
+  .alert.alert-info
+    %h3 You are editing #{@specialist.name}'s entry in Pathways.
+    %p.space.no_indent
+      If you have any questions while editing, please contact
+      = @specialist.owners.map{|owner| "#{owner.name} at #{mail_to owner.email}"}.join(' or ').html_safe + "."
+    %p.space.no_indent
+      This database exists to make our practices and your practice more
+      efficient. By providing the information requested below you are making it
+      easier for family doctors to find your practice, ensuring that the scope
+      of your practice is fully understood, and guiding offices in providing
+      you with the correct information when making referrals.
+    %p.space.no_indent
+      Unless otherwise indicated, all provided information will be available to
+      all users of Pathways.
+- elsif @form_modifier.admin_review?
+  = review_warning(@review_item)
+- elsif @form_modifier.admin_rereview?
+  = rereview_warning(@review_item)

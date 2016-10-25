@@ -1,0 +1,76 @@
+- if show_clinic_section?(@clinic, :referrals)
+  %h6 Referrals
+
+  - if @clinic.accepts_referrals_via.present?
+    %p
+      %strong Accepted by:
+      = @clinic.accepts_referrals_via
+  - if @clinic.responds_via.present?
+    %p
+      %strong Responded to by:
+      = @clinic.responds_via
+
+  - if @clinic.referral_form_mask == 1
+    - referral_form_count = @clinic.referral_forms.reject{|referral_form| not referral_form.form.present?}.length
+    %p
+      %strong Referral form:
+      Yes.
+    %ul.referral_forms
+      - @clinic.referral_forms.each do |referral_form|
+        - next if not referral_form.form.present?
+        - type = referral_form.file_format
+        %li
+          = link_to "#{referral_form.description} (#{type})",
+            referral_form.form.url,
+            target: "_blank",
+            onclick: "window.pathways.trackForm(_gaq, #{referral_form.id})"
+  - elsif @clinic.referral_form_mask == 2
+    %p
+      %strong Referral form:
+      No.
+
+  - if @clinic.required_investigations.present?
+    %p.space
+      %strong Required information / investigations
+      for all referrals:
+      = @clinic.required_investigations.end_with_period.convert_newlines_to_br
+  - if @clinic.show_waittimes?
+    -if @clinic.waittime.present?
+      %p.space
+        Average
+        %strong non-urgent
+        patient wait time from referral to appointment:
+        %strong= @clinic.waittime
+
+    -if @clinic.lagtime.present?
+      %p
+        Average length of time to notify GP of a booking date:
+        %strong= @clinic.lagtime
+
+    - @clinic.focuses.clinic_wait_time.each do |focus|
+
+      - if focus.waittime.present? || focus.lagtime.present?
+        %p.space
+          %strong
+            = "#{focus.procedure_specialization.procedure.full_name}:"
+
+        -if focus.waittime.present?
+          %p
+            Average
+            %strong non-urgent
+            patient wait time from referral to appointment:
+            %strong= focus.waittime
+
+        -if focus.lagtime.present?
+          %p
+            Average length of time to notify GP of a booking date:
+            %strong= focus.lagtime
+
+  - if @clinic.patient_can_book_mask == 1
+    %p.space
+      This office accepts direct calls from patients after referral
+      to book their own appointments.
+  - elsif @clinic.patient_can_book_mask == 2
+    %p.space
+      This office does not accept direct calls from patients after
+      referral to book their own appointments.

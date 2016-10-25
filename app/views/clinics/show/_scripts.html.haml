@@ -1,0 +1,35 @@
+- favorite_class = logged_in? ? (Favorite.find_by(user_id: current_user.id,
+  favoritable_id: @clinic.id,
+  favoritable_type: "Clinic").present? ? "icon-red" : "icon-text") : "icon-text"
+
+:javascript
+  var stripLinks = function(selections){
+    selections.each(function(){
+      $(this).replaceWith($(this).text());
+    });
+  };
+  $(document).ready(function() {
+    $('.tt').tooltip({trigger: 'manual'});
+    $('#user_favorite_clinics_#{@clinic.id}').addClass('#{favorite_class}');
+    if (#{current_user.as_introspective?}){
+      $("a[title=\"Favourite / un-favourite\"]").remove();
+      stripLinks($('.specialty_links > a'));
+      stripLinks($('.languages > a'));
+      stripLinks($('.areas-of-practice a'));
+      stripLinks($('.attending_specialists a'));
+    }
+  });
+- if current_user.as_admin_or_super?
+  :javascript
+    window.pathways.attachSecretEditLinks({
+      containerId: "share",
+      props: {
+        addLink: '#{secret_tokens_path}',
+        accessibleId: #{@clinic.id},
+        accessibleType: "Clinic",
+        links: #{@clinic.valid_secret_edit_links(current_user).to_json},
+        currentUserName: "#{@current_user.name}",
+        canEdit: #{can?(:edit, @clinic)},
+        modal: { isVisible: false }
+      }
+    })

@@ -22,8 +22,7 @@ class Clinic < ActiveRecord::Base
     :deprecated_email,
     :deprecated_wheelchair_accessible_mask,
     :status,
-    :status_details,
-    :unavailable_from,
+    :practice_details,
     :referral_criteria,
     :referral_process,
     :contact_name,
@@ -33,13 +32,11 @@ class Clinic < ActiveRecord::Base
     :status_mask,
     :limitations,
     :required_investigations,
-    :location_opened_old,
     :not_performed,
     :referral_fax,
     :referral_phone,
     :referral_other_details,
     :referral_details,
-    :referral_form_old,
     :referral_form_mask,
     :lagtime_mask,
     :waittime_mask,
@@ -47,7 +44,6 @@ class Clinic < ActiveRecord::Base
     :respond_by_phone,
     :respond_by_mail,
     :respond_to_patient,
-    :patient_can_book_old,
     :patient_can_book_mask,
     :red_flags,
     :urgent_fax,
@@ -68,7 +64,12 @@ class Clinic < ActiveRecord::Base
     :referral_forms_attributes,
     :clinic_locations_attributes,
     :review_object,
-    :hidden
+    :hidden,
+    :completed_survey,
+    :accepting_new_referrals,
+    :referrals_limited,
+    :closure_scheduled,
+    :closure_date
 
   has_many :clinic_specializations, dependent: :destroy
   has_many :specializations, through: :clinic_specializations
@@ -153,12 +154,6 @@ class Clinic < ActiveRecord::Base
     Rails.cache.delete([self.class.name, id])
   end
 
-  def self.filter(clinics, filter)
-    clinics.select do |clinic|
-      clinic.divisions.include? filter[:division]
-    end
-  end
-
   CATEGORIZATION_LABELS = {
     1 => "Responded to survey",
     2 => "Not responded to survey",
@@ -203,52 +198,6 @@ class Clinic < ActiveRecord::Base
     (direct + in_hospital).uniq
   end
 
-  def self.in_cities_and_specialization(cities, specialization)
-    city_ids = cities.map{ |city| city.id }
-    direct = joins(
-      'INNER JOIN "clinic_locations" AS "direct_clinic_location" '\
-        'ON "clinics".id = "direct_clinic_location".clinic_id '\
-        'INNER JOIN "locations" AS "direct_location" '\
-        'ON "direct_clinic_location".id = "direct_location".locatable_id '\
-        'INNER JOIN "addresses" AS "direct_address" '\
-        'ON "direct_location".address_id = "direct_address".id '\
-        'INNER JOIN "clinic_specializations" '\
-        'ON "clinic_specializations".clinic_id = "clinics".id'
-    ).where(
-      '"direct_location".locatable_type = (?) '\
-        'AND "direct_address".city_id IN (?) '\
-        'AND "direct_location".hospital_in_id IS NULL '\
-        'AND "clinic_specializations".specialization_id = (?)',
-      "ClinicLocation",
-      city_ids,
-      specialization.id
-    )
-    in_hospital = joins(
-      'INNER JOIN "clinic_locations" AS "direct_clinic_location" '\
-        'ON "clinics".id = "direct_clinic_location".clinic_id '\
-        'INNER JOIN "locations" AS "direct_location" '\
-        'ON "direct_clinic_location".id = "direct_location".locatable_id '\
-        'INNER JOIN "hospitals" '\
-        'ON "hospitals".id = "direct_location".hospital_in_id '\
-        'INNER JOIN "locations" AS "hospital_in_location" '\
-        'ON "hospitals".id = "hospital_in_location".locatable_id '\
-        'INNER JOIN "addresses" AS "hospital_address" '\
-        'ON "hospital_in_location".address_id = "hospital_address".id '\
-        'INNER JOIN "clinic_specializations" '\
-        'ON "clinic_specializations".clinic_id = "clinics".id'
-    ).where(
-      '"direct_location".locatable_type = (?) '\
-        'AND "hospital_in_location".locatable_type = (?) '\
-        'AND "hospital_address".city_id IN (?) '\
-        'AND "clinic_specializations".specialization_id = (?)',
-      "ClinicLocation",
-      "Hospital",
-      city_ids,
-      specialization.id
-    )
-    (direct + in_hospital).uniq
-  end
-
   def self.in_divisions(divisions)
     self.in_cities(divisions.map{ |division| division.cities }.flatten.uniq)
   end
@@ -260,10 +209,6 @@ class Clinic < ActiveRecord::Base
         references(:specializations)
   end
 
-  def self.no_division?
-    no_division.any?
-  end
-
   def self.no_division
     includes_location_data.reject do |clinic|
       clinic.cities.length > 0
@@ -272,121 +217,42 @@ class Clinic < ActiveRecord::Base
     end
   end
 
-  def responded?
-    categorization_mask == 1
-  end
-
-  def not_responded?
-    categorization_mask == 2
-  end
-
-  def purposely_not_yet_surveyed?
-    categorization_mask == 3
-  end
-
-  def show_in_table?
-    (responded? && !unavailable_for_a_while?) || not_responded?
-  end
-
   def show_waittimes?
-    !closed? && responded? && accepting_new_patients?
-  end
-
-  def not_available?
-    false #to line up with specialists; all are "available" if they exist
-  end
-
-  def city_old
-    l = locations.first
-    return nil if l.blank?
-    return l.city
+    open? && completed_survey? && accepting_new_referrals?
   end
 
   def cities
-    return locations.map{ |l| l.city }.reject{ |c| c.blank? }.uniq
-  end
-
-  def resolved_address_old
-    return location.resolved_address if location
-    return nil
+    locations.map(&:city).reject(&:blank?).uniq
   end
 
   def divisions
-    return cities.map{ |city| city.divisions }.flatten.uniq
+    cities.map(&:divisions).flatten.uniq
   end
 
-  def attendances?
-    attendances.each do |attendance|
-      if attendance.is_specialist && attendance.specialist
-        return true
-      elsif !attendance.is_specialist && !attendance.freeform_name.blank?
-        return true
-      end
-    end
-    return false
-  end
-
-  STATUS_HASH = {
-    1 => "Accepting new referrals",
-    7 => "Accepting limited new referrals by geography or # of patients",
-    2 => "Only doing follow up on previous patients",
-    4 => "Permanently closed",
-    3 => "Didn't answer"
-  }
-
-  UNKNOWN_STATUS =  "It is unknown if this clinic is accepting new patients "\
-                    "(this clinic didn't respond)"
-
-  def status
-    if (status_mask == 3) || status_mask.blank?
-      UNKNOWN_STATUS
+  def referral_icon_key
+    if !completed_survey?
+      :question_mark
+    elsif open? && accepting_new_referrals? && referrals_limited?
+      :orange_check
+    elsif open? && accepting_new_referrals?
+      :green_check
     else
-      Clinic::STATUS_HASH[status_mask] || ""
+      :red_x
     end
   end
 
-  def status_class
-    #purposely handle categorization prior to status
-    if not_responded?
-      return Specialist::STATUS_CLASS_UNKNOWN
-    elsif purposely_not_yet_surveyed?
-      return Specialist::STATUS_CLASS_BLANK
-    elsif accepting_new_patients?
-      return Specialist::STATUS_CLASS_AVAILABLE
-    elsif accepting_limited_referrals?
-      return Specialist::STATUS_CLASS_LIMITATIONS
-    elsif only_doing_follow_up? || closed?
-      return Specialist::STATUS_CLASS_UNAVAILABLE
-    elsif did_not_answer?
-      return Specialist::STATUS_CLASS_UNKNOWN
+  def referral_summary
+    if !completed_survey?
+      "It is unknown whether this clinic is accepting new referrals."
+    elsif open? && accepting_new_referrals? && referrals_limited?
+      "This clinic is accepting new referrals limited by geography or number of patients."
+    elsif open? && accepting_new_referrals?
+      "This clinic is accepting new referrals."
+    elsif open?
+      "This clinic is only doing follow-up on previous patients"
     else
-      #this shouldn't really happen
-      return Specialist::STATUS_CLASS_BLANK
+      "This clinic is closed"
     end
-  end
-
-  def status_class_hash
-    Specialist::STATUS_CLASS_HASH[status_class]
-  end
-
-  def accepting_new_patients?
-    status_mask == 1
-  end
-
-  def only_doing_follow_up?
-    status_mask == 2
-  end
-
-  def did_not_answer?
-    (status_mask == 3) || status_mask.blank?
-  end
-
-  def closed?
-    status_mask == 4
-  end
-
-  def accepting_limited_referrals?
-    status_mask == 7
   end
 
   WAITTIME_LABELS = Specialist::WAITTIME_LABELS
@@ -534,18 +400,20 @@ class Clinic < ActiveRecord::Base
   end
 
   def opened_recently?
-    clinic_locations.reject{ |cl| !cl.opened_recently? }.present?
+    clinic_locations.any?(&:opened_recently?)
   end
 
   def wheelchair_accessible?
-    clinic_locations.reject{ |cl| !cl.wheelchair_accessible? }.present?
+    clinic_locations.any?(&:wheelchair_accessible?)
   end
 
   def days
     clinic_locations.
-      reject{ |cl| !cl.scheduled? }.
-      map{ |cl| cl.schedule.days }.
-      flatten.uniq
+      select(&:scheduled?).
+      map(&:schedule).
+      map(&:days).
+      flatten.
+      uniq
   end
 
   def scheduled_day_ids
@@ -571,10 +439,6 @@ class Clinic < ActiveRecord::Base
     (created_at > 3.week.ago.utc) && opened_recently?
   end
 
-  def unavailable_for_a_while?
-    closed? && (unavailable_from <= (Date.current - 2.years))
-  end
-
   def token
     if self.saved_token
       return self.saved_token
@@ -588,7 +452,9 @@ class Clinic < ActiveRecord::Base
     name
   end
 
-  alias_method :cities_for_front_page, :cities
+  def visible_attendances
+    @visible_attendances ||= attendances.select(&:show?)
+  end
 
   def specialists_with_offices_in
     clinic_locations.
@@ -614,10 +480,22 @@ class Clinic < ActiveRecord::Base
       uniq
   end
 
+  def unavailable_for_a_while?
+    !open? && closure_date.present? && closure_date <= (Date.current - 2.years)
+  end
+
   def locations_showing_attendances
     @locations_showing_attendances ||= clinic_locations.select do |location|
       location.resolved_address.present? &&
         location.attendances.select(&:show?).any?
     end
+  end
+
+  def open?
+    !closed?
+  end
+
+  def closed?
+    closure_scheduled? && closure_date <= Date.current
   end
 end

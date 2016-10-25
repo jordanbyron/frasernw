@@ -1,0 +1,27 @@
+- if @review_item.present?
+  :javascript
+    (function(formData) {
+      formData.overlayChanges = true;
+      formData.baseReviewItem = #{@review_item.transformed_base_object(@specialist) || 'null'};
+      formData.reviewItem = #{@review_item.transformed_review_object(@specialist) || 'null'};
+      formData.maxLocations = #{Specialist::MAX_OFFICES};
+      formData.interactionType = "#{@form_modifier.interaction_type.to_s}";
+      formData.recordKey = "specialist";
+      formData.reviewId = #{@review_item.id};
+    }( window.pathways.formData = {} ));
+
+:javascript
+  $(document).ready(function() {
+    if(window.pathways.formData && window.pathways.formData.overlayChanges){
+      window.pathways.referentForms.overlayFormChanges(window.pathways.formData);
+    }
+
+    window.pathways.referentForms.emphasizeLocationTabs();
+    window.pathways.referentForms.stashPreEditForm();
+    $(".chzn-select").chosen()
+    window.pathways.referentForms.setupVisibilityToggles.specialist();
+  });
+
+  $(window).load(function() {
+    document.getElementById("hiding-container").classList.remove("hidden");
+  });

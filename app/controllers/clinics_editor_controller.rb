@@ -13,6 +13,7 @@ class ClinicsEditorController < ApplicationController
     if @clinic.focuses.count == 0
       @clinic.focuses.build
     end
+    @clinic_specialists = GenerateClinicSpecialistInputs.exec(@clinic)
     while @clinic.clinic_locations.length < Clinic::MAX_LOCATIONS
       cl = @clinic.clinic_locations.build
       s = cl.build_schedule

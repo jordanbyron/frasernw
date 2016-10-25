@@ -59,7 +59,7 @@ module Clockwork
     at: '14:30',
     tz: 'UTC'
   ) do
-    MailAvailabilityNotifications.call(delay: true)
+    MailLeaveEndingNotifications.call(delay: true)
   end
 
   # Mails subscriptions DAILY at 2:30pm UTC (14:30), 6:30 am PST
@@ -100,5 +100,28 @@ module Clockwork
       date_interval: Subscription::INTERVAL_MONTHLY,
       delay: true
     )
+  end
+
+  every(
+    1.day,
+    'Mail out Monthly Subscriptions job',
+    at: '16:00',
+    tz: 'UTC',
+    if: lambda { |t| t.day == 1 }
+  ) do
+    Subscription::MailIntervalNotifications.call(
+      date_interval: Subscription::INTERVAL_MONTHLY,
+      delay: true
+    )
+  end
+
+  every(
+    1.day,
+    'Hide perenially unavailable specialists',
+    at: '12:01',
+    tz: "Pacific Time (US & Canada)",
+    if: lambda { |t| t.day == 1 }
+  ) do
+    HidePerenniallyUnavailableProfiles.call(delay: true)
   end
 end

@@ -1,0 +1,54 @@
+- if show_specialist_section?(@specialist, :expanded_associations)
+  - @specialist.open_clinics.each do |clinic|
+
+    - clinic_locations = clinic.clinic_locations.sort_by(&:created_at).reject(&:empty?).select{ |cl| @specialist.clinic_locations.include?(cl) }
+
+    %h6.clinic_header_link
+      - if clinic.hidden?
+        = clinic.name
+      - else
+        = link_to clinic.name,
+          clinic_path(clinic)
+
+    - if clinic.hidden?
+      %p.space
+        %i (No details available)
+    - else
+      %p.space
+        %i{ class: clinic.referral_icon_classes }
+        %strong.status= clinic.referral_summary.end_with_period
+      - if clinic.practice_details.present?
+        %p
+          %strong Details:
+          = clinic.practice_details.end_with_period.convert_newlines_to_br
+      - if clinic.limitations.present?
+        %p
+          %strong Limitations:
+          = clinic.limitations.end_with_period.convert_newlines_to_br
+
+      - clinic_locations.each do |cl|
+        - address = cl.resolved_address
+        %p.space
+          %strong= cl.phone_only if cl.phone_only.present?
+          %p= "Fax: #{cl.fax}" if cl.fax.present?
+        - if cl.location.present? && cl.location.in_hospital?
+          - hospital = cl.location.hospital_in
+          %p= "In #{link_to hospital.name, hospital_path(hospital)}".html_safe
+          %p= link_to address.address,
+            address.map_url,
+            target: "_blank" if address.present? && !address.empty?
+          %p= cl.location.in_details if cl.location.in_details.present?
+        - elsif address.present? && !address.empty?
+          %p= link_to address.address,
+            address.map_url,
+            target: "_blank"
+
+      %p.space
+        %strong Referrals:
+        %span{ class: @specialist.referral_icon_classes }
+        = "<a href='#{clinic_path(clinic)}'>Full contact and referral details</a>".html_safe
+
+  - if @specialist.hospitals.any?
+    %h6 Hospital privileges
+    %p
+      != @specialist.hospitals.map{ |hospital| "<a href='#{hospital_path(hospital)}')\">#{hospital.name}</a>" }.to_sentence

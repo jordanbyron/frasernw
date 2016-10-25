@@ -1,0 +1,15 @@
+%h3 Identifying Information
+
+= f.input :firstname
+= f.input :lastname
+= f.input :goes_by_name,
+  hint: "A name which colleagues refer to the specialist with, if different from his or her formal first name. E.g. \"Bill\" when the first name is \"William\""
+= f.input :sex_mask,
+  as: :select,
+  collection: Specialist::SEX_LABELS,
+  label_method: :last,
+  value_method: :first,
+  include_blank: false
+= f.input :billing_number,
+  as: :string,
+  input_html: { value: @specialist.padded_billing_number }

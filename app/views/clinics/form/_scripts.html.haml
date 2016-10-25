@@ -1,0 +1,29 @@
+- if @review_item.present?
+  :javascript
+    // pass variables to the review script
+    window.pathways = window.pathways || {};
+    (function( formData ) {
+      formData.overlayChanges = true;
+      formData.baseReviewItem = #{@review_item.transformed_base_object(@clinic) || 'null'};
+      formData.reviewItem = #{@review_item.transformed_review_object(@clinic) || 'null'};
+      formData.maxLocations = #{Clinic::MAX_LOCATIONS};
+      formData.interactionType = "#{@form_modifier.interaction_type.to_s}";
+      formData.recordKey = "clinic";
+      formData.reviewId = #{@review_item.id};
+    }( window.pathways.formData = {} ));
+
+:javascript
+  $(document).ready(function(){
+    if(window.pathways.formData && window.pathways.formData.overlayChanges){
+      window.pathways.referentForms.overlayFormChanges(window.pathways.formData);
+    }
+
+    window.pathways.referentForms.emphasizeLocationTabs();
+    window.pathways.referentForms.stashPreEditForm();
+    $(".chzn-select").chosen()
+    window.pathways.referentForms.setupVisibilityToggles.clinic();
+  })
+
+  $(window).load(function() {
+    document.getElementById("hiding-container").classList.remove("hidden");
+  });

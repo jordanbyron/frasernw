@@ -1,0 +1,52 @@
+- if @specialist.practicing?
+  .span4.offsethalf
+    - areas_of_practice_focused_results = {}
+    - areas_of_practice_nonfocused_results = {}
+    - specializations_with_results_count = 0
+    - @specialist.specializations.each do |s|
+      - areas_of_practice_focused_results[s.id] = compressed_procedures_indented(@specialist,
+        ProcedureSpecialization::CLASSIFICATION_FOCUSED, s)
+      - areas_of_practice_nonfocused_results[s.id] = compressed_procedures_indented(@specialist,
+        ProcedureSpecialization::CLASSIFICATION_NONFOCUSED, s)
+      - specializations_with_results_count += 1 if ((areas_of_practice_focused_results[s.id][1] > 0) || (areas_of_practice_nonfocused_results[s.id][1] > 0))
+
+    - if specializations_with_results_count > 0 || @specialist.interest.present? || @specialist.not_performed.present?
+      .well.areas-of-practice
+        %h6 Accepts Referrals For
+
+        - @specialist.specializations.each do |s|
+          - focused_procedures,
+            focused_count,
+            focused_has_investigations = areas_of_practice_focused_results[s.id]
+          - nonfocused_procedures,
+            nonfocused_count,
+            nonfocused_has_investigations = areas_of_practice_nonfocused_results[s.id]
+
+          - next if focused_count == 0 && nonfocused_count == 0
+
+          - if specializations_with_results_count > 1
+            %strong.investigation-name= s.name
+
+          .investigation.space
+            - if focused_count > 0
+              - if focused_has_investigations
+                %p (with any additional details)
+              .list{ class: specializations_with_results_count > 1 && "indent" }
+                = focused_procedures.html_safe
+            - if nonfocused_count > 0
+              %p.space
+                %em Other areas of interest
+              - if nonfocused_has_investigations
+                %p (with any additional details)
+              .list{ class: specializations_with_results_count > 1 && "indent" }
+                = nonfocused_procedures.html_safe
+
+        - if @specialist.interest.present?
+          %p.space
+            %strong Most interested in
+          %p= @specialist.interest.end_with_period.convert_newlines_to_br
+
+        - if @specialist.not_performed.present?
+          %p.space
+            %strong Does not see or do
+          %p= @specialist.not_performed.end_with_period.convert_newlines_to_br

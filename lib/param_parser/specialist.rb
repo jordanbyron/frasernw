@@ -23,7 +23,7 @@ module ParamParser
     end
 
     def remove_address_updates!
-      cloned_params["specialist"].delete("address_updates")
+      cloned_params["specialist"].delete("address_update")
     end
 
     def remove_specializations_comments!

@@ -1,0 +1,139 @@
+#section_contact
+
+  %hr
+
+  %h3 Clinic Contact Information
+
+  - clocs = @clinic.ordered_clinic_locations
+
+  .tabbable.location_tabs
+    %ul.nav.nav-tabs
+      - clocs.each_with_index do |cl, index|
+        = tablist_item active: index == 0,
+          emphasized: cl.has_data?,
+          class: ["clinic_location_#{index}"] do
+          %a{ href: "#location_tab_#{index}", "data-toggle" => "tab"}
+            %span
+              = "Location #{index+1}"
+
+  .tab-content
+    - index = 0
+    = f.simple_fields_for :clinic_locations,
+      clocs,
+      nested_wrapper: false do |cl|
+      - cloc = clocs[index]
+      .tab-pane{ class: (index == 0) ? "active" : "",
+        id: "location_tab_#{index}" }
+        .control-group{ style: (!cloc.empty? && @form_modifier.token_edit? ? "visibility: hidden; position: absolute;" : "") }
+          = cl.input :location_is,
+            as: :radio_buttons,
+            collection: ClinicLocation::LOCATION_IS_OPTIONS,
+            label_method: :last,
+            value_method: :first,
+            input_html: { class: "location_is", "data-location-index" => index }
+        %div{ class: "numbers_#{index}" }
+          = cl.input :phone do
+            = cl.input_field :phone, class: "span3"
+            .span1
+              ext:
+            = cl.input_field :phone_extension, class: "span1"
+          = cl.input :fax, input_html: { class: "span3" }
+          = cl.input :contact_details
+          = cl.input :email,
+            input_html: { class: "span3" },
+            hint: "For physician office use only"
+          = cl.input :public_email,
+            input_html: { class: "span3" },
+            hint: "Okay for patient use to contact your office"
+          = cl.input :url,
+            input_html: { class: "span3" },
+            hint: "Remember 'http://'"
+        = cl.simple_fields_for :location, nested_wrapper: false do |l|
+          %div{ class: "address_#{index}" }
+            = l.simple_fields_for :address do |a|
+              = a.input :suite,
+                input_html: { class: "span1" },
+                disabled: @form_modifier.restrict_editing?
+              = a.input :address1,
+                disabled: @form_modifier.restrict_editing?
+              = a.input :address2,
+                disabled: @form_modifier.restrict_editing?
+              = a.association :city,
+                as: :select,
+                collection: City.all_formatted_for_select(@form_modifier.scope),
+                include_blank: true,
+                disabled: @form_modifier.restrict_editing?
+              = a.input :postalcode,
+                input_html: { class: "span1" },
+                disabled: @form_modifier.restrict_editing?
+          %div{ class: "hospital_#{index}" }
+            = l.association :hospital_in,
+              as: :select,
+              collection: Hospital.all_formatted_for_select(@form_modifier.scope),
+              include_blank: true,
+              disabled: @form_modifier.restrict_editing?
+          %div{ class: "details_#{index}" }
+            = l.input :suite_in,
+              input_html: { class: "span1" },
+              disabled: @form_modifier.restrict_editing?
+            = l.input :details_in,
+              disabled: @form_modifier.restrict_editing?
+          - if @form_modifier.show_comment_boxes?
+            = l.input :comments,
+              label: "If you have any updates to this location, or the location has closed, please provide details here.",
+              input_html: { value: "" },
+              as: :text
+        %div{ class: "universal_#{index}" }
+          = cl.input :location_opened,
+            as: :select,
+            collection: (["Prior to 2010"] + (2010..Time.now.year+1).to_a),
+            prompt: "Select ..."
+
+          - Sectorable::SECTORS.each do |sector|
+            - if sector == :public && cl.object.new_record?
+              = cl.input sector,
+                label: sector.to_s.capitalize,
+                as: :boolean,
+                input_html: { class: "sector_type_input", checked: true }
+            - else
+              = cl.input sector,
+                label: sector.to_s.capitalize,
+                as: :boolean,
+                input_html: { class: "sector_type_input" }
+
+          = cl.input :wheelchair_accessible_mask,
+            as: :radio_buttons,
+            collection: Clinic::BOOLEAN_HASH,
+            label_method: :last,
+            value_method: :first
+
+          %h4 Location schedule
+
+          = cl.simple_fields_for :schedule, nested_wrapper: false do |s|
+            - [:monday,
+              :tuesday,
+              :wednesday,
+              :thursday,
+              :friday,
+              :saturday,
+              :sunday].each do |day|
+              = s.simple_fields_for day, nested_wrapper: false do |d|
+                .changed_wrapper
+                  = d.input :scheduled,
+                    label: day.to_s.capitalize_first_letter,
+                    wrapper: :bootstrap_tight do
+                    = d.input_field :scheduled, class: "scheduled span1"
+                    .hours
+                      .changed_wrapper
+                        .from from
+                        = d.input_field :from,
+                          class: "auto",
+                          minute_step: 15,
+                          include_blank: true
+                      .changed_wrapper
+                        .to to
+                        = d.input_field :to,
+                          class: "auto",
+                          minute_step: 15,
+                          include_blank: true
+        - index += 1

@@ -10,9 +10,6 @@ class HospitalsController < ApplicationController
 
   def show
     @hospital = Hospital.find(params[:id])
-    @init_data = {
-      app: FilterTableAppState.call
-    }
   end
 
   def new

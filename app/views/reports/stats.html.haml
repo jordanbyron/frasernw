@@ -70,10 +70,10 @@
     %tr
       %th Specialists
       %td= specialists.length
-      %td= specialists.reject{ |s| !s.responded? }.length
-      %td= specialists.reject{ |s| !s.not_responded? }.length
-      %td= specialists.reject{ |s| !s.purposely_not_yet_surveyed? }.length
-      %td= specialists.reject{ |s| !s.hospital_or_clinic_only? }.length
+      %td= specialists.select{ |s| s.responded_to_survey? }.length
+      %td= specialists.select{ |s| s.surveyed && !s.responded_to_survey? }.length
+      %td= specialists.reject{ |s| !s.completed_survey? }.length
+      %td= specialists.select{ |s| s.practicing? && !s.works_from_offices? }.length
       %td= specialists.reject{ |s| !s.moved_away? }.length
       %td= specialists.reject{ |s| !s.retired? }.length
     %tr
@@ -88,9 +88,9 @@
     %tr
       %th Clinics
       %td= clinics.length
-      %td= clinics.reject{ |s| !s.responded? }.length
-      %td= clinics.reject{ |s| !s.not_responded? }.length
-      %td= clinics.reject{ |s| !s.purposely_not_yet_surveyed? }.length
+      %td= clinics.select{ |s| s.responded_to_survey? }.length
+      %td= clinics.select{ |s| s.surveyed && !s.responded_to_survey? }.length
+      %td= clinics.reject{ |s| !s.completed_survey? }.length
     %tr
       %th
 
@@ -142,10 +142,10 @@
       %tr
         %th= specialization.name
         %td= @specialization_specialists.length
-        %td= @specialization_specialists.reject{ |s| !s.responded? }.length
-        %td= @specialization_specialists.reject{ |s| !s.not_responded? }.length
-        %td= @specialization_specialists.reject{ |s| !s.purposely_not_yet_surveyed? }.length
-        %td= @specialization_specialists.reject{ |s| !s.hospital_or_clinic_only? }.length
+        %td= @specialization_specialists.select{ |s| s.responded_to_survey? }.length
+        %td= @specialization_specialists.select{ |s| s.surveyed && !s.responded_to_survey? }.length
+        %td= @specialization_specialists.reject{ |s| !s.completed_survey? }.length
+        %td= @specialization_specialists.select{ |s| s.practicing? && !s.works_from_offices? }.length
         %td= @specialization_specialists.reject{ |s| !s.moved_away? }.length
         %td= @specialization_specialists.reject{ |s| !s.retired? }.length
       %th
