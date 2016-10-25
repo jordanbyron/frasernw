@@ -65,7 +65,7 @@
                 name: "divisional_resource_subscriptions[nonspecialized]"
               = check_box_tag "#{Division.provincial.id}_nonspecialized",
                 1,
-                @division.divisional_resource_subscriptions.map(&:nonspecialized).map(true),
+                @division.divisional_resource_subscriptions.map(&:nonspecialized),
                 name: "divisional_resource_subscriptions[nonspecialized]",
                 class: "division_#{Division.provincial.id} division_specialization"
             - Specialization.all.each do |specialization|
