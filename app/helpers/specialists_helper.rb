@@ -74,4 +74,9 @@ module SpecialistsHelper
         specialist.specialist_offices.select(&:has_data?).any?
     end
   end
+
+  def specialization_checked?(specialization, specialist, params)
+    specialization.id == params[:specialization_id].to_i ||
+      specialist.specializations.include?(specialization)
+  end
 end
