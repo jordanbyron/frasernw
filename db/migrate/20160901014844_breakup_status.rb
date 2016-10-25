@@ -73,7 +73,9 @@ class BreakupStatus < ActiveRecord::Migration
     accepting_new_direct_referrals: ->(specialist){
       specialist.categorization_mask == 1 && #responded to survey
         specialist.specialist_offices.select(&:has_data?).any? &&
-        [1, 11].include?(specialist.status_mask) #accepting new referrals, referrals limited
+        ([1, 11].include?(specialist.status_mask) || #accepting new referrals, referrals limited
+        # unavailable_between
+        (specialist.status_mask == 6 && specialist.practice_restart_date < Date.current))
     },
     direct_referrals_limited: ->(specialist){
       specialist.categorization_mask == 1 && #responded to survey

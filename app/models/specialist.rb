@@ -521,7 +521,7 @@ class Specialist < ActiveRecord::Base
       :question_mark
     elsif !practicing?
       :red_x
-    elsif practice_end_scheduled?
+    elsif practice_ending?
       :orange_warning
     elsif !works_from_offices? || indirect_referrals_only?
       :blue_arrow
@@ -534,6 +534,10 @@ class Specialist < ActiveRecord::Base
     end
   end
 
+  def practice_ending?
+    practice_end_scheduled? && practice_end_date > Date.current
+  end
+
   def indirect_referrals_only?
     !accepting_new_direct_referrals && accepting_new_indirect_referrals?
   end
@@ -543,7 +547,7 @@ class Specialist < ActiveRecord::Base
       "It is unknown whether this specialist is accepting new referrals."
     elsif !practicing?
       not_practicing_details
-    elsif practice_end_scheduled?
+    elsif practice_ending?
       not_practicing_soon_details
     elsif !works_from_offices?
       "Only works out of #{works_out_of_label}#{referrals_through_label}"
