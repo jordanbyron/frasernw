@@ -2,9 +2,16 @@ class ChangeRequestsController < ApplicationController
   def show
     @issue = Issue.find_by(source_id: params[:id])
 
-    authorize! :show, @issue
+    if @issue.nil?
+      authorize! :index, :change_requests
 
-    render "issues/show"
+      redirect_to change_requests_path,
+        notice: "There is no change request matching that code."
+    else
+      authorize! :show, @issue
+
+      render "issues/show"
+    end
   end
 
   def index

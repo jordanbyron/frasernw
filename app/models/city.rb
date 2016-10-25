@@ -43,6 +43,15 @@ class City < ActiveRecord::Base
     self.select(&scope).map(&:formatted_for_select)
   end
 
+  def self.divisional_choices(user, *scope)
+    if user.as_super_admin?
+      all_formatted_for_select(*scope)
+    else
+      in_divisions(user.as_divisions).
+        all_formatted_for_select(*scope)
+    end
+  end
+
   def flush_cached_find
     Rails.cache.delete([self.class.name, id])
   end

@@ -1,8 +1,10 @@
-class PrepareUsageReport
+class PrepareUsageReport < ServiceObject
+  attribute :start_date
+  attribute :end_date
+  attribute :division_id
+  attribute :user
 
-  include ServiceObjectModule.exec_with_args(:start_date, :end_date, :division_id, :user)
-
-  def exec
+  def call
     ## generate the report
     csv_string = CSV.write_to_string(
       CsvUsageReport.exec(

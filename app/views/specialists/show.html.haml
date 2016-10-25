@@ -115,7 +115,7 @@
                   - if @specialist.hospital_clinic_details.present?
                     %p.space.no_indent
                       %strong Details:
-                      = @specialist.hospital_clinic_details
+                      = @specialist.hospital_clinic_details.end_with_period.convert_newlines_to_br
 
               - elsif @specialist.hospital_or_clinic_referrals_only?
 
@@ -144,7 +144,7 @@
                 - if @specialist.hospital_clinic_details.present?
                   %p.space.no_indent
                     %strong Details:
-                    = @specialist.hospital_clinic_details
+                    = @specialist.hospital_clinic_details.end_with_period.convert_newlines_to_br
 
               - else
 
@@ -295,7 +295,7 @@
                 %ul.referral_forms
                   - @specialist.referral_forms.each do |referral_form|
                     - next if not referral_form.form.present?
-                    - type = referral_form.form_content_type.split('/').last
+                    - type = referral_form.file_format
                     %li
                       = link_to "#{referral_form.description} (#{type})",
                         referral_form.form.url,
@@ -315,7 +315,9 @@
               - if @specialist.show_waittimes?
                 -if @specialist.waittime.present?
                   %p.space
-                    Average non-urgent patient wait time from referral to appointment:
+                    Average
+                    %strong non-urgent
+                    patient wait time from referral to appointment:
                     %strong= @specialist.waittime
 
                 -if @specialist.lagtime.present?
@@ -333,7 +335,9 @@
 
                     -if capacity.waittime.present?
                       %p
-                        Average non-urgent patient wait time from referral to appointment:
+                        Average
+                        %strong non-urgent
+                        patient wait time from referral to appointment:
                         %strong= capacity.waittime
 
                     -if capacity.lagtime.present?
@@ -398,7 +402,7 @@
 
           - elsif show_clinic_details
 
-            - @specialist.clinics.reject(&:closed?).each do |clinic|
+            - @specialist.clinics.reject(&:closed?).uniq.each do |clinic|
 
               - clinic_locations = clinic.clinic_locations.sort_by(&:created_at).reject(&:empty?).select{ |cl| @specialist.clinic_locations.include?(cl) }
 
@@ -632,7 +636,7 @@
           %a.btn{ href: "javascript:void(0)",
             data: { toggle: "collapse", target: "#delete-specialist-msg" } }
             %i.icon-trash
-              = " Delete Specialist"
+            = " Delete Specialist"
 
       - if can? :destroy, @specialist
 

@@ -14,17 +14,17 @@
         - @subscriptions.each do |subscription|
           %tr
             %td{ style: "white-space: nowrap" }
-              = link_to "#{subscription.classification.singularize}",
+              = link_to "#{subscription.target_label}",
                 edit_subscription_path(subscription)
             %td{ style: "white-space: nowrap" }= subscription.interval_to_words
             %td{ style: "white-space: nowrap container-fluid" }
               - if subscription.sc_categories.present?
                 %p
-                  %strong Resources:
+                  %strong Content Categories:
                   %br= subscription.sc_categories.map(&:name).join(", ")
               - if subscription.news_type_present?
                 %p
-                  %strong News Updates:
+                  %strong News Item Types:
                   %br= subscription.news_types_pluralized.join(", ")
               - if subscription.specializations.present?
                 %p

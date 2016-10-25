@@ -102,9 +102,8 @@ class UsersController < ApplicationController
       elsif @user.active == false
         redirect_to login_url,
           alert: "Sorry, your access key is no longer active. "\
-            "Please contact a Pathways administrator at "\
-            "<a href='mailto:administration@pathwaysbc.ca'>administration@pathwaysbc.ca"\
-            "</a> to have your account access key reactivated.".
+            "Please <a href='#{contact_path}'>contact us</a>"\
+            " to have your account access key reactivated.".
           html_safe
       else
         @email = params[:user][:email]
@@ -240,6 +239,8 @@ class UsersController < ApplicationController
 
     @formatted_specialists = Specialist.
       select{ |specialist| specialist.name.present? }.
-      sort_by{ |specialist| [ specialist.lastname.capitalize, specialist.firstname ] }
+      sort_by do |specialist|
+        [ specialist.lastname.capitalize, specialist.firstname ]
+      end
   end
 end

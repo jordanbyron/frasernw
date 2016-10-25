@@ -138,7 +138,10 @@ const contentCategoryTabs = (model, dispatch) => {
   }
   else {
     return(
-      _.values(contentCategoriesShowingTabs(model)).map((category) => {
+      _.values(contentCategoriesShowingTabs(model)).
+        sort((category) => category.name === "Virtual Consult" ? 0 : 1).
+        map((category) => {
+
         const _key = tabKey("contentCategory", category.id)
         return(
           <NavTabController

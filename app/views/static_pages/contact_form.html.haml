@@ -1,0 +1,48 @@
+- set_page_specific_title "Contact Us"
+
+.content-wrapper#contact-admin-form
+  %h2 Contact Pathways Administration
+
+  = simple_form_for @feedback_item,
+    url: submit_contact_path,
+    html: { class: "form-horizontal contact_admin_form" } do |f|
+
+    = f.input :freeform_name,
+      label: "Your name",
+      placeholder: "Name",
+      input_html: {value: current_user.authenticated? ? current_user.name : ""}
+    = f.input :freeform_email,
+      label: "Your email",
+      placeholder: "Email",
+      input_html: {value: current_user.authenticated? ? current_user.email : ""}
+    = f.input :feedback,
+      label: "How can we help?",
+      as: :text,
+      input_html: { cols: 400, rows: 5, style: "width: 500px;" }
+
+    .form-actions
+      = link_to "Send Message",
+        "javascript:void(0)",
+        onclick: "send_message($('form.contact_admin_form'))",
+        class: "btn btn-primary contact-admin-submit-button"
+
+.content-wrapper.hidden#contact-admin-thanks
+  %h2 Thank you!
+  %p.space
+    Thanks for getting in touch. We will review your comment in the near future
+    and take action as necessary.
+
+:javascript
+  function send_message(form) {
+    var submit_path = "#{submit_contact_path}";
+    $('contact-admin-submit-button').addClass('disabled');
+    $(document.body).addClass('loading');
+    $.post(
+      submit_path, form.serialize()
+    ).done(function(json) {
+      $('#contact-admin-form').addClass('hidden');
+      $('#contact-admin-thanks').removeClass('hidden');
+    }).always(function() {
+      $(document.body).removeClass('loading');
+    });
+  }

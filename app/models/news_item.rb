@@ -1,11 +1,5 @@
 class NewsItem < ActiveRecord::Base
-  include PublicActivity::Model
   include ActionView::Helpers::TextHelper
-
-  has_many :activities,
-    as: :trackable,
-    class_name: 'SubscriptionActivity',
-    dependent: :destroy
 
   validates :owner_division_id, presence: true
 
@@ -22,7 +16,7 @@ class NewsItem < ActiveRecord::Base
   belongs_to :owner_division, class_name: "Division"
   has_many :divisions, through: :division_display_news_items
   has_many :division_display_news_items, dependent: :destroy
-  has_one :demoable_news_item
+  has_one :demoable_news_item, dependent: :destroy
 
   def self.not_demoable
     joins(<<-SQL)
@@ -46,7 +40,10 @@ class NewsItem < ActiveRecord::Base
   end
 
   def self.bust_cache_for(*divisions)
-    LatestUpdates.delay.recache_for_groups(User.division_groups_for(*divisions))
+    RecacheLatestUpdatesInDivisions.call(
+      division_groups: User.division_groups_for(*divisions),
+      delay: true
+    )
     User.division_groups_for(*divisions).each do |division_group|
       ExpireFragment.call "front_#{Specialization.cache_key}_#{division_group.join('_')}"
     end
@@ -97,7 +94,7 @@ class NewsItem < ActiveRecord::Base
       ActionView::Base.full_sanitizer.sanitize(
         BlueCloth.new(body).to_html
       ),
-      :length => 40,
+      :length => 60,
       :separator => ' '
     )
   end
@@ -157,7 +154,7 @@ class NewsItem < ActiveRecord::Base
   TYPE_HASH = {
     TYPE_DIVISIONAL               => "Divisional Update",
     TYPE_SHARED_CARE              => "Shared Care Update",
-    TYPE_BREAKING                 => "Breaking News",
+    TYPE_BREAKING                 => "Breaking News Item",
     TYPE_SPECIALIST_CLINIC_UPDATE => "Specialist / Clinic Update",
     TYPE_ATTACHMENT_UPDATE        => "Attachment Update"
   }

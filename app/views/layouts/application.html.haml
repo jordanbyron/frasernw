@@ -1,15 +1,12 @@
-- user_divisions = current_user.as_divisions
-
 !!!
 %html
   %head
     = csrf_meta_tag
-    = javascript_include_tag "error_catching"
+    = catch_js_errors
     %title= page_title
     %meta{ "http-equiv" => "Content-Type", content: "text/html; charset=utf-8" }
     %meta{ name: "viewport", content: "initial-scale=1.0" }
     :javascript
-      window.startErrorLog();
       window.pathways = window.pathways || {};
       window.pathways.environment = "#{Rails.env}";
       window.pathways.dataForReact = []
@@ -72,7 +69,7 @@
           - if logged_in? && !current_user.as_introspective?
             %form.navbar-search.pull-right#livesearch{ onSubmit: "event.preventDefault()" }
               #react_root--search
-                %input.span3.search-query#search.icon#navbar_search--query{ type: "search",
+                %input.span3.search-query#search.icon{ type: "search",
                   autocomplete: "off",
                   placeholder: "&#xf002; Search".html_safe }
               #navbar_search--results
@@ -91,15 +88,14 @@
                     %a.dropdown-toggle{ href: "#",
                        data: { toggle: "dropdown" } }
                       = "Admin"
-                      - review = ReviewItem.active.reject{ |ri| !(ri.item.present? && (ri.item.divisions & user_divisions).present?) }
-                      - user_review_item_count = review.reject{ |ri| !ri.item.owners.include? current_user }.count
-                      - total_review_item_count = review.count
-                      - user_divisions_feedback = FeedbackItem.active.select{ |item| (item.owner_divisions & current_user.as_divisions).any? }
-                      - owned_feedback_count = FeedbackItem.active.to_a.count{ |item| item.owners.include?(current_user) }
+                      - pending_reviews = ReviewItem.active.select{ |review| (review.item.present? && (review.item.divisions & as_administering).present?) }
+                      - pending_user_review_count = pending_reviews.select{ |review| review.item.owners.include? current_user }.count
+                      - pending_feedback = FeedbackItem.active.select{ |item| (item.owner_divisions & as_administering).any? }
+                      - pending_user_feedback_count = pending_feedback.select{ |item| item.owners.include?(current_user) }.count
 
-                      - if total_review_item_count + user_divisions_feedback.count > 0
-                        %span.badge{ class: ((user_review_item_count + owned_feedback_count) > 0) && "badge-warning"}
-                          #{user_review_item_count + owned_feedback_count}/#{total_review_item_count + user_divisions_feedback.count}
+                      - if pending_reviews.count + pending_feedback.count > 0
+                        %span.badge{ class: ((pending_user_review_count + pending_user_feedback_count) > 0) && "badge-warning" }
+                          #{pending_user_review_count + pending_user_feedback_count}/#{pending_reviews.count + pending_feedback.count}
                       %b.caret
 
                     %ul.dropdown-menu
@@ -108,21 +104,23 @@
                           all_versions_path,
                           class: "history"
                       %li
-                        - if total_review_item_count > 0
-                          = link_to "Review Queue <span class=\"badge #{user_review_item_count > 0 ? "badge-warning" : ""}\">#{user_review_item_count}/#{total_review_item_count}</span>".html_safe,
-                            review_items_path,
-                            class: "review"
+                        - if pending_reviews.count > 0
+                          = link_to review_items_path,
+                            class: "review" do
+                            Review Queue
+                            %span.badge{ class: pending_user_review_count > 0 ? "badge-warning" : "" }
+                              = "#{pending_user_review_count}/#{pending_reviews.count}".html_safe
                         - else
                           = link_to "Review Queue",
                             review_items_path,
                             class: "review"
                       %li
-                        - if user_divisions_feedback.count > 0
+                        - if pending_feedback.count > 0
                           = link_to feedback_items_path,
                             class: "feedback" do
-                            %span= "Feedback Queue "
-                            %span.badge{class: owned_feedback_count > 0 ? "badge-warning" : ""}
-                              = "#{owned_feedback_count}/#{user_divisions_feedback.count}"
+                            Feedback Queue
+                            %span.badge{ class: pending_user_feedback_count > 0 ? "badge-warning" : "" }
+                              = "#{pending_user_feedback_count}/#{pending_feedback.count}"
                         - else
                           = link_to "Feedback Queue",
                             feedback_items_path,
@@ -236,16 +234,15 @@
                         %li= link_to "Hospitals", hospitals_path
                       - if can? :index, Language
                         %li= link_to "Languages", languages_path
-                      - news_item_divisions = current_user.as_super_admin? ? Division.all: current_user.as_divisions.reject(&:hidden?)
-                      - if can?(:index, NewsItem) && news_item_divisions.count == 1
+                      - if can?(:index, NewsItem) && as_administering.count == 1
                         %li= link_to "News Items", news_items_path
-                      - if can?(:index, NewsItem) && news_item_divisions.count > 1
+                      - if can?(:index, NewsItem) && as_administering.count > 1
                         %li
                           = link_to "News Items",
                             news_items_path(division_id: current_user.as_divisions.first.id),
                             class: "arrow-right-after"
                           %ul.dropdown-menu
-                            - news_item_divisions.reject(&:hidden?).each do |division|
+                            - as_administering.each do |division|
                               %li= link_to division.name,
                                 news_items_path(division_id: division.id),
                                 class: 'office'
@@ -278,7 +275,7 @@
                           = link_to "Users", "#", class: "arrow-right-after"
                           %ul.dropdown-menu
                             %li= link_to "All Users", users_path
-                            - @divisions.each do |division|
+                            - Division.all.each do |division|
                               %li= link_to "#{division.name} Users",
                                 division_users_path(division),
                                 class: 'division'
@@ -311,13 +308,13 @@
                       - if can? :index, Video
                         %li= link_to "Videos", videos_path
                       - if can? :read, ScItem
-                        - if current_user.as_super_admin? && @divisions.length > 1
+                        - if current_user.as_super_admin? && Division.all.length > 1
                           %li
                             = link_to "Owned Content Items For...",
                               "#",
                               class: "create arrow-right-after"
                             %ul.dropdown-menu
-                              - @divisions.each do |division|
+                              - Division.all.each do |division|
                                 %li= link_to "#{division.name}",
                                   division_content_items_path(division),
                                   class: "sc_item"
@@ -326,17 +323,17 @@
                               "#",
                               class: "create arrow-right-after"
                             %ul.dropdown-menu
-                              - @divisions.each do |division|
+                              - Division.all.each do |division|
                                 %li= link_to "#{division.name}",
                                   shared_content_items_path(division),
                                   class: "sc_item"
-                        - elsif user_divisions.length > 1
+                        - elsif as_administering.length > 1
                           %li
                             = link_to "Owned Content Items For...",
                               "#",
                               class: "create arrow-right-after"
                             %ul.dropdown-menu
-                              - user_divisions.each do |division|
+                              - as_administering.each do |division|
                                 %li= link_to "#{division.name}",
                                   division_content_items_path(division),
                                   class: "sc_item"
@@ -345,25 +342,25 @@
                               "#",
                               class: "create arrow-right-after"
                             %ul.dropdown-menu
-                              - user_divisions.each do |division|
+                              - as_administering.each do |division|
                                 %li= link_to "#{division.name}",
                                   shared_content_items_path(division),
                                   class: "sc_item"
                         - else
                           %li= link_to "Content Items",
-                            division_content_items_path(user_divisions.first),
+                            division_content_items_path(as_administering.first),
                             class: "sc_item"
-                          - if @divisions.length > 1
+                          - if Division.all.length > 1
                             %li= link_to "Manage Shared Content Items",
-                              shared_content_items_path(user_divisions.first),
+                              shared_content_items_path(as_administering.first),
                               class: "sc_item"
                       - if can? :update_demoable, ScItem
                         %li= link_to "Edit Demoable Content Items",
                           edit_demoable_content_items_path
 
                 - unless current_user.as_introspective?
-                  - cache("resources_dropdown_categories_#{user_divisions.map{|d| d.id}.join('_')}") do
-                    - dropdown_categories = ScCategory.global_resources_dropdown(user_divisions)
+                  - cache("resources_dropdown_categories_#{current_user.as_divisions.map{|d| d.id}.join('_')}") do
+                    - dropdown_categories = ScCategory.global_resources_dropdown(current_user.as_divisions)
                     - if dropdown_categories.present?
                       %li.dropdown
                         %a.dropdown-toggle{ href: "#",
@@ -513,11 +510,12 @@
               .alert.alert-success= msg
             = yield
 
-      .row
-        #email.content-wrapper
-          = link_to "Contact Us",
-            "javascript:void(0)",
-            onclick: open_feedback_modal
+      - if show_contact_modal
+        .row
+          #email.content-wrapper
+            = link_to "Contact Us",
+              "javascript:void(0)",
+              onclick: open_feedback_modal
     #loading
       #loading-spinner
 
@@ -527,7 +525,3 @@
 
     :javascript
       window.pathways.bootstrapReact()
-
-      $(window).load(function() {
-        $("#heartbeat-loader-position").remove();
-      });

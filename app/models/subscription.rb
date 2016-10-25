@@ -4,14 +4,14 @@ class Subscription < ActiveRecord::Base
     :news_type,
     :division_ids,
     :sc_item_format_type,
-    :classification,
+    :target_class,
     :interval,
     :user_id
 
   serialize :news_type
   serialize :sc_item_format_type
 
-  validates :classification, :interval, presence: true
+  validates :target_class, :interval, presence: true
 
   belongs_to :user
 
@@ -29,8 +29,8 @@ class Subscription < ActiveRecord::Base
 
   scope :immediate, -> {where(interval: INTERVAL_IMMEDIATELY)}
 
-  scope :resources, -> {where(classification: resource_update)}
-  scope :news,      -> {where(classification: news_update)}
+  scope :resources, -> {where(target_class: "ScItem")}
+  scope :news,      -> {where(target_class: "NewsItem")}
 
   scope :in_divisions, ->(division){
     joins(:divisions).
@@ -55,14 +55,6 @@ class Subscription < ActiveRecord::Base
 
   NEWS_ITEM_TYPE_HASH = NewsItem::TYPE_HASH
 
-  NEWS_UPDATES     = 1
-  RESOURCE_UPDATES = 2
-
-  TARGET_TYPES = {
-    NEWS_UPDATES     => "News Updates".freeze,
-    RESOURCE_UPDATES => "Resource Updates".freeze
-  }
-
   INTERVAL_IMMEDIATELY = 1
   INTERVAL_DAILY       = 2
   INTERVAL_WEEKLY      = 3
@@ -75,8 +67,17 @@ class Subscription < ActiveRecord::Base
     INTERVAL_MONTHLY     => "Monthly".freeze
   }
 
-  def self.classifications
-    TARGET_TYPES.map{ |k, v|  v }
+  TARGET_CLASSES = {
+    "ScItem" => "Content Items",
+    "NewsItem" => "News Items"
+  }
+
+  TARGET_CLASSES.keys.each do |klassname|
+    scope klassname.tableize, -> {where(target_class: klassname)}
+
+    define_method "#{klassname.tableize}?" do
+      target_class == klassname
+    end
   end
 
   def news_type_masks
@@ -97,27 +98,6 @@ class Subscription < ActiveRecord::Base
   def news_type_present?
     return false if news_type.blank?
     news_type.reject(&:blank?).present?
-  end
-
-  def self.news_update
-    TARGET_TYPES[NEWS_UPDATES]
-  end
-
-  def self.resource_update
-    TARGET_TYPES[RESOURCE_UPDATES]
-  end
-
-  def interval_start_datetime
-    case interval
-    when ::Subscription::INTERVAL_IMMEDIATELY
-      raise "No start time"
-    when ::Subscription::INTERVAL_DAILY
-      return 1.days.ago
-    when ::Subscription::INTERVAL_WEEKLY
-      return 1.weeks.ago
-    when ::Subscription::INTERVAL_MONTHLY
-      return 1.months.ago
-    end
   end
 
   def self.interval_period(interval_key)
@@ -159,41 +139,56 @@ class Subscription < ActiveRecord::Base
       map{ |n| Subscription::SC_ITEM_FORMAT_TYPE_HASH[n] }
   end
 
-  def news_update?
-    classification == TARGET_TYPES[NEWS_UPDATES]
+  def interval_period
+    case interval
+    when ::Subscription::INTERVAL_IMMEDIATELY
+      raise "No period"
+    when ::Subscription::INTERVAL_DAILY
+      return 1.days
+    when ::Subscription::INTERVAL_WEEKLY
+      return 1.weeks
+    when ::Subscription::INTERVAL_MONTHLY
+      return 1.month
+    end
   end
 
-  def resource_update?
-    classification == TARGET_TYPES[RESOURCE_UPDATES]
+  def target_table_name
+    target_class.tableize
   end
 
-  def activities
-    scope = SubscriptionActivity.
-      by_target_type(classification).
-      by_divisions(divisions).
-      order("activities.created_at DESC")
-
+  def items_captured(end_datetime = DateTime.current)
+    scope = target_class.constantize
     if interval != INTERVAL_IMMEDIATELY
-      scope = scope.where("activities.created_at > (?)", interval_start_datetime)
+      scope = scope.where(
+        "#{target_table_name}.created_at > (?) AND #{target_table_name}.created_at < (?)",
+        (end_datetime - interval_period),
+        end_datetime
+      )
     end
 
-    if news_update?
-      scope.
-        by_news_item_type(news_type)
-    elsif resource_update?
+    if sc_items?
       scope = scope.
-        by_sc_item_format_type(sc_item_format_type).
-        select do |activity|
-          sc_categories.include?(activity.trackable.root_category)
+        where(division_id: divisions.map(&:id)).
+        select do |sc_item|
+          sc_categories.include?(sc_item.root_category) &&
+            sc_item_format_type.include?(sc_item.format_type.to_s)
         end
 
       if specializations.any?
-        scope.select do |activity|
-          (activity.trackable.specializations & specializations).any?
+        scope = scope.select do |sc_item|
+          (sc_item.specializations & specializations).any?
         end
-      else
-        scope
       end
+
+      scope
+    elsif news_items?
+      scope.
+        where(type_mask: news_type).
+        where(owner_division_id: divisions.map(&:id))
     end
+  end
+
+  def target_label
+    TARGET_CLASSES[target_class]
   end
 end

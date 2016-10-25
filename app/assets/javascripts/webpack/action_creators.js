@@ -278,11 +278,23 @@ export const searchFocused = (dispatch, isFocused) => {
   });
 }
 
-export const termSearched = (dispatch, term) => {
+export const termSearched = (model, dispatch, term) => {
+  if (model.ui.searchTimerId){
+    clearTimeout(model.ui.searchTimerId);
+  }
+
+  const timerId = setTimeout(function() {
+    dispatch({
+      type: "SEARCH_TIMEOUT_ENDED"
+    })
+  }, 300)
+
   dispatch({
     type: "TERM_SEARCHED",
-    proposed: term
+    proposedTerm: term,
+    timerId: timerId
   });
+
 }
 
 export const selectCollectionFilter = (dispatch, label, event) => {

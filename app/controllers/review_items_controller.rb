@@ -9,10 +9,4 @@ class ReviewItemsController < ApplicationController
     @review_items =
       ReviewItem.archived.order('id desc').paginate(page: params[:page], per_page: 30)
   end
-
-  def destroy
-    @review_item = ReviewItem.find(params[:id])
-    @review_item.destroy
-    redirect_to review_items_url, notice: "Successfully discarded changes."
-  end
 end

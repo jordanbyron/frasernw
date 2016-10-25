@@ -53,12 +53,6 @@ const shouldShow = (model) => {
     return false;
   }
 
-  if (route === "/reports/entity_page_views" &&
-      (isDataDubious(model) && model.app.currentUser.role !== "super")) {
-
-    return false;
-  }
-
   return true;
 }
 

@@ -16,9 +16,10 @@ class CsvUsageReportsController < ApplicationController
       raise "Not in your division"
     end
 
-    PrepareUsageReport.delay.exec(AnalyticsChartMonths.parse(params).merge(
+    PrepareUsageReport.call(AnalyticsChartMonths.parse(params).merge(
       division_id: (params[:scope] == "global" ? nil : params[:scope]),
-      user: current_user
+      user: current_user,
+      delay: true
     ))
 
     render nothing: true, status: 200

@@ -8,6 +8,7 @@
       formData.maxLocations = #{Clinic::MAX_LOCATIONS};
       formData.interactionType = "#{@form_modifier.interaction_type.to_s}";
       formData.recordKey = "clinic";
+      formData.reviewId = #{@review_item.id};
     }( window.pathways.formData = {} ));
 
   = javascript_include_tag "views/form_review"
@@ -366,7 +367,7 @@
             %ul
               - @clinic.referral_forms.each do |referral_form|
                 - next if not referral_form.form.present?
-                - type = referral_form.form_content_type.split('/').last
+                - type = referral_form.file_format
                 %li
                   = link_to "#{referral_form.description} (#{type})",
                     referral_form.form.url,

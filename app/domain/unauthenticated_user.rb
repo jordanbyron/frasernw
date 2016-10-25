@@ -11,7 +11,9 @@ class UnauthenticatedUser
 
   [
     :divisions,
-    :as_divisions
+    :as_divisions,
+    :administering,
+    :as_administering
   ].each do |mname|
     define_method mname do
       []
@@ -43,5 +45,17 @@ class UnauthenticatedUser
     define_method "as_#{mname}" do
       false
     end
+  end
+
+  def role
+    "unauthenticated"
+  end
+
+  def name
+    "Unauthenticated User"
+  end
+
+  def email
+    ""
   end
 end

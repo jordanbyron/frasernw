@@ -14,7 +14,7 @@
 # You can also restrict unregistered users from accessing a controller using
 # a before filter. For example.
 #
-#   before_filter :require_authentication, :except => [:index, :show]
+#   before_filter :require_authentication, except: [:index, :show]
 module ControllerAuthentication
   def self.included(controller)
     controller.send :helper_method, :current_user, :logged_in?
@@ -28,8 +28,9 @@ module ControllerAuthentication
   def current_user
     return @current_user if defined?(@current_user)
 
-    @current_user = (current_user_session && current_user_session.record) ||
-      UnauthenticatedUser.new
+    @current_user =
+      (current_user_session && current_user_session.record) ||
+        UnauthenticatedUser.new
   end
 
   def logged_in?
@@ -46,13 +47,13 @@ module ControllerAuthentication
       session[:return_to] = request.url
 
       redirect_to login_url,
-        :alert => (request.url != root_url) ? "You must log in to access this page." : false
+        alert: log_in_alert
     end
   end
 
   def must_be_logged_out
     if logged_in?
-      redirect_to root_url, :alert => "You must be logged out to access this page."
+      redirect_to root_url, alert: "You must be logged out to access this page."
     end
   end
 
@@ -61,7 +62,14 @@ module ControllerAuthentication
 
     unless klass.find(id).valid_tokens.include?(token)
       redirect_to login_url,
-        :alert => "Invalid token. Please email ryanlammertsen@pathwaysbc.ca to request or reset your secret url for editing."
+        alert: "Invalid token. Please <a href='#{contact_path}'>contact us</a>"\
+          " to request or reset your secret url for editing."
     end
+  end
+
+  private
+
+  def log_in_alert
+    (request.url != root_url) ? "You must log in to access this page." : false
   end
 end

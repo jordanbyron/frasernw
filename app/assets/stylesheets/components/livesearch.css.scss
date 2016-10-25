@@ -65,8 +65,8 @@
       }
       &.livesearch__search-category--selected, &.livesearch__search-scope--selected {
         a {
-          background-color: #8CD0F5;
-          color: white;
+          background-color: #a3d9f5;
+          color: #0088cc;
         }
       }
     }
@@ -86,6 +86,10 @@
 
   input#search:-moz-placeholder {
     font-family: "Helvetica Neue", "FontAwesome", Helvetica, Arial, sans-serif;
+  }
+
+  span.highlight {
+    background-color: #ffd1b3;
   }
 }
 

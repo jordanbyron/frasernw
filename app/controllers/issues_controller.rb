@@ -31,7 +31,10 @@ class IssuesController < ApplicationController
 
     if @issue.save
       @issue.subscriptions.each do |subscription|
-        IssuesMailer.subscribed(subscription).deliver
+        MailSubscriptionNotifications::Subscribed.call(
+          subscription_id: subscription.id,
+          delay: true
+        )
       end
 
       redirect_to public_path(@issue)
@@ -63,12 +66,20 @@ class IssuesController < ApplicationController
       @issue.subscriptions.reject do |subscription|
         before_update_subscription_ids.include?(subscription.id)
       end.each do |subscription|
-        IssuesMailer.subscribed(subscription).deliver
+        MailSubscriptionNotifications::Subscribed.call(
+          subscription_id: subscription.id,
+          delay: true
+        )
       end
 
       if !before_update_is_complete && @issue.completed?
         @issue.subscriptions.each do |subscription|
-          IssuesMailer.completed(subscription).deliver
+          if subscription.subscriber.active? && subscription.subscriber.admin_or_super?
+            MailSubscriptionNotifications::Completed.call(
+              subscription_id: subscription.id,
+              delay: true
+            )
+          end
         end
       end
 

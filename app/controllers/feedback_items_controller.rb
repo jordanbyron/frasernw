@@ -32,17 +32,15 @@ class FeedbackItemsController < ApplicationController
       @feedback_item = FeedbackItem.new(params[:feedback_item])
     end
 
-    if ((@feedback_item.contact_us? && @feedback_item.user.nil?) ||
-      current_user.authenticated?)
-
+    if (
+      (@feedback_item.contact_us? && @feedback_item.user.nil?) ||
+        current_user.authenticated?
+    )
       @feedback_item.save
-
-      if @feedback_item.contact_us?
-        FeedbackMailer.general(@feedback_item).deliver
-      else
-        FeedbackMailer.targeted(@feedback_item).deliver
-      end
-
+      MailFeedbackNotifications.call(
+        feedback_item_id: @feedback_item.id,
+        delay: true
+      )
       render nothing: true, status: 200
     else
       render nothing: true, status: 500

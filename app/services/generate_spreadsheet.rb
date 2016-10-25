@@ -113,6 +113,38 @@ module GenerateSpreadsheet
       print_spreadsheet(printing_body, printing_header)
     end
 
+    # Status "unavailable_between" or "indefinitely unavailable"
+    def specialists_temporarily_or_indefinitely_unavailable
+      specialists = Specialist.where(status_mask: [6,8])
+
+      indefinitely_unavailable_specialists = []
+      temporarily_unavailable_specialists = []
+
+      specialists.select do |specialist|
+        # 'responded to survey', 'not responded'
+        [1, 2].include?(specialist.categorization_mask)
+      end.each do |specialist|
+        specialist_row = [
+          specialist_id_link(specialist.id),
+          specialist.name
+        ]
+        if specialist.status_mask === 8
+          indefinitely_unavailable_specialists.push(specialist_row)
+        elsif specialist.status_mask === 6
+          temporarily_unavailable_specialists.push(specialist_row)
+        else
+          raise "Something went wrong"
+        end
+      end
+
+      printing_body = {
+        temporarily_unavailable_specialists: temporarily_unavailable_specialists,
+        indefinitely_unavailable_specialists: indefinitely_unavailable_specialists
+      }
+      printing_header = ["ID","Name"]
+      print_spreadsheet(printing_body, printing_header)
+    end
+
     # - FNW users who are type: "GP Office," "Locum," "Resident," or "Other."
     #   (Excludes "Specialist Office", "Clinic", "Hospitalist",
     #   "Nurse Practitioner", or "Unit Clerk.")
@@ -173,7 +205,8 @@ module GenerateSpreadsheet
         user_row = [
           user.divisions.first.name,
           user.id,
-          user.name
+          user.name,
+          user.role
         ]
         user.controlled_clinics.each do |clinic|
           user_row.push(clinic.id)
@@ -189,6 +222,7 @@ module GenerateSpreadsheet
         "User Divisions",
         "User ID",
         "User name",
+        "User role",
         "Clinic ID",
         "Clinic name"
       ]

@@ -244,4 +244,23 @@ module ApplicationHelper
       root_path
     end
   end
+
+  def as_administering
+    current_user.as_administering
+  end
+
+  def catch_js_errors
+    javascript_include_tag("https://cdn.ravenjs.com/3.7.0/raven.min.js") +
+      javascript_tag do
+        raw ("Raven" +
+          ".config('https://#{ENV['SENTRY_KEY']}@sentry.io/#{ENV['SENTRY_PROJECT_ID']}'," +
+          "{ environment: '#{ENV["APP_NAME"]}'})" +
+          ".install();   " +
+          "Raven.setUserContext({" +
+          "email: '#{current_user.email}'," +
+          "role: '#{current_user.role}'," +
+          "name: '#{current_user.name}'" +
+          "})")
+      end
+  end
 end

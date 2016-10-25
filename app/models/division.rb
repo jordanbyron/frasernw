@@ -55,10 +55,6 @@ class Division < ActiveRecord::Base
   after_touch  :flush_cached_find
   after_touch  :flush_cache
 
-  def self.all_cached
-    Rails.cache.fetch([name, 'Division.all'], expires_in: 8.hours) { all }
-  end
-
   def self.except_provincial
     where('"divisions".name != (?)', "Provincial")
   end
@@ -84,7 +80,6 @@ class Division < ActiveRecord::Base
   end
 
   def flush_cache
-    Rails.cache.delete([self.class.name, "Division.all"])
     Division.all.each do |division|
       Rails.cache.delete([division.class.name, division.id])
     end
@@ -207,6 +202,6 @@ class Division < ActiveRecord::Base
       from_specialization_options.map(&owner_type).uniq
     else
       primary_contacts
-    end
+    end.select(&:active?).select(&:admin_or_super?)
   end
 end

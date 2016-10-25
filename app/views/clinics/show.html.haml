@@ -151,7 +151,7 @@
                 %ul.referral_forms
                   - @clinic.referral_forms.each do |referral_form|
                     - next if not referral_form.form.present?
-                    - type = referral_form.form_content_type.split('/').last
+                    - type = referral_form.file_format
                     %li
                       = link_to "#{referral_form.description} (#{type})",
                         referral_form.form.url,
@@ -170,8 +170,9 @@
               - if @clinic.show_waittimes?
                 -if @clinic.waittime.present?
                   %p.space
-                    Average non-urgent patient wait time from referral to
-                    appointment:
+                    Average
+                    %strong non-urgent
+                    patient wait time from referral to appointment:
                     %strong= @clinic.waittime
 
                 -if @clinic.lagtime.present?
@@ -188,8 +189,9 @@
 
                     -if focus.waittime.present?
                       %p
-                        Average non-urgent patient wait time from referral to
-                        appointment:
+                        Average
+                        %strong non-urgent
+                        patient wait time from referral to appointment:
                         %strong= focus.waittime
 
                     -if focus.lagtime.present?
@@ -246,18 +248,23 @@
                 who see patients at the clinic:
                 = @clinic.healthcare_providers.ordered_by_name.map{ |x| x.name }.join(", ")
 
-            - if @clinic.visible_attendances.any?
+            - if @clinic.locations_showing_attendances.any?
 
               %h6 Physicians who see patients at the clinic
 
               %ul.attending_specialists
-                - @clinic.visible_attendances.each do |attendance|
-                  - if attendance.is_specialist
-                    = physician_attending(attendance)
-                  - else
-                    %li
-                      = attendance.freeform_name
-                      = "- #{attendance.area_of_focus}" if attendance.area_of_focus.present?
+                - @clinic.locations_showing_attendances.each do |location|
+                  .location_attendances
+                    Physicians who see patients at
+                    %span.location_attendances__address
+                      = location.resolved_address.short_address
+                  - location.attendances.select(&:show?).each do |attendance|
+                    - if attendance.is_specialist
+                      = physician_attending(attendance)
+                    - else
+                      %li
+                        = attendance.freeform_name
+                        = "- #{attendance.area_of_focus}" if attendance.area_of_focus.present?
 
         - if show_details || show_areas_of_practice
 

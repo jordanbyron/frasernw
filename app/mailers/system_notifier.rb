@@ -1,3 +1,5 @@
+require 'active_support/inflector'
+
 module SystemNotifier
   def self.info(subject)
     notify(
@@ -20,27 +22,32 @@ module SystemNotifier
     )
   end
 
-  def self.javascript_error(e, options = {})
+  def self.migrations_pending(number)
     notify(
-      tag: "Exception - Client-side",
-      subject: e[:message],
+      tag: "Deploy - Migrations pending",
+      subject: "There #{'is'.pluralize(number)} #{number.to_s} pending "\
+        "#{'migration'.pluralize(number)}.",
       timestamp: DateTime.now.to_s(:long_ordinal),
-      body: {
-        name: e[:name],
-        message: e[:message],
-        file: e[:file],
-        line: e[:line],
-        column: e[:column],
-        url: e[:url],
-        errorStack: e[:errorStack]
-      }
+      body: {}
     )
   end
 
-  # TODO: all system notifications, including errors, should come through here
+  def self.catch_error(error_klass, &block)
+    begin
+      block.call
+    rescue error_klass => e
+      SystemNotifier.error(e)
+    end
+  end
+
+  private
 
   # takes {tag: <:sym>, subject: <"str">, body: <{}>}
   def self.notify(options)
-    SystemMailer.notification(options).deliver
+    begin
+      SystemMailer.notification(options).deliver
+    rescue Net::SMTPAuthenticationError, EOFError, Net::SMTPUnknownError
+      NotifyInBackground.call(options: options, delay: true)
+    end
   end
 end
