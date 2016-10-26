@@ -37,47 +37,43 @@
     Automatically include content items posted by the Provincial team for these
     specialties:
   .row
-    .span1
-      %table.provincial_resources_defaults.fixed_column
-        %thead
-          %tr
-            %td All Provincial Content
-        %tbody
-          %tr
-            %td
-              = check_box_tag "division_#{Division.provincial.id}",
-                1,
-                :provincial_division,
-                name: "provincial_division",
-                class: "division_check"
-    .span11{ style: "overflow-x:scroll" }
-      %table.provincial_resources_defaults
-        %thead
-          %tr
-            %td Content with no specialty
-            - Specialization.all.each do |specialization|
-              %td= specialization.name
-        %tbody
-          %tr
-            %td
-              = hidden_field_tag "#{Division.provincial.id}_nonspecialized",
-                0,
-                name: "divisional_resource_subscriptions[nonspecialized]"
-              = check_box_tag "#{Division.provincial.id}_nonspecialized",
-                1,
-                @division.divisional_resource_subscriptions.map(&:nonspecialized),
-                name: "divisional_resource_subscriptions[nonspecialized]",
-                class: "division_#{Division.provincial.id} division_specialization"
-            - Specialization.all.each do |specialization|
+    = simple_fields_for :divisional_resource_subscriptions do |s|
+      .span1
+        %table.provincial_resources_defaults.fixed_column
+          %thead
+            %tr
+              %td All Provincial Content
+          %tbody
+            %tr
               %td
-                = hidden_field_tag "#{Division.provincial.id}_#{specialization.id}",
-                  0,
-                  name: "divisional_resource_subscriptions[#{specialization.id}]"
-                = check_box_tag "#{Division.provincial.id}_#{specialization.id}",
-                  1,
-                  @division.divisional_resource_subscriptions.map(&:specialization_id).include?(specialization.id),
-                  name: "divisional_resource_subscriptions[#{specialization.id}]",
-                  class: "division_#{Division.provincial.id} division_specialization"
+                = s.input "division_#{Division.provincial.id}",
+                  as: :boolean,
+                  name: "provincial_division",
+                  class: "division_check",
+                  label: false
+      .span11{ style: "overflow-x:scroll" }
+        %table.provincial_resources_defaults
+          %thead
+            %tr
+              %td Content with no specialty
+              - Specialization.all.each do |specialization|
+                %td= specialization.name
+          %tbody
+            %tr
+              %td
+                = s.input "#{Division.provincial.id}_nonspecialized",
+                  as: :boolean,
+                  name: "divisional_resource_subscriptions[0][nonspecialized]",
+                  class: "division_#{Division.provincial.id} division_specialization",
+                  label: false
+              - Specialization.all.each do |specialization|
+                %td
+                  = s.input "#{Division.provincial.id}_#{specialization.id}",
+                    as: :check_boxes,
+                    collection: @division.divisional_resource_subscriptions.take(1).map(&:specialization_ids).include?(specialization.id),
+                    name: "divisional_resource_subscriptions[0][#{specialization.id}]",
+                    class: "division_#{Division.provincial.id} division_specialization",
+                    label: false
 
   %br
   %h4 Local Referral Area

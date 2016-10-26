@@ -13,23 +13,13 @@ class UpdateDivisionalResourceSubscriptions
   def exec
     return unless params[:divisional_resource_subscriptions].present?
 
-    division.divisional_resource_subscriptions.each do |subscription|
-      if (
-        params[:divisional_resource_subscriptions][
-          subscription.specialization_id.to_s
-        ]
-      ) == "0"
-        subscription.destroy
-      end
-    end
-    params[:divisional_resource_subscriptions].each do |checkbox_key, value|
-      if value == "1"
-        subscription = DivisionalResourceSubscription.find_or_create_by(
-          division_id: division.id,
-          specialization_id: checkbox_key
-        )
-        subscription.save
-      end
-    end
+    subscription = DivisionalResourceSubscription.find_or_create_by(
+      division_id: division.id
+    )
+    subscription.merge(
+      nonspecialized: params[:divisional_resource_subscriptions][0][:nonspecialized],
+      specialization_ids: params[:divisional_resource_subscriptions][0][:specialization_ids]
+    )
+    subscription.save
   end
 end

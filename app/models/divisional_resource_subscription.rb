@@ -1,5 +1,5 @@
 class DivisionalResourceSubscription < ActiveRecord::Base
-  attr_accessible :division_id, :specialization_id
+  attr_accessible :division_id, :specialization_ids
 
   belongs_to :division
   belongs_to :specialization
