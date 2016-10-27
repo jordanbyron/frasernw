@@ -554,7 +554,7 @@ class Specialist < ActiveRecord::Base
     elsif indirect_referrals_only?
       "Only accepts referrals through #{works_out_of_label}#{referrals_through_label}"
     elsif !accepting_new_direct_referrals?
-      "Only doing follow up on previous patients."
+      "Not accepting new referrals."
     elsif direct_referrals_limited?
       ("Accepting new referrals limited by geography " +
         "or number of patients.")
