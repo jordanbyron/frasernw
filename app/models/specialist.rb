@@ -756,7 +756,7 @@ class Specialist < ActiveRecord::Base
   STATUS_HASH = {
     1 => "Accepting new referrals",
     11 => "Accepting limited new referrals by geography or # of patients",
-    2 => "Only doing follow up on previous patients",
+    2 => "Not accepting new referrals",
     4 => "Retired as of",
     5 => "Retiring as of",
     6 => "Unavailable between",
