@@ -865,7 +865,7 @@ body.loading #email
     }
   }
 
-  table.local_referral_area, table.provincial_resources_defaults {
+  table.local_referral_area {
     width: 100%;
     thead td {
       vertical-align: bottom;
@@ -928,13 +928,6 @@ body.loading #email
       height: 20px;
       margin: 0;
       padding: 0 10px;
-    }
-  }
-
-  table.provincial_resources_defaults.fixed_column {
-    @extend table.local_referral_area.fixed_column;
-    thead td {
-      padding-top: 13px;
     }
   }
 

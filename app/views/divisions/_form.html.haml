@@ -34,46 +34,26 @@
   %br
   %h4 Resource Subscriptions
   %p.no_indent
-    Automatically include content items posted by the Provincial team for these
-    specialties:
+    Automatically include content items posted by the Provincial team for the
+    following:
   .row
-    = simple_fields_for :divisional_resource_subscriptions do |s|
-      .span1
-        %table.provincial_resources_defaults.fixed_column
-          %thead
-            %tr
-              %td All Provincial Content
-          %tbody
-            %tr
-              %td
-                = s.input "division_#{Division.provincial.id}",
-                  as: :boolean,
-                  name: "provincial_division",
-                  class: "division_check",
-                  label: false
-      .span11{ style: "overflow-x:scroll" }
-        %table.provincial_resources_defaults
-          %thead
-            %tr
-              %td Content with no specialty
-              - Specialization.all.each do |specialization|
-                %td= specialization.name
-          %tbody
-            %tr
-              %td
-                = s.input "#{Division.provincial.id}_nonspecialized",
-                  as: :boolean,
-                  name: "divisional_resource_subscriptions[0][nonspecialized]",
-                  class: "division_#{Division.provincial.id} division_specialization",
-                  label: false
-              - Specialization.all.each do |specialization|
-                %td
-                  = s.input "#{Division.provincial.id}_#{specialization.id}",
-                    as: :check_boxes,
-                    collection: @division.divisional_resource_subscriptions.take(1).map(&:specialization_ids).include?(specialization.id),
-                    name: "divisional_resource_subscriptions[0][#{specialization.id}]",
-                    class: "division_#{Division.provincial.id} division_specialization",
-                    label: false
+    .span5
+      = simple_fields_for @divisional_resource_subscription do |j|
+        .offset3
+          %span All Provincial Content
+          = check_box_tag "division_resources",
+            name: "division_resources",
+            class: "division_check"
+        = j.input :nonspecialized,
+          as: :boolean,
+          label: "Content with no specialty",
+          input_html: { class: "division_specialization" }
+        = j.input :specialization_ids,
+          as: :check_boxes,
+          collection: Specialization.all,
+          selected: @divisional_resource_subscription.specialization_ids,
+          label: "Content by specialty",
+          input_html: { class: "division_specialization" }
 
   %br
   %h4 Local Referral Area
