@@ -263,4 +263,8 @@ module ApplicationHelper
           "})")
       end
   end
+
+  def form_target_type(form_target)
+    form_target.class.to_s.tableize.singularize
+  end
 end
