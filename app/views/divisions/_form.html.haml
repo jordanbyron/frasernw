@@ -36,14 +36,19 @@
   %p.no_indent
     Automatically include content items posted by the Provincial team for the
     following:
+  %br
   .row
-    .span5
+    .span8
       = simple_fields_for @divisional_resource_subscription do |j|
-        .offset3
-          %span All Provincial Content
-          = check_box_tag "division_resources",
-            name: "division_resources",
-            class: "division_check"
+        .control-group
+          %label.control-label{ for: "division_specialization" }
+            %strong All Provincial Content
+          .controls
+            %label.checkbox
+              = check_box_tag "division_specialization",
+                1,
+                false,
+                class: "division_check"
         = j.input :nonspecialized,
           as: :boolean,
           label: "Content with no specialty",
@@ -53,7 +58,8 @@
           collection: Specialization.all,
           selected: @divisional_resource_subscription.specialization_ids,
           label: "Content by specialty",
-          input_html: { class: "division_specialization" }
+          input_html: { class: "division_specialization" },
+          hint: "Applies to new or newly modified content items."
 
   %br
   %h4 Local Referral Area
@@ -129,55 +135,48 @@
     checkboxId: "division_use_customized_city_priorities"
   })
 
-  function selection_checked(checkbox) {
-    var selection_class = "." + $(checkbox).prop('id');
-    $(selection_class).prop('checked',($(checkbox).prop('checked')));
+  function master_toggle_checked(selection) {
+    var member_by_class = "." + $(selection).prop('id');
+    $(member_by_class).prop('checked',($(selection).prop('checked')));
     return true;
   }
-
   $('.division_check').click(function() {
-    selection_checked(this);
+    master_toggle_checked(this);
   });
-
   $('.city_check').click(function() {
-    selection_checked(this);
+    master_toggle_checked(this);
   });
 
-  function update_selection(selection) {
-    var selection_id = "#" + selection;
-    var selection_class = "." + selection;
+  function update_selection(master_toggle_id, member_by_class) {
     var all = true;
     var none = true;
-    $(selection_class).each(function() {
+    $(member_by_class).each(function() {
       if ($(this).prop('checked')) { none = false; } else { all = false; }
     });
     if (all) {
-      $(selection_id).prop('checked', true);
-      $(selection_id).prop('indeterminate', false);
+      $(master_toggle_id).prop('checked', true);
+      $(master_toggle_id).prop('indeterminate', false);
     } else if (none) {
-      $(selection_id).prop('checked', false);
-      $(selection_id).prop('indeterminate', false);
+      $(master_toggle_id).prop('checked', false);
+      $(master_toggle_id).prop('indeterminate', false);
     } else {
-      $(selection_id).prop('checked', true);
-      $(selection_id).prop('indeterminate', true);
+      $(master_toggle_id).prop('checked', true);
+      $(master_toggle_id).prop('indeterminate', true);
     }
     return true;
   }
 
-  function divisional_specialization_checked(checkbox) {
-    var division_id = "division_" + $(checkbox).prop('id').split('_')[0];
-    return update_selection(division_id)
-  }
-  $('.division_specialization').click(function() {
-    divisional_specialization_checked(this);
+  $('.city_specialization').click(function() {
+    var city = "city_" + $(this).prop('id').split('_')[0];
+    var master_toggle_id = "#" + city;
+    var member_by_class = "." + city;
+    return update_selection(master_toggle_id, member_by_class);
   });
 
-  function city_specialization_checked(checkbox) {
-    var city_id = "city_" + $(checkbox).prop('id').split('_')[0];
-    return update_selection(city_id)
-  }
-  $('.city_specialization').click(function() {
-    city_specialization_checked(this);
+  $('.division_specialization').click(function() {
+    var master_toggle_id = "#division_specialization";
+    var member_by_class = ".division_specialization";
+    return update_selection(master_toggle_id, member_by_class);
   });
 
   var all_city_ids = #{City.all.map(&:id)};

@@ -68,7 +68,7 @@ class ScItem < ActiveRecord::Base
   after_commit :flush_cached_find
 
   after_commit do
-    UpdateScItemSharing.update_divisional_resource_subscriptions(self)
+    UpdateScItemSharing.new.fulfill_divisional_resource_subscriptions(self)
   end
 
   def self.demoable

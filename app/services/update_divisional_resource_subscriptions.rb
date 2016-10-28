@@ -20,7 +20,8 @@ class UpdateDivisionalResourceSubscriptions
       params[:divisional_resource_subscription][:specialization_ids].
         reject(&:blank?)
     subscription.update_attributes(
-      nonspecialized: params[:divisional_resource_subscription][:nonspecialized],
+      nonspecialized:
+        params[:divisional_resource_subscription][:nonspecialized],
       specialization_ids: specialization_ids
     )
     subscription.save

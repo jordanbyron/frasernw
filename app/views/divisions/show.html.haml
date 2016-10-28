@@ -40,8 +40,10 @@
     %ul
       - if subscription.nonspecialized?
         %li Content with no specialty
+        %br
       - subscription.specialization_ids.each do |specialization|
         %li= Specialization.find(specialization).name
+  %br
 
   %p.no_indent.space
     %strong Local Referral Area
