@@ -1,0 +1,11 @@
+- _target_type = f.object.class.to_s.tableize.singularize
+- Specialization.all.each do |specialization|
+  %label
+    = check_box_tag "#{_target_type}[specialization_ids][]",
+      specialization.id,
+      f.object.specializations.include?(specialization),
+      id: "#{_target_type}_specialization_ids_#{specialization.id}"
+    = specialization.name
+
+  .procedures_list
+    = nested_procedure_checkboxes(specialization.arranged_procedure_specializations(:non_assumed), _target_type)

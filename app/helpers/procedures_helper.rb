@@ -15,6 +15,20 @@ module ProceduresHelper
     result
   end
 
+  def nested_procedure_checkboxes(target_type, nested_procedure_specializations, level = 0)
+    nested_procedure_specializations.each do |procedure_specialization, children|
+      content_tag :label do
+        check_box_tag(
+          "#{target_type}[procedure_ids][]",
+          procedure_specialization.procedure.id,
+          f.object.procedures.include?(procedure_specialization.procedure),
+          id: "#{target_type}[procedure_ids][]"
+          class: "offset#{level + 1}"
+        ) + content_tag(:span, procedure_specialization.procedure.name)
+      end + nested_procedure_checkboxes(target_type, children, (level + 1))
+    end
+  end
+
 
   def procedure_classification_options(procedure_specialization)
     [

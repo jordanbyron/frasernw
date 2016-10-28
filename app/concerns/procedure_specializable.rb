@@ -1,29 +1,15 @@
 module ProcedureSpecializable
   extend ActiveSupport::Concern
 
-  def has_ps_with_ancestry?(ancestry)
-    procedure_specialization_from_ancestry(ancestry).present?
-  end
-
-  def has_ps_ancestry?(ancestry)
-    matching_ps =
-      procedure_specialization_from_ancestry(ancestry)
-
-    matching_ps.present? &&
-      procedure_specializations.includes_array?(matching_ps.ancestors)
-  end
-
-  def procedure_specialization_from_ancestry(ancestry)
-    procedure_specializations.find do |procedure_specialization|
-      procedure_specialization.matches_ancestry?(ancestry)
+  module ClassMethods
+    def procedure_join_table_name
+      "#{class.tableize.singularize}_procedures".to_sym
     end
   end
 
-  # We assume that they also do parent procedures
-  def procedure_ids_with_parents
-    procedure_specializations.includes(:procedure).map do |ps|
-      [ ps.procedure_id, ps.ancestor_procedure_ids ]
-    end.flatten
+  included do
+    has_many procedure_join_table_name
+    has_many :procedures, through: procedure_join_table_name
   end
 
   def primary_specialization_shown_in?(divisions)
@@ -33,20 +19,6 @@ module ProcedureSpecializable
   end
 
   def primary_specialization
-    specializations.sort_by{ |specialization| specialization.name }.first
-  end
-
-  module ClassMethods
-    def with_ps_with_ancestry(ancestry)
-      all.select do |procedure_specializable|
-        procedure_specializable.has_ps_with_ancestry?(ancestry)
-      end
-    end
-
-    def with_ps_ancestry(ancestry)
-      all.select do |procedure_specializable|
-        procedure_specializable.has_ps_ancestry?(ancestry)
-      end
-    end
+    specializations.sort_by(&:name).first
   end
 end
