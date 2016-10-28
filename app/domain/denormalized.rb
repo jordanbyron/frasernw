@@ -119,7 +119,8 @@ module Denormalized
               sanitize(specialist.not_performed).
               try(:convert_newlines_to_br),
             isPracticing: specialist.practicing?,
-            hidden: specialist.hidden?
+            hidden: specialist.hidden?,
+            completedSurvey: specialist.completed_survey?
           })
         end
       end
