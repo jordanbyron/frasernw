@@ -99,40 +99,6 @@ class ScItem < ActiveRecord::Base
     (owned + shared).uniq
   end
 
-  def self.for_procedure_in_divisions(procedure, divisions)
-    division_ids = divisions.map{ |d| d.id }
-    owned = joins( [
-      :sc_item_specializations,
-      :sc_item_specialization_procedures,
-      :procedures
-    ] ).where(
-      'sc_item_specializations.id = sc_item_specialization_procedures.'\
-        'sc_item_specialization_id '\
-        'AND sc_item_specialization_procedures.procedure_id = procedures.id '\
-        'AND procedures.id = (?) '\
-        'AND "sc_items"."division_id" IN (?)',
-      procedure.id,
-      division_ids
-    )
-    shared = joins( [
-      :sc_item_specializations,
-      :sc_item_specialization_procedures,
-      :procedures,
-      :division_display_sc_items
-    ] ).where(
-      'sc_item_specializations.id = sc_item_specialization_procedures.'\
-        'sc_item_specialization_id '\
-        'AND sc_item_specialization_procedures.procedure_id = procedures.id '\
-        'AND procedures.id = (?) '\
-        'AND "division_display_sc_items"."division_id" in (?) '\
-        'AND "sc_items"."shareable" = (?)',
-      procedure.id,
-      division_ids,
-      true
-    )
-    (owned + shared).uniq
-  end
-
   def self.shareable_by_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
     where(
