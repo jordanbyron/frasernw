@@ -62,13 +62,13 @@
     $(document).ready(function() {
       $('.tt').tooltip({trigger: 'manual'});
       $('[data-toggle="tooltip"]').tooltip();
-      $('#user_favorite_content_items_#{@sc_item.id}').addClass('#{favorite_class}');
+      $('#user_favorite_content_items_#{@sc_item.id}').
+        addClass('#{favorite_class}');
     });
 
-  - if (current_user.as_admin_or_super? || current_user.as_super_admin?) && @sc_item.shareable?
+  - if current_user.as_admin_or_super? && @sc_item.shareable?
     - if @sc_item.divisions.any?
-      %h6
-        = "Currently Displayed In: "
+      %h6 Currently Displayed In:
 
       %ul
         %li= "#{@sc_item.division.name} (owner)"
@@ -84,7 +84,7 @@
                   method: :patch
 
     - if (current_user.as_divisions & @sc_item.borrowable_by_divisions).any?
-      %h6= "Display This Item In:"
+      %h6 Display This Item In:
       %ul
         - (current_user.as_divisions & @sc_item.borrowable_by_divisions).each do |division|
           %li
@@ -95,7 +95,7 @@
               method: :patch
 
   %p.admin.btn-group
-    %a.btn{href: "javascript:void(0)", onclick: open_feedback_modal(@sc_item)}
+    %a.btn{ href: "javascript:void(0)", onclick: open_feedback_modal(@sc_item) }
       %i.icon-bullhorn.icon-text
       Incorrect Information? Let us know
 
@@ -106,11 +106,11 @@
       = link_to edit_sc_item_path(@sc_item),
         class: "btn" do
         %i.icon-pencil
-        %span= " Edit"
+        Edit
     - if can? :destroy, @sc_item
       = link_to @sc_item,
         data: { confirm: "Delete #{@sc_item.title}?" },
         method: :delete,
         class: "btn" do
         %i.icon-trash
-        %span= " Delete"
+        Delete
