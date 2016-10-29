@@ -4,8 +4,7 @@
   %h2= @issue.code_with_label
   %p.space
     %strong Description:
-  %div
-    = BlueCloth.new(@issue.description).to_html.html_safe
+  %div= BlueCloth.new(@issue.description).to_html.html_safe
   %p.space
     %strong Completion Estimate:
     = @issue.completion_estimate
@@ -35,17 +34,14 @@
     %h6 Notes
 
     - if @issue.notes.any?
-
       - @issue.notes.reject(&:new_record?).sort_by(&:created_at).each do |note|
-        .well{style: "width: 400px"}
-          %div{style: "display: inline-block"}
-            %b
-              = note.author_name
+        .well{ style: "width: 400px" }
+          %div{ style: "display: inline-block" }
+            %b= note.author_name
           .pull-right
             %i
               = note.created_at.to_s(:datetime_military)
-
-          %div{style: "clear: both; margin-top: 10px;"}
+          %div{ style: "clear: both; margin-top: 10px;" }
             = BlueCloth.new(note.content).to_html.html_safe
 
     = render "notes/form",
@@ -54,13 +50,12 @@
 
     %h6 Subscribed Users
     - if @issue.subscribers.none?
-      %p= "(None)"
+      %p (None)
     %ul
       - @issue.subscribers.each do |subscriber|
         %li
           - if subscriber == current_user
-            %i
-              = subscriber.name
+            %i= subscriber.name
           - else
             = subscriber.name
 
@@ -71,13 +66,14 @@
         = link_to edit_issue_path(@issue),
           class: "btn" do
           %i.icon-pencil
-          %span= " Edit"
+          Edit
       - if can? :destroy, @issue
         = link_to issue_path(@issue),
+          data: { confirm: "Delete #{@issue.code_with_label}?" },
           method: :delete,
           class: "btn" do
           %i.icon-trash
-          %span= " Delete"
+          Delete
       - if can? :view_history, @issue
         = large_history_button(@issue)
       - if can? :toggle_subscription, @issue
@@ -86,31 +82,28 @@
           %i.icon-rss
           %span
             - if @issue.subscribers.include?(current_user)
-              = "Unsubscribe"
+              Unsubscribe
             - else
-              = "Subscribe"
-  - else
+              Subscribe
 
+  - else
     %p.space
-      %b= "Subscription:"
+      %b Subscription:
 
     - if @issue.subscribers.include?(current_user)
       %p.space
-        %i
-          = "You are subscribed to email updates about this issue"
+        %i You are subscribed to email updates about this issue.
 
-    %p{style: "margin-top: 10px"}
+    %p{ style: "margin-top: 10px" }
       = link_to toggle_subscription_issue_path(@issue),
         class: "btn" do
         %i.icon-rss
         %span
           - if @issue.subscribers.include?(current_user)
-            = "Unsubscribe"
+            Unsubscribe
           - else
-            = "Subscribe"
-
+            Subscribe
 
   %hr
-
   = link_to "< All Issues",
     issues_path
