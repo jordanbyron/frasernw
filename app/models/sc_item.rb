@@ -19,7 +19,7 @@ class ScItem < ActiveRecord::Base
     :markdown_content,
     :document,
     :can_email,
-    :shareable,
+    :borrowable,
     :division_id,
     :evidence_id,
     :demoable
@@ -37,7 +37,7 @@ class ScItem < ActiveRecord::Base
   belongs_to :division
 
   has_many :division_display_sc_items, dependent: :destroy
-  has_many :divisions_sharing,
+  has_many :divisions_borrowing,
     through: :division_display_sc_items,
     class_name: "Division",
     source: :division
@@ -68,7 +68,7 @@ class ScItem < ActiveRecord::Base
   after_commit :flush_cached_find
 
   after_commit do
-    UpdateScItemSharing.new.fulfill_divisional_resource_subscriptions(self)
+    UpdateScItemBorrowing.new.fulfill_divisional_resource_subscriptions(self)
   end
 
   def self.demoable
@@ -95,15 +95,15 @@ class ScItem < ActiveRecord::Base
       specialization.id,
       division_ids
     )
-    shared = joins(:sc_item_specializations, :division_display_sc_items).where(
+    borrowed = joins(:sc_item_specializations, :division_display_sc_items).where(
       '"sc_item_specializations"."specialization_id" = (?) '\
         'AND "division_display_sc_items"."division_id" in (?) '\
-        'AND "sc_items"."shareable" = (?)',
+        'AND "sc_items"."borrowable" = (?)',
       specialization.id,
       division_ids,
       true
     )
-    (owned + shared).uniq
+    (owned + borrowed).uniq
   end
 
   def self.for_procedure_in_divisions(procedure, divisions)
@@ -123,7 +123,7 @@ class ScItem < ActiveRecord::Base
       procedure.id,
       division_ids
     )
-    shared = joins( [
+    borrowed = joins( [
       :sc_item_specializations,
       :sc_item_specialization_procedure_specializations,
       :procedure_specializations,
@@ -137,46 +137,46 @@ class ScItem < ActiveRecord::Base
         ' = procedure_specializations.id '\
         'AND procedure_specializations.procedure_id = (?) '\
         'AND "division_display_sc_items"."division_id" in (?) '\
-        'AND "sc_items"."shareable" = (?)',
+        'AND "sc_items"."borrowable" = (?)',
       procedure.id,
       division_ids,
       true
     )
-    (owned + shared).uniq
+    (owned + borrowed).uniq
   end
 
-  def self.shareable_by_divisions(divisions)
+  def self.borrowable_by_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
     where(
-      '"sc_items"."division_id" in (?) AND "sc_items"."shareable" = (?)',
+      '"sc_items"."division_id" in (?) AND "sc_items"."borrowable" = (?)',
       division_ids, true
     )
   end
 
-  def self.shareable
-    where('"sc_items"."shareable" = (?)', true)
+  def self.borrowable
+    where('"sc_items"."borrowable" = (?)', true)
   end
 
-  def self.owned_in_divisions(divisions)
+  def self.owned_by_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
     where('"sc_items"."division_id" IN (?)', division_ids)
   end
 
-  def self.shared_in_divisions(divisions)
+  def self.borrowed_by_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
     joins(
       'INNER JOIN "division_display_sc_items" '\
         'ON "division_display_sc_items"."sc_item_id" = "sc_items"."id"'
     ).where(
       '"division_display_sc_items"."division_id" in (?) '\
-        'AND "sc_items"."shareable" = (?)',
+        'AND "sc_items"."borrowable" = (?)',
       division_ids,
       true
     )
   end
 
   def self.all_in_divisions(divisions)
-    (owned_in_divisions(divisions) + shared_in_divisions(divisions)).uniq
+    (owned_by_divisions(divisions) + borrowed_by_divisions(divisions)).uniq
   end
 
   def self.searchable
@@ -203,8 +203,8 @@ class ScItem < ActiveRecord::Base
   end
 
   def available_to_divisions
-    if shareable
-      [ division ] | divisions_sharing
+    if borrowable
+      [ division ] | divisions_borrowing
     else
       [ division ]
     end
@@ -213,14 +213,14 @@ class ScItem < ActiveRecord::Base
   def available_to_divisions?(divisions)
     (
       (divisions.include? division) || (
-        shareable? && (divisions & divisions_sharing).present?
+        borrowable? && (divisions & divisions_borrowing).present?
       )
     )
   end
 
   def borrowable_by_divisions
     @borrowable_by_divisions ||= begin
-      if !shareable
+      if !borrowable
         []
       else
         Division.all - available_to_divisions

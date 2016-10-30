@@ -66,21 +66,21 @@
         addClass('#{favorite_class}');
     });
 
-  - if current_user.as_admin_or_super? && @sc_item.shareable?
+  - if current_user.as_admin_or_super? && @sc_item.borrowable?
     - if @sc_item.divisions.any?
       %h6 Currently Displayed In:
 
       %ul
         %li= "#{@sc_item.division.name} (owner)"
-        - @sc_item.divisions_sharing.each do |division|
+        - @sc_item.divisions_borrowing.each do |division|
           %li
             %span= division.name
             - if current_user.as_divisions.include?(division)
               %span
                 = link_to "(Stop displaying)",
-                  share_sc_item_path(@sc_item,
+                  borrow_sc_item_path(@sc_item,
                   division_id: division.id,
-                  is_shared: false),
+                  is_borrowed: false),
                   method: :patch
 
     - if (current_user.as_divisions & @sc_item.borrowable_by_divisions).any?
@@ -89,9 +89,9 @@
         - (current_user.as_divisions & @sc_item.borrowable_by_divisions).each do |division|
           %li
             = link_to division.name,
-              share_sc_item_path(@sc_item,
+              borrow_sc_item_path(@sc_item,
               division_id: division.id,
-              is_shared: true),
+              is_borrowed: true),
               method: :patch
 
   %p.admin.btn-group

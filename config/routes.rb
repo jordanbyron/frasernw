@@ -112,18 +112,18 @@ Frasernw::Application.routes.draw do
 
   resources :sc_items, path: 'content_items' do
     collection do
-      get :bulk_share
+      get :bulk_borrow
     end
     member do
-      patch :share, to: 'sc_items#share'
-      get :share
+      patch :borrow, to: 'sc_items#borrow'
+      get :borrow
     end
   end
 
-  get '/divisions/:id/shared_content_items' => 'divisions#shared_sc_items',
-    as: 'shared_content_items'
-  patch '/divisions/:id/update_shared' => 'divisions#update_shared',
-    as: 'update_shared'
+  get '/divisions/:id/borrowed_content_items' => 'divisions#borrowed_sc_items',
+    as: 'borrowed_content_items'
+  patch '/divisions/:id/update_borrowed' => 'divisions#update_borrowed',
+    as: 'update_borrowed'
 
   resources :subscriptions
   resources :news_items do

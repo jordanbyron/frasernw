@@ -1,0 +1,95 @@
+- set_page_specific_title "Content Items"
+
+.content-wrapper
+
+  %h2
+    Content Items Created by Other Divisions that can be Borrowed by
+    = @division.name
+
+  = simple_nested_form_for @division,
+    url: { action: 'update_borrowed' },
+    html: { class: "form-horizontal" } do |f|
+    - if not f.error_messages.blank?
+      .alert.alert-error= f.error_messages
+
+    .tabbable
+      %ul.nav.nav-tabs
+        - @categories.each do |category|
+          %li
+            %a{ href: "##{category.name.remove_whitespace}_tab",
+              data: { toggle: "tab" } }= category.name
+
+      .tab-content
+        - @categories.each do |category|
+          .tab-pane{ id: "#{category.name.remove_whitespace}_tab" }
+            %table.table.table-condensed.table-striped.tablesorter
+              %thead
+                %tr.tableheader
+                  %th{ class: "{sorter: 'text'}", style: "width:10%" }
+                    = "Borrow for #{@division.name}?"
+                  %th{ class: "{sorter: 'text'}", style: "width:25%" } Title
+                  %th{ class: "{sorter: 'text'}", style: "width:10%" }
+                    Created By
+                  %th{ class: "{sorter: 'text'}", style: "width:10%" }
+                    Subcategory
+                  %th{ class: "{sorter: 'text'}", style: "width:10%" }
+                    Specialties
+                  %th{ class: "{sorter: 'text'}", style: "width:10.5%" } Type
+                  %th{ class: "{sorter: 'text'}", style: "width:6%" }
+                    %span{ show_tooltip(title: "Level of Evidence") } LOE
+                  %th{ class: "{sorter: 'text'}", style: "width:5%" }
+                    %i.icon-search{ show_tooltip(title: "Searchable") }
+                  %th{ class: "{sorter: 'text'}", style: "width:6.66%" }
+                    %i.icon-star{ show_tooltip(title: "Shared Care") }
+              %tbody
+                - category.items_borrowable_by_division(@division).sort_by do |sc_item|
+                  - [ sc_item.division.name, sc_item.title ]
+                  - end.each do |sc_item|
+                  %tr
+                    %td
+                      = check_box_tag "division_borrowed_sc_item_ids_#{sc_item.id}",
+                        sc_item.id,
+                        (@division.borrowed_sc_items.include? sc_item),
+                        name: "division[borrowed_sc_item_ids][]",
+                        class: "check_boxes optional"
+                    %td{ width: "30%"}= link_to sc_item.title, sc_item
+                    %td= sc_item.division.name
+                    %td= sc_item.sc_category != category ? (link_to sc_item.sc_category.name,
+                      sc_item.sc_category) : ""
+                    %td
+                      %ul
+                        - sc_item.sc_item_specializations.each do |is|
+                          %li
+                            = link_to is.specialization.name, is.specialization
+                            - if is.procedure_specializations.present?
+                              = "- #{is.procedure_specializations.map{ |ps| link_to ps.procedure.name, ps.procedure }.to_sentence}".html_safe
+                    %td= sc_item.type
+                    / tablesorter can't sort icons so we use hidden text
+                    / ('a', 'z') to sort missing entries correctly:
+                    %td= sc_item.evidence.present? ? link_to(sc_item.evidence.level,
+                      sc_item.evidence) : content_tag(:span,
+                      'z',
+                      class: 'opacity-0')
+                    %td= sc_item.searchable? ? icon('icon-search') + content_tag(:span,
+                      'a',
+                      class: 'opacity-0') : content_tag(:span,
+                      'z',
+                      class: 'opacity-0')
+                    %td= sc_item.shared_care? ? icon('icon-star') + content_tag(:span,
+                      'a',
+                      class: 'opacity-0') : content_tag(:span,
+                      'z',
+                      class: 'opacity-0')
+
+    .form-actions
+      = f.button :submit,
+        "Update borrowed content items",
+        class: "btn btn-primary"
+      %a.btn.btn-danger{ href: divisions_path } Cancel
+
+:javascript
+  $(document).ready(function() {
+    $('.tablesorter').tablesorter({sortList: [[2,0]]});
+    $('[data-toggle="tooltip"]').tooltip();
+  });
+  window.pathways.setupTabHistory();

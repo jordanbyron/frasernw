@@ -2,7 +2,7 @@ class Division < ActiveRecord::Base
 
   attr_accessible :name,
     :city_ids,
-    :shared_sc_item_ids,
+    :borrowed_sc_item_ids,
     :division_primary_contacts_attributes,
     :use_customized_city_priorities,
     :featured_contents_attributes
@@ -23,7 +23,7 @@ class Division < ActiveRecord::Base
   has_many :users, through: :division_users
 
   has_many :division_display_sc_items, dependent: :destroy
-  has_many :shared_sc_items,
+  has_many :borrowed_sc_items,
     through: :division_display_sc_items,
     source: "sc_item",
     class_name: "ScItem"
@@ -132,12 +132,12 @@ class Division < ActiveRecord::Base
     WaitTimeReporter.new(klass, division: self).median
   end
 
-  def shareable_sc_items
-    @shareable_sc_items ||= ScItem.shareable_by_divisions([ self ])
+  def borrowable_sc_items
+    @borrowable_sc_items ||= ScItem.borrowable_by_divisions([ self ])
   end
 
   def borrowed_sc_items
-    @borrowed_sc_items ||= ScItem.shared_in_divisions([ self ])
+    @borrowed_sc_items ||= ScItem.borrowed_by_divisions([ self ])
   end
 
   def refer_to_encompassed_cities!(specialization)

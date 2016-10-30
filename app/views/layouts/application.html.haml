@@ -33,15 +33,12 @@
 
     :javascript
       $(document).ready(function() {
-        if ($(window).width() <= 480)
-        {
+        if ($(window).width() <= 480) {
           $('meta[name=viewport]').attr(
             'content','initial-scale=1.0, user-scalable=no'
           );
         }
-        $('body').data('GLOBAL_USER_TYPE',
-          #{current_user.adjusted_type_mask}
-        );
+        $('body').data('GLOBAL_USER_TYPE', #{current_user.adjusted_type_mask});
       });
 
     :javascript
@@ -310,7 +307,7 @@
                       - if can? :read, ScItem
                         - if current_user.as_super_admin? && Division.all.length > 1
                           %li
-                            = link_to "Owned Content Items For...",
+                            = link_to "Content Items Owned By...",
                               "#",
                               class: "create arrow-right-after"
                             %ul.dropdown-menu
@@ -319,17 +316,17 @@
                                   division_content_items_path(division),
                                   class: "sc_item"
                           %li
-                            = link_to "Shared Content Items For...",
+                            = link_to "Content Items Borrowed By...",
                               "#",
                               class: "create arrow-right-after"
                             %ul.dropdown-menu
                               - Division.all.each do |division|
                                 %li= link_to "#{division.name}",
-                                  shared_content_items_path(division),
+                                  borrowed_content_items_path(division),
                                   class: "sc_item"
                         - elsif as_administering.length > 1
                           %li
-                            = link_to "Owned Content Items For...",
+                            = link_to "Content Items Owned By...",
                               "#",
                               class: "create arrow-right-after"
                             %ul.dropdown-menu
@@ -338,21 +335,21 @@
                                   division_content_items_path(division),
                                   class: "sc_item"
                           %li
-                            = link_to "Shared Content Items For...",
+                            = link_to "Content Items Borrowed By...",
                               "#",
                               class: "create arrow-right-after"
                             %ul.dropdown-menu
                               - as_administering.each do |division|
                                 %li= link_to "#{division.name}",
-                                  shared_content_items_path(division),
+                                  borrowed_content_items_path(division),
                                   class: "sc_item"
                         - else
                           %li= link_to "Content Items",
                             division_content_items_path(as_administering.first),
                             class: "sc_item"
                           - if Division.all.length > 1
-                            %li= link_to "Manage Shared Content Items",
-                              shared_content_items_path(as_administering.first),
+                            %li= link_to "Manage Borrowed Content Items",
+                              borrowed_content_items_path(as_administering.first),
                               class: "sc_item"
                       - if can? :update_demoable, ScItem
                         %li= link_to "Edit Demoable Content Items",

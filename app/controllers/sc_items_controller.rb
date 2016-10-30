@@ -10,7 +10,7 @@ class ScItemsController < ApplicationController
   def show
     @sc_item = ScItem.find(params[:id])
     @division = current_user.as_divisions.first
-    @share_url = share_sc_item_path(@sc_item)
+    @borrow_url = borrow_sc_item_path(@sc_item)
   end
 
   def new
@@ -118,24 +118,24 @@ class ScItemsController < ApplicationController
     redirect_to sc_items_url, notice: "Successfully deleted content item."
   end
 
-  def share
+  def borrow
     @sc_item = ScItem.find(params[:id])
-    authorize! :share, @sc_item
+    authorize! :borrow, @sc_item
     @division = Division.find(params[:division_id])
 
-    success = params[:is_shared].present? &&
+    success = params[:is_borrowed].present? &&
       @sc_item.present? &&
       @division.present? &&
-      UpdateScItemSharing.call(
+      UpdateScItemBorrowing.call(
         division: @division,
         sc_item: @sc_item,
-        is_shared: params[:is_shared].to_b,
+        is_borrowed: params[:is_borrowed].to_b,
         current_user: current_user
       )
 
     notice = begin
       if success
-        if params[:is_shared].to_b
+        if params[:is_borrowed].to_b
           "Now displaying this item in #{@division.name}"
         else
           "No longer displaying this item in #{@division.name}"
@@ -148,25 +148,23 @@ class ScItemsController < ApplicationController
     redirect_to sc_item_path(@sc_item), notice: notice
   end
 
-  def bulk_share
+  def bulk_borrow
     @sc_items = ScItem.find(params[:item_ids])
-    authorize! :bulk_share, ScItem
+    authorize! :bulk_borrow, ScItem
     @division = Division.find(params[:division_id])
 
     successful_items = @sc_items.select do |sc_item|
-      UpdateScItemSharing.call(
+      UpdateScItemBorrowing.call(
         division: @division,
         current_user: current_user,
         sc_item: sc_item,
-        is_shared: true
+        is_borrowed: true
       )
     end
 
     notice = "Now displaying #{successful_items.map(&:title).to_sentence} " +
       "in #{@division.name}."
-
-    redirect_to shared_content_items_path(@division),
-      notice: notice
+    redirect_to borrowed_content_items_path(@division), notice: notice
   end
 
   private

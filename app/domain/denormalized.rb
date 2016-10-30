@@ -38,7 +38,7 @@ module Denormalized
     content_items: Module.new do
       def self.call
         ScItem.
-          includes(:sc_category, :division, :divisions_sharing, :specializations).
+          includes(:sc_category, :division, :divisions_borrowing, :specializations).
           inject({}) do |memo, item|
             memo.merge(item.id => {
               availableToDivisionIds: item.available_to_divisions.map(&:id),

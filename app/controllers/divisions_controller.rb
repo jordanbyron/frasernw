@@ -1,9 +1,9 @@
 class DivisionsController < ApplicationController
   load_and_authorize_resource
-  skip_authorize_resource only: [:shared_sc_items, :update_shared]
-  skip_authorization_check only: [:shared_sc_items, :update_shared]
+  skip_authorize_resource only: [:borrowed_sc_items, :update_borrowed]
+  skip_authorization_check only: [:borrowed_sc_items, :update_borrowed]
   before_filter :authorize_division_for_user,
-    only: [:shared_sc_items, :update_shared]
+    only: [:borrowed_sc_items, :update_borrowed]
 
   def index
     @divisions = Division.all
@@ -119,18 +119,18 @@ class DivisionsController < ApplicationController
     end
   end
 
-  def shared_sc_items
+  def borrowed_sc_items
     @division = Division.find(params[:id])
     @categories = ScCategory.with_items_borrowable_by_division(@division)
   end
 
-  def update_shared
+  def update_borrowed
     @division = Division.find(params[:id])
     if @division.update_attributes(params[:division])
-      redirect_to shared_content_items_path(@division),
-        notice: "Successfully updated shared content items."
+      redirect_to borrowed_content_items_path(@division),
+        notice: "Successfully updated borrowed content items."
     else
-      render action: 'shared_sc_items'
+      render action: 'borrowed_sc_items'
     end
   end
 
