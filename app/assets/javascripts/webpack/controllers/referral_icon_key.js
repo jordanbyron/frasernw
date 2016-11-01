@@ -2,28 +2,22 @@ import React from "react";
 import { collectionShownName } from "controller_helpers/collection_shown";
 import { route } from "controller_helpers/routing";
 
-const ClinicIconKey = ({model}) => {
+const ReferralIconKey = ({model}) => {
   if(shouldDisplay(model)){
     return(
       <div id="icon_key">
         <div className="title">Icon Key</div>
         <ul className="no-marker">
-          <li>
-            <i className="icon-ok icon-green"/>
-            <span>Accepting New referrals</span>
-          </li>
-          <li>
-            <i className="icon-ok icon-orange"/>
-            <span>Accepting limited new referrals by geography or # of patients</span>
-          </li>
-          <li>
-            <i className="icon-remove icon-red"/>
-            <span>Not accepting new referrals</span>
-          </li>
-          <li>
-            <i className="icon-question-sign icon-text"/>
-            <span>Referral status is unknown</span>
-          </li>
+          {
+            _.keys(model.app.referralIcons).map((key) => {
+              return(
+                <li>
+                  <i className={model.app.referralIcons[key]}/>
+                  <span>{model.app.referralTooltips[key]}</span>
+                </li>
+              )
+            })
+          }
           <li>
             <i className="icon-link"/>
             <span>Wait times provided are specific to this area of practice</span>
@@ -46,7 +40,7 @@ const ROUTES = [
 
 const shouldDisplay = (model) => {
   return _.includes(ROUTES, route) &&
-    collectionShownName(model) === "clinics"
+    _.includes(["specialists", "clincis"], collectionShownName(model))
 }
 
-export default ClinicIconKey;
+export default ReferralIconKey;
