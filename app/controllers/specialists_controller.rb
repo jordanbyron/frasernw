@@ -33,7 +33,7 @@ class SpecialistsController < ApplicationController
     load_form_variables
     @form_modifier = SpecialistFormModifier.new(:new, current_user)
     # specialization passed in to facilitate javascript "checking off" of
-    # startingspeciality, since build below doesn't seem to work
+    # starting speciality, since build below doesn't seem to work
     @specialization = Specialization.find(params[:specialization_id])
     @specialist = Specialist.new
     @specialist.
