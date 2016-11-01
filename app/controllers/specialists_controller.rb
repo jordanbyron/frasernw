@@ -1,7 +1,11 @@
 class SpecialistsController < ApplicationController
   skip_before_filter :require_authentication,
     only: [:refresh_cache, :refresh_index_cache]
-  load_and_authorize_resource except: [:refresh_cache, :refresh_index_cache, :create]
+  load_and_authorize_resource except: [
+    :refresh_cache,
+    :refresh_index_cache,
+    :create
+  ]
   before_filter :check_token, only: :refresh_cache
   before_filter :check_specialization_token, only: :refresh_index_cache
   skip_authorization_check only: [:refresh_cache, :refresh_index_cache]
@@ -28,11 +32,13 @@ class SpecialistsController < ApplicationController
   def new
     load_form_variables
     @form_modifier = SpecialistFormModifier.new(:new, current_user)
-    # specialization passed in to facilitate javascript "checking off" of starting
-    # speciality, since build below doesn't seem to work
+    # specialization passed in to facilitate javascript "checking off" of
+    # startingspeciality, since build below doesn't seem to work
     @specialization = Specialization.find(params[:specialization_id])
     @specialist = Specialist.new
-    @specialist.specialist_specializations.build(specialization_id: @specialization.id)
+    @specialist.
+      specialist_specializations.
+      build(specialization_id: @specialization.id)
 
     BuildTeleservices.call(provider: @specialist)
     build_specialist_offices
@@ -59,7 +65,8 @@ class SpecialistsController < ApplicationController
             specialist_id: @specialist.id,
             procedure_specialization_id: checkbox_key
           )
-          capacity.investigation = params[:capacities_investigations][checkbox_key]
+          capacity.investigation =
+            params[:capacities_investigations][checkbox_key]
           if params[:capacities_waittime].present?
             capacity.waittime_mask = params[:capacities_waittime][checkbox_key]
           end
@@ -73,17 +80,20 @@ class SpecialistsController < ApplicationController
           capacity.
             procedure_specialization.
             procedure.procedure_specializations.
-            reject{ |ps2| !specialist_specializations.include?(ps2.specialization) }.
-            map{ |ps2| Capacity.find_or_create_by(
-              specialist_id: @specialist.id,
-              procedure_specialization_id: ps2.id
-            ) }.
-            map{ |c| c.save }
+            select do |ps2|
+              specialist_specializations.include?(ps2.specialization)
+            end.map do |ps2|
+              Capacity.find_or_create_by(
+                specialist_id: @specialist.id,
+                procedure_specialization_id: ps2.id
+              )
+            end.map{ |c| c.save }
         end
       end
 
       @specialist.save
-      redirect_to @specialist, notice: "Successfully created #{@specialist.name}."
+      redirect_to @specialist,
+        notice: "Successfully created #{@specialist.name}."
     else
       render action: 'new'
     end
@@ -93,6 +103,10 @@ class SpecialistsController < ApplicationController
     load_form_variables
     @form_modifier = SpecialistFormModifier.new(:edit, current_user)
     @specialist = Specialist.find(params[:id])
+    if @specialist.review_item.present?
+      redirect_to @specialist,
+        notice: "There are already changes awaiting review for this specialist."
+    end
     BuildTeleservices.call(provider: @specialist)
     if @specialist.capacities.count == 0
       @specialist.capacities.build
@@ -111,6 +125,10 @@ class SpecialistsController < ApplicationController
 
   def update
     @specialist = Specialist.find(params[:id])
+    if @specialist.review_item.present?
+      redirect_to @specialist,
+        notice: "There are already changes awaiting review for this specialist."
+    end
     ExpireFragment.call specialist_path(@specialist)
 
     parsed_params = ParamParser::Specialist.new(params).exec
@@ -118,7 +136,8 @@ class SpecialistsController < ApplicationController
       UpdateSpecialistCapacities.exec(@specialist, parsed_params)
 
       @specialist.save
-      redirect_to @specialist, notice: "Successfully updated #{@specialist.name}."
+      redirect_to @specialist,
+        notice: "Successfully updated #{@specialist.name}."
     else
       load_form_variables
       render :edit
@@ -133,7 +152,7 @@ class SpecialistsController < ApplicationController
 
     if review_item.blank?
       redirect_to specialist_path(@specialist),
-        notice: "There are no review items for this specialist"
+        notice: "There is no current review item for this specialist."
     else
       review_item.archived = true;
       review_item.save
@@ -155,7 +174,8 @@ class SpecialistsController < ApplicationController
       if @specialist.update_attributes(parsed_params[:specialist])
         UpdateSpecialistCapacities.exec(@specialist, parsed_params)
         @specialist.save
-        redirect_to @specialist, notice: "Successfully updated #{@specialist.name}."
+        redirect_to @specialist,
+          notice: "Successfully updated #{@specialist.name}."
       else
         BuildTeleservices.call(provider: @specialist)
         load_form_variables
@@ -172,7 +192,7 @@ class SpecialistsController < ApplicationController
 
     if review_item.blank?
       redirect_to specialist_path(@specialist),
-        notice: "There are no review items for this specialist"
+        notice: "There is no current review item for this specialist."
     else
       review_item.archived = true;
       review_item.save
@@ -197,7 +217,7 @@ class SpecialistsController < ApplicationController
 
     if @review_item.blank?
       redirect_to specialists_path,
-        notice: "There are no review items for this specialist"
+        notice: "There is no current review item for this specialist."
     else
       build_specialist_offices
 
@@ -205,7 +225,9 @@ class SpecialistsController < ApplicationController
         GenerateClinicLocationInputs.exec(@specialist.specializations)
 
       @secret_token_id =
-        @specialist.review_item.decoded_review_object["specialist"]["secret_token_id"]
+        @specialist.
+          review_item.
+          decoded_review_object["specialist"]["secret_token_id"]
       @specializations_capacities = GenerateSpecialistCapacityInputs.exec(
         @specialist,
         @specialist.specializations
@@ -223,10 +245,10 @@ class SpecialistsController < ApplicationController
 
     if @review_item.blank?
       redirect_to specialists_path,
-        notice: "There are no review items for this specialist"
+        notice: "There is no current review item for this specialist."
     elsif @review_item.base_object.blank?
       redirect_to specialists_path,
-        notice: "There is no base review item for this specialist to re-review from"
+        notice: "There is no profile for this specialist to re-review."
     else
 
       build_specialist_offices
