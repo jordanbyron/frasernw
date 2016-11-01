@@ -19,8 +19,8 @@ module Referrable
   REFERRAL_TOOLTIPS = {
     none: "",
     question_mark: ("Unknown if accepting new patients (didn't respond)."),
-    blue_arrow: "Only accepts referrals through hospitals or clinics.",
-    orange_check: "Accepting limited new referrals by geography or number of patients",
+    blue_arrow: "Only accepts referrals through hospitals and/or clinics.",
+    orange_check: "Accepting new referrals limited by geography or number of patients",
     orange_warning: "Unavailable soon.",
     green_check: "Accepting new referrals",
     red_x: "Not accepting new referrals"
