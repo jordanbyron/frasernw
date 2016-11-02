@@ -58,7 +58,7 @@ class EntityPageViews < ServiceObject
         when "content_items"
           :content_items
         end
-      id = row[:event_label]
+      id = row[:event_label].to_i
 
       next memo unless record_exists?(resource, id)
       next memo if resource == :content_items && markdown_ids.include?(id)
