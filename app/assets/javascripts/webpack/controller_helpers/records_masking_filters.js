@@ -1,5 +1,5 @@
-import { route, recordShownByRoute }
-  from "controller_helpers/routing";
+import { route, recordShownByRoute } from "controller_helpers/routing";
+import { selectedTabKey } from "controller_helpers/tab_keys";
 import referralCityIds from "controller_helpers/referral_city_ids";
 import { scopedByRouteAndTab } from "controller_helpers/collection_shown";
 import { memoizePerRender } from "utils";
@@ -7,8 +7,8 @@ import matchesPreliminaryFilters from "controller_helpers/matches_preliminary_fi
 
 const recordsMaskingFilters = ((model) => {
   if (route === "/specialties/:id" &&
-    recordShownByRoute(model).maskFiltersByReferralArea){
-
+    !selectedTabKey(model).includes("contentCategory") &&
+    recordShownByRoute(model).maskFiltersByReferralArea) {
     return scopedByRouteAndTab(model).
       filter((record) => {
         return matchesPreliminaryFilters(record, model);
