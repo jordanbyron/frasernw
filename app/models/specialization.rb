@@ -20,7 +20,7 @@ class Specialization < ActiveRecord::Base
     through: :procedure_specializations
 
   has_many :sc_item_specializations, dependent: :destroy
-  has_many :sc_items, through: :sc_items_specializations
+  has_many :sc_items, through: :sc_item_specializations
 
   has_many :specialization_options, dependent: :destroy
   accepts_nested_attributes_for :specialization_options
