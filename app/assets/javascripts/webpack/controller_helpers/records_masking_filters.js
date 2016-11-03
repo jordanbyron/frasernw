@@ -7,7 +7,7 @@ import matchesPreliminaryFilters from "controller_helpers/matches_preliminary_fi
 
 const recordsMaskingFilters = ((model) => {
   if (route === "/specialties/:id" &&
-    ["clinics", "specialists"].includes(selectedTabKey(model)) &&
+    _.includes(["clinics", "specialists"], selectedTabKey(model)) &&
     recordShownByRoute(model).maskFiltersByReferralArea) {
     return scopedByRouteAndTab(model).
       filter((record) => {
