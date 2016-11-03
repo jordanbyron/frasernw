@@ -36,7 +36,7 @@ class DivisionsController < ApplicationController
   def create
     @division = Division.new(params[:division])
     if @division.save
-      UpdateDivisionalResourceSubscriptions.exec(@division, params)
+      UpdateDivisionalResourceSubscriptions.call(division: @division, params: params)
       DivisionReferralCity.save_all_for_division(
         @division,
         params[:city_priorities]
@@ -79,7 +79,7 @@ class DivisionsController < ApplicationController
   def update
     @division = Division.find(params[:id])
     if @division.update_attributes(params[:division])
-      UpdateDivisionalResourceSubscriptions.exec(@division, params)
+      UpdateDivisionalResourceSubscriptions.call(division: @division, params: params)
       DivisionReferralCity.save_all_for_division(
         @division,
         params[:city_priorities]

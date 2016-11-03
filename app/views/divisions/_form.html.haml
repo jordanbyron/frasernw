@@ -135,54 +135,69 @@
     checkboxId: "division_use_customized_city_priorities"
   })
 
-  function master_toggle_checked(selection) {
-    var member_by_class = "." + $(selection).prop('id');
-    $(member_by_class).prop('checked',($(selection).prop('checked')));
-    return true;
-  }
-  $('.division_check').click(function() {
-    master_toggle_checked(this);
-  });
-  $('.city_check').click(function() {
-    master_toggle_checked(this);
-  });
+  var updateMasterFromConstituents = function(
+    masterSelector,
+    constituentSelector
+  ) {
+    if ($(constituentSelector).toArray().every(
+      function(elem){ return $(elem).prop("checked");})) {
 
-  function update_selection(master_toggle_id, member_by_class) {
-    var all = true;
-    var none = true;
-    $(member_by_class).each(function() {
-      if ($(this).prop('checked')) { none = false; } else { all = false; }
-    });
-    if (all) {
-      $(master_toggle_id).prop('checked', true);
-      $(master_toggle_id).prop('indeterminate', false);
-    } else if (none) {
-      $(master_toggle_id).prop('checked', false);
-      $(master_toggle_id).prop('indeterminate', false);
+      $(masterSelector).prop('checked', true);
+      $(masterSelector).prop('indeterminate', false);
+
+    } else if ($(constituentSelector).toArray().every(
+      function(elem){ return !$(elem).prop("checked");})) {
+
+      $(masterSelector).prop('checked', false);
+      $(masterSelector).prop('indeterminate', false);
+
     } else {
-      $(master_toggle_id).prop('checked', true);
-      $(master_toggle_id).prop('indeterminate', true);
+
+      $(masterSelector).prop('checked', true);
+      $(masterSelector).prop('indeterminate', true);
     }
     return true;
   }
 
-  $('.city_specialization').click(function() {
-    var city = "city_" + $(this).prop('id').split('_')[0];
-    var master_toggle_id = "#" + city;
-    var member_by_class = "." + city;
-    return update_selection(master_toggle_id, member_by_class);
-  });
+  var updateConstituentsFromMaster = function(
+    masterSelector,
+    constituentSelector
+  ) {
+    if ($(masterSelector).prop('checked')){
+      $(constituentSelector).prop('checked', true);
+    }
+    else {
+      $(constituentSelector).prop('checked', false);
+    }
+  }
 
-  $('.division_specialization').click(function() {
-    var master_toggle_id = "#division_specialization";
-    var member_by_class = ".division_specialization";
-    return update_selection(master_toggle_id, member_by_class);
-  });
+  var setupMasterConstituentRelationship = function(
+    masterSelector,
+    constituentSelector
+  ){
+    updateMasterFromConstituents(masterSelector, constituentSelector)
 
-  var all_city_ids = #{City.all.map(&:id)};
-  $(document).ready(function() {
-    update_selection("division_#{Division.provincial.id}");
-    all_city_ids.forEach(function(city_id) {
-      update_selection("city_" + city_id);
-    });
-  });
+    $(masterSelector).click(updateConstituentsFromMaster.bind(
+      null,
+      masterSelector,
+      constituentSelector
+    ))
+
+    $(constituentSelector).click(updateMasterFromConstituents.bind(
+      null,
+      masterSelector,
+      constituentSelector
+    ))
+  }
+
+  setupMasterConstituentRelationship(
+    "#division_specialization",
+    ".division_specialization"
+  );
+
+  $(".city_check").each(function(index, elem){
+    setupMasterConstituentRelationship(
+      ("#" + elem.id),
+      ("." + elem.id)
+    );
+  })

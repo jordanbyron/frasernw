@@ -67,10 +67,6 @@ class ScItem < ActiveRecord::Base
 
   after_commit :flush_cached_find
 
-  after_commit do
-    UpdateScItemBorrowing.new.fulfill_divisional_resource_subscriptions(self)
-  end
-
   def self.demoable
     where(demoable: true)
   end
@@ -100,45 +96,6 @@ class ScItem < ActiveRecord::Base
         'AND "division_display_sc_items"."division_id" in (?) '\
         'AND "sc_items"."borrowable" = (?)',
       specialization.id,
-      division_ids,
-      true
-    )
-    (owned + borrowed).uniq
-  end
-
-  def self.for_procedure_in_divisions(procedure, divisions)
-    division_ids = divisions.map{ |d| d.id }
-    owned = joins( [
-      :sc_item_specializations,
-      :sc_item_specialization_procedure_specializations,
-      :procedure_specializations
-    ] ).where(
-      'sc_item_specializations.id = '\
-        'sc_item_specialization_procedure_specializations.'\
-        'sc_item_specialization_id '\
-        'AND sc_item_specialization_procedure_specializations.'\
-        'procedure_specialization_id = procedure_specializations.id '\
-        'AND procedure_specializations.procedure_id = (?) '\
-        'AND "sc_items"."division_id" IN (?)',
-      procedure.id,
-      division_ids
-    )
-    borrowed = joins( [
-      :sc_item_specializations,
-      :sc_item_specialization_procedure_specializations,
-      :procedure_specializations,
-      :division_display_sc_items
-    ] ).where(
-      'sc_item_specializations.id = '\
-        'sc_item_specialization_procedure_specializations.'\
-        'sc_item_specialization_id '\
-        'AND sc_item_specialization_procedure_specializations.'\
-        'procedure_specialization_id'\
-        ' = procedure_specializations.id '\
-        'AND procedure_specializations.procedure_id = (?) '\
-        'AND "division_display_sc_items"."division_id" in (?) '\
-        'AND "sc_items"."borrowable" = (?)',
-      procedure.id,
       division_ids,
       true
     )
