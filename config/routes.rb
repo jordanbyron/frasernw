@@ -260,4 +260,10 @@ Frasernw::Application.routes.draw do
   scope '/specialists/:id/:token', controller: 'specialists' do
     get :refresh_cache
   end
+
+  resources :divisional_sc_item_subscriptions, only: [] do
+    member do
+      post :borrow_existing
+    end
+  end
 end

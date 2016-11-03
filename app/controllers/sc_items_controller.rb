@@ -47,6 +47,7 @@ class ScItemsController < ApplicationController
         id: @sc_item.id,
         delay: true
       )
+      FulfillDivisionalScItemSubscriptions.call(@sc_item)
       redirect_to sc_item_path(@sc_item),
         notice: "Successfully created content item."
     else
@@ -126,11 +127,11 @@ class ScItemsController < ApplicationController
     success = params[:is_borrowed].present? &&
       @sc_item.present? &&
       @division.present? &&
+      can?(:update, @sc_item) &&
       UpdateScItemBorrowing.call(
-        division: @division,
+        division_id: @division.id,
         sc_item: @sc_item,
-        is_borrowed: params[:is_borrowed].to_b,
-        current_user: current_user
+        is_borrowed: params[:is_borrowed].to_b
       )
 
     notice = begin
@@ -154,9 +155,9 @@ class ScItemsController < ApplicationController
     @division = Division.find(params[:division_id])
 
     successful_items = @sc_items.select do |sc_item|
+      can?(:update, sc_item) &&
       UpdateScItemBorrowing.call(
-        division: @division,
-        current_user: current_user,
+        division_id: @division.id,
         sc_item: sc_item,
         is_borrowed: true
       )

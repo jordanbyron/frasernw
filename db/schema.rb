@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160922143318) do
+ActiveRecord::Schema.define(version: 20161029232438) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -282,6 +282,14 @@ ActiveRecord::Schema.define(version: 20160922143318) do
 
   add_index "division_users", ["division_id"], name: "index_division_users_on_division_id", using: :btree
   add_index "division_users", ["user_id"], name: "index_division_users_on_user_id", using: :btree
+
+  create_table "divisional_sc_item_subscriptions", force: true do |t|
+    t.integer  "division_id"
+    t.integer  "specialization_ids", default: [],    array: true
+    t.boolean  "nonspecialized",     default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "divisions", force: true do |t|
     t.string   "name"
@@ -644,7 +652,7 @@ ActiveRecord::Schema.define(version: 20160922143318) do
     t.integer  "document_file_size"
     t.datetime "document_updated_at"
     t.integer  "division_id"
-    t.boolean  "shareable",             default: true
+    t.boolean  "borrowable",            default: true
     t.integer  "evidence_id"
     t.boolean  "demoable",              default: false
     t.boolean  "can_email"

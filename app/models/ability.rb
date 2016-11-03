@@ -67,6 +67,10 @@ class Ability
 
         can :manage, FeaturedContent
 
+        can :manage, DivisionalScItemSubscription do |subscription|
+          user.as_divisions.include?(subscription.division)
+        end
+
         can :manage, [Subscription, Notification]
 
         can :manage, [Specialist, Clinic, Hospital, Office] do |entity|

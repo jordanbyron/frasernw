@@ -27,25 +27,44 @@
               edit_permissions_division_path(@division, permission_type: type)
 
   %p.no_indent.space
-    %strong Subscriptions to Provincial Content
-  %br
-  - subscription = @division.divisional_resource_subscription
-  - if subscription.blank? || subscription.specialization_ids.none?
-    %p No provincial content will be borrowed by default
-  - elsif (subscription.specialization_ids.count == Specialization.all.count) &&
-    - subscription.nonspecialized?
-    %p All available provincial content will be borrowed by default
-  - else
-    %p Provincial content in these specialties will be borrowed by default:
-    %ul
-      - if subscription.nonspecialized?
-        %li Content with no specialty
-        %br
-      - subscription.specialization_ids.each do |specialization|
-        %li= Specialization.find(specialization).name
+    %strong Provincial Content Subscription
+
   %br
 
-  %p.no_indent.space
+  - subscription = @division.divisional_sc_item_subscription
+  - if subscription.nil? || subscription.empty?
+    %p You have not subscribed to borrow any provincial content.
+  - elsif subscription.all?
+    %p Subscribed to borrow all provincial content.
+  - else
+    %p Subscribed to borrow provincial content that match the following criteria:
+    %br
+    - if subscription.nonspecialized?
+      %p Content with no specialty
+    - if subscription.specialization_ids.any?
+      %p
+        %span Content in the following specialties:
+        %ul
+          - subscription.specialization_ids.each do |specialization|
+            %li= Specialization.find(specialization).name
+
+  - if !subscription.nil? && !subscription.empty?
+    %br
+    %p
+      %i
+        %span All
+        %b new
+        %span
+          items matching your subscription criteria will be borrowed
+          by #{@division.name} as they are added.
+    = link_to "Borrow existing items that match subscription criteria",
+      borrow_existing_divisional_sc_item_subscription_path(subscription),
+      class: "btn btn-primary",
+      style: "margin-top: 5px; margin-left: 8px;",
+      confirm: "Are you sure you would like to borrow all existing items that match your subscription criteria?",
+      method: :post
+
+  %p.no_indent.space{ style: "margin-top: 17px" }
     %strong Local Referral Area
   %div{ style: "overflow-x:scroll" }
     %table.local_referral_area
