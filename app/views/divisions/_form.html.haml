@@ -39,7 +39,7 @@
   %br
   .row
     .span8
-      = simple_fields_for @divisional_resource_subscription do |j|
+      = simple_fields_for @divisional_sc_item_subscription do |j|
         .control-group
           %label.control-label{ for: "division_specialization" }
             %strong All Provincial Content
@@ -56,7 +56,7 @@
         = j.input :specialization_ids,
           as: :check_boxes,
           collection: Specialization.all,
-          selected: @divisional_resource_subscription.specialization_ids,
+          selected: @divisional_sc_item_subscription.specialization_ids,
           label: "Content by specialty",
           input_html: { class: "division_specialization" },
           hint: "Applies to new or newly modified content items."

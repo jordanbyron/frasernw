@@ -43,7 +43,7 @@ class Division < ActiveRecord::Base
   accepts_nested_attributes_for :division_primary_contacts, allow_destroy: true
 
   has_many :specialization_options, dependent: :destroy
-  has_one :divisional_resource_subscription, dependent: :destroy
+  has_one :divisional_sc_item_subscription, dependent: :destroy
 
   include PaperTrailable
 

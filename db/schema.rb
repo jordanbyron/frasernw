@@ -283,7 +283,7 @@ ActiveRecord::Schema.define(version: 20161029232438) do
   add_index "division_users", ["division_id"], name: "index_division_users_on_division_id", using: :btree
   add_index "division_users", ["user_id"], name: "index_division_users_on_user_id", using: :btree
 
-  create_table "divisional_resource_subscriptions", force: true do |t|
+  create_table "divisional_sc_item_subscriptions", force: true do |t|
     t.integer  "division_id"
     t.integer  "specialization_ids", default: [],    array: true
     t.boolean  "nonspecialized",     default: false

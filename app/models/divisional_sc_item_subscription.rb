@@ -1,4 +1,4 @@
-class DivisionalResourceSubscription < ActiveRecord::Base
+class DivisionalScItemSubscription < ActiveRecord::Base
   attr_accessible :division_id, :nonspecialized, :specialization_ids
 
   belongs_to :division

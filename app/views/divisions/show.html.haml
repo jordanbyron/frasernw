@@ -31,7 +31,7 @@
 
   %br
 
-  - subscription = @division.divisional_resource_subscription
+  - subscription = @division.divisional_sc_item_subscription
   - if subscription.nil? || subscription.empty?
     %p You have not subscribed to borrow any provincial content.
   - elsif subscription.all?

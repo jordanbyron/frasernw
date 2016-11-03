@@ -28,15 +28,15 @@ class DivisionsController < ApplicationController
       @local_referral_cities[city.id] = []
     end
     @city_priorities = City.options_for_priority_select(@division)
-    @divisional_resource_subscription =
-      DivisionalResourceSubscription.
+    @divisional_sc_item_subscription =
+      DivisionalScItemSubscription.
         find_or_create_by(division_id: @division.id)
   end
 
   def create
     @division = Division.new(params[:division])
     if @division.save
-      UpdateDivisionalResourceSubscriptions.call(division: @division, params: params)
+      UpdateDivisionalScItemSubscriptions.call(division: @division, params: params)
       DivisionReferralCity.save_all_for_division(
         @division,
         params[:city_priorities]
@@ -71,15 +71,15 @@ class DivisionsController < ApplicationController
     @division = Division.find(params[:id])
     @local_referral_cities = generate_local_referral_cities(@division)
     @city_priorities = City.options_for_priority_select(@division)
-    @divisional_resource_subscription =
-      DivisionalResourceSubscription.
+    @divisional_sc_item_subscription =
+      DivisionalScItemSubscription.
         find_or_create_by(division_id: @division.id)
   end
 
   def update
     @division = Division.find(params[:id])
     if @division.update_attributes(params[:division])
-      UpdateDivisionalResourceSubscriptions.call(division: @division, params: params)
+      UpdateDivisionalScItemSubscriptions.call(division: @division, params: params)
       DivisionReferralCity.save_all_for_division(
         @division,
         params[:city_priorities]

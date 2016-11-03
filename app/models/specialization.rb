@@ -30,7 +30,7 @@ class Specialization < ActiveRecord::Base
     class_name: "User"
 
   has_many :division_referral_city_specializations, dependent: :destroy
-  has_many :divisional_resource_subscriptions
+  has_many :divisional_sc_item_subscriptions
 
   after_commit :flush_cache
   after_touch  :flush_cache
