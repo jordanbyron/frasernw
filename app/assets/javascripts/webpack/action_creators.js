@@ -287,7 +287,7 @@ export const termSearched = (model, dispatch, term) => {
     dispatch({
       type: "SEARCH_TIMEOUT_ENDED"
     })
-  }, 300)
+  }, 150)
 
   dispatch({
     type: "TERM_SEARCHED",

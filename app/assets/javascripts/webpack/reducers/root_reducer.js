@@ -101,6 +101,22 @@ const searchGeographicFilter = (model, action) => {
   switch(action.type){
   case "SEARCH_GEOGRAPHIC_FILTER":
     return action.proposed;
+  case "CLOSE_SEARCH":
+    return undefined;
+  case "SEARCH_FOCUS_CHANGED":
+    if (action.proposed){
+      return model;
+    }
+    else {
+      return undefined;
+    }
+  case "TERM_SEARCHED":
+    if (action.proposedTerm.length > 0){
+      return model;
+    }
+    else {
+      return undefined;
+    }
   default:
     return model;
   }
@@ -110,6 +126,22 @@ const searchCollectionFilter = (model, action) => {
   switch(action.type){
   case "SEARCH_COLLECTION_FILTER":
     return action.proposed;
+  case "CLOSE_SEARCH":
+    return undefined;
+  case "SEARCH_FOCUS_CHANGED":
+    if (action.proposed){
+      return model;
+    }
+    else {
+      return undefined;
+    }
+  case "TERM_SEARCHED":
+    if (action.proposedTerm.length > 0){
+      return model;
+    }
+    else {
+      return undefined;
+    }
   default:
     return model;
   }
