@@ -322,7 +322,7 @@
                             %ul.dropdown-menu
                               - Division.all.each do |division|
                                 %li= link_to "#{division.name}",
-                                  borrowable_content_items(division),
+                                  borrowable_content_items_path(division),
                                   class: "sc_item"
                         - elsif as_administering.length > 1
                           %li
@@ -349,7 +349,7 @@
                             class: "sc_item"
                           - if Division.all.length > 1
                             %li= link_to "Manage Borrowed Content Items",
-                              borrowable_content_items(as_administering.first),
+                              borrowable_content_items_path(as_administering.first),
                               class: "sc_item"
                       - if can? :update_demoable, ScItem
                         %li= link_to "Edit Demoable Content Items",
