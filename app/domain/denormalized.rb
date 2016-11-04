@@ -383,7 +383,8 @@ module Denormalized
           id: form.id,
           filename: form.form_file_name,
           referrableType: form.referrable_type,
-          referrableId: form.referrable_id
+          referrableId: form.referrable_id,
+          label:  "#{form.referrable.try(:name)} - #{form.form_file_name}"
         })
       end
     end,

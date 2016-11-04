@@ -229,6 +229,29 @@ module GenerateSpreadsheet
       print_spreadsheet(printing_body, printing_header)
     end
 
+    def content_without_pageviews
+      content_with_views = EntityPageViews.call(
+        start_month_key: 201601,
+        end_month_key: Month.current.to_i,
+        division_id: 0
+      ).select{|row| row[:resource] == :content_items}.
+        map{|row| row[:id] }
+
+      content_without_views = ScItem.
+        where("id NOT IN (?)", content_with_views).
+        includes(:division)
+
+      provincial_division_id = Division.provincial.id
+
+      bodies = content_without_views.
+        group_by(&:division).
+        map{|division, items| [ division.name, items.map{|item| [item.id, item.title] } ] }.
+        sort_by{|pair| pair[0] == "Provincial" ? 0 : 1 }.
+        to_h
+
+      print_spreadsheet(bodies, [ "ID", "Title" ])
+    end
+
     private
 
     def specialist_id_link(id)
