@@ -1,6 +1,10 @@
-class AnalyticsChart
-
-  include ServiceObjectModule.exec_with_args(:start_date, :end_date, :metric, :divisions, :force)
+class AnalyticsChart < ServiceObject
+  attribute :start_month_key
+  attribute :end_month_key
+  attribute :metric
+  attribute :divisions
+  attribute :force, Axiom::Types::Boolean, default: false
+  attribute :user_type_key
 
   SUPPORTED_METRICS = [
     :page_views,
@@ -15,7 +19,7 @@ class AnalyticsChart
   end
 
   def self.regenerate(metric)
-    exec(
+    call(
       start_date: Month.new(2014, 1).start_date,
       end_date: Date.current,
       metric: metric,
@@ -24,7 +28,7 @@ class AnalyticsChart
     )
   end
 
-  def exec
+  def call
     {
       title: {
         text: "Pathways #{metric_label}",
@@ -78,33 +82,54 @@ class AnalyticsChart
 
   private
 
-  def data
-    @data ||= weeks.inject({}) do |memo, week|
-      memo.merge(
-        week => data_for_week(week)
+  def series
+    (divisions.map(&:id) << 0).map do |division_id|
+      {
+        name: (division_id == 0 ? "All Divisions" : Division.find(division_id).name),
+        data: weeks.map do |week|
+          [
+            (week.start_date.at_midnight.to_i*1000),
+            division_week_data(week, division_id)[user_type_key]
+          ]
+        end
+      }
+    end
+  end
+
+  def division_week_data(week, division_id)
+    Rails.cache.fetch(
+      "non_admin_#{metric.to_s}:#{week.start_date.to_s}:#{division_id}",
+      force: force
+    ) do
+      division_rows = filter_by_division(week_data(week), division_id)
+
+      User::TYPES.keys.map do |key|
+        [
+          key,
+          metric_from_rows(division_rows.select{|row| row[:user_type_key].to_i == key })
+        ]
+      end.to_h.merge(
+        -1 => metric_from_rows(
+          division_rows.select{|row| User::TYPES.include?(row[:user_type_key].to_i) }
+        )
       )
     end
   end
 
-  def data_for_week(week)
-    raw = Analytics::ApiAdapter.get(
-      start_date: week.start_date,
-      end_date: week.end_date,
-      metrics: [:page_views, :sessions],
-      dimensions: dimensions
-    )
-
-    (divisions.map(&:id) << 0).inject({}) do |memo, division_id|
-      filtered_rows = raw.select do |row|
-        filter_by_division(row, division_id) &&
-          User::TYPES.keys.include?(row[:user_type_key].to_i)
-      end
-
-      memo.merge(division_id => metric_from_rows(filtered_rows))
+  def week_data(week)
+    @weeks_data ||= Hash.new do |hsh, key|
+      hsh[key] = Analytics::ApiAdapter.get(
+        start_date: week.start_date,
+        end_date: week.end_date,
+        metrics: [:page_views, :sessions],
+        dimensions: query_dimensions
+      )
     end
+
+    @weeks_data[week]
   end
 
-  def dimensions
+  def query_dimensions
     if metric == :user_ids
       [:division_id, :user_type_key, :user_id]
     else
@@ -114,63 +139,18 @@ class AnalyticsChart
 
   def metric_from_rows(rows)
     if metric == :user_ids
-      METRIC_FROM_ROWS_ABSTRACT[:from_ga_dimension].call(rows, :user_id)
+      rows.group_by{|row| row[:user_id]}.keys.count
     else
-      METRIC_FROM_ROWS_ABSTRACT[:from_ga_metric].call(rows, metric)
-    end
-  end
-
-  METRIC_FROM_ROWS_ABSTRACT = {
-    from_ga_metric: Proc.new do |rows, metric|
       rows.map{|row| row[metric]}.map(&:to_i).sum
-    end,
-    from_ga_dimension: Proc.new do |rows, dimension|
-      rows.group_by{|row| row[dimension]}.keys.count
     end
-  }
+  end
 
-  def filter_by_division(row, division_id)
+  def filter_by_division(rows, division_id)
     if division_id == 0
-      true
+      rows
     else
-      row[:division_id] == division_id.to_s
+      rows.select{|row| row[:division_id] == division_id.to_s }
     end
-  end
-
-  def global_series
-    {
-      name: "All Divisions",
-      data: weeks.map do |week|
-        [
-          (week.start_date.at_midnight.to_i*1000),
-          Rails.cache.fetch("non_admin_#{metric.to_s}:#{week.start_date.to_s}:global", force: force) do
-            data[week][0]
-          end
-        ]
-      end
-    }
-  end
-
-  def divisional_series(division)
-    {
-      name: division.name,
-      data: weeks.map do |week|
-        [
-          (week.start_date.at_midnight.to_i*1000),
-          Rails.cache.fetch("non_admin_#{metric.to_s}:#{week.start_date.to_s}:#{division.id}", force: force) do
-            data[week][division.id]
-          end
-        ]
-      end
-    }
-  end
-
-  def divisions_series
-    divisions.map{ |division| divisional_series(division) }
-  end
-
-  def series
-    divisions_series << global_series
   end
 
   def weeks
@@ -179,11 +159,15 @@ class AnalyticsChart
     end
   end
 
-  def categories
-    weeks.map(&:label)
-  end
-
   def metric_label
     "#{metric.to_s.split("_").map(&:capitalize).join(" ")}"
+  end
+
+  def start_date
+    @start_date ||= Month.from_i(start_month_key).start_date
+  end
+
+  def end_date
+    @end_date ||= Month.from_i(end_month_key).end_date
   end
 end

@@ -1,24 +1,15 @@
 module Api
   module V1
     class ReportsController < ApplicationController
-      def page_views
-        authorize! :view_report, :page_views
 
-        render json: AnalyticsChart.exec(AnalyticsChartMonths.parse(params).merge(
-          metric: :page_views,
+      def analytics_charts
+        authorize! :view_report, params[:metric].to_sym
+
+        render json: AnalyticsChart.call({
+          metric: params[:metric].to_sym,
           divisions: current_user.reporting_divisions,
-          force: false
-        ))
-      end
-
-      def sessions
-        authorize! :view_report, :sessions
-
-        render json: AnalyticsChart.exec(AnalyticsChartMonths.parse(params).merge(
-          metric: :sessions,
-          divisions: current_user.reporting_divisions,
-          force: false
-        ))
+          force: true
+        }.merge(params.slice(:start_month_key, :end_month_key, :user_type_key)))
       end
 
       def entity_page_views
@@ -39,16 +30,6 @@ module Api
             record_type: params[:record_type].underscore.to_sym
           )
         }
-      end
-
-      def user_ids
-        authorize! :view_report, :user_ids
-
-        render json: AnalyticsChart.exec(AnalyticsChartMonths.parse(params).merge(
-          metric: :user_ids,
-          divisions: current_user.reporting_divisions,
-          force: false
-        ))
       end
 
       def page_views_by_user

@@ -236,10 +236,8 @@ Frasernw::Application.routes.draw do
     namespace :v1 do
       resources :reports, only: [] do
         collection do
-          get :page_views
-          get :sessions
+          get :analytics_charts
           get :entity_page_views
-          get :user_ids
           get :page_views_by_user
         end
       end
