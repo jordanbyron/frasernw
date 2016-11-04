@@ -47,7 +47,7 @@ class ScItemsController < ApplicationController
         id: @sc_item.id,
         delay: true
       )
-      FulfillDivisionalScItemSubscriptions.call(@sc_item)
+      FulfillDivisionalScItemSubscriptions.call(sc_item: @sc_item)
       redirect_to sc_item_path(@sc_item),
         notice: "Successfully created content item."
     else
