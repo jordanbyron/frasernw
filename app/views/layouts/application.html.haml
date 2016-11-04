@@ -316,13 +316,13 @@
                                   division_content_items_path(division),
                                   class: "sc_item"
                           %li
-                            = link_to "Content Items Borrowed By...",
+                            = link_to "Content Items Borrowable By...",
                               "#",
                               class: "create arrow-right-after"
                             %ul.dropdown-menu
                               - Division.all.each do |division|
                                 %li= link_to "#{division.name}",
-                                  borrowed_content_items_path(division),
+                                  borrowable_content_items(division),
                                   class: "sc_item"
                         - elsif as_administering.length > 1
                           %li
@@ -335,13 +335,13 @@
                                   division_content_items_path(division),
                                   class: "sc_item"
                           %li
-                            = link_to "Content Items Borrowed By...",
+                            = link_to "Content Items Borrowable By...",
                               "#",
                               class: "create arrow-right-after"
                             %ul.dropdown-menu
                               - as_administering.each do |division|
                                 %li= link_to "#{division.name}",
-                                  borrowed_content_items_path(division),
+                                  borrowable_content_items(division),
                                   class: "sc_item"
                         - else
                           %li= link_to "Content Items",
@@ -349,7 +349,7 @@
                             class: "sc_item"
                           - if Division.all.length > 1
                             %li= link_to "Manage Borrowed Content Items",
-                              borrowed_content_items_path(as_administering.first),
+                              borrowable_content_items(as_administering.first),
                               class: "sc_item"
                       - if can? :update_demoable, ScItem
                         %li= link_to "Edit Demoable Content Items",

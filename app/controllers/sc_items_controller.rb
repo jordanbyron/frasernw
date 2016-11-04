@@ -165,7 +165,7 @@ class ScItemsController < ApplicationController
 
     notice = "Now displaying #{successful_items.map(&:title).to_sentence} " +
       "in #{@division.name}."
-    redirect_to borrowed_content_items_path(@division), notice: notice
+    redirect_to borrowable_content_items(@division), notice: notice
   end
 
   private
