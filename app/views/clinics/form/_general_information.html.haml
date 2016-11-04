@@ -14,8 +14,11 @@
 = f.input :referrals_limited,
   label: "Referrals limited by geography or # of patients?",
   wrapper_html: { class: "form__wrapper--indented" }
-= f.input :practice_details
-= f.input :limitations
+= f.input :limitations,
+  label: "Practice and referral limitations (if any)"
+= f.input :practice_details,
+  label: "Additional details about practice and referrals (if any)"
+
 = f.association :specializations,
   as: :check_boxes,
   hint: @form_modifier.specializations_hint,
