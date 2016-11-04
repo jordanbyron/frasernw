@@ -604,7 +604,7 @@ class Specialist < ActiveRecord::Base
 
   def referrals_through_label
     if open_clinics.none? && hospitals.none?
-      _returning = ", but we do not yet have data on which ones."
+      _returning = "."
     else
       _returning = ". For referral information please see the "
 
@@ -626,7 +626,7 @@ class Specialist < ActiveRecord::Base
 
   def works_out_of_label
     if open_clinics.none? && hospitals.none?
-      "hospitals or clinics."
+      "hospitals or clinics"
     elsif open_clinics.one? && hospitals.none?
       "a clinic"
     elsif hospitals.one? && open_clinics.none?
