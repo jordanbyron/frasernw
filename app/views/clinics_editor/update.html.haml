@@ -4,11 +4,12 @@
 
   %h2 Update complete
 
-  %p.space.no_indent Thank you for your updates to #{@clinic.name}. We will review these changes, and they will be available on Pathways in the near future.
+  %p.space.no_indent
+    Thank you for your updates to #{@clinic.name}. We will review these
+    changes, and they will be available on Pathways in the near future.
 
   - if current_user
-
-    %p.space.no_indent In the meantime you may #{link_to "return to #{@clinic.name}'s page", @clinic, :class => 'ajax'} or #{link_to "update #{@clinic.name}'s information again", clinic_self_edit_path(@clinic, @clinic.token), :class => 'ajax'} if you wanted to make further changes.
-
-
-
+    %p.space.no_indent
+      In the meantime you may
+      = link_to @clinic do
+        return to #{@clinic.name}'s page.

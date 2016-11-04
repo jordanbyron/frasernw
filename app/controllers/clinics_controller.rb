@@ -109,6 +109,10 @@ class ClinicsController < ApplicationController
   def edit
     @form_modifier = ClinicFormModifier.new(:edit, current_user)
     @clinic = Clinic.includes_clinic_locations.find(params[:id])
+    if @clinic.review_item.present?
+      redirect_to @clinic,
+        notice: "There are already changes awaiting review for this clinic."
+    end
     while @clinic.clinic_locations.length < Clinic::MAX_LOCATIONS
       puts "location #{@clinic.clinic_locations.length}"
       cl = @clinic.clinic_locations.build
@@ -132,6 +136,10 @@ class ClinicsController < ApplicationController
 
   def update
     @clinic = Clinic.find(params[:id])
+    if @clinic.review_item.present?
+      redirect_to @clinic,
+        notice: "There are already changes awaiting review for this clinic."
+    end
     ExpireFragment.call clinic_path(@clinic)
 
     parsed_params = ParamParser::Clinic.new(params).exec
@@ -164,7 +172,7 @@ class ClinicsController < ApplicationController
 
     if @review_item.blank?
       redirect_to clinics_path,
-        notice: "There are no review items for this specialist"
+        notice: "There is no current review item for this clinic."
     else
       while @clinic.clinic_locations.length < Clinic::MAX_LOCATIONS
         cl = @clinic.clinic_locations.build
@@ -199,10 +207,10 @@ class ClinicsController < ApplicationController
 
     if @review_item.blank?
       redirect_to clinics_path,
-        notice: "There are no review items for this clinic"
+        notice: "There is no current review item for this clinic."
     elsif @review_item.base_object.blank?
       redirect_to specialists_path,
-        notice: "There is no base review item for this clinic to re-review from"
+        notice: "There is no profile for this clinic to re-review."
     else
       while @clinic.clinic_locations.length < Clinic::MAX_LOCATIONS
         cl = @clinic.clinic_locations.build
@@ -269,7 +277,7 @@ class ClinicsController < ApplicationController
 
     if review_item.blank?
       redirect_to clinic_path(@clinic),
-        notice: "There are no review items for this clinic"
+        notice: "There is no current review item for this clinic."
     else
       review_item.archived = true
       review_item.save

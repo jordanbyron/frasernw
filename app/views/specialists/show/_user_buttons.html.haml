@@ -37,10 +37,17 @@
               target: "_blank"
 
   - if !current_user.as_admin_or_super? && (can? :update, @specialist)
-    %a.btn.btn-primary{ href: specialist_self_edit_path(@specialist,
-      @specialist.token) }
-      %i.icon-pencil.icon-white
-      Update #{@specialist.name}'s information
+    - if @specialist.review_item.present?
+      %a.btn{ href: "javascript:void(0)",
+        onclick: open_feedback_modal(@specialist) }
+        %i.icon-bullhorn.icon-text
+        Editing is prohibited until current changes are reviewed, but you can
+        still give us feedback!
+    - else
+      %a.btn.btn-primary{ href: specialist_self_edit_path(@specialist,
+        @specialist.token) }
+        %i.icon-pencil.icon-white
+        Update #{@specialist.name}'s information
   - else
     %a.btn{ href: "javascript:void(0)",
       onclick: open_feedback_modal(@specialist) }

@@ -49,19 +49,24 @@
                 - specialists = specialization.specialists.in_divisions([division]).sort{ |a,b| (a.lastname || "zzz") <=> (b.lastname || "zzz") }
                 - next if specialists.blank?
                 %tr{ class: specialization.hidden_in?(division) ? "hidden-from-users" : "" }
-                  %th{:style => "width:100%"}= "#{specialization.name} (#{specialists.count})"
+                  %th{ style: "width:100%" }= "#{specialization.name} (#{specialists.count})"
                   - if can_edit
                     %th.admin
-
                 - specialists.each do |specialist|
                   %tr
                     %td= link_to specialist.name, specialist_path(specialist)
                     - if can_edit
                       %td{ style: "min-width: 60px" }
-                        = link_to edit_specialist_path(specialist),
-                          class: "btn btn-mini" do
-                          %i.icon-pencil
-                          %span= " Edit"
+                        - if specialist.review_item.present?
+                          = link_to review_specialist_path(specialist),
+                            class: "btn btn-mini" do
+                            %i.icon-list-alt
+                            Review Pending Changes
+                        - else
+                          = link_to edit_specialist_path(specialist),
+                            class: "btn btn-mini" do
+                            %i.icon-pencil
+                            Edit
       .tab-pane{ id: "no_division_tab" }
         %table.table.table-condensed.table-striped
           - if @specializations.length > 1
@@ -81,17 +86,21 @@
                 %th{ style: "width:100%" }
                   = "#{specialization.name} (#{specialization.no_division_specialists.count})"
                 %th.admin
-
               - specialization.no_division_specialists.sort_by{|specialist| [ specialist.lastname,
                 specialist.firstname ] }.each do |specialist|
                 %tr
                   %td= link_to specialist.name, specialist_path(specialist)
                   %td{ style: "min-width: 60px" }
-                    = link_to edit_specialist_path(specialist),
-                      class: "btn btn-mini" do
-                      %i.icon-pencil
-                      %span= " Edit"
-
+                    - if specialist.review_item.present?
+                      = link_to review_specialist_path(specialist),
+                        class: "btn btn-mini" do
+                        %i.icon-list-alt
+                        Review Pending Changes
+                    - else
+                      = link_to edit_specialist_path(specialist),
+                        class: "btn btn-mini" do
+                        %i.icon-pencil
+                        Edit
 
 :javascript
   window.pathways.setupTabHistory();
