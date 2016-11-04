@@ -120,8 +120,8 @@ Frasernw::Application.routes.draw do
     end
   end
 
-  get '/divisions/:id/borrowed_content_items' => 'divisions#borrowed_sc_items',
-    as: 'borrowed_content_items'
+  get '/divisions/:id/borrowable_content_items' => 'divisions#borrowable_sc_items',
+    as: 'borrowable_content_items'
   patch '/divisions/:id/update_borrowed' => 'divisions#update_borrowed',
     as: 'update_borrowed'
 
