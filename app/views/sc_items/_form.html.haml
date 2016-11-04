@@ -59,7 +59,7 @@
       input_html: { value: current_user.as_divisions.first.id }
 
   = f.input :searchable
-  = f.input :shareable
+  = f.input :borrowable
   - if can? :update_demoable, ScItem
     = f.input :demoable, label: "Available in demonstration database"
   = f.input :shared_care

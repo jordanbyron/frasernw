@@ -1,8 +1,9 @@
 class DivisionsController < ApplicationController
   load_and_authorize_resource
-  skip_authorize_resource only: [:shared_sc_items, :update_shared]
-  skip_authorization_check only: [:shared_sc_items, :update_shared]
-  before_filter :authorize_division_for_user, only: [:shared_sc_items, :update_shared]
+  skip_authorize_resource only: [:borrowed_sc_items, :update_borrowed]
+  skip_authorization_check only: [:borrowed_sc_items, :update_borrowed]
+  before_filter :authorize_division_for_user,
+    only: [:borrowed_sc_items, :update_borrowed]
 
   def index
     @divisions = Division.all
@@ -16,7 +17,8 @@ class DivisionsController < ApplicationController
         includes(:city).
         where(division_id: @division.id).
         order("priority asc")
-    @priority_rankings = @division_referral_cities_by_priority.map(&:priority).uniq
+    @priority_rankings =
+      @division_referral_cities_by_priority.map(&:priority).uniq
   end
 
   def new
@@ -26,11 +28,15 @@ class DivisionsController < ApplicationController
       @local_referral_cities[city.id] = []
     end
     @city_priorities = City.options_for_priority_select(@division)
+    @divisional_sc_item_subscription =
+      DivisionalScItemSubscription.
+        find_or_create_by(division_id: @division.id)
   end
 
   def create
     @division = Division.new(params[:division])
     if @division.save
+      UpdateDivisionalScItemSubscriptions.call(division: @division, params: params)
       DivisionReferralCity.save_all_for_division(
         @division,
         params[:city_priorities]
@@ -65,11 +71,15 @@ class DivisionsController < ApplicationController
     @division = Division.find(params[:id])
     @local_referral_cities = generate_local_referral_cities(@division)
     @city_priorities = City.options_for_priority_select(@division)
+    @divisional_sc_item_subscription =
+      DivisionalScItemSubscription.
+        find_or_create_by(division_id: @division.id)
   end
 
   def update
     @division = Division.find(params[:id])
     if @division.update_attributes(params[:division])
+      UpdateDivisionalScItemSubscriptions.call(division: @division, params: params)
       DivisionReferralCity.save_all_for_division(
         @division,
         params[:city_priorities]
@@ -109,18 +119,18 @@ class DivisionsController < ApplicationController
     end
   end
 
-  def shared_sc_items
+  def borrowed_sc_items
     @division = Division.find(params[:id])
     @categories = ScCategory.with_items_borrowable_by_division(@division)
   end
 
-  def update_shared
+  def update_borrowed
     @division = Division.find(params[:id])
     if @division.update_attributes(params[:division])
-      redirect_to shared_content_items_path(@division),
-        notice: "Successfully updated shared content items."
+      redirect_to borrowed_content_items_path(@division),
+        notice: "Successfully updated borrowed content items."
     else
-      render action: 'shared_sc_items'
+      render action: 'borrowed_sc_items'
     end
   end
 
@@ -153,10 +163,12 @@ class DivisionsController < ApplicationController
 
     Specialization.all.each do |specialization|
       specialization_option = (
-        specialization.specialization_options.where(division_id: @division.id).first ||
+        specialization.
+          specialization_options.
+          where(division_id: @division.id).
+          first ||
         specialization.specialization_options.create(division_id: @division.id)
       )
-
 
       specialization_option.update_attributes(params[:permission_type] => @user)
     end
@@ -169,7 +181,7 @@ class DivisionsController < ApplicationController
   def authorize_division_for_user
     if (
       !current_user.as_super_admin? &&
-      !current_user.as_divisions.include?(Division.find(params[:id]))
+        !current_user.as_divisions.include?(Division.find(params[:id]))
     )
       redirect_to root_url, notice: "You are not allowed to access this page"
     end

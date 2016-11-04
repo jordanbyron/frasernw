@@ -1,7 +1,12 @@
 class SubscriptionMailer < ActionMailer::Base
   default from: "noreply@pathwaysbc.ca"
 
-  def periodic_sc_item_notification(sc_items, user_id, interval_key, end_datetime)
+  def periodic_sc_item_notification(
+    sc_items,
+    user_id,
+    interval_key,
+    end_datetime
+  )
     @user = User.find(user_id)
     @interval = Subscription::INTERVAL_LABELS[interval_key]
     @interval_period = Subscription.interval_period(interval_key)
@@ -13,11 +18,11 @@ class SubscriptionMailer < ActionMailer::Base
         {
           division: division,
           sc_items: sc_items.sort_by(&:created_at).reverse,
-          share_with_divisions: share_with_divisions(sc_items, @user)
+          borrow_for_divisions: borrow_for_divisions(sc_items, @user)
         }
       end
 
-    @share_all_with_divisions = share_with_divisions(sc_items, @user)
+    @borrow_all_for_divisions = borrow_for_divisions(sc_items, @user)
 
     mail(
       to: @user.email,
@@ -27,7 +32,12 @@ class SubscriptionMailer < ActionMailer::Base
     )
   end
 
-  def periodic_news_item_notification(news_items, user_id, interval_key, end_datetime)
+  def periodic_news_item_notification(
+    news_items,
+    user_id,
+    interval_key,
+    end_datetime
+  )
     @user = User.find(user_id)
     @interval = Subscription::INTERVAL_LABELS[interval_key]
     @interval_period = Subscription.interval_period(interval_key)
@@ -44,7 +54,8 @@ class SubscriptionMailer < ActionMailer::Base
 
   def immediate_sc_item_notification(sc_item_id, user_id)
     @user = User.find_by_id(user_id)
-    @interval = Subscription::INTERVAL_LABELS[Subscription::INTERVAL_IMMEDIATELY]
+    @interval =
+      Subscription::INTERVAL_LABELS[Subscription::INTERVAL_IMMEDIATELY]
     @sc_item = ScItem.find(sc_item_id)
 
     mail(
@@ -59,7 +70,8 @@ class SubscriptionMailer < ActionMailer::Base
   def immediate_news_item_notification(news_item_id, user_id)
     @user = User.find_by_id(user_id)
     @news_item = NewsItem.find_by_id(news_item_id)
-    @interval = Subscription::INTERVAL_LABELS[Subscription::INTERVAL_IMMEDIATELY]
+    @interval =
+      Subscription::INTERVAL_LABELS[Subscription::INTERVAL_IMMEDIATELY]
 
     mail(
       to: @user.email,
@@ -71,7 +83,7 @@ class SubscriptionMailer < ActionMailer::Base
 
   private
 
-  def share_with_divisions(sc_items, user)
+  def borrow_for_divisions(sc_items, user)
     user.divisions.inject({}) do |memo, division|
       eligible_resources = sc_items.
         select{ |sc_item| sc_item.borrowable_by_divisions.include?(division) }
