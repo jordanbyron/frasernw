@@ -344,7 +344,7 @@
                                   borrowable_content_items_path(division),
                                   class: "sc_item"
                         - else
-                          %li= link_to "Content Items",
+                          %li= link_to "Owned Content Items",
                             division_content_items_path(as_administering.first),
                             class: "sc_item"
                           - if Division.all.length > 1
