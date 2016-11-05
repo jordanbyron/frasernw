@@ -38,7 +38,7 @@ module Denormalized
     content_items: Module.new do
       def self.call
         ScItem.
-          includes(:sc_category, :division, :divisions_sharing, :specializations).
+          includes(:sc_category, :division, :divisions_borrowing, :specializations).
           inject({}) do |memo, item|
             memo.merge(item.id => {
               availableToDivisionIds: item.available_to_divisions.map(&:id),
@@ -119,7 +119,8 @@ module Denormalized
               sanitize(specialist.not_performed).
               try(:convert_newlines_to_br),
             isPracticing: specialist.practicing?,
-            hidden: specialist.hidden?
+            hidden: specialist.hidden?,
+            completedSurvey: specialist.completed_survey?
           })
         end
       end
@@ -382,7 +383,8 @@ module Denormalized
           id: form.id,
           filename: form.form_file_name,
           referrableType: form.referrable_type,
-          referrableId: form.referrable_id
+          referrableId: form.referrable_id,
+          label:  "#{form.referrable.try(:name)} - #{form.form_file_name}"
         })
       end
     end,

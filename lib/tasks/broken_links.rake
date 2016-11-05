@@ -109,7 +109,7 @@ namespace :pathways do
     desc "Checks a Pathways Division for broken links"
     task :check_division, [:division_id] => [:environment] do |t, args|
       d = Division.find(args[:division_id])
-      ScItem.owned_in_divisions([d]).reject{ |sc| !sc.link? }.each do |sc|
+      ScItem.owned_by_divisions([d]).reject{ |sc| !sc.link? }.each do |sc|
         begin
           response = Net::HTTP.get_response(URI(sc.url))
           case response

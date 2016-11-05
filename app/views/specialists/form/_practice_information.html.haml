@@ -6,18 +6,20 @@
   value_method: :last,
   label: "Practice Location"
 = f.input :accepting_new_direct_referrals,
-  label: "Accepting direct referrals (to offices)?",
+  label: "Accepting new direct referrals (to offices)?",
   wrapper_html: { class: "form__wrapper--indented" }
 = f.input :direct_referrals_limited,
-  label: "Direct referrals limited by geography or number of patients?",
-  wrapper_html: { class: "form__wrapper--double-indented" }
+  label: "New direct referrals limited by geography or number of patients?",
+  wrapper_html: { class: "form__wrapper--double-indented" },
+  hint: "Please elaborate in 'practice limitations' (below)"
 - if show_accepts_indirect_referrals?(@specialist)
   = f.input :accepting_new_indirect_referrals,
     label: "Accepts referrals through hospitals and/or clinics"
+= f.input :practice_limitations,
+  label: "Practice and referral limitations (if any)",
+  hint: "Will be displayed on profile page in blue header."
 = f.input :practice_details,
   label: "Additional details about practice and referrals (if any)",
-  hint: "Will be displayed on profile page in blue header."
-= f.input :practice_limitations,
   hint: "Will be displayed on profile page in blue header."
 
 = f.input :is_gp

@@ -28,7 +28,7 @@ namespace :pathways do
     task immediately: :environment do
       puts "Mailing Immediately subscriptions..... "
       Subscription::MailIntervalNotifications.call(
-        date_interval: Subscription::INTERVAL_IMMEDIATE
+        date_interval: Subscription::INTERVAL_IMMEDIATELY
       )
       puts "Immediate subscriptions sent!"
     end

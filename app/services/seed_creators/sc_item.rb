@@ -17,7 +17,7 @@ module SeedCreators
       document_file_size: :pass_through,
       document_updated_at: :pass_through,
       division_id: :pass_through,
-      shareable: :pass_through,
+      borrowable: :pass_through,
       evidence_id: :pass_through,
       demoable: :pass_through,
       can_email: :pass_through

@@ -249,7 +249,7 @@ class Clinic < ActiveRecord::Base
     elsif open? && accepting_new_referrals?
       "This clinic is accepting new referrals."
     elsif open?
-      "This clinic is only doing follow-up on previous patients"
+      "This clinic is not accepting new referrals."
     else
       "This clinic is closed"
     end

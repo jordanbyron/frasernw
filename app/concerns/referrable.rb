@@ -7,23 +7,22 @@ module Referrable
   end
 
   REFERRAL_ICONS = {
-    none: "",
-    question_mark: "icon-question-sign",
-    blue_arrow: "icon-signout icon-blue",
-    orange_check: "icon-ok icon-orange",
-    orange_warning: "icon-warning-sign icon-orange",
     green_check: "icon-ok icon-green",
-    red_x:  "icon-remove icon-red"
+    orange_check: "icon-ok icon-orange",
+    red_x:  "icon-remove icon-red",
+    blue_arrow: "icon-signout icon-blue",
+    orange_warning: "icon-warning-sign icon-orange",
+    question_mark: "icon-question-sign",
   }
 
   REFERRAL_TOOLTIPS = {
-    none: "",
-    question_mark: ("Unknown if accepting new patients (didn't respond)."),
-    blue_arrow: "Only accepts referrals through hospitals or clinics.",
-    orange_check: "Accepting limited new referrals by geography or number of patients",
-    orange_warning: "Unavailable soon.",
     green_check: "Accepting new referrals",
-    red_x: "Not accepting new referrals"
+    orange_check: "Accepting new referrals limited by geography or number of patients",
+    red_x: "Not accepting new referrals",
+    blue_arrow: ("Only works out of, and possibly accepts referrals through hospitals " +
+    "and/or clinics"),
+    orange_warning: "Unavailable soon.",
+    question_mark: "Unknown if accepting new patients (didn't respond)",
   }
 
   def referral_icon_classes

@@ -46,8 +46,6 @@ class BreakupStatus < ActiveRecord::Migration
       end
     end
 
-    # TODO: run this by admins
-    # make them 'not responded?'
     Specialist.where(status_mask: nil, categorization_mask: 1).update_all(
       hidden: true
     )
@@ -55,6 +53,8 @@ class BreakupStatus < ActiveRecord::Migration
       hidden: true
     )
     Specialist.where(completed_survey: false).update_all(hidden: true)
+
+    UpdateReturnedSpecialists.call
   end
 
   NEW_SPECIALIST_ATTRIBUTES = {

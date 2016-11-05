@@ -10,7 +10,7 @@
           = render partial: "reports/analytics_box",
             locals: { color: '#0B1E32',
             icon: 'icon-user',
-            title: "Active Signed Up Users",
+            title: "Active User Keys",
             count: User.authorized_user.count }
         .span3.offset1
           = render partial: "reports/analytics_box",
@@ -29,7 +29,7 @@
             locals: { color: '#A42C37',
             icon: 'icon-hospital',
             title: "Hospitals",
-            count: Hospital.all_real.count }
+            count: Hospital.all.count }
       .row-fluid
         .span3.offset1
           = render partial: "reports/analytics_box",

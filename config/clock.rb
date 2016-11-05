@@ -104,24 +104,19 @@ module Clockwork
 
   every(
     1.day,
-    'Mail out Monthly Subscriptions job',
-    at: '16:00',
-    tz: 'UTC',
-    if: lambda { |t| t.day == 1 }
+    'Hide perenially unavailable specialists',
+    at: '00:01',
+    tz: "Pacific Time (US & Canada)"
   ) do
-    Subscription::MailIntervalNotifications.call(
-      date_interval: Subscription::INTERVAL_MONTHLY,
-      delay: true
-    )
+    HidePerenniallyUnavailableProfiles.call(delay: true)
   end
 
   every(
     1.day,
-    'Hide perenially unavailable specialists',
-    at: '12:01',
-    tz: "Pacific Time (US & Canada)",
-    if: lambda { |t| t.day == 1 }
+    'Unschedule practice end for specialists who have returned',
+    at: '00:02',
+    tz: "Pacific Time (US & Canada)"
   ) do
-    HidePerenniallyUnavailableProfiles.call(delay: true)
+    UpdateReturnedSpecialists.call(delay: true)
   end
 end
