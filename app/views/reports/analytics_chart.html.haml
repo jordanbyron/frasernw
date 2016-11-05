@@ -12,24 +12,24 @@
       .annotation{style: "color: #999;"}
         = @annotation
 
-      %div
+      .control-group
         = label_tag "Start month:"
         = select_tag "start_month_key",
-          options_for_select(AnalyticsChartMonths.call, Month.new(2014, 1).to_i),
+          options_for_select(AnalyticsChartMonths.call, Month.new(2014, 1)),
           id: "start_month_key",
           class: "filter"
 
-      %div
+      .control-group
         = label_tag "End Month:"
         = select_tag "end_month_key",
           options_for_select(AnalyticsChartMonths.call, Month.current.to_i),
           id: "end_month_key",
           class: "filter"
 
-      %div
+      .control-group
         = label_tag "User Type:"
         = select_tag "user_type_key",
-          options_for_select(User::TYPES.merge(0 => "All User Types").invert, 0),
+          options_for_select({-1 => "All User Types"}.merge(User::TYPES).invert, -1),
           id: "user_type_key",
           class: "filter"
 

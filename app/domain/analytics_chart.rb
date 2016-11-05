@@ -24,7 +24,7 @@ class AnalyticsChart < ServiceObject
       end_date: Date.current,
       metric: metric,
       divisions: Division.except_provincial,
-      force: true
+      force: force
     )
   end
 
@@ -117,8 +117,10 @@ class AnalyticsChart < ServiceObject
   end
 
   def week_data(week)
-    @weeks_data ||= Hash.new do |hsh, key|
-      hsh[key] = Analytics::ApiAdapter.get(
+    @weeks_data ||= {}
+
+    if @weeks_data[week].nil?
+      @weeks_data[week] = Analytics::ApiAdapter.get(
         start_date: week.start_date,
         end_date: week.end_date,
         metrics: [:page_views, :sessions],
