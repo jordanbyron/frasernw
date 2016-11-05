@@ -464,7 +464,8 @@
                       %li= link_to "User Guide",
                         user_guide.resolved_url,
                         class: 'user_guide_link',
-                        target: "_blank"
+                        target: "_blank",
+                        onclick: "window.pathways.trackContentItem(_gaq, #{user_guide.id})"
                     %li= link_to "Training Videos",
                       videos_path,
                       class: 'videos_link'
