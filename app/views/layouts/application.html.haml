@@ -341,7 +341,7 @@
                             %ul.dropdown-menu
                               - as_administering.each do |division|
                                 %li= link_to "#{division.name}",
-                                  borrowable_content_items(division),
+                                  borrowable_content_items_path(division),
                                   class: "sc_item"
                         - else
                           %li= link_to "Content Items",
