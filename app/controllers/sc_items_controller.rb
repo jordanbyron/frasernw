@@ -106,8 +106,10 @@ class ScItemsController < ApplicationController
 
   def destroy
     @sc_item = ScItem.find(params[:id])
+    redirect_division = @sc_item.division
     @sc_item.destroy
-    redirect_to sc_items_url, notice: "Successfully deleted content item."
+    redirect_to division_content_items_path(redirect_division),
+      notice: "Successfully deleted content item."
   end
 
   def share
