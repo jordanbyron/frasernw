@@ -1,0 +1,13 @@
+- if show_clinic_section?(@clinic, :urgent_referrals)
+  %h6 Urgent Referrals
+
+  - if @clinic.urgent_referrals_via.present?
+    %p
+      %strong Accepted by:
+      = @clinic.urgent_referrals_via
+
+  - if @clinic.red_flags.present?
+    %p
+      %strong Red flags
+      that this clinic feels warrants urgent consultation:
+      = @clinic.red_flags.end_with_period.convert_newlines_to_br

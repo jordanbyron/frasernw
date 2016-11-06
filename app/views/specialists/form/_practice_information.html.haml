@@ -1,0 +1,44 @@
+%h3 Basic Practice Information
+= f.input :works_from_offices,
+  as: :radio_buttons,
+  collection: Specialist::WORKS_FROM_OFFICES_OPTIONS,
+  label_method: :first,
+  value_method: :last,
+  label: "Practice Location"
+= f.input :accepting_new_direct_referrals,
+  label: "Accepting new direct referrals (to offices)?",
+  wrapper_html: { class: "form__wrapper--indented" }
+= f.input :direct_referrals_limited,
+  label: "New direct referrals limited by geography or number of patients?",
+  wrapper_html: { class: "form__wrapper--double-indented" },
+  hint: "Please elaborate in 'practice limitations' (below)"
+- if show_accepts_indirect_referrals?(@specialist)
+  = f.input :accepting_new_indirect_referrals,
+    label: "Accepts referrals through hospitals and/or clinics"
+= f.input :practice_limitations,
+  label: "Practice and referral limitations (if any)",
+  hint: "Will be displayed on profile page in blue header."
+= f.input :practice_details,
+  label: "Additional details about practice and referrals (if any)",
+  hint: "Will be displayed on profile page in blue header."
+
+= f.input :is_gp
+
+- if current_user.as_admin_or_super?
+  = f.input :is_internal_medicine,
+    label: "Show 'Internal Medicine' Tag",
+    hint: "Please only use this tag when linking an Internal Medicine specialist to another specialty in which they do not have a fellowship."
+  = f.input :sees_only_children,
+    label: "Does not see adult patients"
+
+= f.association :specializations,
+  as: :check_boxes,
+  hint: @form_modifier.specializations_hint,
+  disabled: @form_modifier.restrict_editing?,
+  label: @form_modifier.specializations_label_text,
+  checked: ->(specialization){ specialization_checked?(specialization, @specialist, params) }
+- if @form_modifier.show_comment_boxes?
+  = f.input :specializations_comments,
+    label: @form_modifier.specialization_comments_label,
+    input_html: { value: "" },
+    as: :text

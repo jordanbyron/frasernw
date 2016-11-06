@@ -1,0 +1,38 @@
+- clinic_locations = @clinic.clinic_locations.sort_by(&:created_at).reject(&:empty?)
+.btn-group
+  - if clinic_locations.length == 1
+    %a.btn{ href: clinic_location_information_path(@clinic,
+      clinic_locations.first),
+      target: "_blank" }
+      %i.icon-print.icon-text
+      Print Information for Patient
+  - else
+    %a.btn.dropdown-toggle{ href: "#", data: { toggle: "dropdown" } }
+      %i.icon-print.icon-text
+      Print Information for Patient
+      %span.caret
+    %ul.dropdown-menu
+      - clinic_locations.each do |clinic_location|
+        %li
+          %a{ href: clinic_location_information_path(@clinic,
+            clinic_location),
+            target: "_blank" }
+            = clinic_location.location.short_address
+
+  - if !current_user.as_admin_or_super? && (can? :update, @clinic)
+    - if @clinic.review_item.present?
+      %a.btn{ href: "javascript:void(0)",
+        onclick: open_feedback_modal(@clinic) }
+        %i.icon-bullhorn.icon-text
+        Editing is prohibited until current changes are reviewed, but you can
+        still give us feedback!
+    - else
+      = link_to clinic_self_edit_path(@clinic, @clinic.token),
+        class: "btn-primary" do
+        %i.icon-pencil.icon-white
+        Update #{@clinic.name}'s information
+  - else
+    %a.btn{ href: "javascript:void(0)",
+      onclick: open_feedback_modal(@clinic) }
+      %i.icon-bullhorn.icon-text
+      Incorrect Information? Let us know

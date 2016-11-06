@@ -1,4 +1,4 @@
-- set_page_specific_title "Update complete"
+- set_page_specific_title "Update of #{@specialist.formal_name} complete"
 
 .content-wrapper
 
@@ -9,12 +9,7 @@
     changes, and they will be available on Pathways in the near future.
 
   - if current_user
-
     %p.space.no_indent
       In the meantime you may
-      = link_to "return to #{@specialist.name}'s page",
-        @specialist
-      or
-      = link_to "update #{@specialist.name}'s information again",
-        specialist_self_edit_path(@specialist, @specialist.token)
-      if you wanted to make further changes.
+      = link_to @specialist do
+        return to #{@specialist.name}'s page.

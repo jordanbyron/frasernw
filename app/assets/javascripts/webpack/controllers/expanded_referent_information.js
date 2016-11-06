@@ -13,16 +13,18 @@ const ExpandedReferentInformation = React.createClass({
 });
 
 const InnerContent = ({model, record}) => {
-  if (record.statusClassKey === 4){
-    return <noscript/>;
-  }
-  else {
+  if ((record.collectionName === "specialists" && record.isPracticing)||
+    record.collectionName === "clinics" && record.isOpen){
+
     return(
       <ul>
         <NotPerformed record={record}/>
         <MostInterested record={record}/>
       </ul>
     );
+  }
+  else {
+    return <noscript/>;
   }
 }
 

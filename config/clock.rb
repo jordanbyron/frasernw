@@ -59,7 +59,7 @@ module Clockwork
     at: '14:30',
     tz: 'UTC'
   ) do
-    MailAvailabilityNotifications.call(delay: true)
+    MailLeaveEndingNotifications.call(delay: true)
   end
 
   # Mails subscriptions DAILY at 2:30pm UTC (14:30), 6:30 am PST
@@ -100,5 +100,23 @@ module Clockwork
       date_interval: Subscription::INTERVAL_MONTHLY,
       delay: true
     )
+  end
+
+  every(
+    1.day,
+    'Hide perenially unavailable specialists',
+    at: '00:01',
+    tz: "Pacific Time (US & Canada)"
+  ) do
+    HidePerenniallyUnavailableProfiles.call(delay: true)
+  end
+
+  every(
+    1.day,
+    'Unschedule practice end for specialists who have returned',
+    at: '00:02',
+    tz: "Pacific Time (US & Canada)"
+  ) do
+    UpdateReturnedSpecialists.call(delay: true)
   end
 end

@@ -2,7 +2,7 @@ class Division < ActiveRecord::Base
 
   attr_accessible :name,
     :city_ids,
-    :shared_sc_item_ids,
+    :borrowed_sc_item_ids,
     :division_primary_contacts_attributes,
     :use_customized_city_priorities,
     :featured_contents_attributes
@@ -13,7 +13,7 @@ class Division < ActiveRecord::Base
   has_many :division_referral_cities, dependent: :destroy
 
   # # returns all cities in division's local referral area
-  # e.g. d.referral_cities === d.division_referral_cities.map{|drc| drc.city}
+  # e.g. d.referral_cities === d.division_referral_cities.map{ |drc| drc.city }
   has_many :referral_cities, through: :division_referral_cities, source: :city
 
   has_many :division_referral_city_specializations,
@@ -23,7 +23,7 @@ class Division < ActiveRecord::Base
   has_many :users, through: :division_users
 
   has_many :division_display_sc_items, dependent: :destroy
-  has_many :shared_sc_items,
+  has_many :borrowed_sc_items,
     through: :division_display_sc_items,
     source: "sc_item",
     class_name: "ScItem"
@@ -43,6 +43,7 @@ class Division < ActiveRecord::Base
   accepts_nested_attributes_for :division_primary_contacts, allow_destroy: true
 
   has_many :specialization_options, dependent: :destroy
+  has_one :divisional_sc_item_subscription, dependent: :destroy
 
   include PaperTrailable
 
@@ -65,10 +66,6 @@ class Division < ActiveRecord::Base
 
   def self.provincial
     where(name: "Provincial").first
-  end
-
-  def hidden?
-    name == "Vancouver (Hidden)"
   end
 
   def flush_cached_find
@@ -111,7 +108,7 @@ class Division < ActiveRecord::Base
   def local_referral_cities(specialization)
     @local_referral_cities ||= Hash.new do |h, key|
       h[key] = division_referral_city_specializations.
-        includes([:specialization, {division_referral_city: :city}]).
+        includes([:specialization, { division_referral_city: :city }]).
         where(specialization_id: key).map do |drcs|
           drcs.division_referral_city.city
         end.
@@ -135,12 +132,12 @@ class Division < ActiveRecord::Base
     WaitTimeReporter.new(klass, division: self).median
   end
 
-  def shareable_sc_items
-    @shareable_sc_items ||= ScItem.shareable_by_divisions([ self ])
+  def borrowable_sc_items
+    @borrowable_sc_items ||= ScItem.borrowable_by_divisions([ self ])
   end
 
   def borrowed_sc_items
-    @borrowed_sc_items ||= ScItem.shared_in_divisions([ self ])
+    @borrowed_sc_items ||= ScItem.borrowed_by_divisions([ self ])
   end
 
   def refer_to_encompassed_cities!(specialization)
@@ -164,11 +161,12 @@ class Division < ActiveRecord::Base
           memo.merge(drc.city_id => drc.priority)
         end
       else
-        City.order("name DESC").each_with_index.inject({}) do |memo, (city, index)|
-          memo.merge(
-            city.id => index
-          )
-        end
+        City.
+          order("name DESC").
+          each_with_index.
+          inject({}) do |memo, (city, index)|
+            memo.merge(city.id => index)
+          end
       end
     end
   end

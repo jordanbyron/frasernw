@@ -49,24 +49,17 @@ class Hospital < ActiveRecord::Base
 
   def self.all_formatted_for_form(scope = :presence)
     includes_location_data.
-    order("name ASC").
-    select(&scope).
-    map{ |h| ["#{h.name} - #{h.short_address}", h.id] }
+      order("name ASC").
+      select(&scope).
+      map{ |h| ["#{h.name} - #{h.short_address}", h.id] }
   end
 
   def visible?
     city && !(city.hidden?)
   end
 
-  def self.all_real
-  # used for reporting, remove if Vancouver (hidden) artifacts are removed
-    all.reject do |hospital|
-      hospital.divisions.include?(Division.find_by_name("Vancouver (Hidden)"))
-    end
-  end
-
   def self.includes_location_data
-    includes(location: {address: :city})
+    includes(location: { address: :city })
   end
 
   def self.in_cities(cities)

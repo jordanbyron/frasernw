@@ -101,7 +101,7 @@ const labelReferentWaittime = (record, model) => {
   if(shouldUseCustomWaittime(model)){
     return model.
       app.
-      waittimeHash[record.customWaittimes[customWaittimeProcedureId(model)]];
+      waittimeLabels[record.customWaittimes[customWaittimeProcedureId(model)]];
   } else {
     return record.waittime;
   }

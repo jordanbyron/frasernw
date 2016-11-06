@@ -2,74 +2,104 @@
 
 .content-wrapper
 
-  %h2= "#{@division.name} Content Items"
+  %h2= "#{@division.name}'s Owned Content Items"
 
-  - categories = ScCategory.all.reject{ |category| category.parent.present? || category.all_owned_sc_items_in_divisions([@division]).blank? }
+  - categories = ScCategory.all.reject do |category|
+    - category.parent.present? || category.all_owned_sc_items_in_divisions([@division]).blank?
 
   .tabbable
     %ul.nav.nav-tabs
       - categories.each do |category|
         %li
-          %a{"href" => "##{category.name.remove_whitespace}_tab", "data-toggle" => "tab"}= category.name
+          %a{ href: "##{category.name.remove_whitespace}_tab",
+            data: { toggle: "tab"} }= category.name
 
 
     .tab-content
       - categories.each do |category|
-        .tab-pane{"id" => "#{category.name.remove_whitespace}_tab"}
+        .tab-pane{ id: "#{category.name.remove_whitespace}_tab" }
           %table.table.table-condensed.table-striped.tablesorter
             %thead
               %tr.tableheader
-                %th{:class => "{sorter: 'text'}"} Title
-                %th{:class => "{sorter: 'text'}"} Subcategory
-                %th{:class => "{sorter: 'text'}"} Specialties
-                %th{:class => "{sorter: 'text'}"} Type
-                %th{:class => "{sorter: 'text'}", :style => "min-width: 23px"}
-                  %span{show_tooltip(title: "Level of Evidence")} LOE
-                %th{:class => "{sorter: 'text'}", :style => "min-width: 23px"}
-                  %i.icon-search{show_tooltip(title: "Searchable") }
-                %th{:class => "{sorter: 'text'}", :style => "min-width: 23px"}
-                  %i.icon-envelope{show_tooltip(title: "Can be emailed") }
-                %th{:class => "{sorter: 'text'}", :style => "min-width: 23px"}
-                  %i.icon-share-alt{show_tooltip(title: "Shareable") }
-                %th{:class => "{sorter: 'text'}", :style => "min-width: 23px"}
-                  %i.icon-star{show_tooltip(title: "Shared Care")}
+                %th{ class: "{sorter: 'text'}" } Title
+                %th{ class: "{sorter: 'text'}" } Subcategory
+                %th{ class: "{sorter: 'text'}" } Specialties
+                %th{ class: "{sorter: 'text'}" } Type
+                %th{ class: "{sorter: 'text'}", style: "min-width: 23px" }
+                  %span{ show_tooltip(title: "Level of Evidence") } LOE
+                %th{ class: "{sorter: 'text'}", style: "min-width: 23px" }
+                  %i.icon-search{ show_tooltip(title: "Searchable") }
+                %th{ class: "{sorter: 'text'}", style: "min-width: 23px" }
+                  %i.icon-envelope{ show_tooltip(title: "Can be emailed") }
+                %th{ class: "{sorter: 'text'}", style: "min-width: 23px" }
+                  %i.icon-share-alt{ show_tooltip(title: "Borrowable") }
+                %th{ class: "{sorter: 'text'}", style: "min-width: 23px" }
+                  %i.icon-star{ show_tooltip(title: "Shared Care") }
                 %th.admin
 
             %tbody
               - category.all_owned_sc_items_in_divisions([@division]).each do |sc_item|
                 %tr
-                  %td{"width" => "30%"}= link_to sc_item.title, sc_item, :class => 'ajax'
-                  %td= sc_item.sc_category != category ? (link_to sc_item.sc_category.name, sc_item.sc_category, :class => 'ajax') : ""
+                  %td{ width: "30%" }= link_to sc_item.title, sc_item
+                  %td= sc_item.sc_category != category ? (link_to sc_item.sc_category.name,
+                    sc_item.sc_category) : ""
                   %td
                     %ul
                       - sc_item.sc_item_specializations.each do |is|
                         %li
-                          = link_to is.specialization.name, is.specialization, :class => 'ajax'
+                          = link_to is.specialization.name, is.specialization
                           - if is.procedure_specializations.present?
-                            = ":#{is.procedure_specializations.map{ |ps| link_to ps.procedure.name, ps.procedure, :class => 'ajax' }.to_sentence}".html_safe
+                            = "- #{is.procedure_specializations.map{ |ps| link_to ps.procedure.name, ps.procedure }.to_sentence}".html_safe
                             %br
                   %td= sc_item.type
-                  %td= sc_item.evidence.present? ? link_to(sc_item.evidence.level, sc_item.evidence) : ""
-                  %td= sc_item.searchable? ? icon("icon-search", "Searchable") + content_tag(:span, "y", style: "opacity: 0;") : content_tag(:span, "n", style: "opacity: 0;")
-                  %td= sc_item.can_email? ? icon("icon-envelope", "Can be emailed") + content_tag(:span, "y", style: "opacity: 0;") : content_tag(:span, "n", style: "opacity: 0;")
-                  %td= sc_item.shareable? ? icon("icon-share-alt", "Shareable") + content_tag(:span, "y", style: "opacity: 0;") : content_tag(:span, "n", style: "opacity: 0;")
-                  %td= sc_item.shared_care? ? icon("icon-star", "Shared Care") + content_tag(:span, "y", style: "opacity: 0;") : content_tag(:span, "n", style: "opacity: 0;")
-                  %td.admin.btn-group{:style => "min-width: 110;"}
+                  %td= sc_item.evidence.present? ? link_to(sc_item.evidence.level,
+                    sc_item.evidence) : ""
+                  %td= sc_item.searchable? ? icon("icon-search",
+                    "Searchable") + content_tag(:span,
+                    "y",
+                    style: "opacity: 0;") : content_tag(:span,
+                    "n",
+                    style: "opacity: 0;")
+                  %td= sc_item.can_email? ? icon("icon-envelope",
+                    "Can be emailed") + content_tag(:span,
+                    "y",
+                    style: "opacity: 0;") : content_tag(:span,
+                    "n",
+                    style: "opacity: 0;")
+                  %td= sc_item.borrowable? ? icon("icon-share-alt",
+                    "Borrowable") + content_tag(:span,
+                    "y",
+                    style: "opacity: 0;") : content_tag(:span,
+                    "n",
+                    style: "opacity: 0;")
+                  %td= sc_item.shared_care? ? icon("icon-star",
+                    "Shared Care") + content_tag(:span,
+                    "y",
+                    style: "opacity: 0;") : content_tag(:span,
+                    "n",
+                    style: "opacity: 0;")
+                  %td.admin.btn-group{ style: "min-width: 110;" }
                     - if can? :update, sc_item
-                      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_sc_item_path(sc_item), :class => "btn btn-mini ajax")
+                      = link_to edit_sc_item_path(sc_item),
+                        class: "btn btn-mini" do
+                        %i.icon-pencil
+                        Edit
                     - if can? :destroy, sc_item
-                      = link_to("<i class='icon-trash'></i>".html_safe + " Delete", sc_item, :data => { :confirm => "Delete #{sc_item.title}?" }, :method => :delete, :class => "btn btn-mini")
+                      = link_to sc_item,
+                        data: { confirm: "Delete #{sc_item.title}?" },
+                        method: :delete,
+                        class: "btn btn-mini" do
+                        %i.icon-trash
+                        Delete
 
-  %script{"type" => "text/javascript"}
-    :plain
-      $(document).ready(function() {
-        $('.tablesorter').tablesorter({sortList: [[0,0]]});
-        $('[data-toggle="tooltip"]').tooltip();
-      });
-
-
-  %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New Content Item", new_sc_item_path, :class => "btn ajax")
-
+  %p.admin
+    = link_to new_sc_item_path, class: "btn" do
+      %i.icon-plus-sign
+      New Content Item
 
 :javascript
+  $(document).ready(function() {
+    $('.tablesorter').tablesorter({sortList: [[0,0]]});
+    $('[data-toggle="tooltip"]').tooltip();
+  });
   window.pathways.setupTabHistory();

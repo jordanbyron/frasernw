@@ -1,0 +1,53 @@
+.headline-header
+.headline
+  .specialist-image
+    .image{ class: !@specialist.photo.present? && "empty" }
+      - if @specialist.photo.present?
+        %img{ src: @specialist.photo.url(:thumb) }
+  %h2.profile_header__title{ class: (@specialist.hidden? ? "hidden-from-users" : "") }
+    %span= @specialist.name
+    %a{ href: "javascript:void(0)",
+      onclick: "favorite('specialists',#{@specialist.id},'#{escape_javascript(@specialist.name)}')",
+      title: "Favourite / un-favourite" }
+      %i.icon-heart{ id: "user_favorite_specialists_#{@specialist.id}" }
+  - if @specialist.hidden?
+    %h5= " (Hidden from users)"
+  %h3.specialty_links
+    = specialist_specializations_listing(@specialist).html_safe
+  - if @specialist.sex? && @specialist.padded_billing_number.present?
+    %h5= " #{@specialist.sex}, MSP ##{@specialist.padded_billing_number}"
+  - elsif @specialist.sex?
+    %h5= @specialist.sex
+  - elsif @specialist.padded_billing_number.present?
+    %h5= "MSP ##{@specialist.padded_billing_number}"
+
+  %p.space.no_indent
+    %i{ class: @specialist.referral_icon_classes }
+
+    %strong= @specialist.referral_summary
+
+    - if show_specialist_section?(@specialist, :ongoing_care)
+      %p.space.no_indent
+        = "This physician also sees their own patients for ongoing care at " + |
+          "their office listed below." |
+
+    - if @specialist.is_deceased? && @specialist.practice_details.present?
+      %p.no_indent
+        = @specialist.practice_details.end_with_period.convert_newlines_to_br
+
+    - elsif !@specialist.completed_survey?
+      %p.space.no_indent
+        = "They may be out of our current catchment area, or in a speciality we " + |
+          "have yet to fully survey." |
+
+    - if show_specialist_section?(@specialist, :practice_details)
+      %p.space.no_indent
+        %strong Details:
+        = @specialist.practice_details.end_with_period.convert_newlines_to_br
+
+    - if @specialist.practicing? && @specialist.practice_limitations.present?
+      %p.no_indent
+        %strong Limitations:
+        = @specialist.practice_limitations.end_with_period.convert_newlines_to_br
+
+.headline-footer

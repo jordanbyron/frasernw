@@ -1,0 +1,108 @@
+- if show_specialist_section?(@specialist, :office_information)
+  %h6 Office Information
+
+  - specialist_offices = @specialist.specialist_offices.order(:created_at).reject(&:empty?)
+  - specialist_offices.each do |specialist_office|
+    %p.space
+      %strong= specialist_office.phone_only if specialist_office.phone_only.present?
+    %p= "Fax: #{specialist_office.fax}" if specialist_office.fax.present?
+    %p= "Public e-mail (okay for patient use): #{mail_to specialist_office.public_email, specialist_office.public_email, target: '_blank'}".html_safe if specialist_office.public_email.present?
+    %p= "Private e-mail (for physician office use only): #{mail_to specialist_office.email, specialist_office.email, target: '_blank'}".html_safe if specialist_office.email.present?
+    %p= "Website: #{link_to specialist_office.url, specialist_office.url, target: '_blank'}".html_safe if specialist_office.url.present?
+    - if specialist_office.office.present?
+      - num_specialists = specialist_office.office.specialists.reject{ |s| !s.practicing? || s.hidden? }.count
+      - location = specialist_office.office.location
+      - next if !location
+      - address = location.resolved_address
+      - if location.in_hospital?
+        - located_in = location.hospital_in
+        %p
+          = "In #{link_to located_in.name, url_for(located_in)}".html_safe
+          - if located_in.location.present? && located_in.location.in_hospital?
+            - hopsital = located_in.location.hospital_in
+            = "which is in #{link_to hopsital.name, hospital_path(hopsital)}".html_safe
+          = "(#{specialist_office.sector})" if specialist_office.show_sector_info?
+          - if num_specialists > 1
+            with
+            %a.tt{ id: "tt#{specialist_office.office.id}",
+              href: "javascript:void(0)",
+              onclick: "$('#tt#{specialist_office.office.id}').tooltip('toggle')",
+              title: "<ul>#{specialist_office.office.specialists.reject{|s| (s.id == @specialist.id) || !s.practicing? || s.hidden?}.map{|s| "<li>#{link_to "#{s.name} - #{s.specializations.map{ |sp| sp.name }.to_sentence}",
+              specialist_path(s)}</li>"}.join('').html_safe}</ul>",
+              data: { toggle: 'tooltip',
+              'original-title' => 'Can be emailed',
+              placement: 'top',
+              template: "#{template_for_blue_tooltip}".html_safe } }
+              = "#{pluralize(num_specialists-1, 'other')}"
+        %p= link_to address.address,
+          address.map_url,
+          target: "_blank" if address.present? && !address.empty?
+        %p= location.in_details if location.in_details.present?
+      - elsif location.in_clinic?
+        - located_in = location.location_in.locatable
+        - clinic = located_in.clinic
+        %p
+          = "In #{link_to clinic.name, url_for(clinic)}".html_safe
+          - if located_in.location.present? && located_in.location.in_hospital?
+            - hopsital = located_in.location.hospital_in
+            = "which is in #{link_to hopsital.name, hospital_path(hopsital)}".html_safe
+          = "(#{specialist_office.sector})" if specialist_office.show_sector_info?
+          - if num_specialists > 1
+            with
+            %a.tt{ id: "tt#{specialist_office.office.id}",
+              href: "javascript:void(0)",
+              onclick: "$('#tt#{specialist_office.office.id}').tooltip('toggle')",
+              title: "<ul>#{specialist_office.office.specialists.reject{|s| (s.id == @specialist.id) || !s.practicing? || s.hidden?}.map{|s| "<li>#{link_to "#{s.name} - #{s.specializations.map{ |sp| sp.name }.to_sentence}",
+              specialist_path(s)}</li>"}.join('').html_safe}</ul>",
+              data: { toggle: 'tooltip',
+              'original-title' => 'Can be emailed',
+              placement: 'top',
+              template: "#{template_for_blue_tooltip}".html_safe } }
+              = "#{pluralize(num_specialists-1, 'other')}"
+        %p= link_to address.address,
+          address.map_url,
+          target: "_blank" if address.present? && !address.empty?
+        %p= location.in_details if location.in_details.present?
+      - elsif address.present?
+        %p
+          = link_to address.address,
+            address.map_url,
+            target: "_blank"
+          = "(#{specialist_office.sector})" if specialist_office.show_sector_info?
+          - if num_specialists > 1
+            with
+            %a.tt{ id: "tt#{specialist_office.office.id}",
+              href: "javascript:void(0)",
+              onclick: "$('#tt#{specialist_office.office.id}').tooltip('toggle')",
+              title: "<ul>#{specialist_office.office.specialists.reject{|s| (s.id == @specialist.id) || !s.practicing? || s.hidden?}.map{|s| "<li>#{link_to "#{s.name} - #{s.specializations.map{ |sp| sp.name }.to_sentence}",
+              specialist_path(s)}</li>"}.join('').html_safe}</ul>",
+              data: { toggle: 'tooltip',
+              'original-title' => 'Can be emailed',
+              placement: 'top',
+              template: "#{template_for_blue_tooltip}".html_safe } }
+              = "#{pluralize(num_specialists-1, 'other')}"
+    - if specialist_office.location_opened.present?
+      %p
+        This practice opened at this location
+        = specialist_office.location_opened == "Prior to 2010" ? "prior to 2010." : "in #{specialist_office.location_opened}."
+    - if specialist_office.direct_info.present?
+      %p
+        Direct number
+        %em for physician use only:
+        =specialist_office.direct_info
+    - if specialist_office.open_saturday && specialist_office.open_sunday
+      %p Open Saturday and Sunday
+    - elsif specialist_office.open_saturday
+      %p Open Saturday
+    - elsif specialist_office.open_sunday
+      %p Open Sunday
+    %p= "Phone lines open #{specialist_office.phone_schedule.collapsed_days_and_hours_and_breaks.to_sentence}" if specialist_office.phone_schedule.scheduled?
+
+  - if @specialist.languages.present?
+    %p.space
+      = @specialist.languages.map{ |x| "<a href='#{language_path(x)}'>#{x.name}</a>" }.to_sentence.html_safe
+      = "#{@specialist.languages.count == 1 ? 'is' : 'are' } spoken at this practice."
+
+  - if @specialist.interpreter_available
+    %p
+      Interpreter available upon request.

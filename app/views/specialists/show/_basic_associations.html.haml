@@ -1,0 +1,12 @@
+- if show_specialist_section?(@specialist, :basic_associations)
+  %h6 Associations
+
+  - if @specialist.hospitals.present?
+    %p
+      %strong Hospital privileges:
+      != @specialist.hospitals.map{ |hospital| "<a href='#{hospital_path(hospital)}')\">#{hospital.name}</a>" }.to_sentence
+
+  - if @specialist.open_clinics.present?
+    %p
+      %strong Clinic associations:
+      != clinic_associations(@specialist.open_clinics)

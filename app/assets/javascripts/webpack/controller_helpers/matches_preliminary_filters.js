@@ -6,11 +6,8 @@ import { memoizePerRender } from "utils"
 
 export const preliminaryFilterKeys = ((collectionName) => {
   if(_.includes(["specialists", "clinics"], collectionName)){
-
     return [
-      "status",
-      "showInTable",
-      "notHidden"
+      "notHidden",
     ];
   }
   else if (collectionName === "contentItems") {

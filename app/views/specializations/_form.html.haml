@@ -47,11 +47,6 @@
     - open_to_type = specialization_option.present? && specialization_option.open_to_type
     - content_categories = ScCategory.specialty.map{ |category| [category.name, category.id] }
     - content_categories_id = specialization_option.present? && specialization_option.open_to_sc_category.present? ? specialization_option.open_to_sc_category.id : nil
-    - show_specialist_categorization_1 = specialization_option.present? && specialization_option.show_specialist_categorization_1?
-    - show_specialist_categorization_2 = specialization_option.present? && specialization_option.show_specialist_categorization_2?
-    - show_specialist_categorization_3 = specialization_option.present? && specialization_option.show_specialist_categorization_3?
-    - show_specialist_categorization_4 = specialization_option.present? && specialization_option.show_specialist_categorization_4?
-    - show_specialist_categorization_5 = specialization_option.present? && specialization_option.show_specialist_categorization_5?
 
     %hr
     %h4=division.name
@@ -104,41 +99,6 @@
           options_for_select(content_categories, content_categories_id),
           name: "open_to_sc_category[#{division.id}]",
           class: "select"
-
-    .control-group
-      %label.control-label
-        Specialist Categorizations
-      .controls
-        %label.checkbox
-          = check_box_tag "show_specialist_categorization_1[#{division.id}]",
-            "show_specialist_categorization_1[#{division.id}]",
-            show_specialist_categorization_1,
-            name: "show_specialist_categorization_1[#{division.id}]"
-          = Specialist::CATEGORIZATION_LABELS[1]
-        %label.checkbox
-          = check_box_tag "show_specialist_categorization_2[#{division.id}]",
-            "show_specialist_categorization_2[#{division.id}]",
-            show_specialist_categorization_2,
-            name: "show_specialist_categorization_2[#{division.id}]"
-          = Specialist::CATEGORIZATION_LABELS[2]
-        %label.checkbox
-          = check_box_tag "show_specialist_categorization_3[#{division.id}]",
-            "show_specialist_categorization_3[#{division.id}]",
-            show_specialist_categorization_3,
-            name: "show_specialist_categorization_3[#{division.id}]"
-          = Specialist::CATEGORIZATION_LABELS[3]
-        %label.checkbox
-          = check_box_tag "show_specialist_categorization_5[#{division.id}]",
-            "show_specialist_categorization_5[#{division.id}]",
-            show_specialist_categorization_5,
-            name: "show_specialist_categorization_5[#{division.id}]"
-          = Specialist::CATEGORIZATION_LABELS[5]
-        %label.checkbox
-          = check_box_tag "show_specialist_categorization_4[#{division.id}]",
-            "show_specialist_categorization_4[#{division.id}]",
-            show_specialist_categorization_4,
-            name: "show_specialist_categorization_4[#{division.id}]"
-          = Specialist::CATEGORIZATION_LABELS[4]
 
     :javascript
       $(document).ready(function() {

@@ -1,0 +1,58 @@
+#section_associations
+  %h3 Associations
+
+  .content
+
+  - @clinic.clinic_locations.reject{|cl| cl.empty?}.each do |cl|
+
+    %h4 Physicians Who See Patients at #{cl.location.short_address}
+
+    = f.simple_fields_for :clinic_locations, cl do |clf|
+      .row.spaced
+        .span1 Specialist?
+        .span2 Name
+        .span5
+          Area of focus (if not the same for all physicians working in the
+          clinic).
+      = clf.simple_fields_for :attendances do |i|
+        .row.spaced
+          .span1
+            = i.input :is_specialist,
+              label: false,
+              wrapper: :no_wrapper,
+              input_html: { class: "is_specialist span1" }
+          .span2
+            = i.association :specialist,
+              as: :select,
+              label: false,
+              collection: @clinic_specialists,
+              prompt: 'Select ...',
+              wrapper: :no_wrapper,
+              input_html: { class: "specialist_list span2" }
+            = i.input :freeform_firstname,
+              label: false,
+              wrapper: :no_wrapper,
+              input_html: { class: "freeform span2",
+              style: "display:none" }
+          .span5
+            = i.input :area_of_focus,
+              label: false,
+              wrapper: :no_wrapper,
+              input_html: { class: "span5" }
+          .spanhalf
+            = i.hidden_field :_destroy
+            = i.link_to_remove "<i class='icon-minus-sign'></i>".html_safe,
+              class: "spanhalf"
+
+      .row
+        = clf.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another physician",
+          :attendances,
+          class: "btn offset3")
+
+  #section_healthcare_providers
+
+  %hr{ style: "visibility:hidden" }
+
+  = f.association :healthcare_providers,
+    as: :check_boxes,
+    collection: HealthcareProvider.ordered_by_name

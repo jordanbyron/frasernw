@@ -88,7 +88,7 @@ class UsersController < ApplicationController
 
   def validate
     if params.blank? || params[:user].blank?
-      redirect_to login_url
+      redirect_to login_url, alert: "Please complete all fields."
     else
       @user = User.find_by_saved_token(params[:user][:saved_token].downcase)
       if @user.blank?
@@ -104,7 +104,7 @@ class UsersController < ApplicationController
           alert: "Sorry, your access key is no longer active. "\
             "Please <a href='#{contact_path}'>contact us</a>"\
             " to have your account access key reactivated.".
-          html_safe
+            html_safe
       else
         @email = params[:user][:email]
         render action: 'signup', layout: 'user_sessions'
@@ -128,7 +128,9 @@ class UsersController < ApplicationController
             "#{@user.email} and your newly created password. "\
             "Welcome to Pathways!"
       else
-        render action: 'signup', layout: "user_sessions"
+        render action: 'signup',
+          layout: "user_sessions",
+          alert: "Please check all fields and try again."
       end
     else
       redirect_to login_url,
@@ -146,7 +148,9 @@ class UsersController < ApplicationController
       redirect_to root_url,
       notice: "Your name was successfully changed to #{@user.name}."
     else
-      render action: :change_name, layout: 'user_sessions'
+      render action: :change_name,
+        layout: 'user_sessions',
+        alert: "Please check all fields and try again."
     end
   end
 
@@ -162,7 +166,9 @@ class UsersController < ApplicationController
         notice: "Your e-mail address was successfully changed to "\
           "#{@user.email}, please log in again with your new e-mail address."
     else
-      render action: :change_email, layout: 'user_sessions'
+      render action: :change_email,
+        layout: 'user_sessions',
+        alert: "Please check all fields and try again."
     end
   end
 
@@ -178,7 +184,9 @@ class UsersController < ApplicationController
         notice: "Your password was successfully changed, "\
           "please log in again with your new password."
     else
-      render action: :change_password, layout: 'user_sessions'
+      render action: :change_password,
+        layout: 'user_sessions',
+        alert: "Please check all fields and try again."
     end
   end
 
@@ -202,8 +210,11 @@ class UsersController < ApplicationController
 
   def destroy
     @user = User.find(params[:id])
-    @user.destroy
-    redirect_to users_url, notice: "Successfully deleted user."
+    if @user.destroy
+      redirect_to users_url, notice: "Successfully deleted user."
+    else
+      render action: :show, alert: "Failed to delete user."
+    end
   end
 
   private

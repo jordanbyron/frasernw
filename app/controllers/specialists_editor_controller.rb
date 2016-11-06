@@ -2,14 +2,13 @@ class SpecialistsEditorController < ApplicationController
   include ApplicationHelper
   skip_before_filter :require_authentication
   skip_authorization_check
-  before_filter :check_pending, except: [:pending, :temp_edit, :temp_update]
+  before_filter :check_pending, except: [:pending]
   before_filter :check_token
 
   def edit
     @token = params[:token]
     @form_modifier = SpecialistFormModifier.new(:edit, current_user, token: true)
     @specialist = Specialist.find(params[:id])
-    @review_item = @specialist.review_item
     if @specialist.capacities.count == 0
       @specialist.capacities.build
     end
@@ -32,24 +31,24 @@ class SpecialistsEditorController < ApplicationController
 
   def update
     @specialist = Specialist.find(params[:id])
-
-    ReviewItem.delete(@specialist.review_item) if @specialist.review_item.present?
-
     review_item = ReviewItem.new
     review_item.item_type = "Specialist"
     review_item.item_id = @specialist.id
     review_item.base_object = params[:pre_edit_form_data]
-    review_item.object = begin
+    review_item.object =
       if params[:no_updates]
         params[:pre_edit_form_data]
       else
         params.delete(:pre_edit_form_data)
         ReviewItem.encode(params)
       end
-    end
     review_item.set_edit_source!(current_user, params[:secret_token_id])
     review_item.status =
-      params[:no_updates] ? ReviewItem::STATUS_NO_UPDATES: ReviewItem::STATUS_UPDATES
+      if params[:no_updates]
+        ReviewItem::STATUS_NO_UPDATES
+      else
+        ReviewItem::STATUS_UPDATES
+      end
     review_item.save
 
     BuildReviewItemNote.new(
@@ -69,10 +68,11 @@ class SpecialistsEditorController < ApplicationController
 
   def check_pending
     specialist = Specialist.find(params[:id])
-    if specialist.review_item.present? && (
-      !current_user || (specialist.review_item.editor != current_user)
-    )
-      redirect_to specialist_self_pending_path(id: specialist.id, token: params[:token])
+    if specialist.review_item.present?
+      redirect_to specialist_self_pending_path(
+        id: specialist.id,
+        token: params[:token]
+      )
     end
   end
 
@@ -102,5 +102,4 @@ class SpecialistsEditorController < ApplicationController
       l = o.build_location
     end
   end
-
 end

@@ -132,7 +132,7 @@ en:
         title: Content title
         tool: Show in tools menu
         searchable: Searchable (by title)
-        shareable: Shareable with other divisions
+        borrowable: Borrowable by other divisions
         shared_care: From a Shared Care Initiative
         type_mask: Content type
         evidence_id: Level of Evidence
@@ -159,7 +159,7 @@ en:
         sees_only_children: Does not see adult patients
         status_mask: Current status
         status_details: Additional details (if any)
-        practise_limitations: Other practice limitations (if any)
+        practice_limitations: Other practice limitations (if any)
         languages: Languages spoken in the practice
         required_investigations: >
           Required information / investigations for ALL referrals

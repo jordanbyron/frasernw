@@ -1,0 +1,21 @@
+- if current_user.as_admin_or_super?
+  %h6 Review Queue Updates
+  - review_items = ReviewItem.for_clinic(@clinic)
+  %ul
+    - if review_items.present?
+      - review_items.sort{|a,b| b.created_at <=> a.created_at}.each do |review_item|
+        %li
+          = review_item.created_at.strftime('%B %d, %Y')
+          - if review_item.no_updates?
+            = "(#{ReviewItem::STATUS_HASH[review_item.status]})"
+          - elsif review_item.archived?
+            - if review_item.base_object.present?
+              = link_to '(Re-review)',
+                rereview_clinic_path(review_item.item,
+                review_item_id: review_item.id)
+          - else
+            = link_to '(Review)',
+              review_clinic_path(review_item.item,
+              review_item_id: review_item.id)
+    - else
+      %li None

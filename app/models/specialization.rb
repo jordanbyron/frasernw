@@ -20,7 +20,7 @@ class Specialization < ActiveRecord::Base
     through: :procedure_specializations
 
   has_many :sc_item_specializations, dependent: :destroy
-  has_many :sc_items, through: :sc_items_specializations
+  has_many :sc_items, through: :sc_item_specializations
 
   has_many :specialization_options, dependent: :destroy
   accepts_nested_attributes_for :specialization_options
@@ -30,6 +30,7 @@ class Specialization < ActiveRecord::Base
     class_name: "User"
 
   has_many :division_referral_city_specializations, dependent: :destroy
+  has_many :divisional_sc_item_subscriptions
 
   after_commit :flush_cache
   after_touch  :flush_cache
@@ -44,6 +45,10 @@ class Specialization < ActiveRecord::Base
     # since cache_key can act on a subset of Specialization records,
     # sum_of_ids was added to reduce the chance of an incorrect cache hit
     # should two collections ever have matching count / max updated_at values
+  end
+
+  def self.not_family_practice
+    where("specializations.name != 'Family Practice'")
   end
 
   def self.all_cached

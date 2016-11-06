@@ -1,0 +1,36 @@
+- if current_user.as_admin_or_super?
+
+  %p.admin.btn-group
+
+    - if @clinic.review_item.present?
+
+      = link_to review_clinic_path(@clinic), class: "btn" do
+        %i.icon-list-alt
+        Review Pending Changes
+
+    - elsif can? :update, @clinic
+
+      = link_to edit_clinic_path(@clinic), class: "btn" do
+        %i.icon-pencil
+        Edit Clinic
+      = link_to edit_referral_forms_path(parent_type: "Clinic",
+        parent_id: @clinic.id),
+        class: "btn" do
+        %i.icon-file
+        Referral Forms
+      %a.btn{ href: "javascript:void(0)",
+        data: { toggle: "collapse", target: "#share" } }
+        %i.icon-share
+        Share
+    - if can? :view_history, @clinic
+      = large_history_button(@clinic)
+
+    - if can? :destroy, @clinic
+      = delete_button(clinic_path(@clinic), "Delete #{@clinic.name}?")
+
+      #share.collapse
+
+- if current_user.as_admin_or_super? && !current_user.as_super_admin?
+  .alert.alert-info{ style: "margin-top: 10px" }
+    If you would like to have this clinic deleted, please contact a
+    provincial administrator.

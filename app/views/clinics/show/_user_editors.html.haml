@@ -1,0 +1,13 @@
+- if current_user.as_admin_or_super?
+  - if @clinic.user_controls_clinics.any?
+    %h6 Users that can edit this clinic
+    %ul
+      - @clinic.user_controls_clinics.each do |control|
+        %li
+          = link_to control.user.name,
+            control.user,
+            class: (!control.user.active && "hidden-from-users")
+          - if !control.last_visited.nil?
+            %span= "(Last visited this page on #{control.formatted_last_visited}.)"
+          - if !control.user.active
+            %span= "(inactive)"

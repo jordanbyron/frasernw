@@ -1,14 +1,14 @@
 class CourtesyMailer < ActionMailer::Base
   default from: "noreply@pathwaysbc.ca"
 
-  def availability_update(user_id, specialist_id)
+  def leave_ending(user_id, specialist_id)
     @user = User.find(user_id)
     @specialist = Specialist.find(specialist_id)
 
     mail(
       to: @user.email,
       from: 'noreply@pathwaysbc.ca',
-      subject: "Pathways: Peroid of unavailability ended [Availability Update]"
+      subject: "Pathways: Specialist leave ending"
     )
   end
 

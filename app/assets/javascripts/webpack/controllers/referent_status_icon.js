@@ -7,7 +7,7 @@ const ReferentStatusIcon = React.createClass({
         placement: "right",
         trigger: "hover",
         animation: "true",
-        title: tooltipLabel(this.props.model, this.props.record),
+        title: this.props.model.app.referralTooltips[this.props.record.referralIconKey],
         container: elemId(this.props.record),
       });
     }
@@ -22,25 +22,14 @@ const ReferentStatusIcon = React.createClass({
             props.
             model.
             app.
-            referentStatusIcons[this.props.record.statusClassKey]
+            referralIcons[this.props.record.referralIconKey]
           }
       />
     );
   }
 });
 
-const tooltipLabel = (model, record) => {
-  return model.
-    app.
-    tooltips[record.collectionName][record[tooltipLabelKey(record)]];
-}
 
-const tooltipLabelKey = (record) => {
-  return {
-    specialists: "statusClassKey",
-    clinics: "statusMask",
-  }[record.collectionName];
-};
 
 const elemId = (record) => {
   return `${record.collectionName}${record.id}-status-icon`

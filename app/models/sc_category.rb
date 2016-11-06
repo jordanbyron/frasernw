@@ -82,7 +82,7 @@ class ScCategory < ActiveRecord::Base
       WHERE "sc_items"."division_id" IN (:division_ids)
       OR (
         "division_display_sc_items"."division_id" IN (:division_ids) AND
-        "sc_items"."shareable" = 't'
+        "sc_items"."borrowable" = 't'
       )
     SQL
   end
@@ -116,23 +116,23 @@ class ScCategory < ActiveRecord::Base
         sc_items.
         includes_specialization_data.
         includes([:sc_category, :division]).
-        shareable
+        borrowable
       )
     end
   end
 
   def all_owned_sc_items_in_divisions(divisions)
-    items = sc_items.owned_in_divisions(divisions)
+    items = sc_items.owned_by_divisions(divisions)
     self.children.each do |child|
       items += child.all_owned_sc_items_in_divisions(divisions)
     end
     items
   end
 
-  def all_shared_sc_items_in_divisions(divisions)
-    items = sc_items.shared_in_divisions(divisions)
+  def all_borrowed_sc_items_in_divisions(divisions)
+    items = sc_items.borrowed_by_divisions(divisions)
     self.children.each do |child|
-      items += child.all_shared_sc_items_in_divisions(divisions)
+      items += child.all_borrowed_sc_items_in_divisions(divisions)
     end
     items
   end
@@ -159,6 +159,6 @@ class ScCategory < ActiveRecord::Base
   end
 
   def items_borrowable_by_division(division)
-    all_borrowable_sc_items - division.shareable_sc_items
+    all_borrowable_sc_items - division.borrowable_sc_items
   end
 end

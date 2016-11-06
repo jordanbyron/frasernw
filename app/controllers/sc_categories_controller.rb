@@ -8,9 +8,6 @@ class ScCategoriesController < ApplicationController
 
   def show
     @sc_category = ScCategory.find(params[:id])
-    @init_data = {
-      app: FilterTableAppState.call
-    }
   end
 
   def new

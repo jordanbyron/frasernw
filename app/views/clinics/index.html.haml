@@ -11,15 +11,15 @@
     %ul#content_tabs.nav.nav-tabs
       - Division.all.each do |division|
         %li
-          %a{"href" => "##{division.id}_tab", "data-toggle" => "tab"}
+          %a{ href: "##{division.id}_tab", data: { toggle: "tab" } }
             = division.name
       %li
-        %a{"href" => "#no_division_tab", "data-toggle" => "tab"} No Division
+        %a{ href: "#no_division_tab", data: { toggle: "tab" } } No Division
 
     .tab-content
       - Division.all.each do |division|
         - can_edit = user_divisions.include? division
-        .tab-pane{:id => "#{division.id}_tab"}
+        .tab-pane{ id: "#{division.id}_tab" }
           %table.table.table-condensed.table-striped
             - @specializations.each do |specialization|
               - clinics = specialization.clinics.in_divisions([division]).sort do |a,b|
@@ -34,10 +34,16 @@
                   %td= link_to clinic.name, clinic_path(clinic)
                   - if can_edit
                     %td{ style: "min-width: 60px" }
-                      = link_to edit_clinic_path(clinic),
-                        class: "btn btn-mini" do
-                        %i.icon-pencil
-                        %span= " Edit"
+                      - if clinic.review_item.present?
+                        = link_to review_clinic_path(clinic),
+                          class: "btn btn-mini" do
+                          %i.icon-list-alt
+                          Review Pending Changes
+                      - else
+                        = link_to edit_clinic_path(clinic),
+                          class: "btn btn-mini" do
+                          %i.icon-pencil
+                          Edit
 
             - if Clinic.no_specialization.in_divisions([division]).any?
               %tr
@@ -49,15 +55,21 @@
                   %td= link_to clinic.name, clinic_path(clinic)
                   - if can_edit
                     %td{ style: "min-width: 60px" }
-                      = link_to edit_clinic_path(clinic),
-                        class: "btn btn-mini" do
-                        %i.icon-pencil
-                        %span= " Edit"
+                      - if clinic.review_item.present?
+                        = link_to review_clinic_path(clinic),
+                          class: "btn btn-mini" do
+                          %i.icon-list-alt
+                          Review Pending Changes
+                      - else
+                        = link_to edit_clinic_path(clinic),
+                          class: "btn btn-mini" do
+                          %i.icon-pencil
+                          Edit
 
       .tab-pane{ id: "no_division_tab" }
         %table.table.table-condensed.table-striped
           - @specializations.each do |specialization|
-            - if specialization.clinics.no_division?
+            - if specialization.clinics.no_division.any?
               %tr
                 %th{ style: "width:100%" }= specialization.name
                 %th.admin
@@ -67,10 +79,16 @@
                   %td= link_to clinic.name, clinic_path(clinic)
                   - if can? :manage, clinic
                     %td{ style: "min-width: 60px" }
-                      = link_to edit_clinic_path(clinic),
-                        class: "btn btn-mini" do
-                        %i.icon-pencil
-                        %span= " Edit"
+                      - if clinic.review_item.present?
+                        = link_to review_clinic_path(clinic),
+                          class: "btn btn-mini" do
+                          %i.icon-list-alt
+                          Review Pending Changes
+                      - else
+                        = link_to edit_clinic_path(clinic),
+                          class: "btn btn-mini" do
+                          %i.icon-pencil
+                          Edit
 
           - if Clinic.no_specialization.any?
             %tr
@@ -82,10 +100,16 @@
                 %td= link_to clinic.name, clinic_path(clinic)
                 - if can? :manage, clinic
                   %td{ style: "min-width: 60px" }
-                    = link_to edit_clinic_path(clinic),
-                      class: "btn btn-mini" do
-                      %i.icon-pencil
-                      %span= " Edit"
+                    - if clinic.review_item.present?
+                      = link_to review_clinic_path(clinic),
+                        class: "btn btn-mini" do
+                        %i.icon-list-alt
+                        Review Pending Changes
+                    - else
+                      = link_to edit_clinic_path(clinic),
+                        class: "btn btn-mini" do
+                        %i.icon-pencil
+                        Edit
 
 :javascript
   window.pathways.setupTabHistory();

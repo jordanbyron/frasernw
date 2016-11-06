@@ -1,0 +1,62 @@
+#section_referrals
+
+  %hr
+
+  %h3 Referral Details
+  %label How does the office accept requests for standard referrals?
+  = f.input :referral_fax, as: :boolean, wrapper: :bootstrap_tight
+  = f.input :referral_phone, as: :boolean, wrapper: :bootstrap_tight
+  = f.input :referral_other_details
+  = f.input :referral_details
+  = f.input :referral_form_mask,
+    as: :radio_buttons,
+    collection: Specialist::BOOLEAN_HASH,
+    label_method: :last,
+    value_method: :first,
+    label: "Does the office have a referral form?",
+    hint: @form_modifier.token_edit? ? "If you would like to add or correct any referral forms, please email them to #{ @specialist.owners.map{|owner| "#{owner.name} at #{mail_to owner.email}"}.join(' or ') }".html_safe : ""
+
+  - if @form_modifier.token_edit? && @specialist.referral_form_mask == 1 && @specialist.referral_forms.reject{ |referral_form| referral_form.form.blank? }.present?
+
+    .control-group
+      .controls
+
+        %ul
+          - @specialist.referral_forms.each do |referral_form|
+            - next if not referral_form.form.present?
+            - type = referral_form.form_content_type.split('/').last
+            %li
+              = link_to "#{referral_form.description} (#{type})",
+                referral_form.form.url,
+                target: "_blank"
+
+  = f.input :lagtime_mask,
+    as: :select,
+    collection: Specialist::LAGTIME_LABELS,
+    label_method: :last,
+    value_method: :first
+
+  = f.input :waittime_mask,
+    as: :select,
+    collection: Specialist::WAITTIME_LABELS,
+    label_method: :last,
+    value_method: :first
+
+  %label Our office will respond to referral requests:
+  = f.input :respond_by_fax, as: :boolean, wrapper: :bootstrap_tight
+  = f.input :respond_by_phone, as: :boolean, wrapper: :bootstrap_tight
+  = f.input :respond_by_mail, as: :boolean, wrapper: :bootstrap_tight
+  = f.input :respond_to_patient, as: :boolean
+
+  = f.input :patient_can_book_mask,
+    as: :radio_buttons,
+    collection: Specialist::BOOLEAN_HASH,
+    label_method: :last,
+    value_method: :first
+  = f.input :red_flags, as: :text
+
+  %label Optimal method of referral for urgent appointments:
+  = f.input :urgent_fax, as: :boolean, wrapper: :bootstrap_tight
+  = f.input :urgent_phone, as: :boolean, wrapper: :bootstrap_tight
+  = f.input :urgent_other_details
+  = f.input :urgent_details

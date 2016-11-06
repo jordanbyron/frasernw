@@ -15,18 +15,15 @@ module SeedCreators
       end,
       status_mask: Proc.new{ (rand() < 0.9) ? 1 : (1..7).to_a.except(3).sample },
       limitations: Proc.new{ "Not wheelchair accessible" },
-      location_opened_old: Proc.new{ "seeded_location_opened_old"},
       required_investigations: Proc.new{ "Complete medical history." },
       not_performed: Proc.new{ "Vaccinations" },
       referral_fax: Proc.new{ [true, false].sample },
       referral_phone: Proc.new{ [true, false].sample },
       referral_other_details: Proc.new{ "Some details." },
-      referral_form_old: Proc.new{ true },
       respond_by_fax: Proc.new{ [true, false].sample },
       respond_by_phone: Proc.new{ [true, false].sample },
       respond_by_mail: Proc.new{ [true, false].sample },
       respond_to_patient: Proc.new{ [true, false].sample },
-      patient_can_book_old: Proc.new{ [true, false].sample },
       red_flags: Proc.new{ "Oncology" },
       urgent_fax: Proc.new{ [true, false].sample },
       urgent_phone: Proc.new{ [true, false].sample },
@@ -52,11 +49,15 @@ module SeedCreators
       saved_token: Proc.new{ "seeded_saved_token"},
       interpreter_available: Proc.new { [true, false].sample },
       deprecated_contact_details: Proc.new{ "Some details." },
-      status_details: Proc.new{ "Some details." },
+      practice_details: Proc.new{ "Some details." },
       deprecated_url: Proc.new{ "http://www.google.ca" },
       deprecated_email: Proc.new{ Faker::Internet.email },
-      unavailable_from: Proc.new{ rand(Date.civil(2012, 1, 26)..Date.civil(2017, 4, 1)) },
-      hidden: :pass_through
+      closure_date: Proc.new{ rand(Date.civil(2012, 1, 26)..Date.civil(2017, 4, 1)) },
+      closure_scheduled: Proc.new{ false },
+      hidden: :pass_through,
+      completed_survey: Proc.new{ true },
+      accepting_new_referrals: Proc.new{ rand() < 0.9 },
+      referrals_limited: Proc.new{ rand() < 0.05 }
     }
   end
 end

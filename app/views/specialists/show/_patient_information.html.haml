@@ -1,0 +1,11 @@
+- if show_specialist_section?(@specialist, :patient_information)
+  %h6 Patient Information
+
+  -if @specialist.patient_instructions.present?
+    %p.space
+      %strong Patient instructions:
+      = @specialist.patient_instructions.end_with_period.convert_newlines_to_br
+  -if @specialist.cancellation_policy.present?
+    %p.space
+      %strong Cancellation policy:
+      = @specialist.cancellation_policy.end_with_period.convert_newlines_to_br

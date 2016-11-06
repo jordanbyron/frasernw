@@ -1,0 +1,20 @@
+#section_for_patients
+
+  %hr
+
+  %h3 Information for Patients
+
+  .alert.alert-info
+    %p.no_indent
+      Please note: the following information will be made available to
+      patients when the 'Print Information for Patients' button is used.
+
+  = f.input :patient_instructions,
+    hint: "e.g. call two days in advance to confirm, bring a list of medications."
+  = f.input :cancellation_policy
+
+#section_associations
+
+  - if current_user.as_admin_or_super? && !@form_modifier.token_edit?
+
+    %hr

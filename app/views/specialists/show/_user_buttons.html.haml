@@ -1,0 +1,59 @@
+- specialist_offices = @specialist.non_empty_offices
+
+.btn-group
+  - if specialist_offices.one? && !@specialist.print_clinic_info?
+    %a.btn{ href: specialist_office_information_path(@specialist,
+      specialist_offices.first),
+      target: "_blank" }
+      %i.icon-print.icon-text
+      Print Information for Patient
+  - elsif specialist_offices.none? && @specialist.print_clinic_info? && @specialist.valid_clinic_locations.one?
+    - clinic_location = @specialist.valid_clinic_locations.first
+    %a.btn{ href: specialist_clinic_information_path(@specialist,
+      clinic_location.clinic,
+      clinic_location),
+      target: "_blank" }
+      %i.icon-print.icon-text
+      Print Information for Patient
+  - else
+    %a.btn.dropdown-toggle{ href: "#", "data-toggle" => "dropdown" }
+      %i.icon-print.icon-text
+      Print Information for Patient
+      %span.caret
+    %ul.dropdown-menu.specialist-dropdown__menu
+      - if specialist_offices.any?
+        - specialist_offices.each do |specialist_office|
+          - next if specialist_office.office.blank?
+          %li
+            %a{ href: specialist_office_information_path(@specialist,
+              specialist_office),
+              target: "_blank" }
+              #{@specialist.formal_name}'s office at #{specialist_office.office.short_address}
+      - if @specialist.print_clinic_info?
+        - @specialist.valid_clinic_locations.each do |clinic_location|
+          %li
+            = link_to "#{clinic_location.clinic.name}, at #{clinic_location.resolved_address.address1}",
+              href: specialist_clinic_information_path(@specialist, clinic_location.clinic, clinic_location),
+              target: "_blank"
+
+  - if !current_user.as_admin_or_super? && (can? :update, @specialist)
+    - if @specialist.review_item.present?
+      %a.btn{ href: "javascript:void(0)",
+        onclick: open_feedback_modal(@specialist) }
+        %i.icon-bullhorn.icon-text
+        Editing is prohibited until current changes are reviewed, but you can
+        still give us feedback!
+    - else
+      %a.btn.btn-primary{ href: specialist_self_edit_path(@specialist,
+        @specialist.token) }
+        %i.icon-pencil.icon-white
+        Update #{@specialist.name}'s information
+  - else
+    %a.btn{ href: "javascript:void(0)",
+      onclick: open_feedback_modal(@specialist) }
+      %i.icon-bullhorn.icon-text
+      Incorrect Information? Let us know
+  - if !current_user.as_admin_or_super? && (can? :update, @specialist)
+    %a.btn{ href: photo_specialist_path(@specialist) }
+      %i.icon-picture.icon-white
+      #{@specialist.photo.present? ? "Change" : "Add"} #{@specialist.name}'s photo

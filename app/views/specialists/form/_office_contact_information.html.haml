@@ -1,0 +1,158 @@
+#section_contact
+
+  %hr
+
+  %h3 Office Contact Information
+
+  .tabbable.location_tabs
+    %ul.nav.nav-tabs
+      - @specialist.ordered_specialist_offices.each_with_index do |so, index|
+        = tablist_item active: index == 0,
+          emphasized: !so.empty?,
+          class: ["location_#{index}"] do
+          %a{ href: "#location_tab_#{index}", data: { toggle: "tab" } }
+            %span
+              = "Location #{index+1}"
+
+  .tab-content
+    - index = 0
+    = f.simple_fields_for :specialist_offices,
+      @specialist.ordered_specialist_offices,
+      nested_wrapper: false do |so|
+      .tab-pane{ class: (index == 0) ? "active" : "",
+        id: "location_tab_#{index}" }
+        .control-group{ style: (!so.object.empty? && @form_modifier.token_edit? ? "visibility: hidden; position: absolute;" : "") }
+          = so.input :location_is,
+            as: :radio_buttons,
+            collection: so.object.location_is_options,
+            label_method: :last,
+            value_method: :first,
+            input_html: { class: "location_is", "data-location-index" => index }
+        %div{ class: "numbers_#{index}" }
+          = so.input :phone do
+            = so.input_field :phone, class: "span3"
+            .span1
+              ext:
+            = so.input_field :phone_extension, class: "span1"
+          = so.input :fax, input_html: { class: "span3" }
+          = so.input :direct_phone, hint: "For physician use only" do
+            = so.input_field :direct_phone, class: "span3"
+            .span1
+              ext:
+            = so.input_field :direct_phone_extension, class: "span1"
+          = so.input :email,
+            input_html: { class: "span3" },
+            hint: "For physician office use only"
+          = so.input :public_email,
+            input_html: { class: "span3" },
+            hint: "Okay for patient use to contact your office"
+          = so.input :url,
+            input_html: { class: "span3" },
+            hint: "Remember 'http://'"
+        %div{ class: "office_#{index}" }
+          = so.association :office,
+            as: :select,
+            collection: @offices,
+            include_blank: true,
+            input_html: { class: "chzn-select" },
+            disabled: @form_modifier.restrict_editing?
+          - if @form_modifier.show_comment_boxes?
+            = so.input :comments,
+              label: "If you have any updates to this office, or the office has closed, please provide details here.",
+              input_html: { value: "" },
+              as: :text
+        = so.simple_fields_for :office, nested_wrapper: false do |o|
+          - next unless so.object.new_record?
+          = o.simple_fields_for :location, nested_wrapper: false do |l|
+            %div{ class: "address_#{index}" }
+              = l.simple_fields_for :address do |a|
+                = a.input :suite, input_html: { class: "span1" }
+                = a.input :address1
+                = a.input :address2
+                = a.association :city,
+                  as: :select,
+                  collection: City.all_formatted_for_select,
+                  include_blank: true
+                = a.input :postalcode, input_html: { class: "span1" }
+            %div{ class: "hospital_#{index}" }
+              = l.association :hospital_in,
+                as: :select,
+                collection: Hospital.all_formatted_for_select,
+                include_blank: true
+            %div{ class: "clinic_#{index}" }
+              = l.association :location_in,
+                as: :select,
+                collection: @specializations_clinics,
+                include_blank: true
+            %div{ class: "details_#{index}" }
+              = l.input :suite_in, input_html: { class: "span1" }
+              = l.input :details_in
+        %div{ class: "universal_#{index}" }
+          = so.input :open_saturday, wrapper: :bootstrap_tight
+          = so.input :open_sunday
+          = so.input :location_opened,
+            as: :select,
+            collection: (["Prior to 2010"] + (2010..Time.now.year+1).to_a),
+            prompt: "Select ..."
+
+          - Sectorable::SECTORS.each do |sector|
+            - if sector == :public && so.object.new_record?
+              = so.input sector,
+                label: sector.to_s.capitalize,
+                as: :boolean,
+                input_html: { class: "sector_type_input", checked: true }
+            - else
+              = so.input sector,
+                label: sector.to_s.capitalize,
+                as: :boolean,
+                input_html: { class: "sector_type_input" }
+
+          %h4 What days and times are your phone lines open?
+          = so.simple_fields_for :phone_schedule,
+            nested_wrapper: false do |s|
+            - [:monday,
+              :tuesday,
+              :wednesday,
+              :thursday,
+              :friday,
+              :saturday,
+              :sunday].each do |day|
+              = s.simple_fields_for day, nested_wrapper: false do |d|
+                .changed_wrapper
+                  = d.input :scheduled,
+                    label: day.to_s.capitalize_first_letter,
+                    wrapper: :bootstrap_tight do
+                    = d.input_field :scheduled, class: "scheduled span1"
+                    .hours
+                      .changed_wrapper
+                        .from from
+                        = d.input_field :from,
+                          class: "auto",
+                          minute_step: 15,
+                          include_blank: true
+                      .changed_wrapper
+                        .to to
+                        = d.input_field :to,
+                          class: "auto",
+                          minute_step: 15,
+                          include_blank: true
+                    .break
+                      .changed_wrapper
+                        .from closed for lunch from
+                        = d.input_field :break_from,
+                          class: "auto",
+                          minute_step: 15,
+                          include_blank: true
+                      .changed_wrapper
+                        .to to
+                        = d.input_field :break_to,
+                          class: "auto",
+                          minute_step: 15,
+                          include_blank: true
+
+        - index += 1
+
+- if @form_modifier.admin_review? || @form_modifier.admin_rereview?
+  = f.input :address_update,
+    label: "DEPRECATED old address comments field (this field is no longer provided to users, see new 'per office' fields above)",
+    input_html: { value: "" }

@@ -7,15 +7,16 @@ import matchesPreliminaryFilters from "controller_helpers/matches_preliminary_fi
 
 const recordsMaskingFilters = ((model) => {
   if (route === "/specialties/:id" &&
-    _.includes(["clinics", "specialists"], selectedTabKey(model)) &&
-    recordShownByRoute(model).maskFiltersByReferralArea) {
+    recordShownByRoute(model).maskFiltersByReferralArea &&
+    _.includes(["specialists", "clinics"], selectedTabKey(model))){
+
     return scopedByRouteAndTab(model).
       filter((record) => {
         return matchesPreliminaryFilters(record, model);
       }).filter((record) => {
         return _.intersection(record.cityIds, referralCityIds(model)).
           pwPipe(_.some);
-      })
+      });
   }
   else {
     return scopedByRouteAndTab(model).filter((record) => {
