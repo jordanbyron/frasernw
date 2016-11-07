@@ -86,10 +86,4 @@ module SpecialistsHelper
         Specialization.find_by(name: "Family Practice").id
     end
   end
-
-  def filter_profiles(specialization, profiles)
-    profiles.select do |profile|
-      profile.specializations.include?(specialization)
-    end
-  end
 end
