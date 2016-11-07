@@ -147,6 +147,8 @@ class Specialist < ActiveRecord::Base
   after_commit :expire_cache
   after_touch  :expire_cache
 
+  scope :hidden, -> { where(hidden: true) }
+
   def self.with_cities
     includes({
       hospitals: { location: {address: :city } },

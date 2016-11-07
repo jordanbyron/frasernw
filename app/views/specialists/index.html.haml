@@ -1,15 +1,11 @@
 - set_page_specific_title "Specialists"
 
 .content-wrapper
-  - if params[:specialization_id].present?
-    %h2
-      %span= "All"
-      %span= @specialization.member_name.pluralize
-      %small= "#{@specialization.specialists.count} total)"
-  - else
-    %h2
-      %span= "All Specialists"
-      %small= "(#{Specialist.count} total)"
+  %h2
+    %span= params[:hidden] ? "Hidden" : "All"
+    %span= params[:specialization_id] ? @specialization.member_name.pluralize : "Specialists"
+    %small= "(#{@specialists.count} total)"
+
   .tabbable
     %ul#content_tabs.nav.nav-tabs
       - @divisions_specialists.each do |division, specialists|

@@ -25,6 +25,10 @@ class SpecialistsController < ApplicationController
       @specialists = Specialist.includes(:specializations)
     end
 
+    if params[:hidden]
+      @specialists = @specialists.hidden
+    end
+
     @divisions_specialists = Division.all.map do |division|
       division_specialists = @specialists.in_divisions(division)
 
