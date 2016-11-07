@@ -20,7 +20,7 @@
 
           = render "specialists/show/urgent_referrals"
 
-          - if @specialist.working? && @specialist.teleservices.any?(&:offered?)
+          - if @specialist.practicing? && @specialist.teleservices.any?(&:offered?)
             = render "teleservices/index", provider: @specialist
 
           = render "specialists/show/patient_information"

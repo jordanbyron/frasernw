@@ -46,7 +46,7 @@ class LatestUpdates < ServiceObject
   def self.for(context, divisions)
     call(
       max_automatic_events: MAX_EVENTS[context],
-      division_ids: divisions.reject(&:hidden?).map(&:id),
+      division_ids: divisions.map(&:id),
       show_hidden: SHOW_HIDDEN[context]
     )
   end
@@ -87,25 +87,27 @@ class LatestUpdates < ServiceObject
   end
 
   def manual_events
-    NewsItem.specialist_clinic_in_divisions(divisions).inject([]) do |memo, news_item|
-      if news_item.title.present?
-        memo << {
-          markup: BlueCloth.
-            new("#{news_item.title}. #{news_item.body}").
-            to_html.html_safe,
-          manual: true,
-          hidden: false,
-          date: (news_item.start_date || news_item.end_date)
-        }
-      else
-        memo << {
-          markup: BlueCloth.new(news_item.body).to_html.html_safe,
-          manual: true,
-          hidden: false,
-          date: (news_item.start_date || news_item.end_date)
-        }
+    NewsItem.
+      specialist_clinic_in_divisions(divisions).
+      inject([]) do |memo, news_item|
+        if news_item.title.present?
+          memo << {
+            markup: BlueCloth.
+              new("#{news_item.title}. #{news_item.body}").
+              to_html.html_safe,
+            manual: true,
+            hidden: false,
+            date: (news_item.start_date || news_item.end_date)
+          }
+        else
+          memo << {
+            markup: BlueCloth.new(news_item.body).to_html.html_safe,
+            manual: true,
+            hidden: false,
+            date: (news_item.start_date || news_item.end_date)
+          }
+        end
       end
-    end
   end
 
   extend ActionView::Helpers::UrlHelper
@@ -114,44 +116,52 @@ class LatestUpdates < ServiceObject
   MARKUP = {
     "Specialist" => {
       moved_away: -> (specialist) {
-        specialist_link = link_to(specialist.name, "/specialists/#{specialist.id}")
+        specialist_link =
+          link_to(specialist.name, "/specialists/#{specialist.id}")
         moved_away =
-          "(#{specialist.specializations.map{ |s| s.name }.to_sentence}) has moved away."
+          "(#{specialist.specializations.map{ |s| s.name }.to_sentence}) has "\
+            "moved away."
 
         "#{specialist_link} #{moved_away}".html_safe
       },
       retired: -> (specialist) {
-        specialist_link = link_to(specialist.name, "/specialists/#{specialist.id}")
+        specialist_link =
+          link_to(specialist.name, "/specialists/#{specialist.id}")
         retired =
-          "(#{specialist.specializations.map{ |s| s.name }.to_sentence}) has retired."
+          "(#{specialist.specializations.map{ |s| s.name }.to_sentence}) has "\
+            "retired."
 
         "#{specialist_link} #{retired}".html_safe
       },
       retiring: -> (specialist) {
-        specialist_link = link_to(specialist.name, "/specialists/#{specialist.id}")
+        specialist_link =
+          link_to(specialist.name, "/specialists/#{specialist.id}")
         is_retiring =
           "(#{specialist.specializations.map{ |s| s.name }.to_sentence}) is retiring "\
-            "on #{specialist.unavailable_from.to_s(:long_ordinal)}"
+            "on #{specialist.practice_end_date.to_s(:long_ordinal)}"
 
         "#{specialist_link} #{is_retiring}".html_safe
       },
       opened_recently: -> (specialist, specialist_offices) {
         office_link =
-          link_to("#{specialist.name}'s office", "/specialists/#{specialist.id}")
+          link_to(
+            "#{specialist.name}'s office",
+            "/specialists/#{specialist.id}"
+          )
         opening_cities =
           specialist_offices.map(&:city).select(&:present?).map(&:name).uniq
 
         if opening_cities.any?
           recently_opened =
-            "(#{specialist.specializations.map{ |s| s.name }.to_sentence}) has "\
-              "recently opened in #{opening_cities.to_sentence} and is accepting "\
-              "new referrals."
+            "(#{specialist.specializations.map{ |s| s.name }.to_sentence}) has"\
+              " recently opened in #{opening_cities.to_sentence} and is "\
+              "accepting new referrals."
 
           "#{office_link} #{recently_opened}".html_safe
         else
           recently_opened =
-            "(#{specialist.specializations.map{ |s| s.name }.to_sentence}) has "\
-              "recently opened and is accepting new referrals."
+            "(#{specialist.specializations.map{ |s| s.name }.to_sentence}) has"\
+              " recently opened and is accepting new referrals."
 
           "#{office_link} #{recently_opened}".html_safe
         end
@@ -160,18 +170,20 @@ class LatestUpdates < ServiceObject
     "Clinic" => {
       opened_recently: -> (clinic, clinic_locations) {
         clinic_link = link_to(clinic.name, "/clinics/#{clinic.id}")
-        opening_cities = clinic_locations.map(&:city).select(&:present?).map(&:name).uniq
+        opening_cities =
+          clinic_locations.map(&:city).select(&:present?).map(&:name).uniq
 
         if opening_cities.any?
           recently_opened =
-            "(#{clinic.specializations.map{ |s| s.name }.to_sentence}) has recently "\
-              "opened in #{opening_cities.to_sentence} and is accepting new referrals."
+            "(#{clinic.specializations.map{ |s| s.name }.to_sentence}) has "\
+              "recently opened in #{opening_cities.to_sentence} and is "\
+              "accepting new referrals."
 
           "#{clinic_link} #{recently_opened}".html_safe
         else
           recently_opened =
-            "(#{clinic.specializations.map{ |s| s.name }.to_sentence}) has recently "\
-              "opened and is accepting new referrals."
+            "(#{clinic.specializations.map{ |s| s.name }.to_sentence}) has "\
+              "recently opened and is accepting new referrals."
 
           "#{clinic_link} #{recently_opened}".html_safe
         end
@@ -184,9 +196,11 @@ class LatestUpdates < ServiceObject
       memo + LatestUpdates.automatic(division, force: force_automatic)
     end.map do |event|
       event.merge(hidden: LatestUpdatesMask.exists?(event.except(:markup)))
+    end.group_by do |event|
+      [ event[:item_type], event[:item_id], event[:event] ]
+    end.map do |k, v|
+        v[0].merge(hidden: v.any?{|event| event[:hidden] }, manual: false)
     end.
-      group_by{ |event| [ event[:item_type], event[:item_id], event[:event] ] }.
-      map{ |k, v| v[0].merge(hidden: v.any?{|event| event[:hidden] }, manual: false) }.
       sort_by{ |event| event[:date].to_s }.
       reverse
   end
@@ -204,12 +218,6 @@ class LatestUpdates < ServiceObject
     },
     -> (item, division) { item.hidden? }
   ]
-
-  def self.event_date(item, event_method)
-    item.versions.order(:created_at).find_last do |version|
-      !version.reify.present? || !version.reify.send(event_method)
-    end.try(:created_at).try(:to_date)
-  end
 
   class Clinics < ServiceObject
     attribute :division, Division
@@ -241,7 +249,7 @@ class LatestUpdates < ServiceObject
         clinic.clinic_locations.inject([]) do |memo, clinic_location|
           if clinic_location.opened_recently?
             memo << {
-              date: LatestUpdates.event_date(clinic_location, :opened_recently?),
+              date: clinic_location.change_date(&:opened_recently?),
               record: clinic_location
             }
           else
@@ -279,7 +287,10 @@ class LatestUpdates < ServiceObject
         includes(:versions).
         includes(specialist_offices: :versions).
         inject([]) do |memo, specialist|
-          memo + SpecialistEvents.call(specialist: specialist, division: division)
+          memo + SpecialistEvents.call(
+            specialist: specialist,
+            division: division
+          )
         end
     end
 
@@ -296,7 +307,7 @@ class LatestUpdates < ServiceObject
               item_type: "Specialist",
               event_code: LatestUpdates.event_code(:moved_away),
               division_id: division.id,
-              date: LatestUpdates.event_date(specialist, :moved_away?),
+              date: specialist.change_date(&:moved_away?),
               markup: LatestUpdates::MARKUP["Specialist"][:moved_away].call(specialist)
             }
           }
@@ -309,21 +320,24 @@ class LatestUpdates < ServiceObject
               item_type: "Specialist",
               event_code: LatestUpdates.event_code(:retired),
               division_id: division.id,
-              date: (specialist.retirement_date ||
-                LatestUpdates.event_date(specialist, :retired?)),
+              date: (specialist.practice_end_date ||
+                specialist.change_date(&:retired?)),
               markup: LatestUpdates::MARKUP["Specialist"][:retired].call(specialist)
             }
           }
         },
         {
-          test: -> (specialist) { specialist.retirement_scheduled? },
+          test: -> (specialist) {
+            specialist.retiring? &&
+              specialist.practice_end_date > Date.new(2016, 10, 18)
+          },
           event: -> (specialist, division) {
             {
               item_id: specialist.id,
               item_type: "Specialist",
               event_code: LatestUpdates.event_code(:retiring),
               division_id: division.id,
-              date: LatestUpdates.event_date(specialist, :retirement_scheduled?),
+              date: specialist.change_date(&:retiring?),
               markup: LatestUpdates::MARKUP["Specialist"][:retiring].call(specialist)
             }
           }
@@ -355,7 +369,7 @@ class LatestUpdates < ServiceObject
           if specialist_office.opened_recently?
             memo << {
               record: specialist_office,
-              date: LatestUpdates.event_date(specialist_office, :opened_recently?),
+              date: specialist_office.change_date(&:opened_recently?)
             }
           else
             memo
@@ -375,7 +389,7 @@ class LatestUpdates < ServiceObject
             date: date,
             markup: LatestUpdates::MARKUP["Specialist"][:opened_recently].call(
               specialist,
-              events.map{|event| event[:record]}
+              events.map{ |event| event[:record] }
             )
           }
         end

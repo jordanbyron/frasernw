@@ -67,6 +67,10 @@ class Ability
 
         can :manage, FeaturedContent
 
+        can :manage, DivisionalScItemSubscription do |subscription|
+          user.as_divisions.include?(subscription.division)
+        end
+
         can :manage, [Subscription, Notification]
 
         can :manage, [Specialist, Clinic, Hospital, Office] do |entity|
@@ -92,10 +96,10 @@ class Ability
         can :manage, ScItem do |item|
           user.as_divisions.include? item.division
         end
-        can [:create, :bulk_share], ScItem
+        can [:create, :bulk_borrow], ScItem
 
-        can :share, ScItem do |item|
-          item.shareable
+        can :borrow, ScItem do |item|
+          item.borrowable
         end
 
         can :manage, DivisionDisplayScItem do |item|
@@ -216,14 +220,13 @@ class Ability
 
       end
 
-      # No one can update items that need review unless they made the review.
+      # No one can update items that need review
       cannot :update, Specialist do |specialist|
-        specialist.review_item.present? &&
-          specialist.review_item.editor != user
+        specialist.review_item.present?
       end
 
       cannot :update, Clinic do |clinic|
-        clinic.review_item.present? && clinic.review_item.editor != user
+        clinic.review_item.present?
       end
 
     end

@@ -27,13 +27,6 @@ const setupClinicVisibilityToggle = _.partialRight(
 const setupGeneralInformation = () => {
   setupClinicVisibilityToggle(
     [
-      { name: "is_open", truthyVal: true }
-    ],
-    "accepting_new_referrals"
-  );
-  setupClinicVisibilityToggle(
-    [
-      { name: "is_open", truthyVal: true },
       { name: "accepting_new_referrals", truthyVal: true }
     ],
     "referrals_limited"

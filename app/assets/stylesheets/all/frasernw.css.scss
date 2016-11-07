@@ -611,8 +611,11 @@ body.loading #email
     font-weight: normal;
   }
 
-  a.btn.btn-primary, a.btn.btn-danger, a.btn.btn-warning, a.btn.btn-info, a.btn.btn-success
-  {
+  a.btn.btn-primary,
+  a.btn.btn-danger,
+  a.btn.btn-warning,
+  a.btn.btn-info,
+  a.btn.btn-success {
     color: $FNW_LIGHT_GRAY;
   }
 
@@ -769,8 +772,10 @@ body.loading #email
     }
   }
 
-  table#specialist_table tr:hover, table#clinic_table tr:hover, table#office_table tr:hover, table.category_table tr:hover
-  {
+  table#specialist_table tr:hover,
+  table#clinic_table tr:hover,
+  table#office_table tr:hover,
+  table.category_table tr:hover {
     cursor: pointer;
     td
     {
@@ -860,11 +865,9 @@ body.loading #email
     }
   }
 
-  table.local_referral_area
-  {
+  table.local_referral_area {
     width: 100%;
-    thead td
-    {
+    thead td {
       vertical-align: bottom;
       height: 150px;
       margin: 0;
@@ -887,8 +890,7 @@ body.loading #email
       max-width: 30px;
       white-space: nowrap;
     }
-    th
-    {
+    th {
       font-weight: bold;
       text-align: right;
       vertical-align: middle;
@@ -897,35 +899,29 @@ body.loading #email
       margin: 0;
       padding: 0;
     }
-    tbody td
-    {
+    tbody td {
       vertical-align: middle;
       text-align: center;
       height: 25px;
       margin: 0;
       padding: 0;
 
-      input
-      {
-      vertical-align: middle;
+      input {
+        vertical-align: middle;
         margin: 0;
         padding: 0;
       }
     }
-    tbody tr.odd
-    {
+    tbody tr.odd {
       background-color: $FNW_LIGHT_GRAY;
     }
   }
 
-  table.local_referral_area.fixed_column
-  {
-    td
-    {
+  table.local_referral_area.fixed_column {
+    td {
       font-weight: bold;
     }
-    th
-    {
+    th {
       font-weight: bold;
       text-align: right;
       white-space: nowrap;
@@ -947,21 +943,6 @@ body.loading #email
     .row .fields .row
     {
       margin-left: 0;
-    }
-
-    #availability
-    {
-      select.unavailable_from, span.unavailable_to, select.unavailable_to
-      {
-        width: auto;
-        float: left;
-        margin: 0 6px 12px 0;
-      }
-
-      select.unavailable_to:first-child
-      {
-        clear: both;
-      }
     }
 
     .hours, .break
@@ -1239,8 +1220,10 @@ body.loading #email
     }
   }
 
-  #specialist_assumed_list, #clinic_assumed_list, #access_key_instructions, #icon_key
-  {
+  #specialist_assumed_list,
+  #clinic_assumed_list,
+  #access_key_instructions,
+  #icon_key {
     color: $FNW_DISABLED_TEXT;
   }
 

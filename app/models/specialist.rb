@@ -20,10 +20,8 @@ class Specialist < ActiveRecord::Base
     :is_gp,
     :is_internal_medicine,
     :sees_only_children,
-    :practise_limitations,
+    :practice_limitations,
     :interest,
-    :direct_phone_old,
-    :direct_phone_extension_old,
     :red_flags,
     :clinic_location_ids,
     :responds_via,
@@ -33,7 +31,6 @@ class Specialist < ActiveRecord::Base
     :contact_notes,
     :referral_criteria,
     :status_mask,
-    :location_opened_old,
     :referral_fax,
     :referral_phone,
     :referral_clinic_id,
@@ -50,14 +47,10 @@ class Specialist < ActiveRecord::Base
     :status_details,
     :required_investigations,
     :not_performed,
-    :patient_can_book_old,
     :patient_can_book_mask,
     :lagtime_mask,
     :waittime_mask,
-    :referral_form_old,
     :referral_form_mask,
-    :unavailable_from,
-    :unavailable_to,
     :patient_instructions,
     :cancellation_policy,
     :hospital_clinic_details,
@@ -74,13 +67,16 @@ class Specialist < ActiveRecord::Base
     :review_object,
     :hidden,
     :completed_survey,
-    :has_offices,
+    :works_from_offices,
     :accepting_new_direct_referrals,
     :direct_referrals_limited,
-    :availability,
-    :retirement_date,
-    :retirement_scheduled,
-    :leave_scheduled
+    :practice_end_date,
+    :practice_restart_date,
+    :practice_end_scheduled,
+    :practice_restart_scheduled,
+    :practice_end_reason_key,
+    :practice_details,
+    :accepting_new_indirect_referrals
 
   # specialists can have multiple specializations
   has_many :specialist_specializations, dependent: :destroy
@@ -150,8 +146,6 @@ class Specialist < ActiveRecord::Base
 
   after_commit :expire_cache
   after_touch  :expire_cache
-
-  scope :deceased, -> { where(status_mask: STATUS_MASK_DECEASED) }
 
   def self.with_cities
     includes({
@@ -236,7 +230,7 @@ class Specialist < ActiveRecord::Base
         'AND "direct_address".city_id IN (?) '\
         'AND "direct_location".hospital_in_id IS NULL '\
         'AND "direct_location".location_in_id IS NULL '\
-        'AND "specialists".has_offices = (?)',
+        'AND "specialists".works_from_offices = (?)',
       "Office",
       city_ids,
       true
@@ -259,7 +253,7 @@ class Specialist < ActiveRecord::Base
       '"direct_location".locatable_type = (?) '\
         'AND "hospital_in_location".locatable_type = (?) '\
         'AND "hospital_address".city_id IN (?) '\
-        'AND "specialists".has_offices = (?)',
+        'AND "specialists".works_from_offices = (?)',
       "Office",
       "Hospital",
       city_ids,
@@ -283,7 +277,7 @@ class Specialist < ActiveRecord::Base
         'AND "clinic_location".locatable_type = (?) '\
         'AND "clinic_location".hospital_in_id IS NULL '\
         'AND "clinic_address".city_id IN (?) '\
-        'AND "specialists".has_offices = (?)',
+        'AND "specialists".works_from_offices = (?)',
       "Office",
       "ClinicLocation",
       city_ids,
@@ -311,7 +305,7 @@ class Specialist < ActiveRecord::Base
         'AND "clinic_location".locatable_type = (?) '\
         'AND "hospital_in_location".locatable_type = (?) '\
         'AND "hospital_address".city_id IN (?) '\
-        'AND "specialists".has_offices = (?)',
+        'AND "specialists".works_from_offices = (?)',
       "Office",
       "ClinicLocation",
       "Hospital",
@@ -331,10 +325,14 @@ class Specialist < ActiveRecord::Base
     ).where(
       '"hospital_in_location".locatable_type = (?) '\
         'AND "hospital_address".city_id IN (?) '\
-        'AND "specialists".has_offices = (?)',
+        'AND ("specialists".works_from_offices = (?) OR '\
+        '("specialists".accepting_new_direct_referrals = (?) AND '\
+        '("specialists".accepting_new_indirect_referrals = (?))))',
       "Hospital",
       city_ids,
-      false
+      false,
+      false,
+      true
     )
 
     from_clinic = joins(
@@ -350,10 +348,14 @@ class Specialist < ActiveRecord::Base
       '"clinic_in_location".locatable_type = (?) '\
         'AND "clinic_address".city_id IN (?) '\
         'AND "clinic_in_location".hospital_in_id IS NULL '\
-        'AND "specialists".has_offices = (?)',
+        'AND ("specialists".works_from_offices = (?) OR '\
+        '("specialists".accepting_new_direct_referrals = (?) AND '\
+        '("specialists".accepting_new_indirect_referrals = (?))))',
       "ClinicLocation",
       city_ids,
-      false
+      false,
+      false,
+      true
     )
 
     from_clinic_in_hospital = joins(
@@ -373,11 +375,15 @@ class Specialist < ActiveRecord::Base
       '"clinic_location".locatable_type = (?) '\
         'AND "hospital_in_location".locatable_type = (?) '\
         'AND "hospital_address".city_id IN (?) '\
-        'AND "specialists".has_offices = (?)',
+        'AND ("specialists".works_from_offices = (?) OR '\
+        '("specialists".accepting_new_direct_referrals = (?) AND '\
+        '("specialists".accepting_new_indirect_referrals = (?))))',
       "ClinicLocation",
       "Hospital",
       city_ids,
-      false
+      false,
+      false,
+      true
     )
 
     (
@@ -431,7 +437,13 @@ class Specialist < ActiveRecord::Base
 
   def cities(force: false)
     Rails.cache.fetch([self.class.name, self.id, "cities"], force: force) do
-      if has_offices?
+      if works_from_offices? && indirect_referrals_only?
+        (
+          hospitals.map(&:city) +
+          clinic_locations.map(&:city) +
+          offices.map(&:city)
+        ).flatten.reject(&:blank?).uniq
+      elsif works_from_offices?
         offices.map(&:city).reject(&:blank?).uniq
       else
         (
@@ -454,83 +466,158 @@ class Specialist < ActiveRecord::Base
     end.last
   end
 
-  AVAILABILITY_LABELS = StrictHash.new({
-    1 => :working,
-    2 => :temporarily_unavailable,
-    3 => :retired,
-    4 => :indefinitely_unavailable,
-    5 => :moved_away,
-    6 => :deceased,
-    7 => :unknown
+  PRACTICE_END_REASONS = StrictHash.new({
+    1 => :retirement,
+    2 => :leave,
+    3 => :move_away,
+    4 => :death
   })
 
-  def referral_icon_key
-    if !completed_survey? || !availability_known?
-      :question_mark
-    elsif working? && (leave_scheduled? || retirement_scheduled?)
-      :orange_warning
-    elsif working? && !has_offices?
-      :blue_arrow
-    elsif working? && accepting_new_direct_referrals? && direct_referrals_limited?
-      :orange_check
-    elsif working? && accepting_new_direct_referrals?
-      :green_check
-    else
-      :red_x
+  def practice_end_reason
+    PRACTICE_END_REASONS[practice_end_reason_key]
+  end
+
+  PRACTICE_ENDED_REASONS = StrictHash.new({
+    retirement: "retired",
+    leave: "went on leave",
+    move_away: "moved away",
+    death: "is deceased"
+  })
+
+  PRACTICE_ENDED_REASONS.each do |_practice_end_reason, _practice_ended_reason|
+    define_method "#{_practice_ended_reason.gsub(" ", "_")}?" do
+      practice_end_scheduled &&
+        practice_end_reason == _practice_end_reason &&
+        practice_end_date < Date.current &&
+        (!practice_restart_scheduled? || practice_restart_date >= Date.current)
     end
   end
 
+  def practice_ended_reason
+    PRACTICE_ENDED_REASONS[practice_end_reason]
+  end
+
+  PRACTICE_ENDING_REASONS = StrictHash.new({
+    retirement: "retiring",
+    leave: "going on leave",
+    move_away: "moving away",
+    death: "data entry error"
+  })
+
+  PRACTICE_ENDING_REASONS.each do |_practice_end_reason, _practice_ending_reason|
+    define_method "#{_practice_ending_reason.gsub(" ", "_")}?" do
+      practice_end_scheduled &&
+        practice_end_reason == _practice_end_reason &&
+        practice_end_date > Date.current
+    end
+  end
+
+  def practice_ending_reason
+    PRACTICE_ENDING_REASONS[practice_ending_reason]
+  end
+
+  def referral_icon_key
+    if !completed_survey?
+      :question_mark
+    elsif !practicing?
+      :red_x
+    elsif practice_ending?
+      :orange_warning
+    elsif !works_from_offices? || indirect_referrals_only?
+      :blue_arrow
+    elsif !accepting_new_direct_referrals
+      :red_x
+    elsif direct_referrals_limited?
+      :orange_check
+    else
+      :green_check
+    end
+  end
+
+  def practice_ending?
+    practice_end_scheduled? && practice_end_date > Date.current
+  end
+
+  def indirect_referrals_only?
+    !accepting_new_direct_referrals && accepting_new_indirect_referrals?
+  end
+
   def referral_summary
-    if !completed_survey? || !availability_known?
+    if !completed_survey?
       "It is unknown whether this specialist is accepting new referrals."
-    elsif working? && leave_scheduled?
-      ("Will be unavailable between " +
-        "#{unavailable_from.to_s(:long_ordinal)} and" +
-        " #{unavailable_to.to_s(:long_ordinal)}.")
-    elsif working? && retirement_scheduled?
-      "Will retire on #{retirement_date.to_s(:long_ordinal)}."
-    elsif working? && !has_offices?
+    elsif !practicing?
+      not_practicing_details
+    elsif practice_ending?
+      not_practicing_soon_details
+    elsif !works_from_offices?
       "Only works out of #{works_out_of_label}#{referrals_through_label}"
-    elsif working? && !accepting_new_direct_referrals?
-      "Only doing follow up on previous patients."
-    elsif working? && accepting_new_direct_referrals? && direct_referrals_limited?
+    elsif indirect_referrals_only?
+      "Only accepts referrals through #{works_out_of_label}#{referrals_through_label}"
+    elsif !accepting_new_direct_referrals?
+      "Not accepting new referrals."
+    elsif direct_referrals_limited?
       ("Accepting new referrals limited by geography " +
-          "or number of patients.")
-    elsif working? && accepting_new_direct_referrals?
-      "Accepting new referrals"
-    elsif deceased?
+        "or number of patients.")
+    else
+      "Accepting new referrals."
+    end
+  end
+
+  def not_practicing_details
+    if is_deceased?
       "Deceased."
     elsif retired?
       "Retired."
     elsif moved_away?
       "Moved away."
-    elsif temporarily_unavailable?
-      ("Unavailable from " +
-        "#{unavailable_from.to_s(:long_ordinal)} to" +
-        " #{unavailable_to.to_s(:long_ordinal)}.")
-    else
-      "Not accepting new referrals"
+    elsif went_on_leave?
+      if practice_restart_scheduled?
+        "On leave until #{practice_restart_date.to_s(:long_ordinal)}."
+      else
+        "On leave."
+      end
     end
+  end
+
+  def not_practicing_soon_details
+    if going_on_leave?
+      if practice_restart_scheduled?
+        ("Going on leave from " +
+          "#{practice_end_date.to_s(:long_ordinal)} to" +
+          " #{practice_restart_date.to_s(:long_ordinal)}.")
+      else
+        ("Going on leave from " +
+          "#{practice_end_date.to_s(:long_ordinal)}.")
+      end
+    elsif moving_away?
+      "Moving away on #{practice_end_date.to_s(:long_ordinal)}."
+    elsif retiring?
+      "Retiring on #{practice_end_date.to_s(:long_ordinal)}."
+    end
+  end
+
+  def practicing?
+    !practice_end_scheduled ||
+      practice_end_date > Date.current ||
+      practice_restart_scheduled? && practice_restart_date < Date.current
   end
 
   def referrals_through_label
     if open_clinics.none? && hospitals.none?
-      _returning = ", but we do not yet have data on which ones"
+      _returning = "."
     else
-      _returning = ". For referral information please see the profiles for "
+      _returning = ". For referral information please see the "
 
       if open_clinics.one? && hospitals.none?
-        _returning += "this clinic."
+        _returning += "profile for this clinic."
       elsif hospitals.one? && open_clinics.none?
-        _returning += "this hospital."
+        _returning += "profile for this hospital."
       elsif hospitals.many? && open_clinics.none?
-        _returning += "these hospitals."
+        _returning += "profiles for these hospitals."
       elsif open_clinics.many? && hospitals.none?
-        _returning += "these clinics."
-      elsif ((open_clinics.many? && hospitals.many?) ||
-        (open_clinics.one? && hospitals.one?))
-
-        _returning += "these hospitals and clinics"
+        _returning += "profiles for these clinics."
+      else
+        _returning += "profiles for these hospitals and clinics."
       end
     end
 
@@ -539,7 +626,7 @@ class Specialist < ActiveRecord::Base
 
   def works_out_of_label
     if open_clinics.none? && hospitals.none?
-      "hospitals or clinics."
+      "hospitals or clinics"
     elsif open_clinics.one? && hospitals.none?
       "a clinic"
     elsif hospitals.one? && open_clinics.none?
@@ -553,22 +640,8 @@ class Specialist < ActiveRecord::Base
     end
   end
 
-  AVAILABILITY_LABELS.values.except(:unknown).each do |value|
-    define_method "#{value}?" do
-      availability == AVAILABILITY_LABELS.key(value)
-    end
-  end
-
-  def availability_known?
-    availability != 7
-  end
-
   def show_waittimes?
-    has_offices? && accepting_new_direct_referrals?
-  end
-
-  def unavailable_for_a_while?
-    moved_away? || (retired? && retirement_date <= (Date.current - 2.years))
+    works_from_offices? && accepting_new_direct_referrals?
   end
 
   WAITTIME_LABELS = {
@@ -666,10 +739,6 @@ class Specialist < ActiveRecord::Base
     else
       billing_number
     end
-  end
-
-  def practice_limitations
-    return practise_limitations
   end
 
   def accepts_referrals_via
@@ -868,7 +937,7 @@ class Specialist < ActiveRecord::Base
 
   def print_clinic_info?
     valid_clinic_locations.any? &&
-      (!has_offices? || !accepting_new_direct_referrals?)
+      (!works_from_offices? || !accepting_new_direct_referrals?)
   end
 
   def valid_clinic_locations
@@ -899,8 +968,13 @@ class Specialist < ActiveRecord::Base
   end
 
   def open_clinics
-    @open_clinics ||= clinics.select(&:is_open?)
+    @open_clinics ||= clinics.select(&:open?)
   end
+
+  WORKS_FROM_OFFICES_OPTIONS = [
+    ["Offices", true],
+    ["Hospitals or clinics only", false]
+  ]
 
 private
 

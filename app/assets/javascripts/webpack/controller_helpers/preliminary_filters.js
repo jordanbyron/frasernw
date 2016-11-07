@@ -1,13 +1,5 @@
 import _ from "lodash";
 
-export const availabilityKnown = (record) => {
-  return record.availabilityKnown;
-}
-
-export const unavailableForAWhile = (record) => {
-  return !record.unavailableForAWhile;
-}
-
 export const matchesUserDivisions = (record, model) => {
   return _.intersection(
     record.availableToDivisionIds,

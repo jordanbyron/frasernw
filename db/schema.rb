@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160922143318) do
+ActiveRecord::Schema.define(version: 20161029232438) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -137,18 +137,15 @@ ActiveRecord::Schema.define(version: 20160922143318) do
     t.string   "contact_notes"
     t.integer  "status_mask"
     t.text     "limitations"
-    t.text     "location_opened_old"
     t.text     "required_investigations"
     t.text     "not_performed"
     t.boolean  "referral_fax"
     t.boolean  "referral_phone"
     t.string   "referral_other_details"
-    t.boolean  "referral_form_old"
     t.boolean  "respond_by_fax"
     t.boolean  "respond_by_phone"
     t.boolean  "respond_by_mail"
     t.boolean  "respond_to_patient"
-    t.boolean  "patient_can_book_old"
     t.text     "red_flags"
     t.boolean  "urgent_fax"
     t.boolean  "urgent_phone"
@@ -172,7 +169,7 @@ ActiveRecord::Schema.define(version: 20160922143318) do
     t.string   "saved_token"
     t.boolean  "interpreter_available",                 default: false
     t.text     "deprecated_contact_details"
-    t.text     "status_details"
+    t.text     "practice_details"
     t.string   "deprecated_url"
     t.string   "deprecated_email"
     t.date     "closure_date"
@@ -180,8 +177,7 @@ ActiveRecord::Schema.define(version: 20160922143318) do
     t.boolean  "completed_survey",                      default: true
     t.boolean  "accepting_new_referrals"
     t.boolean  "referrals_limited"
-    t.boolean  "closure_scheduled"
-    t.boolean  "is_open"
+    t.boolean  "closure_scheduled",                     default: false
   end
 
   create_table "contacts", force: true do |t|
@@ -287,6 +283,14 @@ ActiveRecord::Schema.define(version: 20160922143318) do
 
   add_index "division_users", ["division_id"], name: "index_division_users_on_division_id", using: :btree
   add_index "division_users", ["user_id"], name: "index_division_users_on_user_id", using: :btree
+
+  create_table "divisional_sc_item_subscriptions", force: true do |t|
+    t.integer  "division_id"
+    t.integer  "specialization_ids", default: [],    array: true
+    t.boolean  "nonspecialized",     default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "divisions", force: true do |t|
     t.string   "name"
@@ -649,7 +653,7 @@ ActiveRecord::Schema.define(version: 20160922143318) do
     t.integer  "document_file_size"
     t.datetime "document_updated_at"
     t.integer  "division_id"
-    t.boolean  "shareable",             default: true
+    t.boolean  "borrowable",            default: true
     t.integer  "evidence_id"
     t.boolean  "demoable",              default: false
     t.boolean  "can_email"
@@ -774,11 +778,10 @@ ActiveRecord::Schema.define(version: 20160922143318) do
   create_table "specialists", force: true do |t|
     t.string   "firstname"
     t.string   "lastname"
-    t.text     "practise_limitations"
+    t.text     "practice_limitations"
     t.text     "interest"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "direct_phone_old"
     t.string   "contact_name"
     t.string   "contact_phone"
     t.string   "contact_email"
@@ -789,12 +792,10 @@ ActiveRecord::Schema.define(version: 20160922143318) do
     t.text     "not_interested"
     t.text     "all_procedure_info"
     t.string   "referral_other_details"
-    t.boolean  "patient_can_book_old",           default: false
     t.string   "urgent_other_details"
     t.text     "required_investigations"
     t.text     "not_performed"
     t.text     "status_details"
-    t.string   "location_opened_old"
     t.integer  "status_mask"
     t.boolean  "referral_fax"
     t.boolean  "referral_phone"
@@ -804,42 +805,41 @@ ActiveRecord::Schema.define(version: 20160922143318) do
     t.boolean  "respond_to_patient"
     t.boolean  "urgent_fax"
     t.boolean  "urgent_phone"
-    t.boolean  "referral_form_old"
     t.integer  "waittime_mask"
     t.integer  "lagtime_mask"
     t.integer  "billing_number"
-    t.integer  "referral_form_mask",             default: 3
-    t.integer  "patient_can_book_mask",          default: 3
-    t.date     "unavailable_from"
-    t.date     "unavailable_to"
+    t.integer  "referral_form_mask",               default: 3
+    t.integer  "patient_can_book_mask",            default: 3
+    t.date     "practice_end_date"
+    t.date     "practice_restart_date"
     t.text     "urgent_details"
     t.string   "goes_by_name"
-    t.string   "direct_phone_extension_old"
-    t.integer  "sex_mask",                       default: 3
+    t.integer  "sex_mask",                         default: 3
     t.text     "referral_details"
     t.text     "admin_notes"
-    t.integer  "categorization_mask",            default: 1
+    t.integer  "categorization_mask",              default: 1
     t.text     "patient_instructions"
     t.text     "cancellation_policy"
     t.integer  "referral_clinic_id"
     t.text     "hospital_clinic_details"
-    t.boolean  "interpreter_available",          default: false
+    t.boolean  "interpreter_available",            default: false
     t.string   "photo_file_name"
     t.string   "photo_content_type"
     t.integer  "photo_file_size"
     t.datetime "photo_updated_at"
-    t.boolean  "is_gp",                          default: false
-    t.boolean  "is_internal_medicine",           default: false
-    t.boolean  "sees_only_children",             default: false
-    t.boolean  "hidden",                         default: false
-    t.boolean  "completed_survey",               default: true
-    t.boolean  "has_offices"
-    t.boolean  "accepting_new_direct_referrals"
-    t.boolean  "direct_referrals_limited"
-    t.integer  "availability"
-    t.boolean  "retirement_scheduled"
-    t.date     "retirement_date"
-    t.boolean  "leave_scheduled"
+    t.boolean  "is_gp",                            default: false
+    t.boolean  "is_internal_medicine",             default: false
+    t.boolean  "sees_only_children",               default: false
+    t.boolean  "hidden",                           default: false
+    t.boolean  "completed_survey",                 default: true
+    t.boolean  "works_from_offices",               default: false
+    t.boolean  "accepting_new_direct_referrals",   default: false
+    t.boolean  "accepting_new_indirect_referrals", default: false
+    t.boolean  "direct_referrals_limited",         default: false
+    t.boolean  "practice_end_scheduled",           default: false
+    t.boolean  "practice_restart_scheduled",       default: false
+    t.integer  "practice_end_reason_key",          default: 2
+    t.text     "practice_details"
   end
 
   add_index "specialists", ["referral_clinic_id"], name: "index_specialists_on_referral_clinic_id", using: :btree

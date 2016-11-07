@@ -9,9 +9,13 @@
     - if not f.error_messages.blank?
       .alert.alert-error= f.error_messages
 
-    = render "specialists/form/general_information", f: f
+    = render "specialists/form/identifying_information", f: f
 
-    = render "specialists/form/details", f: f
+    = render "specialists/form/profile_usability", f: f
+
+    = render "specialists/form/availability", f: f
+
+    = render "specialists/form/practice_information", f: f
 
     = render "specialists/form/office_contact_information", f: f
 

@@ -3,10 +3,12 @@
   %head
     %title #{@user.name} -- Pathways: Your #{@interval} update
   %body
+    %p= "Hi #{@user.name},"
     %p
-      = "Hi #{@user.name},"
-    %p
-      = "Here is your #{@interval} Pathways Content Items Update for #{@end_datetime.strftime("%B, %d, %Y")}:"
+      Here is your
+      = @interval
+      Pathways Content Items Update for
+      = @end_datetime.strftime("%B, %d, %Y") + ":"
     %br
     - @divisions_sc_items.each do |division_sc_items|
       %hr
@@ -15,34 +17,35 @@
         .sc_item
           %p
             %span{ class: "muted" }
-              = "#{time_ago_in_words(sc_item.created_at)} ago"
+              = time_ago_in_words(sc_item.created_at)
+              ago
 
             = render "sc_items/created", sc_item: sc_item
           %br
-      - if division_sc_items[:share_with_divisions].any?
-        - division_sc_items[:share_with_divisions].each do |share_with_division,
+      - if division_sc_items[:borrow_for_divisions].any?
+        - division_sc_items[:borrow_for_divisions].each do |borrow_for_division,
           item_ids|
-          = link_to bulk_share_sc_items_url(item_ids: item_ids,
-            division_id: share_with_division.id) do
+          = link_to bulk_borrow_sc_items_url(item_ids: item_ids,
+            division_id: borrow_for_division.id) do
             %p
               Display eligible items from
               = division_sc_items[:division].name + " in "
-              = share_with_division.name
+              = borrow_for_division.name
       - else
-        Listed Content Items available to share are already visible in
+        Listed Content Items available to borrow are already visible in
         - if @user.divisions.count > 1
           your divisions.
         - else
           = @user.divisions.first.name + "."
 
-    - if @divisions_sc_items.count > 1 && @share_all_with_divisions.any?
+    - if @divisions_sc_items.count > 1 && @borrow_all_for_divisions.any?
       %hr
-      - @share_all_with_divisions.each do |share_with_division, item_ids|
-        = link_to bulk_share_sc_items_url(item_ids: item_ids,
-          division_id: share_with_division.id) do
+      - @borrow_all_for_divisions.each do |borrow_for_division, item_ids|
+        = link_to bulk_borrow_sc_items_url(item_ids: item_ids,
+          division_id: borrow_for_division.id) do
           %p
             Display all eligible items above in
-            = share_with_division.name
+            = borrow_for_division.name
 
     = render partial: "subscription_mailer/automatic_email_message",
       locals: { interval: @interval }

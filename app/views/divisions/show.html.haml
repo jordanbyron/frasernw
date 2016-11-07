@@ -1,4 +1,4 @@
-- set_page_specific_title "#{@division.name}"
+- set_page_specific_title @division.name
 
 .content-wrapper
 
@@ -8,68 +8,119 @@
     %strong Cities Encompassed
     %ul
       - @division.cities.each do |city|
-        %li= link_to city.name, city_path(city), :class => 'ajax'
+        %li= link_to city.name, city_path(city)
 
   %p.no_indent.space
     %strong Primary contacts
     %ul
       - @division.primary_contacts.each do |primary_contact|
-        %li= link_to primary_contact.name, primary_contact, :class => 'ajax'
+        %li= link_to primary_contact.name, primary_contact
 
   - if can? :edit_permissions, @division
     %p.no_indent.space
       %strong Bulk Edit Permissions
       %ul
-        - {"Specialists and Clinics Owner" => "owner", "Content Owner" => "content_owner"}.each do |label, type|
+        - {"Specialists and Clinics Owner" => "owner",
+          "Content Owner" => "content_owner"}.each do |label, type|
           %li
-            = link_to label, edit_permissions_division_path(@division, permission_type: type)
+            = link_to label,
+              edit_permissions_division_path(@division, permission_type: type)
 
   %p.no_indent.space
+    %strong Provincial Content Subscription
+
+  %br
+
+  - subscription = @division.divisional_sc_item_subscription
+  - if subscription.nil? || subscription.empty?
+    %p You have not subscribed to borrow any provincial content.
+  - elsif subscription.all?
+    %p Subscribed to borrow all provincial content.
+  - else
+    %p Subscribed to borrow provincial content that match the following criteria:
+    %br
+    - if subscription.nonspecialized?
+      %p Content with no specialty
+    - if subscription.specialization_ids.any?
+      %p
+        %span Content in the following specialties:
+        %ul
+          - subscription.specialization_ids.each do |specialization|
+            %li= Specialization.find(specialization).name
+
+  - if !subscription.nil? && !subscription.empty?
+    %br
+    %p
+      %i
+        %span All
+        %b new
+        %span
+          items matching your subscription criteria will be borrowed
+          by #{@division.name} as they are added.
+    = link_to "Borrow existing items that match subscription criteria",
+      borrow_existing_divisional_sc_item_subscription_path(subscription),
+      class: "btn btn-primary",
+      style: "margin-top: 5px; margin-left: 8px;",
+      confirm: "Are you sure you would like to borrow all existing items that match your subscription criteria?",
+      method: :post
+
+  %p.no_indent.space{ style: "margin-top: 17px" }
     %strong Local Referral Area
-  %div{:style => "overflow-x:scroll"}
+  %div{ style: "overflow-x:scroll" }
     %table.local_referral_area
       %thead
         %tr
-          %td &nbsp;
+          %td
           - Specialization.all.each do |specialization|
             %td= specialization.name
       %tbody
         - City.all.each_with_index do |city, index|
-          %tr{:class => (index % 2 == 1) && "odd"}
-            %td{:style => "white-space:nowrap"}= city.name
+          %tr{ class: (index % 2 == 1) && "odd" }
+            %td{ style: "white-space:nowrap" }= city.name
             - Specialization.all.each do |specialization|
               %td
-                = (@local_referral_cities[city.id].present?) && (@local_referral_cities[city.id].include? specialization.id) ? "&#10004;".html_safe : ""
+                - if (@local_referral_cities[city.id].present?) &&
+                  - (@local_referral_cities[city.id].include? specialization.id)
+                  = "&#10004;".html_safe
   %br
+
   %p.no_indent.space
     %strong Custom City Priorites:
     - if !@division.use_customized_city_priorities?
-      %span="  Disabled"
+      %span Disabled
     - else
-      %span= "  Enabled"
+      %span Enabled
   #custom_city_priorities_explanation
-    %p.no_indent
-      %i When enabled, filter tables will sort results preferentially by a city's priority ranking (1-3).
-      %i New cities are automatically assigned the lowest priority rating (3).
-      %i When disabled, filter tables will sort results by the local referral area of each specialization instead.
-      %i Cities outside of your referral area will appear after those inside it
+    %p.no_indent.i
+      %i
+        When enabled, filter tables will sort results preferentially by a
+        city's priority ranking (1-3). New cities are automatically assigned the
+        lowest priority rating (3). When disabled, filter tables will sort
+        results by the local referral area of each specialization instead.
+        Cities outside of your referral area will appear after those inside it.
   - if @division.use_customized_city_priorities?
     - @priority_rankings.each do |priority|
       %p.space
         %strong
+          Priority
+          = priority
           - if priority == @priority_rankings.min
-            = "Priority #{priority} (highest priority):"
+            (highest priority):
           - elsif priority == @priority_rankings.max
-            = "Priority #{priority} (lowest priority):"
+            (lowest priority):
           - else
-            = "Priority #{priority}:"
+            = ":"
       %ul
-        - @division_referral_cities_by_priority.reject{|dr_city| dr_city.priority != priority}.each do |dr_city|
+        - @division_referral_cities_by_priority.select do |dr_city|
+          - dr_city.priority == priority
+          - end.each do |dr_city|
           %li
-            = link_to dr_city.city.name, city_path(dr_city.city), :class => 'ajax'
+            = link_to dr_city.city.name, city_path(dr_city.city)
 
   %p.admin.btn-group
     - if can? :update, @division
-      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_division_path(@division), :class => "btn ajax")
+      = link_to edit_division_path(@division), class: "btn" do
+        %i.icon-pencil
+        Edit
     - if can? :destroy, @division
       = delete_button(division_path(@division), "Delete #{@division.name}?")

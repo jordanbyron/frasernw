@@ -623,7 +623,7 @@ module VersionsHelper
             version.item.division.name,
             division_path(version.item.division)
           ) +
-            " is now sharing the content item " +
+            " is now borrowing the content item " +
             link_to(
               version.item.sc_item.title,
               sc_item_path(version.item.sc_item)
@@ -633,7 +633,7 @@ module VersionsHelper
             version.reify.division.name,
             division_path(version.reify.division)
           ) +
-            " is no longer sharing the content item " +
+            " is no longer borrowing the content item " +
             link_to(
               version.reify.sc_item.title,
               sc_item_path(version.reify.sc_item)

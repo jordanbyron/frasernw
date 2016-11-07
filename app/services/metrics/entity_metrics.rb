@@ -106,10 +106,10 @@ module Metrics
           @specialists.select{|s| s.responded_to_survey?}.length,
           @specialists.select{|s| s.surveyed && !s.responded_to_survey?}.length,
           @specialists.reject{|s| s.completed_survey? }.length,
-          @specialists.select{|s| s.working? && !s.has_offices? }.length,
+          @specialists.select{|s| s.practicing? && !s.works_from_offices? }.length,
           @specialists.reject{|s| !s.moved_away?}.length,
           @specialists.reject{|s| !s.retired?}.length,
-          @specialists.reject{|s| !s.deceased?}.length
+          @specialists.reject{|s| !s.is_deceased?}.length
         ],
         [
           ""
@@ -164,10 +164,10 @@ module Metrics
           @specialization_specialists.select{|s| s.responded_to_survey?}.length,
           @specialization_specialists.select{|s| s.surveyed && !s.responded_to_survey?}.length,
           @specialization_specialists.reject{|s| s.completed_survey? }.length,
-          @specialization_specialists.select{|s| s.working? && !s.has_offices? }.length,
+          @specialization_specialists.select{|s| s.practicing? && !s.works_from_offices? }.length,
           @specialization_specialists.reject{|s| !s.moved_away?}.length,
           @specialization_specialists.reject{|s| !s.retired?}.length,
-          @specialization_specialists.reject{|s| !s.deceased?}.length
+          @specialization_specialists.reject{|s| !s.is_deceased?}.length
         ]
       end
 

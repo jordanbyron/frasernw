@@ -21,11 +21,11 @@
         It may be out of our current catchment area, or in a
         speciality we have yet to fully survey.
 
-    - if @clinic.completed_survey? && @clinic.is_open?
-      - if @clinic.status_details.present?
+    - if @clinic.completed_survey? && @clinic.open?
+      - if @clinic.practice_details.present?
         %p.no_indent
           %strong Details:
-          = @clinic.status_details.end_with_period.convert_newlines_to_br
+          = @clinic.practice_details.end_with_period.convert_newlines_to_br
       - if @clinic.limitations.present?
         %p.no_indent
           %strong Limitations:

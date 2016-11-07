@@ -26,29 +26,28 @@
 
     %strong= @specialist.referral_summary
 
-    - if @specialist.deceased? && @specialist.status_details.present?
+    - if show_specialist_section?(@specialist, :ongoing_care)
+      %p.space.no_indent
+        = "This physician also sees their own patients for ongoing care at " + |
+          "their office listed below." |
+
+    - if @specialist.is_deceased? && @specialist.practice_details.present?
       %p.no_indent
-        = @specialist.status_details.end_with_period.convert_newlines_to_br
+        = @specialist.practice_details.end_with_period.convert_newlines_to_br
 
     - elsif !@specialist.completed_survey?
       %p.space.no_indent
         = "They may be out of our current catchment area, or in a speciality we " + |
           "have yet to fully survey." |
 
-    - elsif show_specialist_section?(@specialist, :hospital_clinic_details)
-
+    - if show_specialist_section?(@specialist, :practice_details)
       %p.space.no_indent
         %strong Details:
-        = @specialist.hospital_clinic_details
+        = @specialist.practice_details.end_with_period.convert_newlines_to_br
 
-    - elsif @specialist.working?
-      - if @specialist.status_details.present?
-        %p.no_indent
-          %strong Details:
-          = @specialist.status_details.end_with_period.convert_newlines_to_br
-      - if @specialist.practise_limitations.present?
-        %p.no_indent
-          %strong Limitations:
-          = @specialist.practise_limitations.end_with_period.convert_newlines_to_br
+    - if @specialist.practicing? && @specialist.practice_limitations.present?
+      %p.no_indent
+        %strong Limitations:
+        = @specialist.practice_limitations.end_with_period.convert_newlines_to_br
 
 .headline-footer
