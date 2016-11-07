@@ -10,6 +10,7 @@ class Clinic < ActiveRecord::Base
   include TokenAccessible
   include OffersTeleservices
   include DivisionAdministered
+  include HasWaitTimes
 
   attr_accessible :name,
     :deprecated_phone,
@@ -38,8 +39,6 @@ class Clinic < ActiveRecord::Base
     :referral_other_details,
     :referral_details,
     :referral_form_mask,
-    :lagtime_mask,
-    :waittime_mask,
     :respond_by_fax,
     :respond_by_phone,
     :respond_by_mail,
@@ -253,33 +252,6 @@ class Clinic < ActiveRecord::Base
     else
       "This clinic is closed"
     end
-  end
-
-  WAITTIME_LABELS = Specialist::WAITTIME_LABELS
-
-  def waittime
-    waittime_mask.present? ? Clinic::WAITTIME_LABELS[waittime_mask] : ""
-  end
-
-  LAGTIME_LABELS = {
-    1 => "Book by phone when office calls for referral",
-    2 => "Within one week",
-    3 => "1-2 weeks",
-    4 => "2-4 weeks",
-    5 => "1-2 months",
-    6 => "2-4 months",
-    7 => "4-6 months",
-    8 => "6-9 months",
-    9 => "9-12 months",
-    10 => "12-18 months",
-    11 => "18-24 months",
-    12 => "2-2.5 years",
-    13 => "2.5-3 years",
-    14 => ">3 years"
-  }
-
-  def lagtime
-    Clinic::LAGTIME_LABELS[lagtime_mask]
   end
 
   BOOLEAN_HASH = {

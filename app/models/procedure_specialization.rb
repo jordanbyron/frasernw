@@ -4,19 +4,15 @@ class ProcedureSpecialization < ActiveRecord::Base
     :parent_id,
     :specialization_id
 
+  # TODO remove:
+
   CLASSIFICATION_FOCUSED              = 1
   CLASSIFICATION_NONFOCUSED           = 2
   CLASSIFICATION_ASSUMED_SPECIALIST   = 3
   CLASSIFICATION_ASSUMED_CLINIC       = 4
   CLASSIFICATION_ASSUMED_BOTH         = 5
 
-  CLASSIFICATION_HASH = {
-    CLASSIFICATION_FOCUSED => "Focused",
-    CLASSIFICATION_NONFOCUSED => "Non-Focused",
-    CLASSIFICATION_ASSUMED_SPECIALIST => "Assumed for Specialists",
-    CLASSIFICATION_ASSUMED_CLINIC => "Assumed for Clinics",
-    CLASSIFICATION_ASSUMED_BOTH => "Assumed for Specialists and Clinics"
-  }
+  #
 
   belongs_to :procedure
   belongs_to :specialization

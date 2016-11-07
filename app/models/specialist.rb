@@ -10,6 +10,7 @@ class Specialist < ActiveRecord::Base
   include OffersTeleservices
   include DivisionAdministered
   include ApplicationHelper
+  include HasWaitTime
 
   attr_accessible :firstname,
     :lastname,
@@ -48,8 +49,6 @@ class Specialist < ActiveRecord::Base
     :required_investigations,
     :not_performed,
     :patient_can_book_mask,
-    :lagtime_mask,
-    :waittime_mask,
     :referral_form_mask,
     :patient_instructions,
     :cancellation_policy,
@@ -641,47 +640,6 @@ class Specialist < ActiveRecord::Base
 
   def show_waittimes?
     works_from_offices? && accepting_new_direct_referrals?
-  end
-
-  WAITTIME_LABELS = {
-    1 => "Within one week",
-    2 => "1-2 weeks",
-    3 => "2-4 weeks",
-    4 => "1-2 months",
-    5 => "2-4 months",
-    6 => "4-6 months",
-    7 => "6-9 months",
-    8 => "9-12 months",
-    9 => "12-18 months",
-    10 => "18-24 months",
-    11 => "2-2.5 years",
-    12 => "2.5-3 years",
-    13 => ">3 years"
-  }
-
-  def waittime
-    waittime_mask.present? ? Specialist::WAITTIME_LABELS[waittime_mask] : ""
-  end
-
-  LAGTIME_LABELS = {
-    1 => "Book by phone when office calls for referral",
-    2 => "Within one week",
-    3 => "1-2 weeks",
-    4 => "2-4 weeks",
-    5 => "1-2 months",
-    6 => "2-4 months",
-    7 => "4-6 months",
-    8 => "6-9 months",
-    9 => "9-12 months",
-    10 => "12-18 months",
-    11 => "18-24 months",
-    12 => "2-2.5 years",
-    13 => "2.5-3 years",
-    14 => ">3 years"
-  }
-
-  def lagtime
-    Specialist::LAGTIME_LABELS[lagtime_mask]
   end
 
   BOOLEAN_HASH = {

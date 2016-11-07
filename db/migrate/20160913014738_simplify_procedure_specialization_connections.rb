@@ -1,87 +1,119 @@
 class SimplifyProcedureSpecializationConnections < ActiveRecord::Migration
   def change
-    add_column :procedures, :specialist_has_wait_time, :boolean, default: false
-    add_column :procedures, :clinic_has_wait_time, :boolean, default: false
+    rename_column :specialists, :waittime_mask, :consultation_wait_time_key
+    rename_column :clinics, :waittime_mask, :consultation_wait_time_key
+
+    rename_column :specialists, :lagtime_mask, :booking_wait_time_key
+    rename_column :clinics, :lagtime_mask, :booking_wait_time_key
+
+    add_column :procedures,
+      :specialists_specify_wait_times,
+      :boolean,
+      default: false
+    add_column :procedures,
+      :clinics_specify_wait_times,
+      :boolean,
+      default: false
+
+    add_column :procedure_specializations, :assumed_for_specialists
+    add_column :procedure_specializations, :assumed_for_clinics
+
+    add_column :procedure_specializations, :focused_for_specialists
+    add_column :procedure_specializations, :focused_for_clinics
+
+    rename_table :capacities, :specialist_procedures
+    rename_column :specialist_procedures, :waittime_mask, :consultation_wait_time_key
+    rename_column :specialist_procedures, :lagtime_mask, :booking_wait_time_key
+    add_column :specialist_procedures, :procedure_id, :integer
+    add_index :specialist_procedures, :procedure_id
+
+    rename_table :capacities, :clinic_procedures
+    rename_column :clinic_procedures, :waittime_mask, :consultation_wait_time_key
+    rename_column :clinic_procedures, :lagtime_mask, :booking_wait_time_key
+    add_column :clinic_procedures, :procedure_id, :integer
+    add_index :clinic_procedures, :procedure_id
+
+    rename_table :sc_item_specialization_procedure_specializations, :sc_item_procedures
+    add_column :sc_item_procedures, :procedure_id, :integer
+    add_index :sc_item_procedures, :procedure_id
+
     Procedure.reset_column_information
+    ProcedureSpecialization.reset_column_information
+    SpecialistProcedure.reset_column_information
+    ClinicProcedure.reset_column_information
+    ScItemProcedure.reset_column_information
+
     ProcedureSpecialization.
-      where('procedure_specializations.specialist_wait_time = (?)', true).
-      each do |procedure_spec|
-        procedure_spec.procedure.update_attributes!(
-          specialist_has_wait_time: procedure_spec.specialist_wait_time
+      where(specialists_wait_time: true).
+      each do |procedure_specialization|
+        procedure_specialization.procedure.update_attributes!(
+          specialists_specify_wait_times: procedure_specialization.specialist_wait_time
         )
       end
     ProcedureSpecialization.
-      where('procedure_specializations.clinic_wait_time = (?)', true).
-      each do |procedure_spec|
-        procedure_spec.procedure.update_attributes!(
-          clinic_has_wait_time: procedure_spec.clinic_wait_time
+      where(clinics_wait_time: true).
+      each do |procedure_specialization|
+        procedure_specialization.procedure.update_attributes!(
+          clinics_specify_wait_times: procedure_specialization.clinic_wait_time
         )
       end
-    remove_column :procedure_specializations, :specialist_wait_time
-    remove_column :procedure_specializations, :clinic_wait_time
 
-    add_column :capacities, :procedure_id, :integer
-    Capacity.reset_column_information
-    Capacity.all.reject do |capacity|
-      capacity.procedure_specialization_id.blank?
-    end.each do |capacity|
-      procedure_specialization =
-        ProcedureSpecialization.find(capacity.procedure_specialization_id)
-      capacity.update_attributes!(
-        procedure_id: procedure_specialization.procedure_id
+    ProcedureSpecialization.all.each do |procedure_specialization|
+      procedure_specialization.update_attributes!(
+        assumed_for_specialists: (
+          ps.classification == ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH ||
+            ps.classification === ProcedureSpecialization::CLASSIFICATION_ASSUMED_SPECIALIST
+        ),
+        assumed_for_clinics: (
+          ps.classification == ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH ||
+            ps.classification === ProcedureSpecialization::CLASSIFICATION_ASSUMED_CLINIC
+        ),
+        focused_for_specialists: (
+          ps.classification == ProcedureSpecialization::CLASSIFICATION_FOCUSED ||
+            ps.classificaiton == ProcedureSpecialization::CLASSIFICATION_ASSUMED_CLINIC
+        ),
+        focused_for_clinics: (
+          ps.classification == ProcedureSpecialization::CLASSIFICATION_FOCUSED ||
+            ps.classificaiton == ProcedureSpecialization::CLASSIFICATION_ASSUMED_SPECIALIST
+        )
       )
     end
-    remove_column :capacities, :procedure_specialization_id
-    add_index :capacities, :procedure_id
 
-    add_column :focuses, :procedure_id, :integer
-    Focus.reset_column_information
-    Focus.all.reject do |focus|
-      focus.procedure_specialization_id.blank?
-    end.each do |focus|
-      procedure_specialization =
-        ProcedureSpecialization.find(focus.procedure_specialization_id)
-      focus.update_attributes!(
-        procedure_id: procedure_specialization.procedure_id
+    SpecialistProcedure.where(procedure_specialization_id: nil).destroy_all
+    SpecialistProcedure.where(specialist_id: nil).destroy_all
+    SpecialistProcedure.all.each do |specialist_procedure|
+      specialist_procedure.update_attributes!(
+        procedure_id: specialist_procedure.procedure_specialization.procedure_id
       )
     end
-    remove_column :focuses, :procedure_specialization_id
-    add_index :focuses, :procedure_id
+    keeping_specialist_procedures = SpecialistProcedure.all.uniq do |specialist_procedure|
+      [ specialist_procedure.specialist_id, specialist_procedure.procedure_id ]
+    end
+    SpecialistProcedure.where("id NOT IN (?)", keeping_specialist_procedures).destroy_all
 
-    add_column :sc_item_specialization_procedure_specializations,
-      :procedure_id,
-      :integer
-    ScItemSpecializationProcedureSpecialization.reset_column_information
-    ScItemSpecializationProcedureSpecialization.all.each do |sisps|
-      procedure_specialization =
-        ProcedureSpecialization.find(sisps.procedure_specialization_id)
-      sisps.update_attributes!(
-        procedure_id: procedure_specialization.procedure_id
+    ClinicProcedure.where(procedure_specialization_id: nil).destroy_all
+    ClinicProcedure.where(clinic_id: nil).destroy_all
+    ClinicProcedure.all.each do |clinic_procedure|
+      clinic_procedure.update_attributes!(
+        procedure_id: clinic_procedure.procedure_specialization.procedure_id
       )
     end
-    remove_column :sc_item_specialization_procedure_specializations,
-      :procedure_specialization_id
-    rename_table :sc_item_specialization_procedure_specializations,
-      :sc_item_specialization_procedures
-
-    def filepath(filename)
-      Rails.root.join("app", "models", filename)
+    keeping_clinic_procedures = ClinicProcedure.all.uniq do |clinic_procedure|
+      [ clinic_procedure.clinic_id, clinic_procedure.procedure_id ]
     end
+    ClinicProcedure.where("id NOT IN (?)", keeping_clinic_procedures).destroy_all
 
-    sisps_file = filepath("sc_item_specialization_procedure_specialization.rb")
-    sisps_file_content = File.read(sisps_file)
-    File.open(sisps_file, "w") do |file|
-      new_sisps_file_content = sisps_file_content.gsub(
-        "ScItemSpecializationProcedureSpecialization",
-        "ScItemSpecializationProcedure"
+    ScItemProcedure.where(procedure_specialization_id: nil).destroy_all
+    ScItemProcedure.where(sc_item_specialization_id: nil).destroy_all
+    ScItemProcedure.all.each do |sc_item_procedure|
+      sc_item_procedure.update_attributes!(
+        procedure_id: sc_item_procedure.procedure_specialization.procedure_id
+        sc_item_id: sc_item_specialization.sc_item_id
       )
-      file.write(new_sisps_file_content)
     end
-    File.rename(sisps_file, filepath("sc_item_specialization_procedure.rb"))
-
-    add_index :sc_item_specialization_procedures,
-      ["procedure_id", "sc_item_specialization_id"],
-      name: "index_sc_item_spec_procedure_on_procedure_and_sc_item_spec"
-    add_index :sc_item_specialization_procedures, "procedure_id"
+    keeping_sc_item_procedures = ScItemProcedure.all.uniq do |sc_item_procedure|
+      [ sc_item_procedure.sc_item_id, sc_item_procedure.procedure_id ]
+    end
+    ScItemProcedure.where("id NOT IN (?)", keeping_sc_item_procedures).destroy_all
   end
 end
