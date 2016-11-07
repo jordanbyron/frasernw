@@ -87,9 +87,9 @@ module SpecialistsHelper
     end
   end
 
-  def filter_specialists(specialization, specialists)
-    specialists.select do |specialist|
-      specialist.specializations.include?(specialization)
+  def filter_profiles(specialization, profiles)
+    profiles.select do |profile|
+      profile.specializations.include?(specialization)
     end
   end
 end

@@ -12,33 +12,13 @@ class SpecialistsController < ApplicationController
   include ApplicationHelper
 
   def index
-    if params[:specialization_id].present?
-      @specialization = Specialization.
-        includes(:hidden_divisions).
-        find(params[:specialization_id])
-      @specializations = [ @specialization ]
-      @specialists = @specialization.
-        specialists.
-        includes(:specializations)
-    else
-      @specializations = Specialization.all.includes(:hidden_divisions)
-      @specialists = Specialist.includes(:specializations)
-    end
+    @model = ProfilesIndex.call(
+      klass: Specialist,
+      params: params,
+      current_user: current_user
+    )
 
-    if params[:hidden]
-      @specialists = @specialists.hidden
-    end
-
-    @divisions_specialists = Division.all.map do |division|
-      division_specialists = @specialists.in_divisions(division)
-
-      [
-        division,
-        division_specialists
-      ]
-    end.to_h
-    @no_division_specialists = @specialists.no_division
-    @user_divisions = current_user.as_divisions.to_a
+    render "profiles/index"
   end
 
   def show

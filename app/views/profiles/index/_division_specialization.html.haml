@@ -1,16 +1,16 @@
-- specialists = filter_specialists(specialization, division_specialists)
+- profiles = filter_profiles(specialization, division_profiles)
 - specialization_is_hidden = specialization.hidden_divisions.include?(division)
-- if specialists.any?
+- if profiles.any?
   %tr{ class: specialization_is_hidden ? "hidden-from-users" : "" }
-    %th{:style => "width:100%"}= "#{specialization.name} (#{specialists.count})"
+    %th{:style => "width:100%"}= "#{specialization.name} (#{profiles.count})"
     - if division.nil? || user_divisions.include?(division)
       %th.admin
-  - specialists.each do |specialist|
+  - profiles.each do |profile|
     %tr
-      %td= link_to specialist.name, specialist_path(specialist)
+      %td= link_to profile.name, "/#{profile.class.to_s.tableize}/#{profile.id}"
       - if division.nil? || user_divisions.include?(division)
         %td{ style: "min-width: 60px" }
-          = link_to edit_specialist_path(specialist),
+          = link_to "/#{profile.class.to_s.tableize}/#{profile.id}/edit",
             class: "btn btn-mini" do
             %i.icon-pencil
             %span= " Edit"
