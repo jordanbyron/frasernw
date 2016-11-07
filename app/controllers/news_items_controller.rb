@@ -35,7 +35,9 @@ class NewsItemsController < ApplicationController
 
   def create
     @news_item = NewsItem.new(params[:news_item])
-    if @news_item.save && @news_item.display_in_divisions!(divisions_to_assign(params, @news_item), current_user)
+    # binding.pry
+    if @news_item.save
+      @news_item.display_in_divisions!(divisions_to_assign(params, @news_item), current_user)
       Subscription::MailImmediateNotifications.call(
         klass_name: "NewsItem",
         id: @news_item.id,

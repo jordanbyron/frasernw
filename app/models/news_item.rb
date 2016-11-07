@@ -11,11 +11,13 @@ class NewsItem < ActiveRecord::Base
     :end_date,
     :show_start_date,
     :show_end_date,
-    :type_mask
+    :type_mask,
+    :division_ids
 
   belongs_to :owner_division, class_name: "Division"
   has_many :divisions, through: :division_display_news_items
   has_many :division_display_news_items, dependent: :destroy
+  accepts_nested_attributes_for :division_display_news_items
   has_one :demoable_news_item, dependent: :destroy
 
   def self.not_demoable
@@ -171,11 +173,10 @@ class NewsItem < ActiveRecord::Base
     if check_assignment_permissions(divisions, user)
       # add new
       divisions.each do |division|
-        if !self.divisions.include?(division)
-          self.division_display_news_items.create(
-            division_id: division.id
-          )
-        end
+        self.division_display_news_items.create(
+          division_id: division.id,
+          news_item_id: self.id
+        )
       end
 
       # cleanup
