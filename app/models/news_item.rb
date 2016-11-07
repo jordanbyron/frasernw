@@ -17,7 +17,6 @@ class NewsItem < ActiveRecord::Base
   belongs_to :owner_division, class_name: "Division"
   has_many :divisions, through: :division_display_news_items
   has_many :division_display_news_items, dependent: :destroy
-  accepts_nested_attributes_for :division_display_news_items
   has_one :demoable_news_item, dependent: :destroy
 
   def self.not_demoable
@@ -47,7 +46,9 @@ class NewsItem < ActiveRecord::Base
       delay: true
     )
     User.division_groups_for(*divisions).each do |division_group|
-      ExpireFragment.call "front_#{Specialization.cache_key}_#{division_group.join('_')}"
+      ExpireFragment.call(
+        "front_#{Specialization.cache_key}_#{division_group.join('_')}"
+      )
     end
   end
 
@@ -65,12 +66,14 @@ class NewsItem < ActiveRecord::Base
 
   def copy_to(division, current_user)
     return false unless (
-      current_user.as_super_admin? || current_user.as_divisions.include?(division)
+      current_user.as_super_admin? ||
+        current_user.as_divisions.include?(division)
     )
 
-    NewsItem.
-      create(self.attributes.merge(owner_division_id: division.id)).
-      display_in_divisions!([ division ], current_user)
+    NewsItem.create(
+      self.attributes.except("id", "created_at", "updated_at", "parent_id").
+        merge(owner_division_id: division.id)
+    ).display_in_divisions!([ division ], current_user)
   end
 
   def label
@@ -173,16 +176,18 @@ class NewsItem < ActiveRecord::Base
     if check_assignment_permissions(divisions, user)
       # add new
       divisions.each do |division|
-        self.division_display_news_items.create(
-          division_id: division.id,
-          news_item_id: self.id
-        )
+        if !self.divisions.include?(division)
+          self.division_display_news_items.create(
+            division_id: division.id
+          )
+        end
       end
 
       # cleanup
-      (NewsItem.permitted_division_assignments(user) - divisions).each do |division|
-        self.join_for(division).try(:destroy)
-      end
+      (NewsItem.permitted_division_assignments(user) - divisions).
+        each do |division|
+          self.join_for(division).try(:destroy)
+        end
 
       # recache
       self.class.bust_cache_for(*NewsItem.permitted_division_assignments(user))
@@ -207,7 +212,10 @@ class NewsItem < ActiveRecord::Base
 
   def self.in_divisions(divisions)
     joins(:division_display_news_items).
-      where("division_display_news_items.division_id IN (?)", divisions.map(&:id))
+      where(
+        "division_display_news_items.division_id IN (?)",
+        divisions.map(&:id)
+      )
   end
 
   def self.breaking_in_divisions(divisions)
