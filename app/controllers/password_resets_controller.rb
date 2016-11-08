@@ -33,7 +33,7 @@ class PasswordResetsController < ApplicationController
             "#{params[:user][:email]}. Please check the e-mail address you "\
             "used and try again. Email addresses are case sensitive. "\
             "Please <a href='#{contact_path}'>contact us</a> if you "\
-            "continue encountering problems."
+            "continue encountering problems.".html_safe
       end
     end
   end
@@ -54,7 +54,7 @@ class PasswordResetsController < ApplicationController
         layout: 'user_sessions',
         notice: "We had problems updating your password. Please try again. "\
           "If you continue to encounter problems please "\
-          "<a href='#{contact_path}'>contact us</a>."
+          "<a href='#{contact_path}'>contact us</a>.".html_safe
     end
   end
 
