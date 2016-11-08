@@ -3,7 +3,7 @@ import { selectedTableHeadingKey, headingArrowDirection, canSelectSort }
   from "controller_helpers/table_headings";
 import { sortByHeading } from "action_creators";
 import { route } from "controller_helpers/routing";
-import { collectionShownName, collectionShownPluralLabel }
+import { collectionShownFilterContextualizedLabel, collectionShownName }
   from "controller_helpers/collection_shown";
 import { entityType } from "controller_helpers/filter_values";
 import showingMultipleSpecializations
@@ -67,7 +67,7 @@ const classnamePrefix = ((model) => {
 const cellConfigs = (model, dispatch) => {
   if (_.includes(["specialists", "clinics"], collectionShownName(model))){
     var configs = [
-      { label: collectionShownPluralLabel(model), key: "NAME", showExpansionToggle: true},
+      { label: collectionShownFilterContextualizedLabel(model), key: "NAME", showExpansionToggle: true},
       { label: "Accepting New Referrals?", key: "REFERRALS" },
       { label: "Average Non-urgent Patient Waittime", key: "WAITTIME"},
       { label: "City", key: "CITY" }

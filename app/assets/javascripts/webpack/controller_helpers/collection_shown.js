@@ -4,6 +4,9 @@ import { selectedTabKey, recordShownByTab } from "controller_helpers/tab_keys";
 import { memoizePerRender } from "utils";
 import { isTabbedPage } from "controller_helpers/tab_keys";
 import * as filterValues from "controller_helpers/filter_values";
+import activatedFilterSubkeys from "controller_helpers/activated_filter_subkeys";
+import { showSpecializationFilterMessage, showingOtherSpecializations }
+  from "controller_helpers/filter_messages";
 import recordShownByBreadcrumb from "controller_helpers/record_shown_by_breadcrumb";
 import _ from "lodash";
 
@@ -168,6 +171,16 @@ export const collectionShownPluralLabel = ((model) => {
       return recordShownByTab(model).name;
     }
   default:
+    return _.capitalize(collectionShownName(model));
+  }
+}).pwPipe(memoizePerRender);
+
+export const collectionShownFilterContextualizedLabel = ((model) => {
+  if(!_.any(activatedFilterSubkeys.procedures(model))) {
+    return collectionShownPluralLabel(model);
+  } else if (!showingOtherSpecializations(model)) {
+    return collectionShownPluralLabel(model);
+  } else {
     return _.capitalize(collectionShownName(model));
   }
 }).pwPipe(memoizePerRender);
