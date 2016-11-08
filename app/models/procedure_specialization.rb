@@ -2,7 +2,11 @@ class ProcedureSpecialization < ActiveRecord::Base
 
   attr_accessible :classification,
     :parent_id,
-    :specialization_id
+    :specialization_id,
+    :assumed_for_specialists,
+    :assumed_for_clinics,
+    :focused_for_specialists,
+    :focused_for_clinics
 
   # TODO remove:
 

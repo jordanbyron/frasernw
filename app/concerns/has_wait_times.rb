@@ -1,8 +1,10 @@
 module HasWaitTimes
   extend ActiveSupport::Concern
 
-  attr_accessible :booking_wait_time_key,
-    :consultation_wait_time_key
+  included do
+    attr_accessible :booking_wait_time_key,
+      :consultation_wait_time_key
+  end
 
   def booking_wait_time
     BOOKING_WAIT_TIMES[booking_wait_time_key]

@@ -50,19 +50,6 @@ ActiveRecord::Schema.define(version: 20161029232438) do
   add_index "attendances", ["clinic_location_id"], name: "index_attendances_on_clinic_id", using: :btree
   add_index "attendances", ["specialist_id"], name: "index_attendances_on_specialist_id", using: :btree
 
-  create_table "capacities", force: true do |t|
-    t.integer  "specialist_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "investigation",               limit: nil
-    t.integer  "procedure_specialization_id"
-    t.integer  "waittime_mask",                           default: 0
-    t.integer  "lagtime_mask",                            default: 0
-  end
-
-  add_index "capacities", ["procedure_specialization_id"], name: "index_capacities_on_procedure_specialization_id", using: :btree
-  add_index "capacities", ["specialist_id"], name: "index_capacities_on_specialist_id", using: :btree
-
   create_table "cities", force: true do |t|
     t.string   "name"
     t.integer  "province_id"
@@ -103,6 +90,21 @@ ActiveRecord::Schema.define(version: 20161029232438) do
   end
 
   add_index "clinic_locations", ["clinic_id"], name: "index_clinic_locations_on_clinic_id", using: :btree
+
+  create_table "clinic_procedures", force: true do |t|
+    t.integer  "clinic_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "investigation"
+    t.integer  "procedure_specialization_id"
+    t.integer  "consultation_wait_time_key",  default: 0
+    t.integer  "booking_wait_time_key",       default: 0
+    t.integer  "procedure_id"
+  end
+
+  add_index "clinic_procedures", ["clinic_id"], name: "index_clinic_procedures_on_clinic_id", using: :btree
+  add_index "clinic_procedures", ["procedure_id"], name: "index_clinic_procedures_on_procedure_id", using: :btree
+  add_index "clinic_procedures", ["procedure_specialization_id"], name: "index_clinic_procedures_on_procedure_specialization_id", using: :btree
 
   create_table "clinic_speaks", force: true do |t|
     t.integer  "clinic_id"
@@ -150,8 +152,8 @@ ActiveRecord::Schema.define(version: 20161029232438) do
     t.boolean  "urgent_fax"
     t.boolean  "urgent_phone"
     t.string   "urgent_other_details"
-    t.integer  "waittime_mask"
-    t.integer  "lagtime_mask"
+    t.integer  "consultation_wait_time_key"
+    t.integer  "booking_wait_time_key"
     t.integer  "referral_form_mask",                    default: 3
     t.integer  "patient_can_book_mask",                 default: 3
     t.text     "urgent_details"
@@ -373,19 +375,6 @@ ActiveRecord::Schema.define(version: 20161029232438) do
   add_index "feedback_items", ["target_id", "target_type"], name: "index_feedback_items_on_target_id_and_target_type", using: :btree
   add_index "feedback_items", ["user_id"], name: "index_feedback_items_on_user_id", using: :btree
 
-  create_table "focuses", force: true do |t|
-    t.integer  "clinic_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "investigation"
-    t.integer  "procedure_specialization_id"
-    t.integer  "waittime_mask",               default: 0
-    t.integer  "lagtime_mask",                default: 0
-  end
-
-  add_index "focuses", ["clinic_id"], name: "index_focuses_on_clinic_id", using: :btree
-  add_index "focuses", ["procedure_specialization_id"], name: "index_focuses_on_procedure_specialization_id", using: :btree
-
   create_table "healthcare_providers", force: true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -539,8 +528,12 @@ ActiveRecord::Schema.define(version: 20161029232438) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "classification"
-    t.boolean  "specialist_wait_time", default: false
-    t.boolean  "clinic_wait_time",     default: false
+    t.boolean  "specialist_wait_time",    default: false
+    t.boolean  "clinic_wait_time",        default: false
+    t.boolean  "assumed_for_specialists"
+    t.boolean  "assumed_for_clinics"
+    t.boolean  "focused_for_specialists"
+    t.boolean  "focused_for_clinics"
   end
 
   add_index "procedure_specializations", ["ancestry"], name: "index_procedure_specializations_on_ancestry", using: :btree
@@ -551,8 +544,10 @@ ActiveRecord::Schema.define(version: 20161029232438) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "specialization_level", default: true
+    t.boolean  "specialization_level",           default: true
     t.string   "saved_token"
+    t.boolean  "specialists_specify_wait_times", default: false
+    t.boolean  "clinics_specify_wait_times",     default: false
   end
 
   create_table "provinces", force: true do |t|
@@ -617,16 +612,19 @@ ActiveRecord::Schema.define(version: 20161029232438) do
     t.string   "user_role"
   end
 
-  create_table "sc_item_specialization_procedure_specializations", force: true do |t|
+  create_table "sc_item_procedures", force: true do |t|
     t.integer  "sc_item_specialization_id"
     t.integer  "procedure_specialization_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "procedure_id"
+    t.integer  "sc_item_id"
   end
 
-  add_index "sc_item_specialization_procedure_specializations", ["procedure_specialization_id", "sc_item_specialization_id"], name: "index_sc_item_s_p_s_on_psid_sc_item_s_id", using: :btree
-  add_index "sc_item_specialization_procedure_specializations", ["procedure_specialization_id"], name: "index_sc_item_sps_on_procedure_specialization_id", using: :btree
-  add_index "sc_item_specialization_procedure_specializations", ["sc_item_specialization_id"], name: "index_sc_item_sps_on_sc_item_specialization_id", using: :btree
+  add_index "sc_item_procedures", ["procedure_id"], name: "index_sc_item_procedures_on_procedure_id", using: :btree
+  add_index "sc_item_procedures", ["procedure_specialization_id", "sc_item_specialization_id"], name: "index_sc_item_s_p_s_on_psid_sc_item_s_id", using: :btree
+  add_index "sc_item_procedures", ["procedure_specialization_id"], name: "index_sc_item_sps_on_procedure_specialization_id", using: :btree
+  add_index "sc_item_procedures", ["sc_item_specialization_id"], name: "index_sc_item_sps_on_sc_item_specialization_id", using: :btree
 
   create_table "sc_item_specializations", force: true do |t|
     t.integer  "sc_item_id"
@@ -755,6 +753,21 @@ ActiveRecord::Schema.define(version: 20161029232438) do
   add_index "specialist_offices", ["specialist_id", "office_id"], name: "index_specialist_offices_on_specialist_id_and_office_id", using: :btree
   add_index "specialist_offices", ["specialist_id"], name: "index_specialist_offices_on_specialist_id", using: :btree
 
+  create_table "specialist_procedures", force: true do |t|
+    t.integer  "specialist_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "investigation",               limit: nil
+    t.integer  "procedure_specialization_id"
+    t.integer  "consultation_wait_time_key",              default: 0
+    t.integer  "booking_wait_time_key",                   default: 0
+    t.integer  "procedure_id"
+  end
+
+  add_index "specialist_procedures", ["procedure_id"], name: "index_specialist_procedures_on_procedure_id", using: :btree
+  add_index "specialist_procedures", ["procedure_specialization_id"], name: "index_specialist_procedures_on_procedure_specialization_id", using: :btree
+  add_index "specialist_procedures", ["specialist_id"], name: "index_specialist_procedures_on_specialist_id", using: :btree
+
   create_table "specialist_speaks", force: true do |t|
     t.integer  "specialist_id"
     t.integer  "language_id"
@@ -805,8 +818,8 @@ ActiveRecord::Schema.define(version: 20161029232438) do
     t.boolean  "respond_to_patient"
     t.boolean  "urgent_fax"
     t.boolean  "urgent_phone"
-    t.integer  "waittime_mask"
-    t.integer  "lagtime_mask"
+    t.integer  "consultation_wait_time_key"
+    t.integer  "booking_wait_time_key"
     t.integer  "billing_number"
     t.integer  "referral_form_mask",               default: 3
     t.integer  "patient_can_book_mask",            default: 3

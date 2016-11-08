@@ -10,7 +10,7 @@ class Specialist < ActiveRecord::Base
   include OffersTeleservices
   include DivisionAdministered
   include ApplicationHelper
-  include HasWaitTime
+  include HasWaitTimes
 
   attr_accessible :firstname,
     :lastname,

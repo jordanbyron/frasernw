@@ -1,9 +1,15 @@
-class Focus < ActiveRecord::Base
+class ClinicProcedure < ActiveRecord::Base
   belongs_to :clinic
   belongs_to :procedure
 
-  WAITTIME_LABELS = Clinic::WAITTIME_LABELS
-  LAGTIME_LABELS = Clinic::LAGTIME_LABELS
+  # TODO: remove
+
+  belongs_to :procedure_specialization
+
+  #
+
+  # WAITTIME_LABELS = Clinic::WAITTIME_LABELS
+  # LAGTIME_LABELS = Clinic::LAGTIME_LABELS
 
   include PaperTrailable
 

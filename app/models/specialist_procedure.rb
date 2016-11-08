@@ -1,9 +1,15 @@
-class Capacity < ActiveRecord::Base
+class SpecialistProcedure < ActiveRecord::Base
   belongs_to :specialist
   belongs_to :procedure
 
-  WAITTIME_LABELS = Specialist::WAITTIME_LABELS
-  LAGTIME_LABELS = Specialist::LAGTIME_LABELS
+  # TODO: remove
+
+  belongs_to :procedure_specialization
+
+  #
+
+  # WAITTIME_LABELS = Specialist::WAITTIME_LABELS
+  # LAGTIME_LABELS = Specialist::LAGTIME_LABELS
 
   include PaperTrailable
 

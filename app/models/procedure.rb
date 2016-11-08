@@ -3,8 +3,8 @@ class Procedure < ActiveRecord::Base
     :parent_id,
     :specialization_ids,
     :procedure_specializations_attributes,
-    :specialist_has_wait_time,
-    :clinic_has_wait_time
+    :specialists_specify_wait_times,
+    :clinics_specify_wait_times
 
   include PaperTrailable
 
