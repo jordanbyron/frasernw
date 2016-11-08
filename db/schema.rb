@@ -528,12 +528,10 @@ ActiveRecord::Schema.define(version: 20161029232438) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "classification"
-    t.boolean  "specialist_wait_time",    default: false
-    t.boolean  "clinic_wait_time",        default: false
-    t.boolean  "assumed_for_specialists"
-    t.boolean  "assumed_for_clinics"
-    t.boolean  "focused_for_specialists"
-    t.boolean  "focused_for_clinics"
+    t.boolean  "specialist_wait_time",         default: false
+    t.boolean  "clinic_wait_time",             default: false
+    t.integer  "specialists_presentation_key"
+    t.integer  "clinics_presentation_key"
   end
 
   add_index "procedure_specializations", ["ancestry"], name: "index_procedure_specializations_on_ancestry", using: :btree

@@ -5,57 +5,56 @@
       = f.error_messages
 
   = f.input :name
+  = f.input :specialists_specify_wait_times
+  = f.input :clinics_specify_wait_times
 
-  %h3 Specialities This Area of Practice Belongs To
-  .content
-    %table.table.table-condensed
-      %tr
-        %th Specialization
-        %th Classification
-        %th Parent
-        %th Has Custom Specialist Wait Time
-        %th Has Custom Clinic Wait Time
+  %h3 Specialities Including this Area of Practice
 
+  = f.simple_fields_for :procedure_specializations,
+    @procedure.procedure_specializations.sort_by(&:specialization_name) do |f|
 
-      = f.simple_fields_for :procedure_specializations,
-        @procedure.procedure_specializations.sort_by(&:specialization_name) do |f|
-        %tr.procedure_specialization_row
-          %td{:style => "white-space: nowrap"}
-            = f.hidden_field :specialization_id
-            = label_tag "check_#{f.object.specialization.id}",
-              f.object.specialization.name,
-              class: "span3",
-              style: "text-align:right"
-            = f.check_box :_destroy,
-              { checked: procedure_specialization_checked(params, f.object),
-              class: "check input--mapped span1" },
-              "0",
-              "1"
-          %td
-            = f.input_field :classification,
-              as: :select,
-              collection: procedure_classification_options(f.object),
-              include_blank: false,
-              class: "select input--classification span4"
-          %td
-            = f.input_field :parent_id,
-              as: :select,
-              include_blank: false,
-              collection: procedure_ancestry_options(f.object),
-              class:  "select input--parent_id span4"
-          %td
-            = f.input_field :specialist_wait_time,
-              class: "check input--specialist_wait_time span1"
-          %td
-            = f.input_field :clinic_wait_time,
-              class:  "check input--clinic_wait_time span1"
+    .control-group
+      %label.control-label
+        %strong= f.object.specialization.name
+      .controls
+        = f.check_box :_destroy,
+          { checked: procedure_specialization_checked?(params, f.object),
+          class: "check input--mapped" },
+          "0",
+          "1"
+
+        = f.hidden_field :specialization_id
+
+    .child-controls
+
+      = f.input :parent_id,
+        as: :select,
+        include_blank: false,
+        collection: ProcedureAncestryOptions.call(procedure_specialization: f.object),
+        class:  "input--parent_id"
+
+      = f.input :specialists_presentation_key,
+        label: "Presentation for specialists",
+        as: :radio_buttons,
+        collection: ProcedureSpecialization::PRESENTATION_OPTIONS,
+        label_method: ->(pair){ pair.last.to_s.humanize },
+        value_method: :first,
+        checked: (f.object.specialists_presentation_key || 2)
+      = f.input :clinics_presentation_key,
+        label: "Presentation for clinics",
+        as: :radio_buttons,
+        collection: ProcedureSpecialization::PRESENTATION_OPTIONS,
+        label_method: ->(pair){ pair.last.to_s.humanize },
+        value_method: :first,
+        checked: (f.object.specialists_presentation_key || 2)
+    %hr
 
   :javascript
     $(".input--mapped").each(function(index, elem) {
-      toggleProcedureMappings(elem)
+      toggleProcedureSpecializationControls(elem);
     });
     $(".input--mapped").change(function(e) {
-      toggleProcedureMappings(e.target)
+      toggleProcedureSpecializationControls(e.target);
     });
 
   .form-actions

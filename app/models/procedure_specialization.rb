@@ -3,10 +3,8 @@ class ProcedureSpecialization < ActiveRecord::Base
   attr_accessible :classification,
     :parent_id,
     :specialization_id,
-    :assumed_for_specialists,
-    :assumed_for_clinics,
-    :focused_for_specialists,
-    :focused_for_clinics
+    :specialists_presentation_key,
+    :clinics_presentation_key
 
   # TODO remove:
 
@@ -17,6 +15,12 @@ class ProcedureSpecialization < ActiveRecord::Base
   CLASSIFICATION_ASSUMED_BOTH         = 5
 
   #
+
+  PRESENTATION_OPTIONS = StrictHash.new(
+    1 => :assumed,
+    2 => :focused,
+    3 => :non_focused
+  )
 
   belongs_to :procedure
   belongs_to :specialization
@@ -150,5 +154,9 @@ class ProcedureSpecialization < ActiveRecord::Base
 
   def specialization_present?
     specialization.present?
+  end
+
+  def procedure_name
+    procedure.name
   end
 end

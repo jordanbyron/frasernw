@@ -47,7 +47,7 @@
     = render "partials/analytics_setup"
 
   %body{ id: "#{params[:controller]}_page" }
-    - if @layout_heartbeat_loader
+    - if false && @layout_heartbeat_loader
       #heartbeat-loader-position
         .heartbeat-loader
           Loading…

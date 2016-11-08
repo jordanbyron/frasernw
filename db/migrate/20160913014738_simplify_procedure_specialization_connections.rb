@@ -15,11 +15,8 @@ class SimplifyProcedureSpecializationConnections < ActiveRecord::Migration
       :boolean,
       default: false
 
-    add_column :procedure_specializations, :assumed_for_specialists, :boolean
-    add_column :procedure_specializations, :assumed_for_clinics, :boolean
-
-    add_column :procedure_specializations, :focused_for_specialists, :boolean
-    add_column :procedure_specializations, :focused_for_clinics, :boolean
+    add_column :procedure_specializations, :specialists_presentation_key, :integer
+    add_column :procedure_specializations, :clinics_presentation_key, :integer
 
     rename_table :capacities, :specialist_procedures
     rename_column :specialist_procedures, :waittime_mask, :consultation_wait_time_key
@@ -61,21 +58,33 @@ class SimplifyProcedureSpecializationConnections < ActiveRecord::Migration
 
     ProcedureSpecialization.all.each do |ps|
       ps.update_attributes!(
-        assumed_for_specialists: (
-          ps.classification == ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH ||
-            ps.classification === ProcedureSpecialization::CLASSIFICATION_ASSUMED_SPECIALIST
+        specialists_presentation_key: (
+          case ps.classification
+          when ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH,
+            ProcedureSpecialization::CLASSIFICATION_ASSUMED_SPECIALIST
+
+            ProcedureSpecialization::PRESENTATION_OPTIONS.key(:assumed)
+          when ProcedureSpecialization::CLASSIFICATION_ASSUMED_CLINIC,
+            ProcedureSpecialization::CLASSIFICATION_FOCUSED
+
+            ProcedureSpecialization::PRESENTATION_OPTIONS.key(:focused)
+          when ProcedureSpecialization::CLASSIFICATION_NONFOCUSED
+            ProcedureSpecialization::PRESENTATION_OPTIONS.key(:non_focused)
+          end
         ),
-        assumed_for_clinics: (
-          ps.classification == ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH ||
-            ps.classification === ProcedureSpecialization::CLASSIFICATION_ASSUMED_CLINIC
-        ),
-        focused_for_specialists: (
-          ps.classification == ProcedureSpecialization::CLASSIFICATION_FOCUSED ||
-            ps.classification == ProcedureSpecialization::CLASSIFICATION_ASSUMED_CLINIC
-        ),
-        focused_for_clinics: (
-          ps.classification == ProcedureSpecialization::CLASSIFICATION_FOCUSED ||
-            ps.classification == ProcedureSpecialization::CLASSIFICATION_ASSUMED_SPECIALIST
+        clinics_presentation_key: (
+          case ps.classification
+          when ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH,
+            ProcedureSpecialization::CLASSIFICATION_ASSUMED_CLINIC
+
+            ProcedureSpecialization::PRESENTATION_OPTIONS.key(:assumed)
+          when ProcedureSpecialization::CLASSIFICATION_ASSUMED_SPECIALIST,
+            ProcedureSpecialization::CLASSIFICATION_FOCUSED
+
+            ProcedureSpecialization::PRESENTATION_OPTIONS.key(:focused)
+          when ProcedureSpecialization::CLASSIFICATION_NONFOCUSED
+            ProcedureSpecialization::PRESENTATION_OPTIONS.key(:non_focused)
+          end
         )
       )
     end
