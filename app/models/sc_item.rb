@@ -22,7 +22,8 @@ class ScItem < ActiveRecord::Base
     :borrowable,
     :division_id,
     :evidence_id,
-    :demoable
+    :demoable,
+    :sc_item_procedures_attributes
 
   belongs_to :sc_category
 

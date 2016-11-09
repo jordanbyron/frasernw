@@ -13,7 +13,7 @@ class ScCategoriesController < ApplicationController
   def new
     @sc_category = ScCategory.new
     @hierarchy =
-      ancestry_options_limited(ScCategory.unscoped.arrange(order: 'name'), nil)
+      sc_category_ancestry_options(ScCategory.unscoped.arrange(order: 'name'), nil)
   end
 
   def create
@@ -27,7 +27,7 @@ class ScCategoriesController < ApplicationController
 
   def edit
     @sc_category = ScCategory.find(params[:id])
-    @hierarchy = ancestry_options_limited(
+    @hierarchy = sc_category_ancestry_options(
       ScCategory.unscoped.arrange(order: 'name'),
       @sc_category.subtree
     )

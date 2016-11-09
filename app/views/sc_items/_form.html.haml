@@ -7,7 +7,7 @@
 
   = f.association :sc_category,
     as: :select,
-    collection: @hierarchy,
+    collection: sc_category_ancestry_options(ScCategory.unscoped.arrange(order: 'name'), nil),
     include_blank: false
 
   .control-group
@@ -88,6 +88,7 @@
 
   :javascript
     var updateSubtree = function(parentNode){
+
       var subtreeSelector = (
         "label[data-ps-tree-parent='" +
         parentNode.getAttribute("data-ps-tree-id") +

@@ -19,7 +19,8 @@ module ProceduresHelper
       memo + content_tag(
         :label,
         class: "ps-tree-node-container",
-        "data-ps-tree-parent" => "#{parent_node.class.to_s}#{parent_node.id}"
+        "data-ps-tree-parent" => "#{parent_node.class.to_s}#{parent_node.id}",
+        "data-procedure-id" => procedure_specialization.procedure_id
       ) do
         returning = hidden_field_tag(
           "#{_input_name_root}[procedure_id]",
@@ -32,7 +33,8 @@ module ProceduresHelper
           "0",
           target.procedures.include?(procedure_specialization.procedure),
           class: "offset#{level + 1} ps-tree-node-input",
-          "data-ps-tree-id" => "ProcedureSpecialization#{procedure_specialization.id}"
+          "data-ps-tree-id" => "ProcedureSpecialization#{procedure_specialization.id}",
+          "data-procedure-id" => procedure_specialization.procedure_id
         ) + content_tag(
           :span,
           procedure_specialization.procedure.name,
