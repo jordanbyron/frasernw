@@ -470,4 +470,8 @@ class Clinic < ActiveRecord::Base
   def closed?
     closure_scheduled? && closure_date <= Date.current
   end
+
+  def procedure_links
+    clinic_procedures
+  end
 end

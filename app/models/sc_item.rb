@@ -29,7 +29,10 @@ class ScItem < ActiveRecord::Base
   has_many :sc_item_specializations, dependent: :destroy
   has_many :specializations, through: :sc_item_specializations
 
-  has_many :procedures, through: :sc_item_specialization_procedures
+  has_many :sc_item_procedures, dependent: :destroy
+  accepts_nested_attributes_for :sc_item_procedures, allow_destroy: true
+
+  has_many :procedures, through: :sc_item_procedures
 
   belongs_to :division
 
@@ -346,6 +349,10 @@ class ScItem < ActiveRecord::Base
 
   def in_category?(category_name)
     sc_category.name == category_name
+  end
+
+  def procedure_links
+    sc_item_procedures
   end
 
   alias_attribute :label, :title

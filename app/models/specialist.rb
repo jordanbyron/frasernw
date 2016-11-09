@@ -933,6 +933,10 @@ class Specialist < ActiveRecord::Base
     ["Hospitals or clinics only", false]
   ]
 
+  def procedure_links
+    specialist_procedures
+  end
+
 private
 
   def destroy_photo?

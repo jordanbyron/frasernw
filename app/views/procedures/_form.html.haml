@@ -31,7 +31,8 @@
         as: :select,
         include_blank: false,
         collection: ProcedureAncestryOptions.call(procedure_specialization: f.object),
-        class:  "input--parent_id"
+        class:  "input--parent_id",
+        label: "Ancestry"
 
       = f.input :specialists_presentation_key,
         label: "Presentation for specialists",

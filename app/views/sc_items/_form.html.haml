@@ -13,33 +13,19 @@
   .control-group
     .control-label
       Item Specialties & Areas of Practice
-    .controls
+    .controls{style: "max-width: none;"}
       - Specialization.all.each do |specialization|
         %label
-          = check_box_tag "specialization_#{specialization.id}",
-            1,
-            @has_specializations.include?(specialization.id),
-            name: "specialization[#{specialization.id}",
-            class: "specialty_check"
+          = check_box_tag "#{form_target_type(f.object)}[specialization_ids][]",
+            specialization.id,
+            f.object.specializations.include?(specialization),
+            class: "ps-tree-node-input specialty-input",
+            "data-ps-tree-id" => "Specialization#{specialization.id}"
           = specialization.name
 
-        .procedures_list{ id: "specialization_#{specialization.id}_procedures" }
-          - specialization.arranged_procedure_specializations(:non_assumed).each do |ps,children|
-            %label
-              = check_box_tag "procedure_specialization_#{ps.id}",
-                1,
-                @has_procedure_specializations.include?(ps.id),
-                name: "procedure_specialization[#{ps.id}",
-                class: "offsethalf"
-              = ps.procedure.name
-            - children.each do |child_ps, grandchildren|
-              %label
-                = check_box_tag "procedure_specialization_#{child_ps.id}",
-                  1,
-                  @has_procedure_specializations.include?(child_ps.id),
-                  name: "procedure_specialization[#{child_ps.id}",
-                  class: "offset1"
-                = child_ps.procedure.name
+        .procedures_list
+          = nested_procedure_checkboxes(f.object, specialization, specialization.arranged_procedure_specializations(:non_assumed))
+
 
   %h3 Content Options
 
@@ -100,56 +86,81 @@
     = f.button :submit, class: "btn btn-primary"
     = link_to 'Cancel', root_url, class: "btn btn-danger"
 
-  %script{ type: "text/javascript" }
-    :plain
-      function hide_show_procedures( checkbox )
-      {
-        id = "#" + $(checkbox).prop('id') + "_procedures";
-        if ($(checkbox).prop('checked'))
-        {
-          $(id).show();
-        }
-        else
-        {
-          $(id).hide();
-        }
-        return true;
-      }
+  :javascript
+    var updateSubtree = function(parentNode){
+      var subtreeSelector = (
+        "label[data-ps-tree-parent='" +
+        parentNode.getAttribute("data-ps-tree-id") +
+        "']"
+      )
+      $(subtreeSelector).each(function(index, childContainer){
+        // value/visibility of this checkbox
+        // value/visibility of children
 
-      $(document).ready(function() {
-        $.each($('.specialty_check'), function() { hide_show_procedures(this) });
-      });
+        var input = $(childContainer).find(".ps-tree-node-input")[0]
 
-      $('.specialty_check').click(function() {
-        hide_show_procedures(this);
-      });
-
-      var type_mask_changed = function()
-      {
-        if ($(this).val() == 1)
-        {
-          $("#link_section").show();
-          $("#markdown_section").hide();
-          $("#document_section").hide();
-          if (window.location.pathname == "/content_items/new") {
-            $("#can-email-input").attr({"checked" : "checked"});
+        if (parentNode.checked && $(childContainer).is(":hidden")){
+          if(input.getAttribute("data-previous-val") === "true") {
+            input.checked = true
           }
+          else {
+            input.checked = false
+          }
+
+          $(childContainer).show();
         }
-        else if ($(this).val() == 2)
-        {
-          $("#link_section").hide();
-          $("#markdown_section").show();
-          $("#document_section").hide();
+        else if (!parentNode.checked) {
+          input.setAttribute("data-previous-val", input.checked);
+          input.checked = false;
+          $(childContainer).hide()
         }
-        else if ($(this).val() == 3)
-        {
-          $("#link_section").hide();
-          $("#markdown_section").hide();
-          $("#document_section").show();
+
+        updateSubtree(input);
+      })
+    }
+
+    $(".specialty-input").each(function(index, elem){
+      updateSubtree(elem)
+    })
+
+    $(".ps-tree-node-input").change(function(event){
+      updateSubtree(event.target)
+    })
+
+    $(document).ready(function() {
+      $.each($('.specialty_check'), function() { hide_show_procedures(this) });
+    });
+
+    $('.specialty_check').click(function() {
+      hide_show_procedures(this);
+    });
+
+    var type_mask_changed = function()
+    {
+      if ($(this).val() == 1)
+      {
+        $("#link_section").show();
+        $("#markdown_section").hide();
+        $("#document_section").hide();
+        if (window.location.pathname == "/content_items/new") {
+          $("#can-email-input").attr({"checked" : "checked"});
         }
       }
+      else if ($(this).val() == 2)
+      {
+        $("#link_section").hide();
+        $("#markdown_section").show();
+        $("#document_section").hide();
+      }
+      else if ($(this).val() == 3)
+      {
+        $("#link_section").hide();
+        $("#markdown_section").hide();
+        $("#document_section").show();
+      }
+    }
 
-      $(document).ready(function() {
-        $("#sc_item_type_mask").each(type_mask_changed);
-        $("#sc_item_type_mask").live("change", type_mask_changed);
-      });
+    $(document).ready(function() {
+      $("#sc_item_type_mask").each(type_mask_changed);
+      $("#sc_item_type_mask").live("change", type_mask_changed);
+    });
