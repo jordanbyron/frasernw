@@ -5,7 +5,7 @@ import matchesPreliminaryFilters from "controller_helpers/matches_preliminary_fi
 import matchesSidebarFilters from "controller_helpers/matches_sidebar_filters";
 import { matchesSidebarFiltersExceptCities } from "controller_helpers/matches_sidebar_filters";
 import activatedFilterSubkeys from "controller_helpers/activated_filter_subkeys";
-import { selectedTabKey } from "controller_helpers/tab_keys";
+import { selectedTabKey } from "controller_helpers/nav_tab_keys";
 import { memoizePerRender } from "utils";
 import recordShownByBreadcrumb from "controller_helpers/record_shown_by_breadcrumb";
 

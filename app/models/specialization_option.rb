@@ -1,11 +1,12 @@
 class SpecializationOption < ActiveRecord::Base
+  include PaperTrailable
 
   attr_accessible :specialization,
     :owner,
     :content_owner,
     :division,
     :is_new,
-    :open_to_type,
+    :open_to_type_key,
     :open_to_sc_category,
     :show_specialist_categorization_1,
     :show_specialist_categorization_2,
@@ -23,73 +24,24 @@ class SpecializationOption < ActiveRecord::Base
   belongs_to :open_to_sc_category, class_name: "ScCategory"
 
   def self.for_divisions(divisions)
-    division_ids = divisions.map{ |d| d.id }
-    where("specialization_options.division_id IN (?)", division_ids)
-  end
-
-  def self.for_divisions_and_specializations(divisions, specializations)
-    division_ids = divisions.map{ |d| d.id }
-    specialization_ids = specializations.map{ |s| s.id }
-    where(
-      "specialization_options.division_id IN (?) "\
-        "AND specialization_options.specialization_id IN (?)",
-      division_ids,
-      specialization_ids
-    )
+    where("specialization_options.division_id IN (?)", divisions.map(&:id))
   end
 
   def self.is_new
     where("specialization_options.is_new = (?)", true)
   end
 
-  def open_to_sc_category?
-    open_to_sc_category.present? &&
-    open_to_sc_category.
-      all_sc_items_for_specialization_in_divisions(specialization, [division]).
-      length > 0
+  DEFAULT_TAB_OPTIONS = StrictHash.new(
+    1 => :specialists,
+    2 => :clinics,
+    3 => :content_category
+  )
+
+  def open_to_type
+    DEFAULT_TAB_OPTIONS[open_to_type_key]
   end
 
-  def open_to
-    if open_to_type == OPEN_TO_SPECIALISTS
-      "specialists"
-    elsif open_to_type == OPEN_TO_CLINICS
-      "clinics"
-    elsif open_to_sc_category?
-      open_to_sc_category.id
-    else
-      "specialists"
-    end
+  def open_to_id
+    option_to_type == :content_category ? open_to_sc_category_id : nil
   end
-
-  def specialist_categorization_hash
-    categorization_hash = {}
-    if show_specialist_categorization_1?
-      categorization_hash[1] = Specialist::CATEGORIZATION_LABELS[1]
-    end
-    if show_specialist_categorization_2?
-      categorization_hash[2] = Specialist::CATEGORIZATION_LABELS[2]
-    end
-    if show_specialist_categorization_3?
-      categorization_hash[3] = Specialist::CATEGORIZATION_LABELS[3]
-    end
-    if show_specialist_categorization_4?
-      categorization_hash[4] = Specialist::CATEGORIZATION_LABELS[4]
-    end
-    if show_specialist_categorization_5?
-      categorization_hash[5] = Specialist::CATEGORIZATION_LABELS[5]
-    end
-    categorization_hash
-  end
-
-  OPEN_TO_SPECIALISTS = 1
-  OPEN_TO_CLINICS = 2
-  OPEN_TO_SC_CATEGORY = 3
-
-  OPEN_TO_HASH = {
-    OPEN_TO_SPECIALISTS => "Specialists",
-    OPEN_TO_CLINICS => "Clinics",
-    OPEN_TO_SC_CATEGORY => "Content Category"
-  }
-
-  include PaperTrailable
 end

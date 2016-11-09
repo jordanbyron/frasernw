@@ -1,7 +1,7 @@
 import _ from "lodash";
 import { route } from "controller_helpers/routing";
 import { collectionShownName } from "controller_helpers/collection_shown";
-import { selectedTabKey } from "controller_helpers/tab_keys";
+import { selectedTabKey } from "controller_helpers/nav_tab_keys";
 import { memoizePerRender } from "utils";
 
 export const selectedTableHeadingKey = ((model) => {

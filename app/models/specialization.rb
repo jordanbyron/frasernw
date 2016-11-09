@@ -126,16 +126,6 @@ class Specialization < ActiveRecord::Base
     specialization_options.for_divisions(divisions).is_new.length > 0
   end
 
-  def open_to_tab_for_divisions(divisions)
-    so = specialization_options.for_divisions(divisions)
-    if so.length == 0
-      return "specialists"
-    else
-      #we pick the first division. not neceissarly correct, but it will do.
-      so.first.open_to
-    end
-  end
-
   def arranged_procedure_specializations(procedure_specializations_scope = nil)
     scope = procedure_specializations
 

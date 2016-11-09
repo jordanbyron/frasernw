@@ -1,7 +1,7 @@
 import React from "react";
 import _ from "lodash";
 import { route, recordShownByRoute } from "controller_helpers/routing";
-import { selectedTabKey } from "controller_helpers/tab_keys";
+import { selectedTabKey } from "controller_helpers/nav_tab_keys";
 import { collectionShownPluralLabel } from "controller_helpers/collection_shown";
 
 const MainPanelAnnotation = ({model}) => {

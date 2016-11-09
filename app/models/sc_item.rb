@@ -83,25 +83,6 @@ class ScItem < ActiveRecord::Base
     Rails.cache.delete([self.class.name, id])
   end
 
-  def self.for_specialization_in_divisions(specialization, divisions)
-    division_ids = divisions.map{ |d| d.id }
-    owned = joins(:sc_item_specializations).where(
-      '"sc_item_specializations"."specialization_id" = (?) '\
-        'AND "sc_items"."division_id" IN (?)',
-      specialization.id,
-      division_ids
-    )
-    borrowed = joins(:sc_item_specializations, :division_display_sc_items).where(
-      '"sc_item_specializations"."specialization_id" = (?) '\
-        'AND "division_display_sc_items"."division_id" in (?) '\
-        'AND "sc_items"."borrowable" = (?)',
-      specialization.id,
-      division_ids,
-      true
-    )
-    (owned + borrowed).uniq
-  end
-
   def self.borrowable_by_divisions(divisions)
     division_ids = divisions.map{ |d| d.id }
     where(

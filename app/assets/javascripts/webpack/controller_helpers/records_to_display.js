@@ -8,7 +8,7 @@ import {
 } from "controller_helpers/collection_shown";
 import recordShownByBreadcrumb from "controller_helpers/record_shown_by_breadcrumb";
 import { showingOtherSpecializations } from "controller_helpers/filter_messages";
-import { selectedTabKey, isTabbedPage } from "controller_helpers/tab_keys";
+import { selectedTabKey, isTabbedPage } from "controller_helpers/nav_tab_keys";
 import matchesPreliminaryFilters from "controller_helpers/matches_preliminary_filters";
 import matchesSidebarFilters from "controller_helpers/matches_sidebar_filters";
 import { memoizePerRender } from "utils";

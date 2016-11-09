@@ -1,7 +1,7 @@
 import React from "react";
 import FilterGroup from "controllers/filter_group";
 import { recordShownByRoute, route } from "controller_helpers/routing";
-import { selectedTabKey } from "controller_helpers/tab_keys";
+import { selectedTabKey } from "controller_helpers/nav_tab_keys";
 import { toggleUnfocusedProcedureVisibility }
   from "action_creators";
 import _ from "lodash";

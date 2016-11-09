@@ -2,7 +2,7 @@ import React from "react";
 import ExpandableFilterGroup from "component_helpers/expandable_filter_group";
 import FilterGroup from "component_helpers/filter_group";
 import { toggleFilterGroupExpansion } from "action_creators";
-import { selectedTabKey } from "controller_helpers/tab_keys";
+import { selectedTabKey } from "controller_helpers/nav_tab_keys";
 
 const FilterGroupController = ({
   model,

@@ -1,10 +1,11 @@
 import { route, routeParams, recordShownByRoute }
   from "controller_helpers/routing";
-import { selectedTabKey, recordShownByTab } from "controller_helpers/tab_keys";
+import { selectedTabKey, recordShownByTab } from "controller_helpers/nav_tab_keys";
 import { memoizePerRender } from "utils";
-import { isTabbedPage } from "controller_helpers/tab_keys";
+import { isTabbedPage } from "controller_helpers/nav_tab_keys";
 import * as filterValues from "controller_helpers/filter_values";
 import recordShownByBreadcrumb from "controller_helpers/record_shown_by_breadcrumb";
+import { recordShownByTabKey, navTabKeyType } from "controller_helpers/nav_tab_key";
 import _ from "lodash";
 
 export const collectionShownName = ((model) => {
@@ -115,12 +116,9 @@ export const matchesTab = (record, model, tabKey) => {
   else if (_.includes(["specialists", "clinics"], tabKey)){
     return true;
   }
-  else if (tabKey.includes("contentCategory")){
-    let contentCategory =
-      model.app.contentCategories[tabKey.replace("contentCategory", "")]
-
+  else if (navTabKeyType(tabKey) === "contentCategory"){
     return _.includes(
-      contentCategory.subtreeIds,
+      recordShownByTabKey(tabKey).subtreeIds,
       record.categoryId
     );
   }
