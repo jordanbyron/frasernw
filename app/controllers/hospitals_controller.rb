@@ -52,7 +52,7 @@ class HospitalsController < ApplicationController
     ExpireFragment.call hospital_path(@hospital)
     name = @hospital.name
     @hospital.destroy
-    redirect_to hospitals_url, notice: "Successfully deleted #{@name}."
+    redirect_to hospitals_url, notice: "Successfully deleted #{@hospital.name}."
   end
 
   def check_token

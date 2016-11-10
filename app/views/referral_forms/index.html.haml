@@ -1,107 +1,100 @@
 - set_page_specific_title "Referral Forms"
 
-= stylesheet_link_tag "pages/referral_forms"
-
-:javascript
-  $(document).ready(function() { update_favorites() });
-
 = render "partials/body_panel_nav",
   specialization: nil
 
 .content-wrapper
 
-  %script{"type" => "text/javascript"}
-    :plain
-      $(document).ready(function() {
-        $('.tablesorter').tablesorter({sortList: [[0,0],[1,0],[2,0]]});
-      });
-
-
   %h2 Referral Forms
 
-  %script{"type" => "text/javascript"}
-    $(document).ready(function() {
+  %script{ type: "text/javascript" }
+    filterForms = function() {
     - @referral_forms.each do |referral_form|
       - filtering_attributes = []
       - filtering_attributes << "ft#{referral_form.referrable.is_a?(Specialist) ? "s" : "c"}_"
       - referral_form.referrable.specializations.each do |s|
         - filtering_attributes << "fs#{s.id}_"
       $('#i#{referral_form.id}').data('attributes', '#{filtering_attributes.join(' ')}');
-    });
+    };
 
   .content
     .row
       .span8half
         .toggle-filters.visible-phone
-          %a{"href" => "javascript:void(0)", "onclick" => "$('#referral_form_filters').toggle()"}
+          %a{ href: "javascript:void(0)",
+            onclick: "$('#referral_form_filters').toggle()" }
             %i.icon-blue.icon-cog.icon-small
             Show / Hide Referral Form Filters
 
-        .filter-phrase{:id => "referral_form_phrase"}
+        .filter-phrase#referral_form_phrase
 
-        %table.table.table-condensed.tablesorter.category_table{:id => "referral_form_table"}
+        %table.table.table-condensed.tablesorter.category_table#referral_form_table
           %thead
-            %tr{:class => 'tableheader'}
-              %th{:class => "title {sorter: 'link_only'}"} Specialist / Clinic
-              %th{:class => "title {sorter: 'link_only'}"} Form Name
-              %th{:class => "subcategory {sorter: 'text'}"} Specialty
+            %tr.tableheader
+              %th{ class: "title {sorter: 'link_only'}" } Specialist / Clinic
+              %th{ class: "title {sorter: 'link_only'}" } Form Name
+              %th{ class: "subcategory {sorter: 'text'}" } Specialty
               - if can? :view_history, Historical
                 %th.referral_form_table__notes_column
           %tbody
             - @referral_forms.each do |referral_form|
-              %tr{:id => "i#{referral_form.id}"}
+              %tr{ id: "i#{referral_form.id}" }
                 %td.title
-                  = link_to(referral_form.referrable.name, referral_form.referrable, :target => "_blank")
+                  = link_to(referral_form.referrable.name,
+                    referral_form.referrable,
+                    target: "_blank")
                 %td.title
                   - form_name = referral_form.description.present? ? referral_form.description.capitalize_first_letter : "Referral form"
-                  = link_to(form_name, referral_form.form.url, :target => "_blank", "onclick" => "window.pathways.trackForm(_gaq, #{referral_form.id})")
-                %td.subcategory= referral_form.referrable.specializations.map{ |s| s.name }.to_sentence
+                  = link_to(form_name, referral_form.form.url,
+                    target: "_blank",
+                    onclick: "window.pathways.trackForm(_gaq, #{referral_form.id})")
+                %td.subcategory
+                  = referral_form.referrable.specializations.map{ |s| s.name }.to_sentence
                 - if can? :view_history, referral_form
                   %td.notes_column
                     = history_button(referral_form)
 
       .span3.offsethalf
-        .well.filter{:id => "referral_form_filters"}
+        .well.filter#referral_form_filters
           .title
             Filter Referral Forms
 
           .filter-group
-            %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#referral-forms-filter-subcategories"}
+            %a.filter-group-title.open{ data: { toggle: "collapse" },
+              href: "#referral-forms-filter-subcategories" }
               Specialists or Clinics
-            .collapsable.in{:id => "referral-forms-filter-subcategories"}
+            .collapsable.in#referral-forms-filter-subcategories
               .filter-group-content
                 %label
-                  %input.ft#ftall{"type" => "radio", "name" => "ft", "checked" => "checked"} Specialist and Clinics
+                  %input.ft#ftall{ type: "radio",
+                    name: "ft",
+                    checked: "checked" } Specialist and Clinics
                 %label
-                  %input.ft#fts{"type" => "radio", "name" => "ft"} Specialists
+                  %input.ft#fts{ type: "radio", name: "ft"} Specialists
                 %label
-                  %input.ft#ftc{"type" => "radio", "name" => "ft"} Clinics
+                  %input.ft#ftc{ type: "radio", name: "ft"} Clinics
 
           .filter-group
-            %a.filter-group-title.open{"data-toggle" => "collapse", "href" => "#referral-forms-filter-specialties"}
+            %a.filter-group-title.open{ data: { toggle: "collapse" },
+              href: "#referral-forms-filter-specialties" }
               Specialties
-            .collapsable.in{:id => "referral-forms-filter-specialties"}
+            .collapsable.in#referral-forms-filter-specialties
               .filter-group-content
                 %label
-                  %input.fs#fsall{"type" => "radio", "name" => "fs", "checked" => "checked"} All
+                  %input.fs#fsall{ type: "radio",
+                    name: "fs",
+                    checked: "checked" } All
                 - Specialization.all.each do |s|
                   %label
-                    %input.fs{"type" => "radio", "name" => "fs", "id" => "fs#{s.id}_"}= s.name
+                    %input.fs{ type: "radio",
+                      name: "fs",
+                      id: "fs#{s.id}_" }= s.name
 
-      %script{"type" => "text/javascript"}
-        :plain
-          $('table tbody tr').click( function() {
-            var link = $(this).find('td.title a');
-            if (link.hasClass('ajax'))
-            {
-              link.click();
-            }
-            else
-            {
-              window.open(link.attr('href'));
-            }
-          });
-          $('table tr a').click( function(e) { e.stopPropagation(); });
-          $(document).ready(function() {
-            $("input.ft, input.fs").click( update_referral_form_table );
-          });
+      :javascript
+        $('table tr a').click( function(e) { e.stopPropagation(); });
+        $(document).ready(function() {
+          update_favorites();
+          $('.tablesorter').tablesorter({sortList: [[0,0],[1,0],[2,0]]});
+          filterForms();
+          $("input.ft, input.fs").click( update_referral_form_table );
+        });

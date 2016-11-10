@@ -1,16 +1,11 @@
-%script{ type: "text/javascript" }
-  :plain
-    function setContentCategoryVisibility(select, division_id)
-    {
-      if ( $(select).val() == 3 )
-      {
-        $("#open_to_sc_category_" + division_id).show();
-      }
-      else
-      {
-        $("#open_to_sc_category_" + division_id).hide();
-      }
+:javascript
+  function setContentCategoryVisibility(select, division_id) {
+    if ( $(select).val() == 3 ) {
+      $("#open_to_sc_category_" + division_id).show();
+    } else {
+      $("#open_to_sc_category_" + division_id).hide();
     }
+  }
 
 = simple_nested_form_for @specialization,
   html: { class: "form-horizontal" } do |f|
@@ -26,16 +21,15 @@
     = f.input :suffix,
       hint: "Use carefully, otherwise leave blank. Globally adds bold shordhand abbreviation next to the name of people with this specialty in filter tables (e.g. <span>John Smith<span class='suffix'>GP</span></span> if 'GP') </br> </br> Suffix: <span>Jane Doe<span class='suffix' id='specialization_suffix_demo'>#{@specialization.suffix}</span></span>".html_safe
 
-    %script{ type: "text/javascript" }
-      :plain
-        $("#specialization_suffix").bind("keyup", autoFillSuffix);
-        function autoFillSuffix() {
-          var str = "";
-          $( "#specialization_suffix" ).each(function() {
-            str += $( this ).val() + " ";
-          });
-          $( "div #specialization_suffix_demo" ).text( str );
-        }
+    :javascript
+      $("#specialization_suffix").bind("keyup", autoFillSuffix);
+      function autoFillSuffix() {
+        var str = "";
+        $( "#specialization_suffix" ).each(function() {
+          str += $( this ).val() + " ";
+        });
+        $( "div #specialization_suffix_demo" ).text( str );
+      }
 
     - divisions = Division.all
   - else
@@ -51,7 +45,6 @@
     - is_new = specialization_option.present? && specialization_option.is_new
     - hide_from_division_users = specialization_option.present? && specialization_option.hide_from_division_users
     - open_to_type_key = specialization_option.present? && specialization_option.open_to_type_key
-    - open_to_sc_category_id = specialization_option.present? && specialization_option.open_to_sc_category_id
     - content_categories = ScCategory.specialty.map{ |category| [category.name, category.id] }
     - content_categories_id = specialization_option.present? && specialization_option.open_to_sc_category.present? ? specialization_option.open_to_sc_category.id : nil
 

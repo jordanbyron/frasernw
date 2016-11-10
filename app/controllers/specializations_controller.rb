@@ -38,11 +38,12 @@ class SpecializationsController < ApplicationController
         so.open_to_type = params[:open_to_type]["#{division.id}"]
         so.open_to_sc_category = (
             params[:open_to_type]["#{division.id}"] == SpecializationOption::OPEN_TO_SC_CATEGORY.to_s
-          ) ? ScCategory.find(params[:open_to_sc_category_id]["#{division.id}"]) : nil
+          ) ? ScCategory.find(params[:open_to_sc_category]["#{division.id}"]) : nil
         so.save
 
         division.refer_to_encompassed_cities!(@specialization)
       end
+      Denormalized.regenerate(:specializations)
       redirect_to @specialization, notice: "Successfully created specialty."
     else
       render action: 'new'
@@ -87,6 +88,7 @@ class SpecializationsController < ApplicationController
 
         so.save
       end
+      Denormalized.regenerate(:specializations)
       redirect_to @specialization, notice: "Successfully updated specialty."
     else
       render action: 'edit'

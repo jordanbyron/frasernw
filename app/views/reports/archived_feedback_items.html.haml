@@ -5,20 +5,20 @@
   - if params[:division_id].present?
     %h2= "Feedback Items Archived By #{@division.name} Admins"
   - else
-    %h2= "Feedback Queue Archive"
+    %h2 Feedback Queue Archive
 
   .tabbable
     %ul.nav.nav-tabs
       - @feedback_item_types.each do |type, items|
         %li
-          %a{"href" => "##{type}_tab", "data-toggle" => "tab"}
+          %a{ href: "##{type}_tab", data: { toggle: "tab" } }
             = type.to_s.humanize
 
     .tab-content
 
       - @feedback_item_types.each do |type, items|
 
-        .tab-pane{id: "#{type.to_s}_tab"}
+        .tab-pane{ id: "#{type.to_s}_tab" }
 
           = will_paginate items,
             renderer: PathwaysPaginationHelper::LinkRenderer,
@@ -52,9 +52,14 @@
                 %td= feedback_item.archived_by.name
                 %td= feedback_item.submitter_name
                 %td= "#{time_ago_in_words(feedback_item.created_at)} ago"
-                %td{style: "width: 30%;"}= feedback_item.feedback
+                %td{ style: "width: 30%;" }= feedback_item.feedback
                 %td= respond_link(feedback_item)
-                %td.admin= history_button(feedback_item)
+                %td.admin
+                  = link_to feedback_item,
+                    class: "btn btn-mini stacked-button" do
+                    %i.icon-circle-arrow-right
+                    View
+                  = history_button(feedback_item)
 
           = will_paginate items,
             renderer: PathwaysPaginationHelper::LinkRenderer,
@@ -62,7 +67,7 @@
             outer_window: 2
 
   - if params[:division_id].present?
-    %i= "Beginning August 2016"
+    %i Beginning August 2016
 
 :javascript
   window.pathways.setupTabHistory();

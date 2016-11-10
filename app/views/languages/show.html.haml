@@ -10,11 +10,11 @@
       = link_to edit_language_path(@language),
         class: "btn" do
         %i.icon-pencil
-        %span= " Edit Hospital"
+        Edit Language
     - if can? :destroy, @language
       = link_to language_path(@language),
         data: { confirm: "Delete #{@language.name}?" },
         method: :delete,
         class: "btn" do
         %i.icon-trash
-        %span= " Delete Hospital"
+        Delete Language

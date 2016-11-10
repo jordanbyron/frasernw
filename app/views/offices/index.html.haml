@@ -10,23 +10,29 @@
   %table.table.table-condensed.table-striped.tablesorter
     %thead
       %tr.tableheader
-        %th{:class => "{sorter: 'text'}", :style => "width:60%"} Address
-        %th{:class => "{sorter: 'text'}", :style => "width:40%"} Specialists
+        %th{ class: "{sorter: 'text'}", style: "width:60%" } Address
+        %th{ class: "{sorter: 'text'}", style: "width:40%" } Specialists
         %th.admin
     %tbody
       - @offices.each do |office|
         - address = office.location.present? ? office.location.resolved_address : nil
         %tr
-          %td= link_to office.short_address, office, :class => 'ajax'
+          %td= link_to office.short_address, office
           %td
             %ul
               - office.specialists.each do |specialist|
-                %li= link_to specialist.name, specialist, :class => 'ajax'
+                %li= link_to specialist.name, specialist
           %td.admin.btn-group
-            = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_office_path(office), :class => "btn btn-small ajax")
-            = link_to("<i class='icon-trash'></i>".html_safe + " Delete", office, :data => { :confirm => "Delete #{office.short_address.present? ? office.short_address : "office"}?"}, :method => :delete, :class => "btn btn-small")
+            = link_to edit_office_path(office),
+              class: "btn btn-mini stacked-button" do
+              %i.icon-pencil
+              Edit
+            = link_to office,
+              data: { confirm: "Delete #{office.short_address.present? ? office.short_address : "office"}?" },
+              method: :delete,
+              class: "btn btn-mini stacked-button" do
+              %i.icon-trash
+              Delete
 
-  -# %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New Office", new_office_path, :class => "btn ajax")
-  %script{"type" => "text/javascript"}
-    :plain
-      $(document).ready(function() { $('.tablesorter').tablesorter() });
+  :javascript
+    $(document).ready(function() { $('.tablesorter').tablesorter() });
