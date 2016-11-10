@@ -3,7 +3,7 @@ import recordsToDisplay from "controller_helpers/records_to_display";
 import { sidebarFilterKeys } from "controller_helpers/matches_sidebar_filters";
 import filterSummaries from "controller_helpers/sidebar_filter_summaries";
 import filters from "controller_helpers/sidebar_filters";
-import { collectionShownFilterContextualizedLabel, collectionShownName }
+import { collectionShownPluralLabel, collectionShownName }
   from "controller_helpers/collection_shown";
 import { selectedTabKey } from "controller_helpers/tab_keys";
 import { clearFilters } from "action_creators";
@@ -69,13 +69,13 @@ const label = (model) => {
     return ([
       verb(model),
       leadingFilterPredicates(model),
-      collectionShownFilterContextualizedLabel(model),
+      collectionShownPluralLabel(model),
     ]).join(" ");
   } else {
     return ([
       verb(model),
       leadingFilterPredicates(model),
-      collectionShownFilterContextualizedLabel(model),
+      collectionShownPluralLabel(model),
       pronoun(model),
       trailingFilterPredicates(model)
     ]).join(" ");
