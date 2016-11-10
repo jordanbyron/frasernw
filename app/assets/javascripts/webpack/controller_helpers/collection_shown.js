@@ -6,6 +6,7 @@ import { isTabbedPage } from "controller_helpers/nav_tab_keys";
 import * as filterValues from "controller_helpers/filter_values";
 import { recordShownByBreadcrumb } from "controller_helpers/breadcrumbs";
 import { matchesTabKey } from "controller_helpers/nav_tab_key";
+import { showingOtherSpecializations } from "controller_helpers/filter_messages";
 import _ from "lodash";
 
 export const collectionShownName = ((model) => {
@@ -61,13 +62,13 @@ export const scopedByRouteAndTab = ((model) => {
 export const collectionShownPluralLabel = ((model) => {
   switch(collectionShownName(model)){
   case "specialists":
-    if (route === "/specialties/:id"){
+    if (route === "/specialties/:id" && !showingOtherSpecializations(model)){
       return recordShownByRoute(model).membersName;
     } else {
       return "Specialists"
     }
   case "clinics":
-    if (route === "/specialties/:id"){
+    if (route === "/specialties/:id" && !showingOtherSpecializations(model)){
       return `${recordShownByRoute(model).name} Clinics`;
     } else {
       return "Clinics"
