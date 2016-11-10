@@ -6,7 +6,7 @@ import { NavTabs, NavTab } from "component_helpers/nav_tabs";
 import { tabClicked } from "action_creators";
 import { route } from "controller_helpers/routing";
 import React from "react";
-import recordShownByBreadcrumb from "controller_helpers/record_shown_by_breadcrumb";
+import { recordShownByBreadcrumb } from "controller_helpers/breadcrumbs";
 import { encode } from "utils/url_hash_encoding";
 import { navTabKeyId, recordShownByTabKey } from "controller_helpers/nav_tab_key";
 
@@ -18,7 +18,7 @@ const NavTabsController = ({model, dispatch}) => {
           navTabKeys(model).map((tabKey) => {
             return(
               <NavTabController
-                label={label(tabKey)}
+                label={label(model, tabKey)}
                 tabKey={tabKey}
                 model={model}
                 dispatch={dispatch}
@@ -35,7 +35,7 @@ const NavTabsController = ({model, dispatch}) => {
   }
 }
 
-const label = (navTabKey) => {
+const label = (model, navTabKey) => {
   if (navTabKeyId(navTabKey) === null){
     switch(navTabKey){
     case "closedIssues": return "Closed";
@@ -52,7 +52,7 @@ const label = (navTabKey) => {
     }
   }
   else {
-    return recordShownByTabKey(navTabKey).name;
+    return recordShownByTabKey(model, navTabKey).name;
   }
 }
 

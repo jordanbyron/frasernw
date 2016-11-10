@@ -42,6 +42,6 @@ class SpecializationOption < ActiveRecord::Base
   end
 
   def open_to_id
-    option_to_type == :content_category ? open_to_sc_category_id : nil
+    open_to_type == :content_category ? open_to_sc_category_id : nil
   end
 end

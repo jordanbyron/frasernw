@@ -5,8 +5,7 @@ import { selectedTabKey } from "controller_helpers/nav_tab_keys";
 import { toggleUnfocusedProcedureVisibility }
   from "action_creators";
 import _ from "lodash";
-import { collectionShownName, scopedByRouteAndTab }
-  from "controller_helpers/collection_shown";
+import { collectionShownName } from "controller_helpers/collection_shown";
 import ExpandingContainer from "component_helpers/expanding_container";
 import { procedures as subkeys } from "controller_helpers/filter_subkeys";
 import { buttonIsh } from "stylesets";

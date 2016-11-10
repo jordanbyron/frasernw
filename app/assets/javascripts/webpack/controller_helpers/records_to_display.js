@@ -1,12 +1,10 @@
-import { route, recordShownByRoute } from "controller_helpers/routing";
+import { route, recordShownByRoute, matchesRoute } from "controller_helpers/routing";
 import {
-  matchesTab,
-  matchesPage,
   collectionShownName,
-  unscopedCollectionShown,
-  scopedByRouteAndTab
+  unscopedCollectionShown
 } from "controller_helpers/collection_shown";
-import recordShownByBreadcrumb from "controller_helpers/record_shown_by_breadcrumb";
+import { matchesTabKey } from "controller_helpers/nav_tab_key";
+import { recordShownByBreadcrumb } from "controller_helpers/breadcrumbs";
 import { showingOtherSpecializations } from "controller_helpers/filter_messages";
 import { selectedTabKey, isTabbedPage } from "controller_helpers/nav_tab_keys";
 import matchesPreliminaryFilters from "controller_helpers/matches_preliminary_filters";
@@ -38,9 +36,9 @@ const recordsToDisplay = ((model) => {
     else {
       return unscopedCollectionShown(model).filter((record) => {
         return matchesPreliminaryFilters(record, model) &&
-          matchesPage(record, model) &&
+          matchesRoute(record, model) &&
           (!isTabbedPage(model) ||
-            matchesTab(record, model, selectedTabKey(model))) &&
+            matchesTabKey(record, model, selectedTabKey(model))) &&
           matchesSidebarFilters(record, model)
       })
     }

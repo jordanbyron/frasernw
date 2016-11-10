@@ -1,7 +1,7 @@
 import { memoizePerRender } from "utils";
 import { route, recordShownByRoute } from "controller_helpers/routing";
 
-const recordShownByBreadcrumb = ((model) => {
+export const recordShownByBreadcrumb = ((model) => {
   if (_.includes(
     [ "/clinics/:id", "/specialists/:id", "/content_items/:id" ],
     route
@@ -16,4 +16,16 @@ const recordShownByBreadcrumb = ((model) => {
   }
 }).pwPipe(memoizePerRender)
 
-export default recordShownByBreadcrumb
+export const matchesBreadcrumb = (record, model) => {
+  switch(route){
+  case "/specialists/:id":
+  case "/clinics/:id":
+  case "/content_items/:id":
+    return _.includes(
+      record.specializationIds,
+      recordShownByBreadcrumb(model).id
+    )
+  default:
+    return true;
+  }
+}

@@ -349,7 +349,7 @@ module Denormalized
               inject({}) do |memo, specialization_option|
                 memo.merge(specialization_option.specialization_id => {
                   type: specialization_option.open_to_type.to_s.camelize(:lower),
-                  id: specialization_options.open_to_id
+                  id: specialization_option.open_to_id
                 })
               end,
             showingSpecializationIds: division.showing_specializations.map(&:id)

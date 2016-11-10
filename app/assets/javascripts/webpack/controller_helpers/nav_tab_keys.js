@@ -1,15 +1,16 @@
 import {
   route,
   routeParams,
-  recordShownByRoute
+  recordShownByRoute,
+  matchesRoute
 } from "controller_helpers/routing";
 import { memoizePerRender } from "utils";
-import recordShownByBreadcrumb from "controller_helpers/record_shown_by_breadcrumb";
-import contentCategoryItems from "controller_helpers/content_category_items";
-import { navTabKey } from "controller_helpers/nav_tab_key";
-import { matchesPage } from "controller_helpers/collection_shown";
+import { recordShownByBreadcrumb, matchesBreadcrumb } from "controller_helpers/breadcrumbs";
+import { navTabKey, recordShownByTabKey, matchesTabKey } from "controller_helpers/nav_tab_key";
+import * as preliminaryFilters from "controller_helpers/preliminary_filters";
+import { preliminaryFilterKeys } from "controller_helpers/matches_preliminary_filters";
 
-const navTabKeys = ((model) => {
+export const navTabKeys = ((model) => {
   switch(route){
   case "/hospitals/:id":
     return [ "specialistsWithPrivileges", "clinicsIn", "specialistsWithOffices" ];
@@ -19,20 +20,24 @@ const navTabKeys = ((model) => {
   case "/issues":
     return [ "pendingIssues", "closedIssues" ];
   case "/languages/:id":
-    return [ "specialists", "clinics" ];
+    return profileTabKeys(model);
   default:
-    return [ "specialists", "clinics" ].concat(contentCategoryTabKeys(model))
+    return profileTabKeys(model).concat(contentCategoryTabKeys(model));
   }
 }).pwPipe(memoizePerRender)
 
 export const selectedTabKey = ((model) => {
   if (isTabbedPage(model)){
-    return (model.ui.selectedTabKey || defaultTabKey(model) || navTabKeys(model).first)
+    return (model.ui.selectedTabKey || defaultTabKey(model) || navTabKeys(model)[0])
   }
   else {
     return navTabKey("only");
   }
 }).pwPipe(memoizePerRender);
+
+export const recordShownByTab = ((model) => {
+  return recordShownByTabKey(model, selectedTabKey(model));
+}).pwPipe(memoizePerRender)
 
 export const defaultTabKey = ((model) => {
   switch(route){
@@ -70,34 +75,55 @@ const ALWAYS_IN_ROUTES = [
   "/change_requests"
 ];
 
-const profileKeys = (model) => {
+const profileTabKeys = (model) => {
   return [
     "specialists",
     "clinics"
   ].filter((key) => {
-    return model.app[key].filter((profile) => {
-      return matchesPage(record, model)
-    }).length > 0
-  })
+    return scopedByPageAndPreliminaryFilters(key, model).length > 1
+  });
 }
 
 const contentCategoryTabKeys = (model) => {
-  return contentCategoriesShowingTabs(model).
-    sort((category) => category.name === "Virtual Consult" ? 0 : 1).
+  return _.values(model.app.contentCategories).
+    filter((category) => {
+      return (
+        category.ancestry == null &&
+          pageContentItems(model).filter((item) => {
+            return matchesTabKey(item, model, navTabKey("contentCategory", category.id));
+          }).pwPipe(_.some)
+      );
+    }).sort((category) => category.name === "Virtual Consult" ? 0 : 1).
     map((category) => navTabKey("contentCategory", category.id) );
 }
 
-const contentCategoriesShowingTabs = (model) => {
-  return _.filter(
-    model.app.contentCategories,
-    (category) => {
-      return (
-        category.ancestry == null &&
-        contentCategoryItems(
-          category.id,
-          model
-        ).pwPipe(_.keys).pwPipe(_.some)
-      );
-    }
-  ).pwPipe(_.values);
+const scopedByPageAndPreliminaryFilters = (collectionName, model) => {
+  const _preliminaryFilters = preliminaryFilterKeys(collectionName).
+    map((filterKey) => preliminaryFilters[filterKey])
+
+  return _.values(model.app[collectionName]).filter((item) => {
+    return matchesPage(item, model) &&
+      _preliminaryFilters.every((filter) => filter(item, model))
+  });
+};
+
+const pageContentItems = _.partial(
+  scopedByPageAndPreliminaryFilters,
+  "contentItems"
+).pwPipe(memoizePerRender)
+
+const matchesPage = (record, model) => {
+  switch(route){
+  case "/specialties/:id":
+  case "/areas_of_practice/:id":
+  case "/content_categories/:id":
+  case "/languages/:id":
+    return matchesRoute(record, model);
+  case "/specialists/:id":
+  case "/clinics/:id":
+  case "/content_items/:id":
+    return matchesBreadcrumb(record, model);
+  default:
+    return true;
+  }
 };
