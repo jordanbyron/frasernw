@@ -215,7 +215,7 @@ class SpecialistsController < ApplicationController
     @review_item = @specialist.review_item
 
     if @review_item.blank?
-      redirect_to specialists_path,
+      redirect_to root_path,
         notice: "There is no current review item for this specialist."
     else
       build_specialist_offices
@@ -243,10 +243,10 @@ class SpecialistsController < ApplicationController
     @review_item = ReviewItem.find(params[:review_item_id])
 
     if @review_item.blank?
-      redirect_to specialists_path,
+      redirect_to root_path,
         notice: "There is no current review item for this specialist."
     elsif @review_item.base_object.blank?
-      redirect_to specialists_path,
+      redirect_to root_path,
         notice: "There is no profile for this specialist to re-review."
     else
 

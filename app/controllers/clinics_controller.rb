@@ -211,7 +211,7 @@ class ClinicsController < ApplicationController
       redirect_to clinics_path,
         notice: "There is no current review item for this clinic."
     elsif @review_item.base_object.blank?
-      redirect_to specialists_path,
+      redirect_to clinics_path,
         notice: "There is no profile for this clinic to re-review."
     else
       while @clinic.clinic_locations.length < Clinic::MAX_LOCATIONS
