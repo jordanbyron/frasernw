@@ -3,7 +3,7 @@ import { route, recordShownByRoute } from "controller_helpers/routing";
 import TableRows from "controllers/table_rows";
 import TableHeadings from "controllers/table_headings";
 import { reportStyle } from "controller_helpers/filter_values";
-import { recordShownByTab, isTabbedPage } from "controller_helpers/tab_keys";
+import { recordShownByTab, isTabbedPage } from "controller_helpers/nav_tab_keys";
 import { collectionShownName } from "controller_helpers/collection_shown";
 import isDataDubious from "controller_helpers/dubious_data";
 

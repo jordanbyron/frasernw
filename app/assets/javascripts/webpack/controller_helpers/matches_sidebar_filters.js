@@ -2,7 +2,7 @@ import _ from "lodash";
 import sidebarFilters from "controller_helpers/sidebar_filters";
 import { route, recordShownByRoute } from "controller_helpers/routing";
 import { collectionShownName } from "controller_helpers/collection_shown";
-import { recordShownByTab } from "controller_helpers/tab_keys";
+import { recordShownByTab } from "controller_helpers/nav_tab_keys";
 import * as filterValues from "controller_helpers/filter_values";
 import { memoizePerRender } from "utils";
 

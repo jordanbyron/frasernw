@@ -18,4 +18,10 @@ class StrictHash < Hash
       super(val)
     end
   end
+
+  def to_select_options
+    self.invert.map do |key, value|
+      [ key.to_s.humanize, value ]
+    end
+  end
 end

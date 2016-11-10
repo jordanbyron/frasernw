@@ -1,7 +1,7 @@
 import React from "react";
 import { route, recordShownByRoute } from "controller_helpers/routing";
 import { viewSelectorClass }  from "controller_helpers/reduced_view";
-import { recordShownByTab, selectedTabKey} from "controller_helpers/tab_keys";
+import { recordShownByTab, selectedTabKey} from "controller_helpers/nav_tab_keys";
 import { collectionShownName, collectionShownPluralLabel }
   from "controller_helpers/collection_shown";
 import DateRangeFilters from "controllers/filter_groups/date_range";

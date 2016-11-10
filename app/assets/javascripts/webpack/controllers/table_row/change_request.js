@@ -1,6 +1,6 @@
 import React from "react";
 import _ from "lodash"
-import { selectedTabKey } from "controller_helpers/tab_keys";
+import { selectedTabKey } from "controller_helpers/nav_tab_keys";
 import EditIssue from "controllers/icons/edit_issue";
 import { link } from "controller_helpers/links";
 

@@ -9,7 +9,7 @@ module SeedCreators
       hide_from_division_users: :pass_through,
       is_new: :pass_through,
       content_owner_id: :pass_through,
-      open_to_type: :pass_through,
+      open_to_type_key: :pass_through,
       open_to_sc_category_id: :pass_through,
       show_specialist_categorization_1: :pass_through,
       show_specialist_categorization_2: :pass_through,

@@ -1,5 +1,5 @@
 import React from "react";
-import { isTabbedPage, recordShownByTab } from "controller_helpers/tab_keys";
+import { isTabbedPage, recordShownByTab } from "controller_helpers/nav_tab_keys";
 import { collectionShownName } from "controller_helpers/collection_shown";
 import { recordShownByRoute } from "controller_helpers/routing";
 import SharedCareIcon from "component_helpers/icons/shared_care";
