@@ -127,7 +127,7 @@ class DivisionsController < ApplicationController
   def update_borrowed
     @division = Division.find(params[:id])
     if @division.update_attributes(params[:division])
-      redirect_to borrowable_content_items(@division),
+      redirect_to borrowable_content_items_path(@division),
         notice: "Successfully updated borrowed content items."
     else
       render action: 'borrowable_sc_items'

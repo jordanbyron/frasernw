@@ -341,10 +341,10 @@
                             %ul.dropdown-menu
                               - as_administering.each do |division|
                                 %li= link_to "#{division.name}",
-                                  borrowable_content_items(division),
+                                  borrowable_content_items_path(division),
                                   class: "sc_item"
                         - else
-                          %li= link_to "Content Items",
+                          %li= link_to "Owned Content Items",
                             division_content_items_path(as_administering.first),
                             class: "sc_item"
                           - if Division.all.length > 1
@@ -464,7 +464,8 @@
                       %li= link_to "User Guide",
                         user_guide.resolved_url,
                         class: 'user_guide_link',
-                        target: "_blank"
+                        target: "_blank",
+                        onclick: "window.pathways.trackContentItem(_gaq, #{user_guide.id})"
                     %li= link_to "Training Videos",
                       videos_path,
                       class: 'videos_link'
