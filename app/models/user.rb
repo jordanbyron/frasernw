@@ -338,7 +338,7 @@ class User < ActiveRecord::Base
 
   def self.csv_import(file, divisions, type_mask, role)
     users = []
-    CSV.foreach(file.path) do |row|
+    CSV.foreach(file.path, encoding: 'ISO-8859-1') do |row|
       if row[0].present?
         user = User.new(
           name: row[0],
