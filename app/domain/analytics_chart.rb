@@ -24,7 +24,7 @@ class AnalyticsChart < ServiceObject
       end_date: Date.current,
       metric: metric,
       divisions: Division.except_provincial,
-      force: force
+      force: true
     )
   end
 
