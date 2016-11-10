@@ -145,7 +145,7 @@ class ScItem < ActiveRecord::Base
       [ division ] | divisions_borrowing
     else
       [ division ]
-    end.reject(&:nil?)
+    end
   end
 
   def available_to_divisions?(divisions)
@@ -173,7 +173,7 @@ class ScItem < ActiveRecord::Base
   end
 
   def divisions
-    [ division ].reject(&:nil?)
+    [ division ]
   end
 
   def root_category

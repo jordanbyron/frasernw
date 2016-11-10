@@ -44,6 +44,7 @@ class SpecializationsController < ApplicationController
         division.refer_to_encompassed_cities!(@specialization)
       end
       Denormalized.regenerate(:specializations)
+      Setting.increment(:localstorage_cache_version)
       redirect_to @specialization, notice: "Successfully created specialty."
     else
       render action: 'new'
@@ -89,6 +90,7 @@ class SpecializationsController < ApplicationController
         so.save
       end
       Denormalized.regenerate(:specializations)
+      Setting.increment(:localstorage_cache_version)
       redirect_to @specialization, notice: "Successfully updated specialty."
     else
       render action: 'edit'
