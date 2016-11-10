@@ -12,14 +12,13 @@ class SpecialistsController < ApplicationController
   include ApplicationHelper
 
   def index
-    if params[:specialization_id].present?
-      @specializations = [Specialization.find(params[:specialization_id])]
-    else
-      @specializations = Specialization.all
-    end
-    @all_divisions = Division.all
-    @user_divisions = current_user.as_divisions
-    @first_division = @user_divisions.first
+    @model = ProfilesIndex.call(
+      klass: Specialist,
+      params: params,
+      current_user: current_user
+    )
+
+    render "profiles/index"
   end
 
   def show

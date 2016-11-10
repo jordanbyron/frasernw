@@ -1,0 +1,45 @@
+- set_page_specific_title @model[:generic_label]
+
+.content-wrapper
+  %h2
+    %span= params[:hidden] ? "Hidden" : "All"
+    %span= @model[:label]
+    %small= "(#{@model[:profiles].count} total)"
+
+  .tabbable
+    %ul#content_tabs.nav.nav-tabs
+      - @model[:divisions_profiles].each do |division, profiles|
+        %li
+          %a{ href: "##{division.id}_tab", data: { toggle: "tab" } }
+            = "#{division.name} (#{profiles.count})"
+      %li
+        %a{ href: "#no_division_tab", data: { toggle: "tab" } }
+          %i.icon-warning-sign
+          %span= "No Division (#{@model[:no_division_profiles].length})"
+    .tab-content
+      - @model[:divisions_profiles].each do |division, profiles|
+        .tab-pane{ id: "#{division.id}_tab" }
+          %table.table.table-condensed.table-striped
+            %h3{ style: "font-family: bitter;" }
+              %span= "#{division.name} #{@model[:generic_label]}"
+              %small= profiles.count
+            - @model[:specializations].each do |specialization|
+              = render "profiles/index/division_specialization",
+                division_profiles: profiles,
+                division: division,
+                specialization: specialization,
+                user_divisions: @model[:user_as_divisions]
+      .tab-pane{ id: "no_division_tab" }
+        %table.table.table-condensed.table-striped
+          %h3{ style: "font-family: bitter;" }
+            %span= "No Division #{@model[:generic_label]}"
+            %small= @model[:no_division_profiles].count
+          - @model[:specializations].each do |specialization|
+            = render "profiles/index/division_specialization",
+              division_profiles: @model[:no_division_profiles],
+              division: nil,
+              specialization: specialization,
+              user_divisions: @model[:user_as_divisions]
+
+:javascript
+  window.pathways.setupTabHistory();

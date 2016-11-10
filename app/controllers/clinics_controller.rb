@@ -6,11 +6,13 @@ class ClinicsController < ApplicationController
   include ApplicationHelper
 
   def index
-    if params[:specialization_id].present?
-      @specializations = [Specialization.find(params[:specialization_id])]
-    else
-      @specializations = Specialization.all
-    end
+    @model = ProfilesIndex.call(
+      klass: Clinic,
+      params: params,
+      current_user: current_user
+    )
+
+    render "profiles/index"
   end
 
   def index_own
