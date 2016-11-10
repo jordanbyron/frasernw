@@ -20,8 +20,8 @@ class AnalyticsChart < ServiceObject
 
   def self.regenerate(metric)
     call(
-      start_date: Month.new(2014, 1).start_date,
-      end_date: Date.current,
+      start_month_key: 201401,
+      end_month_key: Month.current.to_i,
       metric: metric,
       divisions: Division.except_provincial,
       force: true
