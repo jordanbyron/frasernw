@@ -94,7 +94,6 @@ module Metrics
           "Total",
           "Completed Survey",
           "Not Completed Survey",
-          "Purposely Not Yet Surveyed",
           "Hospital/Clinic Only",
           "Moved Away",
           "Retired",
@@ -103,9 +102,8 @@ module Metrics
         [
           "Specialists",
           @specialists.length,
-          @specialists.select{|s| s.responded_to_survey?}.length,
-          @specialists.select{|s| s.surveyed && !s.responded_to_survey?}.length,
-          @specialists.reject{|s| s.completed_survey? }.length,
+          @specialists.select{|s| s.completed_survey?}.length,
+          @specialists.select{|s| !s.completed_survey?}.length,
           @specialists.select{|s| s.practicing? && !s.works_from_offices? }.length,
           @specialists.reject{|s| !s.moved_away?}.length,
           @specialists.reject{|s| !s.retired?}.length,
@@ -118,15 +116,13 @@ module Metrics
           "",
           "Total",
           "Completed Survey",
-          "Not Completed Survey",
-          "Purposely Not Yet Surveyed"
+          "Not Completed Survey"
         ],
         [
           "Clinics",
           @clinics.length ,
-          @clinics.select{|s| s.responded_to_survey?}.length,
-          @clinics.select{|s| s.surveyed && !s.responded_to_survey?}.length,
-          @clinics.reject{|s| s.completed_survey? }.length
+          @clinics.select{|s| s.completed_survey?}.length,
+          @clinics.select{|s| !s.completed_survey?}.length
         ],
         [
           ""
@@ -150,7 +146,6 @@ module Metrics
           "Total",
           "Completed Survey",
           "Not Completed Survey",
-          "Purposely Not Yet Surveyed",
           "Hospital/Clinic Only",
           "Moved Away",
           "Retired",
@@ -161,9 +156,8 @@ module Metrics
         memo  << [
           specialization.name,
           @specialization_specialists.length,
-          @specialization_specialists.select{|s| s.responded_to_survey?}.length,
-          @specialization_specialists.select{|s| s.surveyed && !s.responded_to_survey?}.length,
-          @specialization_specialists.reject{|s| s.completed_survey? }.length,
+          @specialization_specialists.select{|s| s.completed_survey?}.length,
+          @specialization_specialists.select{|s| !s.completed_survey?}.length,
           @specialization_specialists.select{|s| s.practicing? && !s.works_from_offices? }.length,
           @specialization_specialists.reject{|s| !s.moved_away?}.length,
           @specialization_specialists.reject{|s| !s.retired?}.length,

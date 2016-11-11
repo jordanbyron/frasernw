@@ -63,16 +63,14 @@
       %th Total
       %th Completed Survey
       %th Not Completed Survey
-      %th Purposely Not Yet Surveyed
       %th Hospital/Clinic Only
       %th Moved Away
       %th Retired
     %tr
       %th Specialists
       %td= specialists.length
-      %td= specialists.select{ |s| s.responded_to_survey? }.length
-      %td= specialists.select{ |s| s.surveyed && !s.responded_to_survey? }.length
-      %td= specialists.reject{ |s| !s.completed_survey? }.length
+      %td= specialists.select{ |s| s.completed_survey? }.length
+      %td= specialists.select{ |s| !s.completed_survey? }.length
       %td= specialists.select{ |s| s.practicing? && !s.works_from_offices? }.length
       %td= specialists.reject{ |s| !s.moved_away? }.length
       %td= specialists.reject{ |s| !s.retired? }.length
@@ -84,13 +82,11 @@
       %th Total
       %th Completed Survey
       %th Not Completed Survey
-      %th Purposely Not Yet Surveyed
     %tr
       %th Clinics
       %td= clinics.length
-      %td= clinics.select{ |s| s.responded_to_survey? }.length
-      %td= clinics.select{ |s| s.surveyed && !s.responded_to_survey? }.length
-      %td= clinics.reject{ |s| !s.completed_survey? }.length
+      %td= clinics.select{ |s| s.completed_survey? }.length
+      %td= clinics.select{ |s| !s.completed_survey? }.length
     %tr
       %th
 
@@ -135,16 +131,14 @@
         %th Total
         %th Completed Survey
         %th Not Completed Survey
-        %th Purposely Not Yet Surveyed
         %th Hospital/Clinic Only
         %th Moved Away
         %th Retired
       %tr
         %th= specialization.name
         %td= @specialization_specialists.length
-        %td= @specialization_specialists.select{ |s| s.responded_to_survey? }.length
-        %td= @specialization_specialists.select{ |s| s.surveyed && !s.responded_to_survey? }.length
-        %td= @specialization_specialists.reject{ |s| !s.completed_survey? }.length
+        %td= @specialization_specialists.select{ |s| s.completed_survey? }.length
+        %td= @specialization_specialists.select{ |s| !s.completed_survey? }.length
         %td= @specialization_specialists.select{ |s| s.practicing? && !s.works_from_offices? }.length
         %td= @specialization_specialists.reject{ |s| !s.moved_away? }.length
         %td= @specialization_specialists.reject{ |s| !s.retired? }.length
