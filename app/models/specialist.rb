@@ -147,6 +147,8 @@ class Specialist < ActiveRecord::Base
   after_commit :expire_cache
   after_touch  :expire_cache
 
+  scope :hidden, -> { where(hidden: true) }
+
   def self.with_cities
     includes({
       hospitals: { location: {address: :city } },
@@ -404,7 +406,7 @@ class Specialist < ActiveRecord::Base
   end
 
   def self.no_division
-    @_specialist_no_division ||= self.all - self.in_divisions(Division.all)
+    self.all - self.in_divisions(Division.all)
   end
 
   def self.in_multiple_specialties

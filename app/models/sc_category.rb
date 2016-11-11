@@ -149,15 +149,6 @@ class ScCategory < ActiveRecord::Base
     end
   end
 
-  def all_sc_items_for_specialization_in_divisions(specialization, divisions)
-    items = sc_items.for_specialization_in_divisions(specialization, divisions)
-    self.children.each do |child|
-      items += child.
-        all_sc_items_for_specialization_in_divisions(specialization, divisions)
-    end
-    items
-  end
-
   def items_borrowable_by_division(division)
     all_borrowable_sc_items - division.borrowable_sc_items
   end

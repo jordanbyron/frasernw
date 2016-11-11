@@ -8,7 +8,7 @@
     %ul.nav.nav-tabs
       - @feedback_item_types.each do |type, items|
         %li
-          %a{"href" => "##{type}_tab", "data-toggle" => "tab"}
+          %a{ href: "##{type}_tab", data: { toggle: "tab" } }
             = type.to_s.humanize
             - if @owned_counts[type] > 0
               %span.badge.badge-warning
@@ -20,7 +20,7 @@
 
       - @feedback_item_types.each do |type, items|
 
-        .tab-pane{id: "#{type.to_s}_tab"}
+        .tab-pane{ id: "#{type.to_s}_tab" }
 
           %table.table.table-condensed.table-striped
             %tr
@@ -34,7 +34,7 @@
               %th.admin
 
             - items.each do |feedback_item|
-              %tr{class: feedback_item.owners.include?(current_user) ? "owned" : ""}
+              %tr{ class: feedback_item.owners.include?(current_user) ? "owned" : "" }
                 - if type != :contact_us
                   %td
                     - if feedback_item.target
@@ -53,14 +53,18 @@
                       %li= owner.name
                 %td= feedback_item.submitter_name
                 %td= "#{time_ago_in_words(feedback_item.created_at)} ago"
-                %td{style: "width: 30%"}= feedback_item.feedback
+                %td{ style: "width: 30%" }= feedback_item.feedback
                 %td= respond_link(feedback_item)
                 %td.admin
                   = link_to feedback_item,
-                    method: :delete,
+                    class: "btn btn-mini stacked-button" do
+                    %i.icon-circle-arrow-right
+                    View
+                  = link_to feedback_item,
+                    method: :patch,
                     class: "btn btn-mini stacked-button" do
                     %i.icon-folder-open
-                    %span= " Archive"
+                    Archive
                   = history_button(feedback_item)
 
   .btn-group

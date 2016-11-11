@@ -5,7 +5,7 @@ import hiddenFromUsers from "controller_helpers/hidden_from_users";
 import _ from "lodash";
 import { buttonIsh} from "stylesets";
 import { toggleBreadcrumbDropdown } from "action_creators";
-import recordShownByBreadcrumb from "controller_helpers/record_shown_by_breadcrumb";
+import { recordShownByBreadcrumb } from "controller_helpers/breadcrumbs";
 
 const ROUTES_SHOWING = [
   "/specialties/:id",

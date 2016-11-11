@@ -5,10 +5,10 @@
 
   %p.space
     - if @feedback_item.contact_us?
-      %strong= "Submitted via: "
-      %span= "'Contact Us'"
+      %strong Submitted via:
+      'Contact Us'
     - else
-      %strong= "Feedback On:"
+      %strong Feedback On:
       %span
         - if @feedback_item.target
           = link_to @feedback_item.target_label,
@@ -18,34 +18,34 @@
 
   - unless @feedback_item.archived?
     %p.space
-      %b= "Assigned To:"
+      %b Assigned To:
     %ul
       - @feedback_item.owners.each do |owner|
         %li= owner.name
 
   %p.space
-    %b= "Provided By:"
+    %b Provided By:
     %span= @feedback_item.submitter_name
 
   %p.space
-    %b= "Provided When:"
+    %b Provided When:
     %span= "#{time_ago_in_words(@feedback_item.created_at)} ago"
 
-
   %p.space
-    %b= "Feedback:"
+    %b Feedback:
   %p.space= @feedback_item.feedback
 
   %p.space
-    %b= "Respond To: "
+    %b Respond To:
     %span= respond_link(@feedback_item)
 
   .btn-group
-    = link_to @feedback_item,
-      method: :delete,
-      class: "btn" do
-      %i.icon-folder-open
-      %span= " Archive"
+    - unless @feedback_item.archived?
+      = link_to @feedback_item,
+        method: :patch,
+        class: "btn" do
+        %i.icon-folder-open
+        Archive
     = large_history_button(@feedback_item)
 
   %hr

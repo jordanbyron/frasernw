@@ -3,7 +3,7 @@ import { selectedTableHeadingKey, headingArrowDirection, canSelectSort }
   from "controller_helpers/table_headings";
 import { sortByHeading } from "action_creators";
 import { route } from "controller_helpers/routing";
-import { collectionShownName, collectionShownPluralLabel }
+import { collectionShownPluralLabel, collectionShownName }
   from "controller_helpers/collection_shown";
 import { entityType } from "controller_helpers/filter_values";
 import showingMultipleSpecializations
@@ -12,7 +12,7 @@ import { buttonIsh } from "stylesets";
 import _ from "lodash";
 import ExpandRowsToggle from "controllers/expand_rows_toggle";
 import { memoizePerRender } from "utils";
-import { selectedTabKey } from "controller_helpers/tab_keys";
+import { selectedTabKey } from "controller_helpers/nav_tab_keys";
 
 const TableHeadings = ({model, dispatch}) => {
   if(_.includes(["/reports/entity_page_views", "/latest_updates"], route)){

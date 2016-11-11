@@ -35,14 +35,16 @@ class SpecializationsController < ApplicationController
         so.is_new =
           params[:is_new].present? &&
           params[:is_new]["#{division.id}"].present?
-        so.open_to_type = params[:open_to_type]["#{division.id}"]
+        so.open_to_type_key = params[:open_to_type_key]["#{division.id}"]
         so.open_to_sc_category = (
-            params[:open_to_type]["#{division.id}"] == SpecializationOption::OPEN_TO_SC_CATEGORY.to_s
-          ) ? ScCategory.find(params[:open_to_sc_category_id]["#{division.id}"]) : nil
+          params[:open_to_type_key]["#{division.id}"] == SpecializationOption::DEFAULT_TAB_OPTIONS.key(:content_category).to_s
+        ) ? ScCategory.find(params[:open_to_sc_category_id]["#{division.id}"]) : nil
         so.save
 
         division.refer_to_encompassed_cities!(@specialization)
       end
+      Denormalized.regenerate(:specializations)
+      Setting.increment(:localstorage_cache_version)
       redirect_to @specialization, notice: "Successfully created specialty."
     else
       render action: 'new'
@@ -80,13 +82,15 @@ class SpecializationsController < ApplicationController
           params[:hide_from_division_users]["#{division.id}"].present?
         so.is_new =
           params[:is_new].present? && params[:is_new]["#{division.id}"].present?
-        so.open_to_type = params[:open_to_type]["#{division.id}"]
+        so.open_to_type_key = params[:open_to_type_key]["#{division.id}"]
         so.open_to_sc_category = (
-            params[:open_to_type]["#{division.id}"] == SpecializationOption::OPEN_TO_SC_CATEGORY.to_s
-          ) ? ScCategory.find(params[:open_to_sc_category]["#{division.id}"]) : nil
+          params[:open_to_type_key]["#{division.id}"] == SpecializationOption::DEFAULT_TAB_OPTIONS.key(:content_category).to_s
+        ) ? ScCategory.find(params[:open_to_sc_category]["#{division.id}"]) : nil
 
         so.save
       end
+      Denormalized.regenerate(:specializations)
+      Setting.increment(:localstorage_cache_version)
       redirect_to @specialization, notice: "Successfully updated specialty."
     else
       render action: 'edit'

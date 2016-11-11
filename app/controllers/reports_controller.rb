@@ -6,7 +6,6 @@ class ReportsController < ApplicationController
   def page_views
     authorize! :view_report, :page_views
 
-    @options_for_select = AnalyticsChartMonths.exec
     @page_title = "User Page Views"
     @data_path = "/api/v1/reports/page_views"
     @annotation = <<-STR
@@ -23,7 +22,6 @@ class ReportsController < ApplicationController
   def sessions
     authorize! :view_report, :sessions
 
-    @options_for_select = AnalyticsChartMonths.exec
     @page_title = "User Sessions"
     @data_path = "/api/v1/reports/sessions"
     @annotation = <<-STR
@@ -31,6 +29,22 @@ class ReportsController < ApplicationController
       A session is a group of page views by the same user which are no more than 30 minutes apart.
       The divisional series show the number of sessions attributable to each division's users.
       All series exclude sessions attributable to admins and users who are not logged in.
+      Only complete weeks (Mon-Sun) are shown.
+    STR
+
+    render :analytics_chart
+  end
+
+  def user_ids
+    authorize! :view_report, :sessions
+
+    @page_title = "User IDs"
+    @data_path = "/api/v1/reports/user_ids"
+    @annotation = <<-STR
+      This report shows the number of user IDs (email and password combinations)
+      that have logged into Pathways for each week in the given month range.
+      The divisional series show the number of logged in user IDs linked to each division.
+      All series exclude admin user IDs.
       Only complete weeks (Mon-Sun) are shown.
     STR
 
@@ -47,23 +61,6 @@ class ReportsController < ApplicationController
         ),
       }
     }
-  end
-
-  def user_ids
-    authorize! :view_report, :sessions
-
-    @options_for_select = AnalyticsChartMonths.exec
-    @page_title = "User IDs"
-    @data_path = "/api/v1/reports/user_ids"
-    @annotation = <<-STR
-      This report shows the number of user IDs (email and password combinations)
-      that have logged into Pathways for each week in the given month range.
-      The divisional series show the number of logged in user IDs linked to each division.
-      All series exclude admin user IDs.
-      Only complete weeks (Mon-Sun) are shown.
-    STR
-
-    render :analytics_chart
   end
 
   def referents_by_specialty

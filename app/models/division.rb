@@ -33,6 +33,8 @@ class Division < ActiveRecord::Base
   has_many :subscription_divisions, dependent: :destroy
   has_many :subscriptions, through: :subscription_divisions
 
+  has_many :news_items, dependent: :destroy
+
   has_many :featured_contents, dependent: :destroy
   accepts_nested_attributes_for :featured_contents
 

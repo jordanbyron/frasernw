@@ -35,7 +35,10 @@ class NewsItemsController < ApplicationController
 
   def create
     @news_item = NewsItem.new(params[:news_item])
-    if @news_item.save && @news_item.display_in_divisions!(divisions_to_assign(params, @news_item), current_user)
+    if @news_item.save && @news_item.display_in_divisions!(
+      divisions_to_assign(params, @news_item),
+      current_user
+    )
       Subscription::MailImmediateNotifications.call(
         klass_name: "NewsItem",
         id: @news_item.id,
@@ -43,7 +46,8 @@ class NewsItemsController < ApplicationController
       )
 
       redirect_to root_path(division_id: @news_item.owner_division.id),
-        :notice  => "Successfully created news item.  Please allow a couple minutes for the front page to show your changes."
+        notice: "Successfully created news item. Please allow a couple minutes"\
+          " for the front page to show your changes."
     else
       render :edit
     end
@@ -57,33 +61,44 @@ class NewsItemsController < ApplicationController
   def update
     @news_item = NewsItem.find(params[:id])
 
-    if current_user.as_divisions.include?(@news_item.owner_division)
-      render(action: :edit) unless @news_item.update_attributes(params[:news_item])
+    if (
+      current_user.as_divisions.include?(@news_item.owner_division) &&
+        !@news_item.update_attributes(params[:news_item])
+    )
+      render(action: :edit)
     end
 
-    if @news_item.display_in_divisions!(divisions_to_assign(params, @news_item), current_user)
+    if @news_item.display_in_divisions!(
+      divisions_to_assign(params, @news_item),
+      current_user
+    )
       redirect_to root_path(division_id: current_user.as_divisions.first.id),
-        :notice  => "Successfully updated news item. Please allow a couple minutes for the front page to show your changes."
+        notice: "Successfully updated news item. Please allow a couple minutes"\
+          " for the front page to show your changes."
     else
-      render :action => 'edit'
+      render action: 'edit'
     end
   end
 
   def destroy
     @news_item = NewsItem.find(params[:id])
     @news_item.destroy
-    redirect_to news_items_path, :notice => "Successfully deleted news item."
+    redirect_to news_items_path, notice: "Successfully deleted news item."
   end
 
   def update_borrowing
     @news_item = NewsItem.find(params[:id])
     @division = Division.find(params[:division_id])
 
-    if params[:borrow] == "false" && @news_item.user_can_unborrow?(current_user, @division)
+    if (
+      params[:borrow] == "false" &&
+        @news_item.user_can_unborrow?(current_user, @division)
+      )
       @news_item.unborrow_from(@division)
 
       redirect_to news_item_path(@news_item),
-        notice: "Successfully stopped borrowing news item for #{@division.name}."
+        notice: "Successfully stopped borrowing news item for "\
+          "#{@division.name}."
     else
       redirect_to news_item_path(@news_item),
         notice: "Unauthorized"
@@ -94,7 +109,8 @@ class NewsItemsController < ApplicationController
     @division = Division.find(params[:target_division_id])
     if @news_item.copy_to(@division, current_user)
       redirect_to news_items_path(division_id: @division.id),
-        notice: "Successfully copied '#{@news_item.label}' to #{@division.name}"
+        notice: "Successfully copied '#{@news_item.label}' to "\
+          "#{@division.name}."
     else
       redirect_to news_items_path(division_id: @division.id),
         notice: "Unauthorized"

@@ -1,7 +1,7 @@
 import recordsMaskingFilters from "controller_helpers/records_masking_filters";
 import { route, recordShownByRoute } from "controller_helpers/routing";
 import { memoizePerRender } from "utils";
-import { recordShownByTab } from "controller_helpers/tab_keys";
+import { recordShownByTab } from "controller_helpers/nav_tab_keys";
 import { collectionShownName } from "controller_helpers/collection_shown";
 
 export const scheduleDays = ((model) => {

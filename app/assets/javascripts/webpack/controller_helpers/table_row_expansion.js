@@ -1,4 +1,4 @@
-import { selectedTabKey } from "controller_helpers/tab_keys";
+import { selectedTabKey } from "controller_helpers/nav_tab_keys";
 import _ from "lodash";
 
 export const areRowsExpanded = (model) => {
