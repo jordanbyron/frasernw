@@ -17,21 +17,21 @@
         = select_tag "start_month_key",
           options_for_select(AnalyticsChartMonths.call, Month.new(2014, 1)),
           id: "start_month_key",
-          class: "filter"
+          class: "report_parameter"
 
       .control-group
         = label_tag "End Month:"
         = select_tag "end_month_key",
           options_for_select(AnalyticsChartMonths.call, Month.current.to_i),
           id: "end_month_key",
-          class: "filter"
+          class: "report_parameter"
 
       .control-group
         = label_tag "User Type:"
         = select_tag "user_type_key",
           options_for_select({-1 => "All User Types"}.merge(User::TYPES).invert, -1),
           id: "user_type_key",
-          class: "filter"
+          class: "report_parameter"
 
 
       %br
@@ -71,7 +71,7 @@
     }
   };
 
-  $(".filter").change(function() {
+  $(".report_parameter").change(function() {
     updateDOM();
   });
 
