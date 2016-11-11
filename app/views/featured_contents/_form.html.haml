@@ -14,6 +14,7 @@
         group_label_method: :first,
         group_method: :last,
         collection: featured_contents_options(category, @division),
+        include_blank: "(select for none)",
         label: false,
         label_method: ->(item){ item.new? ? item.title + " (NEW)" : item.title },
         input_html: { class: "span12" }
