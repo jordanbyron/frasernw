@@ -70,6 +70,10 @@ class Clinic < ActiveRecord::Base
     :closure_scheduled,
     :closure_date
 
+  has_many :procedure_links, class_name: "ClinicProcedure"
+  has_many :clinic_procedures
+  has_many :procedures, through: :clinic_procedures
+
   has_many :clinic_specializations, dependent: :destroy
   has_many :specializations, through: :clinic_specializations
 
@@ -83,12 +87,6 @@ class Clinic < ActiveRecord::Base
   has_many :languages, through: :clinic_speaks
 
   has_many :focuses, dependent: :destroy
-
-  has_many :procedure_links, class_name: "Focus"
-  has_many :procedures, through: :focuses
-  accepts_nested_attributes_for :focuses,
-    reject_if: lambda { |a| a[:procedure_id].blank? },
-    allow_destroy: true
 
   has_many :attendances, through: :clinic_locations
   has_many :specialists, through: :attendances

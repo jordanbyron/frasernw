@@ -8,21 +8,20 @@ class Procedure < ActiveRecord::Base
 
   include PaperTrailable
 
-  has_many :all_procedure_specializations,
-    dependent: :destroy,
-    class_name: "ProcedureSpecialization"
   has_many :procedure_specializations,
     dependent: :destroy
   has_many :specializations,
-    -> { order('specializations.name ASC') },
     through: :procedure_specializations
   accepts_nested_attributes_for :procedure_specializations, allow_destroy: true
 
-  has_many :capacities, dependent: :destroy
-  has_many :specialists, through: :capacities
+  has_many :clinic_procedures, dependent: :destroy
+  has_many :clinics, through: :clinic_procedures
 
-  has_many :focuses, dependent: :destroy
-  has_many :clinics, through: :focuses
+  has_many :specialist_procedures, dependent: :destroy
+  has_many :specialists, through: :specialist_procedures
+
+  has_many :sc_item_procedures, dependent: :destroy
+  has_many :sc_items, through: :sc_item_procedures
 
   validates_presence_of :name, on: :save, message: "can't be blank"
 
@@ -76,111 +75,6 @@ class Procedure < ActiveRecord::Base
     reject{ |word| parents_names.include? word }.join(' ').capitalize_first_letter
   end
 
-  def all_specialists_in_cities(cities)
-    # look at this procedure as well as its children to find any specialists
-    results = []
-    procedure_specializations.each do |ps|
-      ProcedureSpecialization.subtree_of(ps).each do |child|
-        if child.assumed_specialist?
-          if child.parent.present?
-            # add only the specialists that do the parent procedure we are assumed for
-            results += child.parent.procedure.
-              all_specialists_for_specialization_in_cities(child.specialization, cities)
-          else
-            results += ps.specialization.specialists.in_cities_cached(cities)
-          end
-        else
-          Capacity.where(procedure_id: child.procedure_id).each do |capacity|
-            if (
-              capacity.specialist.present? &&
-              (capacity.specialist.cities & cities).present?
-            )
-              results << capacity.specialist
-            end
-          end
-        end
-      end
-    end
-    results.uniq!
-    return (results ? results.compact : [])
-  end
-
-  def all_clinics_in_cities(cities)
-    # look at this procedure as well as its children to find any clinics
-    results = []
-    procedure_specializations.each do |ps|
-      ProcedureSpecialization.subtree_of(ps).each do |child|
-        if child.assumed_clinic?
-          if child.parent.present?
-            # add only the clinics that do the parent procedure we are assumed for
-            results += child.parent.procedure.
-              all_clinics_for_specialization_in_cities(child.specialization, cities)
-          else
-            results += ps.specialization.clinics.in_cities(cities)
-          end
-        else
-          Focus.where(procedure_id: child.procedure_id).each do |focus|
-            if focus.clinic.present? && (focus.clinic.cities & cities)
-              results << focus.clinic
-            end
-          end
-        end
-      end
-    end
-    results.uniq!
-    return (results ? results.compact : [])
-  end
-
-  def all_specialists_for_specialization_in_cities(specialization, cities)
-    # look at this procedure as well as its children to find any specialists
-    results = []
-    ps = ProcedureSpecialization.
-      find_by(specialization_id: specialization.id, procedure_id: self.id)
-    if ps.assumed_specialist?
-      results += ps.specialization.specialists.in_cities_cached(cities)
-    else
-      ps.subtree.each do |child|
-        Capacity.where(procedure_id: child.procedure_id).each do |capacity|
-          if (
-            capacity.specialist.present? &&
-            (capacity.specialist.cities & cities).present?
-          )
-            results << capacity.specialist
-          end
-        end
-      end
-    end
-    results.uniq!
-    return (results ? results.compact : [])
-  end
-
-  def all_clinics_for_specialization_in_cities(specialization, cities)
-    # look at this procedure as well as its children to find any clinics
-    results = []
-    ps = ProcedureSpecialization.
-      find_by(specialization_id: specialization.id, procedure_id: self.id)
-    if ps.assumed_clinic?
-      results += ps.specialization.clinics.in_cities(cities)
-    else
-      ps.subtree.each do |child|
-        Focus.where(procedure_id: child.procedure_id).each do |focus|
-          if focus.clinic.present? && (focus.clinic.cities & cities).present?
-            results << focus.clinic
-          end
-        end
-      end
-    end
-    results.uniq!
-    return (results ? results.compact : [])
-  end
-
-  def empty?
-    return (
-      (all_specialists_in_cities(City.all).length == 0) and
-      (all_clinics_in_cities(City.all).length == 0)
-    )
-  end
-
   def has_children?
     result = false
     procedure_specializations.each do |ps|
@@ -222,12 +116,7 @@ class Procedure < ActiveRecord::Base
     return result.flatten.uniq
   end
 
-  def token
-    if self.saved_token
-      return self.saved_token
-    else
-      update_column(:saved_token, SecureRandom.hex(16))
-      return self.saved_token
-    end
+  def linked_items
+    specialists + clinics + sc_items
   end
 end

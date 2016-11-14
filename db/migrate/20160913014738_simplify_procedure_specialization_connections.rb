@@ -35,6 +35,9 @@ class SimplifyProcedureSpecializationConnections < ActiveRecord::Migration
     add_column :sc_item_procedures, :sc_item_id, :integer
     add_index :sc_item_procedures, :procedure_id
 
+    # was used to do unauthenticated recache
+    remove_column :procedures, :saved_token
+
     Procedure.reset_column_information
     ProcedureSpecialization.reset_column_information
     SpecialistProcedure.reset_column_information
@@ -135,5 +138,15 @@ class SimplifyProcedureSpecializationConnections < ActiveRecord::Migration
     ScItemProcedure.
       where("sc_item_procedures.id NOT IN (?)", keeping_sc_item_procedures).
       map(&:destroy)
+
+
+    Procedure.includes(
+      :specialists,
+      :clinics,
+      :sc_items,
+      { procedure_specializations: :procedure }
+    ).all.each do |procedure|
+      EnforceProcedureHierarchy.call(procedure: procedure)
+    end
   end
 end

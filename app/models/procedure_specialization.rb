@@ -159,4 +159,14 @@ class ProcedureSpecialization < ActiveRecord::Base
   def procedure_name
     procedure.name
   end
+
+  def assumed_for_klass?(klass)
+    case klass
+    when ScItem
+      false
+    when Specialist, Clinic
+      send("#{klass.tableize}_presentation_key") ==
+        PRESENTATION_OPTIONS.key(:assumed)
+    end
+  end
 end

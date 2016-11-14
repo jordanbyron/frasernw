@@ -82,15 +82,10 @@ class Specialist < ActiveRecord::Base
   has_many :specializations, through: :specialist_specializations
 
   # specialists have the capacity to perform procedures
-  has_many :capacities, dependent: :destroy
 
-  # we want to be using this generic alias so we can duck type
-  # procedure specializables
-  has_many :procedure_links, class_name: "Capacity"
-  has_many :procedures, through: :capacities
-  accepts_nested_attributes_for :capacities,
-    reject_if: lambda { |c| c[:procedure_id].blank? },
-    allow_destroy: true
+  has_many :procedure_links, class_name: "SpecialistProcedure"
+  has_many :specialist_procedures
+  has_many :procedures, through: :specialist_procedures
 
   # specialists attend clinics
   has_many :attendances, dependent: :destroy

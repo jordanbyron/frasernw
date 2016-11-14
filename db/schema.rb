@@ -228,7 +228,7 @@ ActiveRecord::Schema.define(version: 20161109211549) do
 
   create_table "division_display_news_items", force: true do |t|
     t.integer  "division_id",  null: false
-    t.integer  "news_item_id", null: false
+    t.integer  "news_item_id"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
   end
@@ -543,7 +543,6 @@ ActiveRecord::Schema.define(version: 20161109211549) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "specialization_level",           default: true
-    t.string   "saved_token"
     t.boolean  "specialists_specify_wait_times", default: false
     t.boolean  "clinics_specify_wait_times",     default: false
   end
