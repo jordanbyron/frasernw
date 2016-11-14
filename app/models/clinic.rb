@@ -105,6 +105,8 @@ class Clinic < ActiveRecord::Base
 
   default_scope { order('clinics.name') }
 
+  scope :hidden, -> { where(hidden: true) }
+
   after_commit :flush_cached_find
 
   def self.includes_location_data

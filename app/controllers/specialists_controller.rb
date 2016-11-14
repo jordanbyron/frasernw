@@ -12,14 +12,13 @@ class SpecialistsController < ApplicationController
   include ApplicationHelper
 
   def index
-    if params[:specialization_id].present?
-      @specializations = [Specialization.find(params[:specialization_id])]
-    else
-      @specializations = Specialization.all
-    end
-    @all_divisions = Division.all
-    @user_divisions = current_user.as_divisions
-    @first_division = @user_divisions.first
+    @model = ProfilesIndex.call(
+      klass: Specialist,
+      params: params,
+      current_user: current_user
+    )
+
+    render "profiles/index"
   end
 
   def show
@@ -217,7 +216,7 @@ class SpecialistsController < ApplicationController
     @review_item = @specialist.review_item
 
     if @review_item.blank?
-      redirect_to specialists_path,
+      redirect_to root_path,
         notice: "There is no current review item for this specialist."
     else
       build_specialist_offices
@@ -245,10 +244,10 @@ class SpecialistsController < ApplicationController
     @review_item = ReviewItem.find(params[:review_item_id])
 
     if @review_item.blank?
-      redirect_to specialists_path,
+      redirect_to root_path,
         notice: "There is no current review item for this specialist."
     elsif @review_item.base_object.blank?
-      redirect_to specialists_path,
+      redirect_to root_path,
         notice: "There is no profile for this specialist to re-review."
     else
 

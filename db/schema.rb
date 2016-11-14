@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161029232438) do
+ActiveRecord::Schema.define(version: 20161109211549) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -864,7 +864,7 @@ ActiveRecord::Schema.define(version: 20161029232438) do
     t.boolean  "hide_from_division_users",         default: false
     t.boolean  "is_new",                           default: false
     t.integer  "content_owner_id"
-    t.integer  "open_to_type",                     default: 1
+    t.integer  "open_to_type_key",                 default: 1
     t.integer  "open_to_sc_category_id"
     t.boolean  "show_specialist_categorization_1", default: true
     t.boolean  "show_specialist_categorization_2", default: true

@@ -1,6 +1,6 @@
 import * as FilterValues from "controller_helpers/filter_values";
 import { route } from "controller_helpers/routing";
-import { selectedTabKey } from "controller_helpers/tab_keys";
+import { selectedTabKey } from "controller_helpers/nav_tab_keys";
 import { cities as cityFilterSubkeys } from "controller_helpers/filter_subkeys";
 import _ from "lodash";
 

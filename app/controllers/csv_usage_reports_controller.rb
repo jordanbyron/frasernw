@@ -3,7 +3,7 @@ class CsvUsageReportsController < ApplicationController
     authorize! :view_report, :csv_usage
 
     @submit_path = "/csv_usage_reports"
-    @months = AnalyticsChartMonths.exec
+    @months = AnalyticsChartMonths.call
     @scopes = current_user.reporting_divisions.map do |division|
       [ division.name, division.id ]
     end << ["All Divisions", "global"]
@@ -16,11 +16,13 @@ class CsvUsageReportsController < ApplicationController
       raise "Not in your division"
     end
 
-    PrepareUsageReport.call(AnalyticsChartMonths.parse(params).merge(
+    PrepareUsageReport.call(
+      start_date: Month.from_i(params[:start_month]).start_date,
+      end_date: Month.from_i(params[:end_month]).end_date,
       division_id: (params[:scope] == "global" ? nil : params[:scope]),
       user: current_user,
       delay: true
-    ))
+    )
 
     render nothing: true, status: 200
   end

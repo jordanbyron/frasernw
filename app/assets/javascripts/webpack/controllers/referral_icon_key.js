@@ -11,7 +11,7 @@ const ReferralIconKey = ({model}) => {
           {
             _.keys(model.app.referralIcons).map((key) => {
               return(
-                <li>
+                <li key={key}>
                   <i className={model.app.referralIcons[key]}/>
                   <span>{model.app.referralTooltips[key]}</span>
                 </li>

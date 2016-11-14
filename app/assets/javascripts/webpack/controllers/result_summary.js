@@ -5,7 +5,7 @@ import filterSummaries from "controller_helpers/sidebar_filter_summaries";
 import filters from "controller_helpers/sidebar_filters";
 import { collectionShownPluralLabel, collectionShownName }
   from "controller_helpers/collection_shown";
-import { selectedTabKey } from "controller_helpers/tab_keys";
+import { selectedTabKey } from "controller_helpers/nav_tab_keys";
 import { clearFilters } from "action_creators";
 import { buttonIsh } from "stylesets";
 

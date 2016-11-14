@@ -2,7 +2,7 @@ import React from "react";
 import CategoryLink from "component_helpers/category_link";
 import { collectionShownName } from "controller_helpers/collection_shown";
 import { recordShownByRoute, route } from "controller_helpers/routing";
-import { recordShownByTab } from "controller_helpers/tab_keys";
+import { recordShownByTab } from "controller_helpers/nav_tab_keys";
 
 const CategoryLinkController = ({model, dispatch}) => {
   if (collectionShownName(model) !== "contentItems"){

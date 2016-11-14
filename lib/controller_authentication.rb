@@ -63,7 +63,7 @@ module ControllerAuthentication
     unless klass.find(id).valid_tokens.include?(token)
       redirect_to login_url,
         alert: "Invalid token. Please <a href='#{contact_path}'>contact us</a>"\
-          " to request or reset your secret url for editing."
+          " to request or reset your secret url for editing.".html_safe
     end
   end
 

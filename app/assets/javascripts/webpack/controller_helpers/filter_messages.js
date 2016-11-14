@@ -1,13 +1,13 @@
-import { route, recordShownByRoute } from "controller_helpers/routing";
-import { unscopedCollectionShown, collectionShownName, matchesPage }
+import { route, recordShownByRoute, matchesRoute } from "controller_helpers/routing";
+import { unscopedCollectionShown, collectionShownName }
   from "controller_helpers/collection_shown";
 import matchesPreliminaryFilters from "controller_helpers/matches_preliminary_filters";
 import matchesSidebarFilters from "controller_helpers/matches_sidebar_filters";
 import { matchesSidebarFiltersExceptCities } from "controller_helpers/matches_sidebar_filters";
 import activatedFilterSubkeys from "controller_helpers/activated_filter_subkeys";
-import { selectedTabKey } from "controller_helpers/tab_keys";
+import { selectedTabKey } from "controller_helpers/nav_tab_keys";
 import { memoizePerRender } from "utils";
-import recordShownByBreadcrumb from "controller_helpers/record_shown_by_breadcrumb";
+import { recordShownByBreadcrumb } from "controller_helpers/breadcrumbs";
 
 export const showingOtherSpecializations = ((model) => {
   return showSpecializationFilterMessage(model) &&
@@ -32,7 +32,7 @@ export const showSpecializationFilterMessage = ((model) => {
 export const withAllFilters = ((model) => {
   return unscopedCollectionShown(model).filter((record) => {
     return matchesPreliminaryFilters(record, model) &&
-      matchesPage(record, model) &&
+      matchesRoute(record, model) &&
       matchesSidebarFilters(record, model)
   })
 }).pwPipe(memoizePerRender);
@@ -47,7 +47,7 @@ export const withoutSpecializationFilter = ((model) => {
 export const withoutCityFilters = ((model) => {
   return unscopedCollectionShown(model).filter((record) => {
     return matchesPreliminaryFilters(record, model) &&
-      matchesPage(record, model) &&
+      matchesRoute(record, model) &&
       matchesSidebarFiltersExceptCities(record, model)
   })
 }).pwPipe(memoizePerRender)

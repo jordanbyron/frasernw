@@ -47,7 +47,7 @@ class FeedbackItemsController < ApplicationController
     end
   end
 
-  def destroy
+  def update
     @feedback_item = FeedbackItem.find(params[:id])
     @feedback_item.update_attributes(
       archived: true,

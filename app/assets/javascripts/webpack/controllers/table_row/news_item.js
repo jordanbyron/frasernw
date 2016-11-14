@@ -1,6 +1,6 @@
 import React from "react";
 import _ from "lodash"
-import { selectedTabKey } from "controller_helpers/tab_keys";
+import { selectedTabKey } from "controller_helpers/nav_tab_keys";
 
 const TableRow = ({model, dispatch, decoratedRecord}) => {
   return(
@@ -68,7 +68,7 @@ const DeleteButton = ({record, model}) => {
     return(
       <a
         href={`/news_items/${record.id}`}
-        dataMethod="delete"
+        data-method="delete"
         className="btn btn-mini button--right_margin"
       >
         <i className="icon icon-trash icon--right_margin"/>

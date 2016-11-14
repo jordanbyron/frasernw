@@ -12,7 +12,7 @@ const EntityPageViewRow = ({decoratedRecord, model}) => {
 }
 
 const EntityDivisions = ({decoratedRecord, model}) => {
-  if (["clinics","specialists"].includes(filterValues.entityType(model))) {
+  if (_.includes(["clinics","specialists"], filterValues.entityType(model))) {
     return(
       <td>
         <span>{ entityDivisionNames(decoratedRecord, model) }</span>

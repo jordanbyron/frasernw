@@ -6,31 +6,35 @@
 
   %h2= "Specialist working at #{address}"
 
-  %table.table.table-condensed.tablesorter{:id => 'specialist_table'}
+  %table.table.table-condensed.tablesorter{id: 'specialist_table'}
     %thead
-      %tr{:class => 'tableheader'}
-        %th{:class => "{sorter: 'bylastname'}"} Specialist
-        %th{:class => "{sorter: 'text'}"} Specialty
-        %th{:class => "{sorter: 'status'} status_column"} Accepting Patients?
-        %th{:class => "{sorter: 'waittime'}"} Wait Time
-        %th{:class => "{sorter: 'blanks_to_bottom'}"} City
+      %tr{ class: 'tableheader' }
+        %th{ class: "{sorter: 'bylastname'}" } Specialist
+        %th{ class: "{sorter: 'text'}" } Specialty
+        %th{ class: "{sorter: 'waittime'}" } Wait Time
+        %th{ class: "{sorter: 'blanks_to_bottom'}" } City
     %tbody
       - (@office.specialists).each do |specialist|
         %tr
           %td
-            %a.ajax{"href" => specialist_path(specialist)}= specialist.name
+            %a{ href: specialist_path(specialist) }= specialist.name
           %td
             %ul
               - specialist.specializations.each do |s|
                 %li= s.name
-          %td
-            %i{:class => specialist.status_class}
-            .status= specialist.status_class_hash
           %td= specialist.waittime
           %td= specialist.cities.first
 
   %p.admin.btn-group
     - if can? :update, @office
-      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Office", edit_office_path(@office), :class => "btn ajax")
+      = link_to edit_office_path(@office),
+        class: "btn" do
+        %i.icon-pencil
+        Edit Office
     - if can? :destroy, @office
-      = link_to("<i class='icon-trash'></i>".html_safe + " Delete Office", @office, :data => { :confirm => "Delete Office?" }, :method => :delete, :class => "btn")
+      = link_to @office,
+        data: { confirm: "Delete Office?" },
+        method: :delete,
+        class: "btn" do
+        %i.icon-trash
+        Delete Office

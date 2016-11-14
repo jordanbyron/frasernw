@@ -1,7 +1,5 @@
-class AnalyticsChartMonths
-  include ServiceObjectModule.exec_with_args
-
-  def exec
+class AnalyticsChartMonths < ServiceObject
+  def call
     Month.for_interval(
       Month.new(2014, 4),
       Month.current
@@ -11,12 +9,5 @@ class AnalyticsChartMonths
         month.to_i
       ]
     end
-  end
-
-  def self.parse(params)
-    {
-      start_date: Month.from_i(params[:start_month]).start_date,
-      end_date: Month.from_i(params[:end_month]).end_date
-    }
   end
 end

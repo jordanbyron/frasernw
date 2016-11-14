@@ -205,6 +205,9 @@
                           = link_to "Clinics", "#", class: "arrow-right-after"
                           %ul.dropdown-menu
                             %li= link_to "All Clinics", clinics_path
+                            %li
+                              = link_to "Hidden Clinics",
+                                clinics_path(hidden: true)
                             - Specialization.all_cached.each do |specialization|
                               %li= link_to "#{specialization.name} Clinics",
                                 specialization_clinics_path(specialization),
@@ -261,6 +264,9 @@
                             class: "arrow-right-after"
                           %ul.dropdown-menu
                             %li= link_to "All Specialists", specialists_path
+                            %li
+                              = link_to "Hidden Specialists",
+                                specialists_path(hidden: true)
                             - Specialization.all_cached.each do |specialization|
                               %li= link_to specialization.member_name.pluralize,
                                 specialization_specialists_path(specialization),

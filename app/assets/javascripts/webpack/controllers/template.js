@@ -10,7 +10,7 @@ import NavTabs from "controllers/nav_tabs";
 import ReducedViewSelector from "controllers/reduced_view_selector";
 import { reducedView, viewSelectorClass } from "controller_helpers/reduced_view";
 import Sidebar from "controllers/sidebar";
-import { recordShownByTab, isTabbedPage } from "controller_helpers/tab_keys";
+import { recordShownByTab, isTabbedPage } from "controller_helpers/nav_tab_keys";
 import { recordShownByRoute } from "controller_helpers/routing";
 import { collectionShownName } from "controller_helpers/collection_shown";
 import Subtitle from "controllers/subtitle";

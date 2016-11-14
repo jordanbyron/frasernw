@@ -1,12 +1,11 @@
 import React from "react";
 import FilterGroup from "controllers/filter_group";
 import { recordShownByRoute, route } from "controller_helpers/routing";
-import { selectedTabKey } from "controller_helpers/tab_keys";
+import { selectedTabKey } from "controller_helpers/nav_tab_keys";
 import { toggleUnfocusedProcedureVisibility }
   from "action_creators";
 import _ from "lodash";
-import { collectionShownName, scopedByRouteAndTab }
-  from "controller_helpers/collection_shown";
+import { collectionShownName } from "controller_helpers/collection_shown";
 import ExpandingContainer from "component_helpers/expanding_container";
 import { procedures as subkeys } from "controller_helpers/filter_subkeys";
 import { buttonIsh } from "stylesets";

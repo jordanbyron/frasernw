@@ -3,9 +3,9 @@ import _ from "lodash";
 const setupTabHistory = (defaultTab) => {
   $(document).ready(() => {
     $('a[data-toggle="tab"]').on("click", function(e){
-      var newHash = e.target.getAttribute("href");
+      const linkClicked = this;
 
-      window.location.hash = newHash;
+      window.location.hash = linkClicked.getAttribute("href");
 
       return false;
     });

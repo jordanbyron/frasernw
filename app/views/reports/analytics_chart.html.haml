@@ -6,23 +6,33 @@
       %h2{style: "margin-bottom: 10px"}
         = @page_title
 
-      .pull-left
-        = label_tag "Start month:"
-        = select_tag "start_month",
-          options_for_select(@options_for_select, Month.new(2014, 1).to_i),
-          id: "start_month",
-          class: "month_selector"
 
-      .pull-right
-        = label_tag "End Month:"
-        = select_tag "end_month",
-          options_for_select(@options_for_select, Month.current.to_i),
-          id: "end_month",
-          class: "month_selector"
 
       #chart_container{style: "clear: both; height: 400px;"}
       .annotation{style: "color: #999;"}
         = @annotation
+
+      .control-group
+        = label_tag "Start month:"
+        = select_tag "start_month_key",
+          options_for_select(AnalyticsChartMonths.call, Month.new(2014, 1)),
+          id: "start_month_key",
+          class: "report_parameter"
+
+      .control-group
+        = label_tag "End Month:"
+        = select_tag "end_month_key",
+          options_for_select(AnalyticsChartMonths.call, Month.current.to_i),
+          id: "end_month_key",
+          class: "report_parameter"
+
+      .control-group
+        = label_tag "User Type:"
+        = select_tag "user_type_key",
+          options_for_select({-1 => "All User Types"}.merge(User::TYPES).invert, -1),
+          id: "user_type_key",
+          class: "report_parameter"
+
 
       %br
       %a.print.btn.btn-default.pull-right{style: "margin-top: 20px;"}
@@ -30,25 +40,30 @@
         %span= "Print"
 
 :javascript
-  var dataPath = "#{@data_path}";
-
   var showLoader = function() {
     $("#chart_container").html("<div id='heartbeat-loader-position'><div class='heartbeat-loader'></div></div>")
     $(".annotation").hide()
   };
 
   var updateDOM = function() {
-    var startMonth = $("#start_month").val();
-    var endMonth = $("#end_month").val();
+    var startMonthKey = $("#start_month_key").val();
+    var endMonthKey = $("#end_month_key").val();
+    var userTypeKey = $("#user_type_key").val();
 
-    if (endMonth < startMonth) {
-      $("#start_month").val(parseInt(endMonth));
+    if (endMonthKey < startMonthKey) {
+      $("#start_month_key").val(parseInt(endMonthKey));
       updateDOM();
     } else {
-      var params = $.param({start_month: startMonth, end_month: endMonth});
       showLoader();
 
-      $.get(dataPath + "?" + params).success(function(data) {
+      var params = $.param({
+        start_month_key: startMonthKey,
+        end_month_key: endMonthKey,
+        user_type_key: userTypeKey,
+        metric: "#{action_name}"
+      });
+
+      $.get("/api/v1/reports/analytics_charts?" + params).success(function(data) {
         vendor.Highcharts.chart('chart_container', data);
         $("#heartbeat-loader-position").remove();
         $(".annotation").show();
@@ -56,7 +71,7 @@
     }
   };
 
-  $(".month_selector").change(function() {
+  $(".report_parameter").change(function() {
     updateDOM();
   });
 

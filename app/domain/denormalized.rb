@@ -344,36 +344,16 @@ module Denormalized
                 map(&:id)
               )
             end,
-            openToSpecializationPanel: Specialization.
-              all.
-              inject({}) do |memo, specialization|
-                memo.merge(specialization.id => self.open_to_panel(
-                  specialization,
-                  division
-                ) )
+            openToSpecializationPanel: division.
+              specialization_options.
+              inject({}) do |memo, specialization_option|
+                memo.merge(specialization_option.specialization_id => {
+                  type: specialization_option.open_to_type.to_s.camelize(:lower),
+                  id: specialization_option.open_to_id
+                })
               end,
             showingSpecializationIds: division.showing_specializations.map(&:id)
           })
-        end
-      end
-
-      def self.open_to_panel(specialization, division)
-        specialization_option = specialization.
-          specialization_options.
-          to_a.
-          find do |option|
-            option.division_id == division.id
-          end
-
-        if specialization_option.open_to_sc_category?
-          {
-            type: "contentCategory",
-            id: specialization_option.open_to
-          }
-        else
-          {
-            type: specialization_option.open_to
-          }
         end
       end
     end,

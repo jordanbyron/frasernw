@@ -4,7 +4,7 @@ import { showCityFilterPills, withoutCityFilters }
 import { buttonIsh } from "stylesets";
 import { changeFilterToValue } from "action_creators";
 import * as filterValues from "controller_helpers/filter_values";
-import { selectedTabKey } from "controller_helpers/tab_keys";
+import { selectedTabKey } from "controller_helpers/nav_tab_keys";
 
 const CityFilterPills = ({model, dispatch}) => {
   if (showCityFilterPills(model)) {

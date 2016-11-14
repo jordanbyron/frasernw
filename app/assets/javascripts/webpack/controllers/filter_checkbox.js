@@ -3,7 +3,7 @@ import * as FilterValues from "controller_helpers/filter_values";
 import _ from "lodash";
 import { changeFilter } from "action_creators";
 import CheckBox from "component_helpers/check_box";
-import { selectedTabKey } from "controller_helpers/tab_keys";
+import { selectedTabKey } from "controller_helpers/nav_tab_keys";
 
 const FilterCheckbox = ({
   model,
