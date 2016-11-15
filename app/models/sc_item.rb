@@ -34,6 +34,12 @@ class ScItem < ActiveRecord::Base
   has_many :procedure_specializations,
     through: :sc_item_specialization_procedure_specializations
 
+  has_many :favorites, as: :favoritable, dependent: :destroy
+  has_many :favorite_users,
+    through: :favorites,
+    source: :user,
+    class_name: "User"
+
   belongs_to :division
 
   has_many :featured_contents, dependent: :destroy
