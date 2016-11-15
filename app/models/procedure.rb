@@ -49,8 +49,8 @@ class Procedure < ActiveRecord::Base
     ps_with_parents = procedure_specializations.reject{ |ps| ps.parent.blank? }
 
     if ps_with_parents.count > 0
-      "#{ps_with_parents.first.parent.procedure.full_name} "\
-        "#{name_relative_to_parents.uncapitalize_first_letter}"
+      "#{ps_with_parents.first.parent.procedure.full_name} -> "\
+        "#{name_relative_to_parents}"
     else
       self.name
     end

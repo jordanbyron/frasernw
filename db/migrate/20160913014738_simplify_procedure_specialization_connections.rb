@@ -38,6 +38,8 @@ class SimplifyProcedureSpecializationConnections < ActiveRecord::Migration
     # was used to do unauthenticated recache
     remove_column :procedures, :saved_token
 
+    remove_column :procedures, :specialization_level
+
     Procedure.reset_column_information
     ProcedureSpecialization.reset_column_information
     SpecialistProcedure.reset_column_information

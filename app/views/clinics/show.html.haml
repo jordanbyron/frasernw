@@ -9,29 +9,28 @@
   - if @is_version
     = render 'versions/info', instance_name: "clinic"
 
-  - cache(clinic_path(@clinic)) do
-    .content
-      .row
-        .span7half
+  .content
+    .row
+      .span7half
 
-          = render "clinics/show/header"
+        = render "clinics/show/header"
 
-          = render "clinics/show/clinic_information"
+        = render "clinics/show/clinic_information"
 
-          = render "clinics/show/referrals"
+        = render "clinics/show/referrals"
 
-          = render "clinics/show/urgent_referrals"
+        = render "clinics/show/urgent_referrals"
 
-          - if @clinic.teleservices.any?(&:offered?)
-            = render "teleservices/index", provider: @clinic
+        - if @clinic.teleservices.any?(&:offered?)
+          = render "teleservices/index", provider: @clinic
 
-          = render "clinics/show/patient_information"
+        = render "clinics/show/patient_information"
 
-          = render "clinics/show/healthcare_providers"
+        = render "clinics/show/healthcare_providers"
 
-          = render "clinics/show/physicians"
+        = render "clinics/show/physicians"
 
-        = render "clinics/show/sidebar"
+      = render "clinics/show/sidebar"
 
   = render "clinics/show/user_editors"
 

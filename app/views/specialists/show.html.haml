@@ -8,28 +8,27 @@
   - if @is_version
     = render 'versions/info', instance_name: "specialist"
 
-  - cache(specialist_path(@specialist)) do
-    .content
-      .row
-        .span7half
-          = render "specialists/show/header"
+  .content
+    .row
+      .span7half
+        = render "specialists/show/header"
 
-          = render "specialists/show/office_information"
+        = render "specialists/show/office_information"
 
-          = render "specialists/show/referrals"
+        = render "specialists/show/referrals"
 
-          = render "specialists/show/urgent_referrals"
+        = render "specialists/show/urgent_referrals"
 
-          - if @specialist.practicing? && @specialist.teleservices.any?(&:offered?)
-            = render "teleservices/index", provider: @specialist
+        - if @specialist.practicing? && @specialist.teleservices.any?(&:offered?)
+          = render "teleservices/index", provider: @specialist
 
-          = render "specialists/show/patient_information"
+        = render "specialists/show/patient_information"
 
-          = render "specialists/show/basic_associations"
+        = render "specialists/show/basic_associations"
 
-          = render "specialists/show/expanded_associations"
+        = render "specialists/show/expanded_associations"
 
-        = render "specialists/show/sidebar"
+      = render "specialists/show/sidebar"
 
   = render "specialists/show/user_editors"
 

@@ -32,7 +32,7 @@
               data: { toggle: 'tooltip',
               'original-title' => 'Can be emailed',
               placement: 'top',
-              template: "#{template_for_blue_tooltip}".html_safe } }
+              template: "#{blue_tooltip}".html_safe } }
               = "#{pluralize(num_specialists-1, 'other')}"
         %p= link_to address.address,
           address.map_url,
@@ -57,7 +57,7 @@
               data: { toggle: 'tooltip',
               'original-title' => 'Can be emailed',
               placement: 'top',
-              template: "#{template_for_blue_tooltip}".html_safe } }
+              template: "#{blue_tooltip}".html_safe } }
               = "#{pluralize(num_specialists-1, 'other')}"
         %p= link_to address.address,
           address.map_url,
@@ -79,7 +79,7 @@
               data: { toggle: 'tooltip',
               'original-title' => 'Can be emailed',
               placement: 'top',
-              template: "#{template_for_blue_tooltip}".html_safe } }
+              template: "#{blue_tooltip}".html_safe } }
               = "#{pluralize(num_specialists-1, 'other')}"
     - if specialist_office.location_opened.present?
       %p

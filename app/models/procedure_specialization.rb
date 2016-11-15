@@ -43,10 +43,7 @@ class ProcedureSpecialization < ActiveRecord::Base
       "OR classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH}"
     ) }
   scope :non_assumed,
-    -> { where(
-    "classification = #{ProcedureSpecialization::CLASSIFICATION_FOCUSED} "\
-      "OR classification = #{ProcedureSpecialization::CLASSIFICATION_NONFOCUSED}"
-    ) }
+    ->(klass) { where("#{presentation_key(klass)} != (?)", PRESENTATION_OPTIONS.key(:assumed)) }
   scope :classification,
     -> (classification){ where(
     "classification = (?)", classification
@@ -160,13 +157,16 @@ class ProcedureSpecialization < ActiveRecord::Base
     procedure.name
   end
 
+  def self.presentation_key(klass)
+    "#{klass.tableize}_presentation_key"
+  end
+
   def assumed_for_klass?(klass)
     case klass
     when ScItem
       false
     when Specialist, Clinic
-      send("#{klass.tableize}_presentation_key") ==
-        PRESENTATION_OPTIONS.key(:assumed)
+      class.presentation_key(klass) == PRESENTATION_OPTIONS.key(:assumed)
     end
   end
 end

@@ -21,4 +21,21 @@ module ProcedureSpecializable
   def primary_specialization
     specializations.sort_by(&:name).first
   end
+
+  def nested_procedures(arg)
+    case arg.class
+    when Specialization
+      nested_procedures(
+        specialization.procedure_specializations.non_assumed(self.class)
+      )
+    when Hash
+      arg.inject({}) do |memo, (procedure_specialization, children)|
+        if procedures.include?(procedure_specialization.procedure)
+          memo.merge(procedure => nested_procedures(children))
+        else
+          memo
+        end
+      end
+    end
+  end
 end

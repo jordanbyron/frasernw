@@ -151,14 +151,6 @@ module ApplicationHelper
     procedure_specialization.specialization.name + result
   end
 
-  def compressed_clinics(clinics)
-    output = ''
-    clinics.each do |clinic|
-      output += (clinic.name + ', ')
-    end
-    output.gsub(/\,\ $/,'')
-  end
-
   def ancestry_options(items, parent = "")
     result = []
     items.map do |item, sub_items|
@@ -207,7 +199,7 @@ module ApplicationHelper
     end
   end
 
-  def template_for_blue_tooltip
+  def blue_tooltip
     '<div class="tooltip top blue" role="tooltip">'\
       '<div class="tooltip-arrow blue"></div>'\
       '<div class="tooltip-inner"></div></div>'
