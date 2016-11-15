@@ -36,6 +36,8 @@ class ScItem < ActiveRecord::Base
 
   belongs_to :division
 
+  has_many :featured_contents, dependent: :destroy
+
   has_many :division_display_sc_items, dependent: :destroy
   has_many :divisions_borrowing,
     through: :division_display_sc_items,
