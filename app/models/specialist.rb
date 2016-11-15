@@ -58,7 +58,6 @@ class Specialist < ActiveRecord::Base
     :photo_delete,
     :hospital_ids,
     :specialization_ids,
-    :capacities_attributes,
     :language_ids,
     :specialist_offices_attributes,
     :admin_notes,
@@ -164,8 +163,7 @@ class Specialist < ActiveRecord::Base
     includes([
       :procedures,
       :specializations,
-      :languages,
-      capacities: :procedure
+      :languages
     ]).with_cities
   end
 

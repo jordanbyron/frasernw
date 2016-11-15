@@ -141,12 +141,11 @@ class SimplifyProcedureSpecializationConnections < ActiveRecord::Migration
       where("sc_item_procedures.id NOT IN (?)", keeping_sc_item_procedures).
       map(&:destroy)
 
-
     Procedure.includes(
-      :specialists,
-      :clinics,
-      :sc_items,
-      { procedure_specializations: :procedure }
+      { specialists: :specializations },
+      { clinics: :specializations },
+      { sc_items: :specializations },
+      { procedure_specializations: [ :procedure, :specialization ] }
     ).all.each do |procedure|
       EnforceProcedureHierarchy.call(procedure: procedure)
     end

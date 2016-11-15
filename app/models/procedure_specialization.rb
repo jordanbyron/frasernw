@@ -158,15 +158,17 @@ class ProcedureSpecialization < ActiveRecord::Base
   end
 
   def self.presentation_key(klass)
-    "#{klass.tableize}_presentation_key"
+    "#{klass.to_s.tableize}_presentation_key"
   end
 
-  def assumed_for_klass?(klass)
-    case klass
+  def assumed_for?(item)
+    case item
     when ScItem
       false
     when Specialist, Clinic
-      class.presentation_key(klass) == PRESENTATION_OPTIONS.key(:assumed)
+      item.specializations.include?(specialization) &&
+        self.class.presentation_key(item.class) ==
+          PRESENTATION_OPTIONS.key(:assumed)
     end
   end
 end

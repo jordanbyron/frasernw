@@ -10,8 +10,8 @@ module HasWaitTimes
     BOOKING_WAIT_TIMES[booking_wait_time_key]
   end
 
-  def consulation_wait_time
-    CONSULATION_WAIT_TIMES[consultation_wait_time_key]
+  def consultation_wait_time
+    CONSULTATION_WAIT_TIMES[consultation_wait_time_key]
   end
 
   CONSULTATION_WAIT_TIMES = {

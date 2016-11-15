@@ -88,7 +88,7 @@ module Denormalized
             cityIds: specialist.cities.reject{ |city| city.hidden }.map(&:id),
             collectionName: "specialists",
             procedureIds: specialist.procedures.map(&:id),
-            respondsWithin: specialist.lagtime_mask,
+            respondsWithin: specialist.booking_wait_time_mask,
             acceptsReferralsViaPhone: specialist.referral_phone,
             patientsCanCall: specialist.patient_can_book?,
             sex: specialist.sex.downcase,
@@ -127,7 +127,7 @@ module Denormalized
 
       def self.masked_waittime(specialist)
         if specialist.show_waittimes?
-          specialist.waittime
+          specialist.consultation_wait_time
         else
           nil
         end
@@ -159,7 +159,7 @@ module Denormalized
             cityIds: clinic.cities.reject{ |city| city.hidden }.map(&:id),
             collectionName: "clinics",
             procedureIds: clinic.procedures.map(&:id),
-            respondsWithin: clinic.lagtime_mask,
+            respondsWithin: clinic.booking_wait_time_mask,
             acceptsReferralsViaPhone: clinic.referral_phone,
             patientsCanBook: clinic.patient_can_book?,
             scheduledDayIds: clinic.scheduled_day_ids,
@@ -194,7 +194,7 @@ module Denormalized
 
       def self.masked_waittime(clinic)
         if clinic.show_waittimes?
-          clinic.waittime
+          clinic.consultation_wait_time
         else
           nil
         end

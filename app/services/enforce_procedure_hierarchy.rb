@@ -9,7 +9,7 @@ class EnforceProcedureHierarchy < ServiceObject
   end
 
   def enforce_own_specializations(linked)
-    if !linked.specializations.include?(procedure.specializations)
+    if !(linked.specializations & procedure.specializations).any?
       linked.procedure_links.find_by(procedure_id: procedure.id).destroy
     end
   end
@@ -19,7 +19,7 @@ class EnforceProcedureHierarchy < ServiceObject
       select do |procedure_specialization|
         linked.specializations.include?(procedure_specialization.specialization) &&
           !linked.procedures.include?(procedure_specialization.procedure) &&
-          !procedure_specialization.assumed_for_klass?(linked.class)
+          !procedure_specialization.assumed_for?(linked)
       end.map(&:procedure).
       uniq.
       each do |procedure|

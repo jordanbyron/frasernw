@@ -38,7 +38,7 @@ class WaitTimeReporter
     midpoint = (scope.count.to_f / 2).ceil
 
     scope.sort_by do |specialist|
-      specialist.waittime_mask
+      specialist.consultation_wait_time_mask
     end[midpoint].try(:waittime)
   end
 end

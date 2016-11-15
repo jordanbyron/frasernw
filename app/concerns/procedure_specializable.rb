@@ -12,26 +12,31 @@ module ProcedureSpecializable
   #   has_many :procedures, through: procedure_join_table_name
   # end
   #
-  # def primary_specialization_shown_in?(divisions)
-  #   divisions.any? do |division|
-  #     !primary_specialization.hidden_in?(*divisions)
-  #   end
-  # end
+  def primary_specialization_shown_in?(divisions)
+    divisions.any? do |division|
+      !primary_specialization.hidden_in?(*divisions)
+    end
+  end
 
   def primary_specialization
     specializations.sort_by(&:name).first
   end
 
   def nested_procedures(arg)
-    case arg.class
+    case arg
     when Specialization
       nested_procedures(
-        specialization.procedure_specializations.non_assumed(self.class)
+        arg.
+          procedure_specializations.
+          non_assumed(self.class).
+          arrange
       )
-    when Hash
+    when ActiveSupport::OrderedHash
       arg.inject({}) do |memo, (procedure_specialization, children)|
         if procedures.include?(procedure_specialization.procedure)
-          memo.merge(procedure => nested_procedures(children))
+          memo.merge(
+            procedure_specialization.procedure => nested_procedures(children)
+          )
         else
           memo
         end

@@ -9,9 +9,6 @@ class SpecialistsEditorController < ApplicationController
     @token = params[:token]
     @form_modifier = SpecialistFormModifier.new(:edit, current_user, token: true)
     @specialist = Specialist.find(params[:id])
-    if @specialist.capacities.count == 0
-      @specialist.capacities.build
-    end
 
     build_specialist_offices
     BuildTeleservices.call(provider: @specialist)
@@ -20,10 +17,6 @@ class SpecialistsEditorController < ApplicationController
     @specializations_clinics, @specializations_clinic_locations =
       GenerateClinicLocationInputs.exec(@specialist.specializations, :visible?)
 
-    @specializations_capacities = GenerateSpecialistCapacityInputs.exec(
-      @specialist,
-      @specialist.specializations
-    )
     @view = @specialist.views.build(notes: request.remote_ip)
     @view.save
     render template: 'specialists/edit'

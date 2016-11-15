@@ -36,39 +36,39 @@
       = @specialist.required_investigations.end_with_period.convert_newlines_to_br
 
   - if @specialist.show_waittimes?
-    -if @specialist.waittime.present?
+    -if @specialist.consultation_wait_time.present?
       %p.space
         Average
         %strong non-urgent
         patient wait time from referral to appointment:
-        %strong= @specialist.waittime
+        %strong= @specialist.consultation_wait_time
 
-    -if @specialist.lagtime.present?
+    -if @specialist.booking_wait_time.present?
       %p
         Average length of time to notify
         = @specialist.responds_to
         of a booking date:
-        %strong= @specialist.lagtime
-
-    - @specialist.capacities.specialist_wait_time.each do |capacity|
-
-      - if capacity.waittime.present? || capacity.lagtime.present?
-        %p.space
-          %strong= "#{capacity.procedure_specialization.procedure.full_name}:"
-
-        -if capacity.waittime.present?
-          %p
-            Average
-            %strong non-urgent
-            patient wait time from referral to appointment:
-            %strong= capacity.waittime
-
-        -if capacity.lagtime.present?
-          %p
-            Average length of time to notify
-            = @specialist.responds_to
-            of a booking date:
-            %strong= capacity.lagtime
+        %strong= @specialist.booking_wait_time
+    -# TODO
+    -# - @specialist.capacities.specialist_wait_time.each do |capacity|
+    -#
+    -#   - if capacity.waittime.present? || capacity.lagtime.present?
+    -#     %p.space
+    -#       %strong= "#{capacity.procedure_specialization.procedure.full_name}:"
+    -#
+    -#     -if capacity.waittime.present?
+    -#       %p
+    -#         Average
+    -#         %strong non-urgent
+    -#         patient wait time from referral to appointment:
+    -#         %strong= capacity.waittime
+    -#
+    -#     -if capacity.lagtime.present?
+    -#       %p
+    -#         Average length of time to notify
+    -#         = @specialist.responds_to
+    -#         of a booking date:
+    -#         %strong= capacity.lagtime
 
   - if @specialist.patient_can_book_mask == 1
     %p.space

@@ -542,7 +542,6 @@ ActiveRecord::Schema.define(version: 20161109211549) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "specialization_level",           default: true
     t.boolean  "specialists_specify_wait_times", default: false
     t.boolean  "clinics_specify_wait_times",     default: false
   end

@@ -44,8 +44,8 @@ module SpecialistsHelper
           specialist.responds_via.present? ||
           specialist.referral_form_mask != 3 ||
           specialist.required_investigations.present? ||
-          specialist.waittime.present? ||
-          specialist.lagtime.present? ||
+          specialist.consultation_wait_time.present? ||
+          specialist.booking_wait_time.present? ||
           specialist.patient_can_book_mask != 3)
     when :urgent_referrals
       (specialist.practicing? || specialist.went_on_leave?) &&

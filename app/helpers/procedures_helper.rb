@@ -1,32 +1,41 @@
 module ProceduresHelper
 
   def procedures_listing(nested_procedures, linked_item, depth = 0)
-    content_tag(:ul) do
-      nested_procedures.inject("") do |memo, (procedure, children)|
-        memo += content_tag(:li) do
+
+    content_tag(:ul, class: "procedures-listing-depth-#{depth}") do
+      nested_procedures.
+        to_a.
+        sort_by{|pair| pair[0].name_relative_to_parents }.
+        to_h.
+        inject("".html_safe) do |memo, (procedure, children)|
+
+        memo + content_tag(:li) do
           tag_type = depth == 0 ? :strong : :span
 
           contents = content_tag(tag_type) do
             link_to(procedure.name_relative_to_parents, procedure)
           end
 
-          _investigation = item.
+          _investigation = linked_item.
             procedure_links.
             find_by(procedure_id: procedure.id).
-            investigation.strip.strip_period
+            investigation.
+            try(:strip).
+            try(:strip_period)
           if _investigation.present?
-            memo += content_tag(:span) do
+            contents += content_tag(:span) do
               " (#{_investigation})"
             end
           end
 
           if children.any?
-            memo += content_tag(:span, ": ")
-            memo += procedures_listing(children, linked_item, depth + 1)
+            contents += procedures_listing(children, linked_item, depth + 1)
           end
+
+          contents
         end
       end
-    end
+    end.html_safe
   end
 
   def nested_procedure_checkboxes(target, parent_node, nested_procedure_specializations, level = 0)

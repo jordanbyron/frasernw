@@ -30,7 +30,7 @@
 
         = render "clinics/show/physicians"
 
-      = render "clinics/show/sidebar"
+      = render "profiles/show/sidebar", profile: @clinic, aop_method: :open?
 
   = render "clinics/show/user_editors"
 

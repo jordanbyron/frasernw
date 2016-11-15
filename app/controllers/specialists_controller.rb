@@ -1,14 +1,12 @@
 class SpecialistsController < ApplicationController
   skip_before_filter :require_authentication,
-    only: [:refresh_cache, :refresh_index_cache]
+    only: [:refresh_cache]
   load_and_authorize_resource except: [
     :refresh_cache,
-    :refresh_index_cache,
     :create
   ]
   before_filter :check_token, only: :refresh_cache
-  before_filter :check_specialization_token, only: :refresh_index_cache
-  skip_authorization_check only: [:refresh_cache, :refresh_index_cache]
+  skip_authorization_check only: [:refresh_cache]
   include ApplicationHelper
 
   def index
@@ -44,11 +42,6 @@ class SpecialistsController < ApplicationController
 
     @specializations_clinics, @specializations_clinic_locations =
       GenerateClinicLocationInputs.exec([ @specialization ])
-
-    @specializations_capacities = GenerateSpecialistCapacityInputs.exec(
-      nil,
-      [ @specialization ]
-    )
   end
 
   def create
@@ -56,42 +49,6 @@ class SpecialistsController < ApplicationController
     @specialist = Specialist.new(parsed_params[:specialist])
     authorize! :create, @specialist
     if @specialist.save!
-      if params[:capacities_mapped].present?
-        specialist_specializations = @specialist.specializations
-        params[:capacities_mapped].each do |checkbox_key, value|
-          next unless value == "1"
-          capacity = Capacity.find_or_create_by(
-            specialist_id: @specialist.id,
-            procedure_id: ProcedureSpecialization.find(checkbox_key).procedure_id
-          )
-          capacity.investigation =
-            params[:capacities_investigations][checkbox_key]
-          if params[:capacities_waittime].present?
-            capacity.waittime_mask = params[:capacities_waittime][checkbox_key]
-          end
-          if params[:capacities_lagtime].present?
-            capacity.lagtime_mask = params[:capacities_lagtime][checkbox_key]
-          end
-          capacity.save
-
-          # save any other capacities that have the same procedure and are in a
-          # specialization our specialist is in
-          capacity.
-            procedure.
-            procedure_specializations.
-            select do |procedure_specialization|
-              specialist_specializations.
-                include?(procedure_specialization.specialization)
-            end.map do |procedure_specialization|
-              Capacity.find_or_create_by(
-                specialist_id: @specialist.id,
-                procedure_id: procedure_specialization.procedure_id
-              )
-            end.map{ |capacity| capacity.save }
-        end
-      end
-
-      @specialist.save
       redirect_to @specialist,
         notice: "Successfully created #{@specialist.name}."
     else
@@ -108,19 +65,11 @@ class SpecialistsController < ApplicationController
         notice: "There are already changes awaiting review for this specialist."
     end
     BuildTeleservices.call(provider: @specialist)
-    if @specialist.capacities.count == 0
-      @specialist.capacities.build
-    end
 
     build_specialist_offices
 
     @specializations_clinics, @specializations_clinic_locations =
       GenerateClinicLocationInputs.exec(@specialist.specializations)
-
-    @specializations_capacities = GenerateSpecialistCapacityInputs.exec(
-      @specialist,
-      @specialist.specializations
-    )
   end
 
   def update
@@ -133,9 +82,7 @@ class SpecialistsController < ApplicationController
 
     parsed_params = ParamParser::Specialist.new(params).exec
     if @specialist.update_attributes(parsed_params[:specialist])
-      UpdateSpecialistCapacities.exec(@specialist, parsed_params)
 
-      @specialist.save
       redirect_to @specialist,
         notice: "Successfully updated #{@specialist.name}."
     else
@@ -172,8 +119,6 @@ class SpecialistsController < ApplicationController
       ::PaperTrail.controller_info = { review_item_id: review_item.id }
 
       if @specialist.update_attributes(parsed_params[:specialist])
-        UpdateSpecialistCapacities.exec(@specialist, parsed_params)
-        @specialist.save
         redirect_to @specialist,
           notice: "Successfully updated #{@specialist.name}."
       else
@@ -228,10 +173,6 @@ class SpecialistsController < ApplicationController
         @specialist.
           review_item.
           decoded_review_object["specialist"]["secret_token_id"]
-      @specializations_capacities = GenerateSpecialistCapacityInputs.exec(
-        @specialist,
-        @specialist.specializations
-      )
       BuildTeleservices.call(provider: @specialist)
       render template: 'specialists/edit'
     end
@@ -257,11 +198,6 @@ class SpecialistsController < ApplicationController
         GenerateClinicLocationInputs.exec(@specialist.specializations)
       @secret_token_id =
         @review_item.decoded_review_object["specialist"]["secret_token_id"]
-      @specializations_capacities = GenerateSpecialistCapacityInputs.exec(
-        @specialist,
-        @specialist.specializations
-      )
-
       BuildTeleservices.call(provider: @specialist)
       render template: 'specialists/edit'
     end
@@ -308,24 +244,6 @@ class SpecialistsController < ApplicationController
     @specialist.expire_cache
     @specialist = Specialist.cached_find(params[:id])
     render :show
-  end
-
-  #TO DO make this work to reload cache with pathways:recache:specialists_index
-  def refresh_index_cache
-    if params[:specialization_id].present?
-      @specializations = [Specialization.find(params[:specialization_id])]
-    else
-      @specializations = Specialization.all
-    end
-
-    if params[:division_id].present?
-      @user_divisions = [Division.find(params[:division_id])]
-    else
-      @user_divisions = Division.all
-    end
-    @all_divisions = Division.all
-    @first_division = @user_divisions.first
-    render :index
   end
 
   private

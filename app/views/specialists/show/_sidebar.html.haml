@@ -4,7 +4,7 @@
       %h6 Accepts Referrals For
 
       - @specialist.specializations.each do |specialization|
-        = procedures_listing(@specialist.nested_procedures(specialization))
+        = procedures_listing(@specialist.nested_procedures(specialization), @specialist)
 
       - if @specialist.interest.present?
         %p.space

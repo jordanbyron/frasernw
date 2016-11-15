@@ -28,7 +28,9 @@
 
         = render "specialists/show/expanded_associations"
 
-      = render "specialists/show/sidebar"
+      = render "profiles/show/sidebar",
+        profile: @specialist,
+        aop_method: :practicing?
 
   = render "specialists/show/user_editors"
 

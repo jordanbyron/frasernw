@@ -1,17 +1,17 @@
-- if @clinic.practicing?
-  .span4.offsethalf
+.span4.offsethalf
+  - if @clinic.open?
     .well.areas-of-practice
-      %h6 Accepts Referrals For
+      %h6 Areas of Practice
 
       - @clinic.specializations.each do |specialization|
-        = procedures_listing(@clinic.nested_procedures(specialization))
+        = procedures_listing(@clinic.nested_procedures(specialization), @clinic)
 
-      - if @clinic.interest.present?
-        %p.space
-          %strong Most interested in
-        %p= @clinic.interest.end_with_period.convert_newlines_to_br
+  - if @clinic.interest.present?
+    .well.areas-of-practice
+      %h6 Most interested in
+      %p= @clinic.interest.end_with_period.convert_newlines_to_br
 
-      - if @clinic.not_performed.present?
-        %p.space
-          %strong Does not see or do
-        %p= @clinic.not_performed.end_with_period.convert_newlines_to_br
+  - if @clinic.not_performed.present?
+    .well.areas-of-practice
+      %h6 Does not see or do
+      %p= @clinic.not_performed.end_with_period.convert_newlines_to_br

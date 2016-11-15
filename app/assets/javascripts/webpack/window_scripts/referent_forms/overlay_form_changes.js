@@ -202,114 +202,12 @@ const overlayFormData = (id_array, review_item, options) => {
   });
 }
 
-  // only for clinics
-const overlayFocusesFormData = (review_item, options) => {
-  var focuses_mapped = review_item["focuses_mapped"] || {};
-
-  $("input.focus").each( function() {
-    var $this = $(this);
-    if ($this.prop('checked'))
-    {
-      var checkbox_id = $this.attr('id').substring("focuses_mapped_".length);
-      //console.log(checkbox_id);
-      if (!focuses_mapped[checkbox_id])
-      {
-        $this.prop('checked', false);
-        if (options.highlightChanges) { show_old_value($this, "checked"); }
-      }
-    }
-  });
-  overlayFormData(
-    ["focuses_mapped"],
-    focuses_mapped,
-    { highlightChanges: options.highlightChanges }
-  );
-  overlayFormData(
-    ["focuses_investigations"],
-    review_item["focuses_investigations"],
-    { highlightChanges: options.highlightChanges }
-  );
-  if (review_item["focuses_waittime"])
-  {
-    overlayFormData(
-      ["focuses_waittime"],
-      review_item["focuses_waittime"],
-      { highlightChanges: options.highlightChanges }
-    );
-  }
-  if (review_item["focuses_lagtime"])
-  {
-    overlayFormData(
-      ["focuses_lagtime"],
-      review_item["focuses_lagtime"],
-      { highlightChanges: options.highlightChanges }
-    );
-  }
-}
-
-// only for specialists
-const overlayCapacitiesFormData = (review_item, options) => {
-  var capacities_mapped = review_item["capacities_mapped"] || {};
-
-  $("input.capacity").each( function() {
-    var $this = $(this);
-    if ($this.prop('checked'))
-    {
-      var checkbox_id = $this.attr('id').substring("capacities_mapped_".length);
-      //console.log(checkbox_id);
-      if (!capacities_mapped[checkbox_id])
-      {
-        $this.prop('checked', false);
-        if (options.highlightChanges) { show_old_value($this, "checked"); }
-      }
-    }
-  });
-  overlayFormData(
-    ["capacities_mapped"],
-    capacities_mapped,
-    { highlightChanges: options.highlightChanges }
-  );
-  overlayFormData(
-    ["capacities_investigations"],
-    review_item["capacities_investigations"],
-    { highlightChanges: options.highlightChanges }
-  );
-
-  if (review_item["capacities_waittime"])
-  {
-    overlayFormData(
-      ["capacities_waittime"],
-      review_item["capacities_waittime"],
-      { highlightChanges: options.highlightChanges }
-    );
-  }
-  if (review_item["capacities_lagtime"])
-  {
-    overlayFormData(
-      ["capacities_lagtime"],
-      review_item["capacities_lagtime"],
-      { highlightChanges: options.highlightChanges }
-    );
-  }
-}
-
 const mimicBeforeEdit = function(formData) {
   overlayFormData(
     [formData.recordKey],
     formData.baseReviewItem[formData.recordKey],
     { highlightChanges: false }
   );
-  if (formData.recordKey === "clinic"){
-    overlayFocusesFormData(
-      formData.baseReviewItem,
-      { highlightChanges: false }
-    );
-  } else if (formData.recordKey === "specialist") {
-    overlayCapacitiesFormData(
-      formData.reviewItem,
-      { highlightChanges: false }
-    );
-  }
 }
 
 const overlayUserChanges = function(formData) {
@@ -318,15 +216,4 @@ const overlayUserChanges = function(formData) {
     formData.reviewItem[formData.recordKey],
     { highlightChanges: true }
   );
-  if (formData.recordKey === "clinic") {
-    overlayFocusesFormData(
-      formData.reviewItem,
-      { highlightChanges: true }
-    );
-  } else if (formData.recordKey === "specialist") {
-    overlayCapacitiesFormData(
-      formData.reviewItem,
-      { highlightChanges: true }
-    );
-  }
 }

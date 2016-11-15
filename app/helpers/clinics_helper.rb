@@ -52,8 +52,8 @@ module ClinicsHelper
           clinic.responds_via.present? ||
           clinic.referral_form_mask != 3  ||
           clinic.required_investigations.present? ||
-          clinic.waittime.present? ||
-          clinic.lagtime.present? ||
+          clinic.consultation_wait_time.present? ||
+          clinic.booking_wait_time.present? ||
           clinic.patient_can_book_mask != 3)
     when :urgent_referrals
       clinic.open? &&

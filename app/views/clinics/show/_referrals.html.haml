@@ -35,36 +35,36 @@
       for all referrals:
       = @clinic.required_investigations.end_with_period.convert_newlines_to_br
   - if @clinic.show_waittimes?
-    -if @clinic.waittime.present?
+    -if @clinic.consultation_wait_time.present?
       %p.space
         Average
         %strong non-urgent
         patient wait time from referral to appointment:
-        %strong= @clinic.waittime
+        %strong= @clinic.consultation_wait_time
 
-    -if @clinic.lagtime.present?
+    -if @clinic.booking_wait_time.present?
       %p
         Average length of time to notify GP of a booking date:
-        %strong= @clinic.lagtime
+        %strong= @clinic.booking_wait_time
 
-    - @clinic.focuses.clinic_wait_time.each do |focus|
-
-      - if focus.waittime.present? || focus.lagtime.present?
-        %p.space
-          %strong
-            = "#{focus.procedure_specialization.procedure.full_name}:"
-
-        -if focus.waittime.present?
-          %p
-            Average
-            %strong non-urgent
-            patient wait time from referral to appointment:
-            %strong= focus.waittime
-
-        -if focus.lagtime.present?
-          %p
-            Average length of time to notify GP of a booking date:
-            %strong= focus.lagtime
+    -# - @clinic.focuses.clinic_wait_time.each do |focus|
+    -#
+    -#   - if focus.waittime.present? || focus.lagtime.present?
+    -#     %p.space
+    -#       %strong
+    -#         = "#{focus.procedure_specialization.procedure.full_name}:"
+    -#
+    -#     -if focus.waittime.present?
+    -#       %p
+    -#         Average
+    -#         %strong non-urgent
+    -#         patient wait time from referral to appointment:
+    -#         %strong= focus.waittime
+    -#
+    -#     -if focus.lagtime.present?
+    -#       %p
+    -#         Average length of time to notify GP of a booking date:
+    -#         %strong= focus.lagtime
 
   - if @clinic.patient_can_book_mask == 1
     %p.space
