@@ -1,4 +1,4 @@
-- set_page_specific_title "@province.name"
+- set_page_specific_title @province.name
 
 %h2= @province.name
 %p
@@ -10,6 +10,14 @@
 
 %p.admin.btn-group
   - if can? :update, @province
-    = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_province_path(@province), :class => "btn ajax")
+    = link_to edit_province_path(@province),
+      class: "btn" do
+      %i.icon-pencil
+      Edit
   - if can? :destroy, @province
-    = link_to("<i class='icon-trash'></i>".html_safe + " Delete", @province, :data => { :confirm => "Delete #{@province.name}?" }, :method => :delete, :class => "btn")
+    = link_to @province,
+      data: { confirm: "Delete #{@province.name}?" },
+      method: :delete,
+      class: "btn" do
+      %i.icon-trash
+      Delete
