@@ -13,7 +13,7 @@ class DivisionDisplayScItem < ActiveRecord::Base
   include PaperTrailable
 
   before_destroy do
-    self.featured_content_selection.destroy
+    self.featured_content_selection.destroy if self.featured_content_selection
   end
 
 end
