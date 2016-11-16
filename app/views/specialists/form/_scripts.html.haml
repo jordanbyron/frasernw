@@ -2,8 +2,10 @@
   :javascript
     (function(formData) {
       formData.overlayChanges = true;
-      formData.baseReviewItem = #{@review_item.transformed_base_object(@specialist) || 'null'};
-      formData.reviewItem = #{@review_item.transformed_review_object(@specialist) || 'null'};
+      formData.baseReviewItem =
+        #{@review_item.transformed_base_object(@specialist) || 'null'};
+      formData.reviewItem =
+        #{@review_item.transformed_review_object(@specialist) || 'null'};
       formData.maxLocations = #{Specialist::MAX_OFFICES};
       formData.interactionType = "#{@form_modifier.interaction_type.to_s}";
       formData.recordKey = "specialist";
@@ -12,8 +14,11 @@
 
 :javascript
   $(document).ready(function() {
-    if(window.pathways.formData && window.pathways.formData.overlayChanges){
-      window.pathways.referentForms.overlayFormChanges(window.pathways.formData);
+    if(window.pathways.formData && window.pathways.formData.overlayChanges) {
+      window.
+        pathways.
+        referentForms.
+        overlayFormChanges(window.pathways.formData);
     }
 
     window.pathways.referentForms.emphasizeLocationTabs();
@@ -21,5 +26,10 @@
     $(".chzn-select").chosen()
     window.pathways.referentForms.setupVisibilityToggles.specialist();
 
-    document.getElementById("hiding-container").classList.remove("hidden");
+    document.getElementById("hiding-container").className =
+      document.
+        getElementById("hiding-container").
+        className.
+        replace("hidden", "").
+        trim();
   });
