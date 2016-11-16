@@ -2,10 +2,12 @@
 - specialization_is_hidden = specialization.hidden_divisions.include?(division)
 - if profiles.any?
   %tr{ class: specialization_is_hidden ? "hidden-from-users" : "" }
-    %th{:style => "width:100%"}= "#{specialization.name} (#{profiles.count})"
+    %th{ style: "width:100%" }= "#{specialization.name} (#{profiles.count})"
     - if division.nil? || user_divisions.include?(division)
       %th.admin
-  - profiles.each do |profile|
+  - profiles.sort_by do |profile|
+    - profile.respond_to?(:lastname) ? profile.lastname : profile.name
+  - end.each do |profile|
     %tr
       %td= link_to profile.name, "/#{profile.class.to_s.tableize}/#{profile.id}"
       - if division.nil? || user_divisions.include?(division)
@@ -13,4 +15,4 @@
           = link_to "/#{profile.class.to_s.tableize}/#{profile.id}/edit",
             class: "btn btn-mini" do
             %i.icon-pencil
-            %span= " Edit"
+            Edit
