@@ -49,7 +49,7 @@ const respondsWithinOptions = (model) => {
       key: parseInt(key),
       label: label
     };
-  });
+  }).concat({key: 0, label: "Any time frame"}) ;
 }
 
 const shouldShow = (model) => {

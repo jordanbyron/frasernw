@@ -68,8 +68,8 @@ const sidebarFilters = {
           return (_.includes(record.procedureIds, parseInt(procedureId)) &&
             (
               filterValues.respondsWithin(model) === 0 ||
-              record.customLagtimes[procedureId] === undefined ||
-              record.customLagtimes[procedureId] <= parseInt(filterValues.respondsWithin)
+              record.procedureSpecificBookingWaitTimes[procedureId] === undefined ||
+              record.procedureSpecificBookingWaitTimes[procedureId] <= parseInt(filterValues.respondsWithin)
             )
           );
         }
@@ -97,8 +97,8 @@ const sidebarFilters = {
       return parseInt(filterValues.respondsWithin(model)) !== 0;
     },
     predicate: function(record, model) {
-      return (record.respondsWithin !== null &&
-        record.respondsWithin <= parseInt(filterValues.respondsWithin(model)));
+      return (record.bookingWaitTimeKey !== null &&
+        record.bookingWaitTimeKey <= parseInt(filterValues.respondsWithin(model)));
     }
   },
   sex: {

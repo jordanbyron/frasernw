@@ -40,7 +40,7 @@ const sidebarFilterSummaries = {
     label: function(model) {
       const activatedList = activatedFilterSubkeys.teleserviceFeeTypes(model).
         map((type) => model.app.teleserviceFeeTypes[type])
-        
+
       if (activatedList.length === 1) {
         return `provide ${activatedList.pwPipe(utils.toSentence)} as a telehealth service`;
       } else {
@@ -72,11 +72,9 @@ const sidebarFilterSummaries = {
   },
   respondsWithin: {
     label: function(model) {
+
       return ("respond to referrals " +
-        model.
-          app.
-          respondsWithinSummaryLabels[filterValues.respondsWithin(model)]
-      );
+        respondsWithinSummaryLabels(model)[filterValues.respondsWithin(model)]);
     },
     placement: "trailing"
   },
@@ -192,6 +190,29 @@ const sidebarFilterSummaries = {
     },
     placement: "trailing"
   }
+}
+
+const respondsWithinSummaryLabels = (model) => {
+  return model.
+    app.
+    bookingWaitTimes.
+    pwPipe((bookingWaitTimes) => {
+      return _.reduce(
+        bookingWaitTime,
+        (accumulator, value, key) => {
+          if (key === "1"){
+            var label = "by phone when office calls for appointment";
+          }
+          else if (key === "2"){
+            var label = "within one week"
+          }
+          else {
+            var label = `within ${value}`
+          }
+
+          return _.assign({[key]: value}, accumulator);
+        }, {})
+      })
 }
 
 export default sidebarFilterSummaries;

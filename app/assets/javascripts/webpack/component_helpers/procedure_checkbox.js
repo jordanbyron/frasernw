@@ -28,7 +28,7 @@ const ProcedureCheckbox = React.createClass({
           label={
             <ProcedureCheckboxLabel
               labelText={this.props.label}
-              customWaittime={this.props.customWaittime}
+              waitTimesSpecified={this.props.waitTimesSpecified}
             />
           }
           checked={this.props.checked}
@@ -43,8 +43,8 @@ const ProcedureCheckbox = React.createClass({
   }
 });
 
-const ProcedureCheckboxLabel = ({labelText, customWaittime}) => {
-  if (customWaittime) {
+const ProcedureCheckboxLabel = ({labelText, waitTimesSpecified}) => {
+  if (waitTimesSpecified) {
     return(
       <span>
         <span>{labelText}</span>

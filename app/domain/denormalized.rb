@@ -51,10 +51,7 @@ module Denormalized
                 map(&:id),
               procedureIds: item.
                 procedures.
-                map(&:subtree).
-                flatten.
-                uniq.
-                map(&:procedure_id),
+                map(&:id),
               content: (
                 if item.markdown_content.present?
                   Denormalized.prepare_markdown_content(item.markdown_content)
@@ -84,11 +81,17 @@ module Denormalized
             lastName: specialist.lastname,
             referralIconKey: specialist.referral_icon_key,
             divisionIds: specialist.divisions.map(&:id),
-            waittime: masked_waittime(specialist),
-            cityIds: specialist.cities.reject{ |city| city.hidden }.map(&:id),
+            consultationWaitTimeKey: (
+              if specialist.show_waittimes?
+                specialist.consultation_wait_time_key
+              else
+                nil
+              end
+            ),
+            cityIds: specialist.cities.map(&:id),
             collectionName: "specialists",
             procedureIds: specialist.procedures.map(&:id),
-            respondsWithin: specialist.booking_wait_time_mask,
+            bookingWaitTimeKey: specialist.booking_wait_time_key,
             acceptsReferralsViaPhone: specialist.referral_phone,
             patientsCanCall: specialist.patient_can_book?,
             sex: specialist.sex.downcase,
@@ -97,8 +100,14 @@ module Denormalized
             hospitalIds: specialist.hospitals.map(&:id),
             clinicIds: specialist.clinics.map(&:id),
             specializationIds: specialist.specializations.map(&:id),
-            customLagtimes: custom_procedure_times(specialist, :lagtime_mask),
-            customWaittimes: custom_procedure_times(specialist, :waittime_mask),
+            procedureSpecificBookingWaitTimes: Denormalized.procedure_specific_wait_times(
+              specialist,
+              :booking_wait_time_key
+            ),
+            procedureSpecificConsultationWaitTimes: Denormalized.procedure_specific_wait_times(
+              specialist,
+              :consultation_wait_time_key
+            ),
             isGp: specialist.is_gp,
             suffix: specialist.suffix,
             isInternalMedicine: specialist.is_internal_medicine?,
@@ -125,15 +134,7 @@ module Denormalized
         end
       end
 
-      def self.masked_waittime(specialist)
-        if specialist.show_waittimes?
-          specialist.consultation_wait_time
-        else
-          nil
-        end
-      end
-
-      def self.custom_procedure_times(specialist, method)
+      def self.procedure_specific_wait_times(specialist, method)
         specialist.capacities.inject({}) do |memo, capacity|
           if capacity.send(method)
             memo.merge(capacity.procedure_id => capacity.send(method))
@@ -155,11 +156,17 @@ module Denormalized
             id: clinic.id,
             name: clinic.name,
             referralIconKey: clinic.referral_icon_key,
-            waittime: masked_waittime(clinic),
-            cityIds: clinic.cities.reject{ |city| city.hidden }.map(&:id),
+            consultationWaitTimeKey: (
+              if clinic.show_waittimes?
+                clinic.consultation_wait_time_key
+              else
+                nil
+              end
+            ),
+            cityIds: clinic.cities.map(&:id),
             collectionName: "clinics",
             procedureIds: clinic.procedures.map(&:id),
-            respondsWithin: clinic.booking_wait_time_mask,
+            bookingWaitTimeKey: clinic.booking_wait_time_key,
             acceptsReferralsViaPhone: clinic.referral_phone,
             patientsCanBook: clinic.patient_can_book?,
             scheduledDayIds: clinic.scheduled_day_ids,
@@ -167,8 +174,14 @@ module Denormalized
             divisionIds: clinic.divisions.map(&:id),
             specializationIds: clinic.specializations.map(&:id),
             wheelchairAccessible: clinic.wheelchair_accessible?,
-            customLagtimes: self.custom_procedure_times(clinic, :lagtime_mask),
-            customWaittimes: self.custom_procedure_times(clinic, :waittime_mask),
+            procedureSpecificBookingWaitTimes: Denormalized.procedure_specific_wait_times(
+              clinic,
+              :booking_wait_time_key
+            ),
+            procedureSpecificConsultationWaitTimes: Denormalized.procedure_specific_wait_times(
+              clinic,
+              :consultation_wait_time_key
+            ),
             isPrivate: clinic.private?,
             isPublic: clinic.public?,
             careProviderIds: clinic.healthcare_providers.map(&:id),
@@ -192,15 +205,7 @@ module Denormalized
         end
       end
 
-      def self.masked_waittime(clinic)
-        if clinic.show_waittimes?
-          clinic.consultation_wait_time
-        else
-          nil
-        end
-      end
-
-      def self.custom_procedure_times(clinic, method)
+      def self.procedure_specific_wait_times(clinic, method)
         clinic.focuses.inject({}) do |memo, focus|
           if focus.send(method)
             memo.merge(focus.procedure_id => focus.send(method))
@@ -246,7 +251,7 @@ module Denormalized
               map{ |ps| ps.procedure.name.uncapitalize_first_letter },
             memberName: specialization.member_name,
             membersName: specialization.member_name.pluralize,
-            nestedProcedures: Denormalized.transform_nested_procedure_specializations(
+            nestedProcedures: Denormalized.nested_procedures(
               specialization.procedure_specializations.includes(:procedure).arrange
             ),
             collectionName: "specializations",
@@ -308,9 +313,9 @@ module Denormalized
           nameRelativeToParents: procedure.try(:name_relative_to_parents),
           name: procedure.name,
           specializationIds: procedure.procedure_specializations.map(&:specialization_id),
-          customWaittime: {
-            specialists: procedure.specialist_has_wait_time,
-            clinics: procedure.clinic_has_wait_time
+          waitTimesSpecified: {
+            specialists: procedure.specialist_specify_wait_times,
+            clinics: procedure.clinics_specify_wait_times
           },
           assumedSpecializationIds: {
             specialists: procedure.
@@ -368,26 +373,6 @@ module Denormalized
         })
       end
     end,
-    respondsWithinOptions: Proc.new do
-      Clinic::LAGTIME_LABELS.inject({}) do |memo, (key, value)|
-        memo.merge(key.to_i => value)
-      end.merge(0 => "Any timeframe")
-    end,
-    respondsWithinSummaryLabels: Proc.new do
-      Clinic::LAGTIME_LABELS.inject({}) do |memo, (key, value)|
-        label = begin
-          if key == 1
-            "by phone when office calls for appointment"
-          elsif key == 2
-            "within one week"
-          else
-            "within #{value}"
-          end
-        end
-
-        memo.merge({key => label})
-      end
-    end,
     news_items: Proc.new do
       NewsItem.includes(:divisions).inject({}) do |memo, item|
         memo.merge(item.id => {
@@ -415,21 +400,30 @@ module Denormalized
     end
   }
 
-  def self.transform_nested_procedure_specializations(procedure_specializations)
-    procedure_specializations.inject({}) do |memo, (ps, children)|
+  def self.procedure_specific_waittimes(linked_item, waittime_type)
+    linked_item.procedure_links.inject({}) do |memo, procedure_link|
+      if procedure_link.send(method)
+        memo.merge(procedure_link.procedure_id => procedure_link.send(method))
+      else
+        memo
+      end
+    end
+  end
+
+  def self.nested_procedures(nested_procedure_specializations)
+    nested_procedure_specializations.inject({}) do |memo, (ps, children)|
       memo.merge({
         ps.procedure_id => {
           id: ps.procedure_id,
-          focused: ps.focused?,
+          focused: {
+            clinics: ps.focused_for_clinics?,
+            specialists: ps.focused_for_specialists?
+          },
           assumed: {
-            clinics: ps.assumed_clinic?,
-            specialists: ps.assumed_specialist?
+            clinics: ps.assumed_for_clinics?,
+            specialists: ps.assumed_for_specialists?
           },
-          customWaittime: {
-            specialists: ps.procedure.specialist_has_wait_time,
-            clinics: ps.procedure.clinic_has_wait_time
-          },
-          children: transform_nested_procedure_specializations(children)
+          children: nested_procedures(children)
         }
       })
     end

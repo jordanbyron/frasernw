@@ -1,4 +1,6 @@
 class ClinicProcedure < ActiveRecord::Base
+  include HasWaitTime
+
   belongs_to :clinic
   belongs_to :procedure
 
@@ -15,13 +17,5 @@ class ClinicProcedure < ActiveRecord::Base
 
   def self.clinic_has_wait_time
     joins(:procedure).where(clinic_has_wait_time: true)
-  end
-
-  def waittime
-    WAITTIME_LABELS[waittime_mask].present? ? WAITTIME_LABELS[waittime_mask] : ""
-  end
-
-  def lagtime
-    LAGTIME_LABELS[lagtime_mask].present? ? LAGTIME_LABELS[lagtime_mask] : ""
   end
 end

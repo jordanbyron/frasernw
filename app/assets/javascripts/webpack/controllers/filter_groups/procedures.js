@@ -60,7 +60,7 @@ const anyUnfocused = (model) => {
     nestedProcedures.
     pwPipe(_.values).
     filter((procedure) => {
-      return !procedure.focused &&
+      return !procedure.focused[selectedTabKey(model)] &&
         _.includes(subkeys(model), procedure.id)
     }).pwPipe(_.any);
 };
@@ -81,11 +81,11 @@ const Focused = ({model, dispatch}) => {
                   label={
                     <ProcedureCheckboxLabel
                       labelText={model.app.procedures[id].name}
-                      customWaittime={
+                      waitTimesSpecified={
                         model.
                         app.
                         procedures[id].
-                        customWaittime[collectionShownName(model)]
+                        waitTimesSpecified[collectionShownName(model)]
                       }
                     />
                   }
@@ -142,7 +142,7 @@ const Unfocused = ({model, dispatch}) => {
             recordShownByRoute(model).
               nestedProcedures.
               pwPipe(_.values).
-              filter((procedure) => !procedure.focused).
+              filter((procedure) => !procedure.focused[selectedTabKey(model)]).
               pwPipe((procedures) => {
                 return procedureCheckboxesFromNested(
                   procedures,
@@ -182,7 +182,7 @@ const procedureCheckboxesFromNested = (nestedProcedures, model, dispatch) => {
           label={
             <ProcedureCheckboxLabel
               labelText={model.app.procedures[procedure.id].name}
-              customWaittime={procedure.customWaittime[collectionShownName(model)]}
+              waitTimesSpecified={procedure.waitTimesSpecified[collectionShownName(model)]}
             />
           }
           filterSubkey={procedure.id}

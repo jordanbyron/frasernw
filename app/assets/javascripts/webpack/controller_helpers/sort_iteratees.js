@@ -83,7 +83,7 @@ const referrals = (decoratedRecord, model) => {
 };
 
 const waittimes = (decoratedRecord, model) => {
-  return (WAITTIME_RANKINGS[decoratedRecord.waittime] || 99);
+  return (decoratedRecord.consultationWaitTimeKey || 99);
 };
 
 const cityPriority = (decoratedRecord, model) => {
@@ -130,21 +130,5 @@ const REFERRAL_ICON_RANKINGS = {
   "none": 99,
   "orange_check": 2
 };
-
-const WAITTIME_RANKINGS = {
-  ["Within one week"]: 1,
-  ["1-2 weeks"]: 2,
-  ["2-4 weeks"]: 3,
-  ["1-2 months"]: 4,
-  ["2-4 months"]: 5,
-  ["4-6 months"]: 6,
-  ["6-9 months"]: 7,
-  ["9-12 months"]: 8,
-  ["12-18 months"]: 9,
-  ["18-24 months"]: 10,
-  ["2-2.5 years"]: 11,
-  ["2.5-3 years"]: 12,
-  [">3 years"]: 13
-}
 
 export default sortIteratees;

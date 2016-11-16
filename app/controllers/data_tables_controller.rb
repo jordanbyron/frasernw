@@ -17,11 +17,10 @@ class DataTablesController < ApplicationController
     #   divisions: Denormalized.fetch(:divisions),
     #   referralIcons: Referrable::REFERRAL_ICONS,
     #   referralTooltips: Referrable::REFERRAL_TOOLTIPS,
-    #   respondsWithinOptions: Denormalized.fetch(:respondsWithinOptions),
-    #   respondsWithinSummaryLabels: Denormalized.fetch(:respondsWithinSummaryLabels),
     #   dayKeys: Schedule::DAY_HASH,
     #   careProviders: Denormalized.fetch(:healthcare_providers),
-    #   waittimeLabels: Specialist::WAITTIME_LABELS,
+    #   bookingWaitTimes: HasWaitTimes::BOOKING_WAIT_TIMES,
+    #   consultationWaitTimes: HasWaitTimes::CONSULTATION_WAIT_TIMES,
     #   teleserviceFeeTypes: Teleservice::SERVICE_TYPES.map do |key, value|
     #     [ key, value.downcase ]
     #   end.to_h

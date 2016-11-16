@@ -43,7 +43,10 @@ class ProcedureSpecialization < ActiveRecord::Base
       "OR classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH}"
     ) }
   scope :non_assumed,
-    ->(klass) { where("#{presentation_key(klass)} != (?)", PRESENTATION_OPTIONS.key(:assumed)) }
+    -> (klass) { where(
+      "#{"#{klass.to_s.tableize}_presentation_key"} != (?)",
+      PRESENTATION_OPTIONS.key(:assumed))
+    }
   scope :classification,
     -> (classification){ where(
     "classification = (?)", classification
@@ -94,28 +97,6 @@ class ProcedureSpecialization < ActiveRecord::Base
     end
   end
 
-  def classification_text
-    ProcedureSpecialization::CLASSIFICATION_HASH[classification]
-  end
-
-  def focused?
-    classification == ProcedureSpecialization::CLASSIFICATION_FOCUSED
-  end
-
-  def nonfocused?
-    classification == ProcedureSpecialization::CLASSIFICATION_NONFOCUSED
-  end
-
-  def assumed_specialist?
-    classification == ProcedureSpecialization::CLASSIFICATION_ASSUMED_SPECIALIST ||
-      classification == ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH
-  end
-
-  def assumed_clinic?
-    classification == ProcedureSpecialization::CLASSIFICATION_ASSUMED_CLINIC ||
-      classification == ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH
-  end
-
   def to_s
     procedure.to_s
   end
@@ -157,18 +138,24 @@ class ProcedureSpecialization < ActiveRecord::Base
     procedure.name
   end
 
-  def self.presentation_key(klass)
-    "#{klass.to_s.tableize}_presentation_key"
-  end
+  [
+    :assumed,
+    :focused,
+    :non_focused
+  ].each do |config_option|
+    method_name = "#{config_option}_for?"
 
-  def assumed_for?(item)
-    case item
-    when ScItem
-      false
-    when Specialist, Clinic
-      item.specializations.include?(specialization) &&
-        self.class.presentation_key(item.class) ==
-          PRESENTATION_OPTIONS.key(:assumed)
+    define_method method_name do |arg|
+      case arg
+      when Symbol
+        send("#{arg}_presentation_key") ==
+          PRESENTATION_OPTIONS.key(config_option)
+      when ScItem
+        false
+      when Specialist, Clinic
+        send(method_name, arg.class.to_s.tableize.to_sym) &&
+          arg.specializations.include?(specialization)
+      end
     end
   end
 end

@@ -21,7 +21,9 @@ const Cells = (decoratedRecord, model, dispatch) => {
     <td className="datatable__cell" key="status">
       <ReferentStatusIcon model={model} record={decoratedRecord.raw} tooltip={true}/>
     </td>,
-    <td className="datatable__cell" key="wt">{ decoratedRecord.waittime }</td>,
+    <td className="datatable__cell" key="wt">
+      { model.app.consultationWaitTimes[decoratedRecord.consultationWaitTimeKey] }
+    </td>,
     <td className="datatable__cell" key="city">{ decoratedRecord.cityNames }</td>
   ]
 
