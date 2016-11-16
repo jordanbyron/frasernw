@@ -11,7 +11,7 @@ import recordsToDisplay from "controller_helpers/records_to_display";
 import * as filterValues from "controller_helpers/filter_values";
 import sidebarFilters from "controller_helpers/sidebar_filters";
 import { paginate } from "controller_helpers/pagination";
-import { shouldUseSpecifiedWaitTimes, specificWaitTimeProcedureId }
+import { useProcedureSpecificWaitTimes, specificWaitTimeProcedureId }
   from "controller_helpers/procedure_specific_wait_times";
 import _ from "lodash";
 
@@ -98,7 +98,7 @@ const decorate = (record, model) => {
 };
 
 const labelReferentWaittime = (record, model) => {
-  if(shouldUseSpecifiedWaitTimes(model)){
+  if(useProcedureSpecificWaitTimes(model)){
     return record.procedureSpecificConsultationWaitTimes[specificWaitTimeProcedureId(model)];
   } else {
     return record.consultationWaitTimeKey;

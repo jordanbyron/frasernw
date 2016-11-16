@@ -1,8 +1,8 @@
 import React from "react";
-import { shouldUseSpecifiedWaitTimes } from "controller_helpers/procedure_specific_wait_times";
+import { useProcedureSpecificWaitTimes } from "controller_helpers/procedure_specific_wait_times";
 
 const CustomWaittimeMessage = ({model}) => {
-  if(shouldUseSpecifiedWaitTimes(model)){
+  if(useProcedureSpecificWaitTimes(model)){
     return(
       <div className="alert alert-info">
         <i className="icon-link" style={{marginRight: "5px"}}/>

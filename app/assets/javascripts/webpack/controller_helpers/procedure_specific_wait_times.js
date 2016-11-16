@@ -3,7 +3,7 @@ import activatedFilterSubkeys from "controller_helpers/activated_filter_subkeys"
 import { collectionShownName } from "controller_helpers/collection_shown";
 import { memoizePerRender } from "utils";
 
-export const shouldUseSpecifiedWaitTimes = ((model) => {
+export const useProcedureSpecificWaitTimes = ((model) => {
   switch(route){
   case "/specialties/:id":
     return activatedFilterSubkeys.procedures(model).length === 1 &&
