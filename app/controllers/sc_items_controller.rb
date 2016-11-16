@@ -129,7 +129,7 @@ class ScItemsController < ApplicationController
     success = params[:is_borrowed].present? &&
       @sc_item.present? &&
       @division.present? &&
-      can?(:update, @sc_item) &&
+      can?(:borrow, @sc_item) &&
       UpdateScItemBorrowing.call(
         division_id: @division.id,
         sc_item: @sc_item,
