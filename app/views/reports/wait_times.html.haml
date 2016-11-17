@@ -10,18 +10,14 @@
 
   %table#stats.table
 
-    - Specialization.all.each do |s|
-
-      - if @divisions.length == 1
-        - entities = s.send(@entity).in_divisions(@divisions).reject do |e|
-          - !e.show_in_table? || !e.show_waittimes?
-      - else
-        - entities = s.send(@entity).reject do |e|
-          - !e.show_in_table? || !e.show_waittimes?
+    - Specialization.all.each do |specialization|
+      - entities = ReportsHelper.included_entities(specialization,
+        @divisions,
+        @entity)
       - next if entities.blank?
 
       %tr
-        %th= s.name
+        %th= specialization.name
         %th Lag Time
         %th Wait Time
 
