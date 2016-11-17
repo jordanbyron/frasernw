@@ -1,6 +1,6 @@
-import overlayFormChanges from "window_scripts/referent_forms/overlay_form_changes";
+import overlayFormChanges from "window_scripts/profile_forms/overlay_form_changes";
 import * as setupVisibilityToggles from
-  "window_scripts/referent_forms/setup_visibility_toggles"
+  "window_scripts/profile_forms/setup_visibility_toggles"
 
 export { overlayFormChanges };
 export { setupVisibilityToggles };
@@ -42,5 +42,5 @@ export const stashPreEditForm = () => {
   });
 
   // only allow them to submit the form once all this is done
-  $(".submit-referents-form").attr("disabled", false);
+  $(".submit-profiles-form").attr("disabled", false);
 }

@@ -6,7 +6,7 @@ export const Routes = [
   "/areas_of_practice/:id",
   "/content_categories/:id",
   "/reports/entity_page_views",
-  "/reports/referents_by_specialty",
+  "/reports/profiles_by_specialty",
   "/latest_updates",
   "/reports/page_views_by_user",
   "/hospitals/:id",

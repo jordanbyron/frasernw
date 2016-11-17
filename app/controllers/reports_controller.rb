@@ -63,8 +63,8 @@ class ReportsController < ApplicationController
     }
   end
 
-  def referents_by_specialty
-    authorize! :view_report, :referents_by_specialty
+  def profiles_by_specialty
+    authorize! :view_report, :profiles_by_specialty
   end
 
   def entity_page_views

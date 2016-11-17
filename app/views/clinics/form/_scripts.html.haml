@@ -15,13 +15,13 @@
 :javascript
   $(document).ready(function(){
     if(window.pathways.formData && window.pathways.formData.overlayChanges){
-      window.pathways.referentForms.overlayFormChanges(window.pathways.formData);
+      window.pathways.profileForms.overlayFormChanges(window.pathways.formData);
     }
 
-    window.pathways.referentForms.emphasizeLocationTabs();
-    window.pathways.referentForms.stashPreEditForm();
+    window.pathways.profileForms.emphasizeLocationTabs();
+    window.pathways.profileForms.stashPreEditForm();
     $(".chzn-select").chosen()
-    window.pathways.referentForms.setupVisibilityToggles.clinic();
+    window.pathways.profileForms.setupVisibilityToggles.clinic();
 
     document.getElementById("hiding-container").classList.remove("hidden");
   })

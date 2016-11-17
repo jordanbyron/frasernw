@@ -39,16 +39,13 @@ module Denormalized
       def self.call
         ScItem.
           includes(:sc_category, :division, :divisions_borrowing, :specializations).
+          includes(:procedures).
           inject({}) do |memo, item|
             memo.merge(item.id => {
               availableToDivisionIds: item.available_to_divisions.map(&:id),
               specializationIds: item.specializations.map(&:id),
               title: item.title,
               categoryId: item.sc_category.id,
-              rootCategoryId: item.root_category.id,
-              categoryIds: [item.sc_category, item.sc_category.ancestors].
-                flatten.
-                map(&:id),
               procedureIds: item.
                 procedures.
                 map(&:id),
@@ -133,22 +130,13 @@ module Denormalized
           })
         end
       end
-
-      def self.procedure_specific_wait_times(specialist, method)
-        specialist.capacities.inject({}) do |memo, capacity|
-          if capacity.send(method)
-            memo.merge(capacity.procedure_id => capacity.send(method))
-          else
-            memo
-          end
-        end
-      end
     end,
     clinics: Module.new do
       def self.call
         Clinic.
-          includes([:procedures, :specializations, :languages]).
+          includes([:procedures, :specializations, :languages, :teleservices]).
           includes(:healthcare_providers).
+          includes(clinic_procedures: :procedure).
           includes_location_data.
           includes_location_schedules.
           inject({}) do |memo, clinic|
@@ -204,16 +192,6 @@ module Denormalized
           })
         end
       end
-
-      def self.procedure_specific_wait_times(clinic, method)
-        clinic.focuses.inject({}) do |memo, focus|
-          if focus.send(method)
-            memo.merge(focus.procedure_id => focus.send(method))
-          else
-            memo
-          end
-        end
-      end
     end,
     content_categories: Module.new do
       def self.call
@@ -226,7 +204,7 @@ module Denormalized
             inGlobalNavigation: category.in_global_navigation?,
             filterable: category.filterable?,
             subtreeIds: category.subtree.map(&:id),
-            ancestry: category.ancestry,
+            ancestry: category.ancestry.try(:to_i),
             componentType: component_type(category),
             collectionName: "contentCategories",
             searchable: category.searchable?
@@ -240,7 +218,7 @@ module Denormalized
     end,
     specializations: Proc.new do
       Specialization.
-        includes(:specialization_options).
+        includes(:specialization_options, {procedure_specializations: :procedure}).
         inject({}) do |memo, specialization|
           memo.merge(specialization.id => {
             id: specialization.id,
@@ -252,7 +230,7 @@ module Denormalized
             memberName: specialization.member_name,
             membersName: specialization.member_name.pluralize,
             nestedProcedures: Denormalized.nested_procedures(
-              specialization.procedure_specializations.includes(:procedure).arrange
+              specialization.procedure_specializations.arrange
             ),
             collectionName: "specializations",
             maskFiltersByReferralArea: specialization.mask_filters_by_referral_area,
@@ -314,18 +292,18 @@ module Denormalized
           name: procedure.name,
           specializationIds: procedure.procedure_specializations.map(&:specialization_id),
           waitTimesSpecified: {
-            specialists: procedure.specialist_specify_wait_times,
+            specialists: procedure.specialists_specify_wait_times,
             clinics: procedure.clinics_specify_wait_times
           },
           assumedSpecializationIds: {
             specialists: procedure.
               procedure_specializations.
-              select(&:assumed_specialist?).
+              select{|ps| ps.assumed_for?(:specialists)}.
               map(&:specialization).
               map(&:id),
             clinics: procedure.
               procedure_specializations.
-              select(&:assumed_clinic?).
+              select{|ps| ps.assumed_for?(:clinics)}.
               map(&:specialization).
               map(&:id)
           },
@@ -389,21 +367,21 @@ module Denormalized
       end
     end,
     issues: Proc.new do
-      Issue.includes(:assignees).inject({}) do |memo, issue|
+      Issue.includes(:assignees, :versions).inject({}) do |memo, issue|
         memo.merge(issue.id => issue.to_hash)
       end
     end,
     change_requests: Proc.new do
-      Issue.change_request.includes(:assignees).inject({}) do |memo, issue|
+      Issue.change_request.includes(:assignees, :versions).inject({}) do |memo, issue|
         memo.merge(issue.id => issue.to_hash)
       end
     end
   }
 
-  def self.procedure_specific_waittimes(linked_item, waittime_type)
+  def self.procedure_specific_wait_times(linked_item, waittime_type)
     linked_item.procedure_links.inject({}) do |memo, procedure_link|
-      if procedure_link.send(method)
-        memo.merge(procedure_link.procedure_id => procedure_link.send(method))
+      if procedure_link.specifies_wait_times? && procedure_link.send(waittime_type)
+        memo.merge(procedure_link.procedure_id => procedure_link.send(waittime_type))
       else
         memo
       end
@@ -416,12 +394,12 @@ module Denormalized
         ps.procedure_id => {
           id: ps.procedure_id,
           focused: {
-            clinics: ps.focused_for_clinics?,
-            specialists: ps.focused_for_specialists?
+            clinics: ps.focused_for?(:clinics),
+            specialists: ps.focused_for?(:specialists)
           },
           assumed: {
-            clinics: ps.assumed_for_clinics?,
-            specialists: ps.assumed_for_specialists?
+            clinics: ps.assumed_for?(:clinics),
+            specialists: ps.assumed_for?(:specialists)
           },
           children: nested_procedures(children)
         }

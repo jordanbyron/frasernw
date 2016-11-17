@@ -13,7 +13,7 @@ import {
   hoverLeaveSearchResult,
   closeSearch
 } from "action_creators";
-import ReferentStatusIcon from "controllers/referent_status_icon";
+import ProfileStatusIcon from "controllers/profile_status_icon";
 import hiddenFromUsers from "controller_helpers/hidden_from_users";
 
 const SearchResult = ({model, dispatch, decoratedRecord}) => {
@@ -61,7 +61,7 @@ const InnerResult = (decoratedRecord, model) => {
     return(
       [
         <div className="search_name" key="name">
-          <ReferentStatusIcon record={record} model={model}/>
+          <ProfileStatusIcon record={record} model={model}/>
           <span style={{marginLeft: "5px"}}>
             <HighlightedEntryLabel decoratedRecord={decoratedRecord}/>
           </span>

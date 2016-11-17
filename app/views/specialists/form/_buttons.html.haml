@@ -2,11 +2,11 @@
   - if @form_modifier.token_edit?
     = f.button :submit,
       'Update Specialist with My Changes',
-      class: "btn btn-primary submit-referents-form",
+      class: "btn btn-primary submit-profiles-form",
       disabled: true
     = f.button :submit,
       'There are No Updates to this Specialist',
-      class: "btn btn-success submit-referents-form",
+      class: "btn btn-success submit-profiles-form",
       name: 'no_updates',
       disabled: true
   - elsif @form_modifier.admin_rereview?

@@ -1,8 +1,12 @@
 class ClinicProcedure < ActiveRecord::Base
-  include HasWaitTime
+  include HasWaitTimes
 
   belongs_to :clinic
   belongs_to :procedure
+
+  attr_accessible :clinic_id,
+    :investigation,
+    :procedure_id
 
   # TODO: remove
 
@@ -17,5 +21,9 @@ class ClinicProcedure < ActiveRecord::Base
 
   def self.clinic_has_wait_time
     joins(:procedure).where(clinic_has_wait_time: true)
+  end
+
+  def specifies_wait_times?
+    procedure.clinics_specify_wait_times
   end
 end

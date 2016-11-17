@@ -35,15 +35,15 @@ class MigrateUsersControl < ActiveRecord::Migration
     end
 
     ## Sanity Check
-    # before.each do |id, controlled_referents|
+    # before.each do |id, controlled_profiles|
     #   user = User.find(id).reload
     #
-    #   unless controlled_referents[:specialists] == user.controlled_specialists.map(&:id).sort
-    #     raise "user: #{user.id}, old specialists: #{controlled_referents[:specialists]}, new specialists: #{user.controlled_specialists.map(&:id).sort}"
+    #   unless controlled_profiles[:specialists] == user.controlled_specialists.map(&:id).sort
+    #     raise "user: #{user.id}, old specialists: #{controlled_profiles[:specialists]}, new specialists: #{user.controlled_specialists.map(&:id).sort}"
     #   end
     #
-    #   unless controlled_referents[:clinics] == user.controlled_clinics.map(&:id).sort
-    #     raise "user: #{user.id}, old clinics: #{controlled_referents[:clinics]}, new clinics: #{user.controlled_clinics.map(&:id).sort}"
+    #   unless controlled_profiles[:clinics] == user.controlled_clinics.map(&:id).sort
+    #     raise "user: #{user.id}, old clinics: #{controlled_profiles[:clinics]}, new clinics: #{user.controlled_clinics.map(&:id).sort}"
     #   end
     # end
   end

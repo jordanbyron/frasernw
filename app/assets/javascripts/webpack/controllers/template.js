@@ -84,7 +84,7 @@ const usesSidebarLayout = ((model) => {
     collectionShownName(model) === "specialists" ||
     collectionShownName(model) === "clinics" ||
     _.includes(["/reports/entity_page_views",
-    "/reports/referents_by_specialty",
+    "/reports/profiles_by_specialty",
     "/reports/page_views_by_user",
     "/issues"], route)
 }).pwPipe(memoizePerRender)
@@ -185,7 +185,7 @@ const UpperWhitePanel = ({model}) => {
 const LowerPanelTitle = ({model}) => {
   if(_.includes(["/reports/page_views_by_user",
     "/content_categories/:id",
-    "/reports/referents_by_specialty",
+    "/reports/profiles_by_specialty",
     "/latest_updates",
     "/reports/entity_page_views"
   ], route)) {

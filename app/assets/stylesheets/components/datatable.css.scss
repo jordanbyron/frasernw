@@ -42,7 +42,7 @@
     }
 
     .datatable__row--isSelected {
-      .datatable__referent_name {
+      .datatable__profile_name {
         font-weight: bold;
       }
     }
@@ -92,23 +92,23 @@
         margin-top: 0px;
       }
 
-      .datatable__th--referents--name {
+      .datatable__th--profiles--name {
         width: 60%;
       }
 
-      .datatable__th--referents--referrals {
+      .datatable__th--profiles--referrals {
         width: 10%;
       }
 
-      .datatable__th--referents--specialties {
+      .datatable__th--profiles--specialties {
         width: 10%;
       }
 
-      .datatable__th--referents--waittime {
+      .datatable__th--profiles--waittime {
         width: 10%;
       }
 
-      .datatable__th--referents--city {
+      .datatable__th--profiles--city {
         width: 10%;
       }
 
@@ -132,23 +132,23 @@
       }
     }
 
-    .datatable__th--referents--name {
+    .datatable__th--profiles--name {
       width: 30%;
     }
 
-    .datatable__th--referents--referrals {
+    .datatable__th--profiles--referrals {
       width: 15%;
     }
 
-    .datatable__th--referents--specialties {
+    .datatable__th--profiles--specialties {
       width: 15%;
     }
 
-    .datatable__th--referents--waittime {
+    .datatable__th--profiles--waittime {
       width: 15%;
     }
 
-    .datatable__th--referents--city {
+    .datatable__th--profiles--city {
       width: 20%;
     }
 

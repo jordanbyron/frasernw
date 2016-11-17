@@ -15,7 +15,7 @@ const sortOrders = (model) => {
     return reversed(model);
   }
 
-  if(route === "/reports/referents_by_specialty" &&
+  if(route === "/reports/profiles_by_specialty" &&
     selectedTableHeadingKey(model) === "SPECIALTY") {
 
     return reversed(model);

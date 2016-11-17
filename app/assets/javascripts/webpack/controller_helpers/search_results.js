@@ -7,6 +7,7 @@ import scoreString from "utils/score_string";
 import { link } from "controller_helpers/links";
 import { encode as encodeUrlHash } from "utils/url_hash_encoding";
 import BitapSearcher from "utils/bitap_searcher";
+import contentCategoryHierarchy from "controller_helpers/content_categories";
 
 const BitapOptions = {
   threshold: 0.3,
@@ -193,7 +194,7 @@ const filters = ((model) => {
   if (selectedCollectionFilter(model) === "Physician Resources"){
     filters.push((record) => {
       return _.intersection(
-        record.categoryIds,
+        contentCategoryHierarchy(model, record),
         [ pearlsId(model), redFlagsId(model), physicianResourcesId(model) ]
       ).pwPipe(_.any)
     })
@@ -202,7 +203,7 @@ const filters = ((model) => {
   if (selectedCollectionFilter(model) === "Patient Info"){
     filters.push((record) => {
       return _.includes(
-        record.categoryIds,
+        contentCategoryHierarchy(model, record),
         patientInfoId(model)
       )
     })

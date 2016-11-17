@@ -66,27 +66,27 @@ const decorate = (record, model) => {
       decorated.cityNames = record.cityIds.map((id) => {
         return model.app.cities[id].name;
       }).sort().join(" and ");
-      decorated.adjustedConsultationWaitTimeKey = labelReferentWaittime(record, model);
+      decorated.adjustedConsultationWaitTimeKey = labelProfileWaittime(record, model);
     }
     else if (collectionShownName(model) === "contentItems") {
       decorated.subcategoryName =
         model.app.contentCategories[record.categoryId].name;
     }
   }
-  else if (route === "/reports/referents_by_specialty" &&
+  else if (route === "/reports/profiles_by_specialty" &&
     filterValues.reportStyle(model) === "summary") {
 
       decorated.count = model.app[filterValues.entityType(model)].
         pwPipe(_.values).
-        filter((referent) => {
+        filter((profile) => {
           if(sidebarFilters.divisionScope.isActivated(model)){
             return _.includes(
-              referent.divisionIds,
+              profile.divisionIds,
               parseInt(filterValues.divisionScope(model))
-            ) && _.includes(referent.specializationIds, record.id)
+            ) && _.includes(profile.specializationIds, record.id)
           }
           else {
-            return _.includes(referent.specializationIds, record.id);
+            return _.includes(profile.specializationIds, record.id);
           }
         }).length
   }
@@ -97,7 +97,7 @@ const decorate = (record, model) => {
   return decorated;
 };
 
-const labelReferentWaittime = (record, model) => {
+const labelProfileWaittime = (record, model) => {
   if(useProcedureSpecificWaitTimes(model)){
     return record.procedureSpecificConsultationWaitTimes[specificWaitTimeProcedureId(model)];
   } else {

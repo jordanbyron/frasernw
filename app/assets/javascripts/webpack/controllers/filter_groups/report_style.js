@@ -4,7 +4,7 @@ import { route, recordShownByRoute } from "controller_helpers/routing";
 import FilterRadioButtons from "controllers/filter_radio_buttons";
 
 const ReportStyleFilters = ({model, dispatch}) => {
-  if (route === "/reports/referents_by_specialty") {
+  if (route === "/reports/profiles_by_specialty") {
     return(
       <FilterGroup
         title={"Report Style"}

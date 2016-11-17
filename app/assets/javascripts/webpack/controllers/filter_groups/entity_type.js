@@ -35,7 +35,7 @@ const shouldShow = (model) => {
 
 const ROUTES_IMPLEMENTING = [
   "/reports/entity_page_views",
-  "/reports/referents_by_specialty"
+  "/reports/profiles_by_specialty"
 ]
 
 const OPTION_LABELS = {
@@ -55,7 +55,7 @@ const radioOptionKeys = (model) => {
   if(route === "/reports/entity_page_views"){
     return _.keys(OPTION_LABELS)
   }
-  else if (route === "/reports/referents_by_specialty") {
+  else if (route === "/reports/profiles_by_specialty") {
     return [
       "specialists",
       "clinics"

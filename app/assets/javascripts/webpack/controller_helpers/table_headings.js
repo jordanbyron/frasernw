@@ -26,7 +26,7 @@ const defaultHeadingKey = ((model) => {
   else if (route === "/reports/page_views_by_user"){
     return "PAGE_VIEWS";
   }
-  else if (route === "/reports/referents_by_specialty"){
+  else if (route === "/reports/profiles_by_specialty"){
     return "SPECIALTY";
   }
   else if (route === "/news_items"){

@@ -109,7 +109,7 @@ export const sidebarFilterKeys = ((model) => {
       ];
     }
   }
-  else if (route === "/reports/referents_by_specialty" &&
+  else if (route === "/reports/profiles_by_specialty" &&
     filterValues.reportStyle(model) === "expanded"){
 
     return [

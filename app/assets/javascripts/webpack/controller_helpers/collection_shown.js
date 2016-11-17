@@ -33,7 +33,7 @@ export const collectionShownName = ((model) => {
   else if (route === "/content_categories/:id"){
     return "contentItems";
   }
-  else if (route === "/reports/referents_by_specialty"){
+  else if (route === "/reports/profiles_by_specialty"){
     if(filterValues.reportStyle(model) === "summary"){
       return "specializations";
     }

@@ -51,7 +51,10 @@ export const defaultTabKey = ((model) => {
   case "/clinics/:id":
     return navTabKey("clinics");
   case "/content_items/:id":
-    return navTabKey("contentCategory", recordShownByRoute(model).rootCategoryId);
+    return navTabKey(
+      "contentCategory",
+      contentCategoryHierarchy(model, recordShownByRoute(model))[0]
+    );
   default:
     return null;
   }

@@ -28,8 +28,8 @@ const Lists = ({model, dispatch}) => {
 };
 
 const List = ({specialization, model}) => {
-  let _referentsForSpecialization =
-    referentsForSpecialization(model, specialization)
+  let _profilesForSpecialization =
+    profilesForSpecialization(model, specialization)
 
   return(
     <div style={{marginBottom: "10px"}}>
@@ -43,30 +43,30 @@ const List = ({specialization, model}) => {
       >
         {
           `${specialization.name} ` +
-          `(${_referentsForSpecialization.length} total)`
+          `(${_profilesForSpecialization.length} total)`
         }
       </div>
       <div>
         <table className="table">
           <tbody>
             {
-              _referentsForSpecialization.map((referent) => {
+              _profilesForSpecialization.map((profile) => {
                 return(
                   <tr
-                    className="referents_by_specialty__row"
-                    key={`${referent.collectionName}${referent.id}`}
+                    className="profiles_by_specialty__row"
+                    key={`${profile.collectionName}${profile.id}`}
                   >
                     <td>
-                      <a href={`/${referent.collectionName}/${referent.id}`}>
-                        {referent.name}
+                      <a href={`/${profile.collectionName}/${profile.id}`}>
+                        {profile.name}
                       </a>
                       <div
                         style={{float: "right"}}
-                        className="referents_by_specialty__faded_content"
+                        className="profiles_by_specialty__faded_content"
                       >
                         {
-                          `Added: ${referent.createdAt}, ` +
-                          `Last Updated: ${referent.updatedAt}`
+                          `Added: ${profile.createdAt}, ` +
+                          `Last Updated: ${profile.updatedAt}`
                         }
                       </div>
                     </td>
@@ -81,23 +81,23 @@ const List = ({specialization, model}) => {
   );
 }
 
-const referentsForSpecialization = (model, specialization) => {
+const profilesForSpecialization = (model, specialization) => {
   return recordsToDisplay(model).filter((record) => {
     return _.includes(record.specializationIds, specialization.id);
-  }).pwPipe((referents) => {
-    return _.sortBy(referents, (referent) => {
-      if(referent.collectionName === "specialists"){
-        return referent.lastName;
+  }).pwPipe((profiles) => {
+    return _.sortBy(profiles, (profile) => {
+      if(profile.collectionName === "specialists"){
+        return profile.lastName;
       }
       else {
-        return referent.name;
+        return profile.name;
       }
     })
   });
 };
 
 const shouldDisplay = (model) => {
-  return route === "/reports/referents_by_specialty" &&
+  return route === "/reports/profiles_by_specialty" &&
     filterValues.reportStyle(model) === "expanded"
 }
 

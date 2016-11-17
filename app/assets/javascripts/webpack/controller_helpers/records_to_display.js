@@ -16,7 +16,7 @@ const recordsToDisplay = ((model) => {
       "/specialties/:id",
       "/areas_of_practice/:id",
       "/content_categories/:id",
-      "/reports/referents_by_specialty",
+      "/reports/profiles_by_specialty",
       "/latest_updates",
       "/hospitals/:id",
       "/languages/:id",

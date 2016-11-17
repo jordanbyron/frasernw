@@ -13,7 +13,7 @@ import setupTabHistory from "window_scripts/setup_tab_history";
 import standaloneBootstrapReact from "window_scripts/standalone_bootstrap_react";
 import bootstrapReact from "bootstrap_react";
 import { openFeedbackModal } from "action_creators";
-import * as referentForms from "window_scripts/referent_forms";
+import * as profileForms from "window_scripts/profile_forms";
 
 import Highcharts from "highcharts";
 import "jquery-ujs";
@@ -29,7 +29,7 @@ window.pathways.attachSecretEditLinks = attachSecretEditLinks;
 window.pathways.setupTabHistory = setupTabHistory;
 window.pathways.openFeedbackModal = openFeedbackModal;
 window.pathways.bootstrapReact = bootstrapReact;
-window.pathways.referentForms = referentForms;
+window.pathways.profileForms = profileForms;
 
 window.vendor = {}
 window.vendor._ = require("lodash");

@@ -1,9 +1,9 @@
 import updateScheduleDay from
-  "window_scripts/referent_forms/setup_visibility_toggles/update_schedule_day";
+  "window_scripts/profile_forms/setup_visibility_toggles/update_schedule_day";
 import updateSpecialistLocation from
-  "window_scripts/referent_forms/setup_visibility_toggles/update_specialist_location";
+  "window_scripts/profile_forms/setup_visibility_toggles/update_specialist_location";
 import setupVisibilityToggle from
-  "window_scripts/referent_forms/setup_visibility_toggles/setup_visibility_toggle";
+  "window_scripts/profile_forms/setup_visibility_toggles/setup_visibility_toggle";
 
 export default function specialist(){
   setupGeneralInformation();

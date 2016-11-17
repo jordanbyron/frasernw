@@ -54,7 +54,7 @@ const classname = (model, headingKey) => {
 
 const classnamePrefix = ((model) => {
   if (_.includes(["specialists", "clinics"], collectionShownName(model))){
-    return "referents";
+    return "profiles";
   }
   else if (collectionShownName(model) === "contentItem") {
     return "content-items";
@@ -103,7 +103,7 @@ const cellConfigs = (model, dispatch) => {
       { label: "Page Views", key: "PAGE_VIEWS" }
     ];
   }
-  else if (route === "/reports/referents_by_specialty"){
+  else if (route === "/reports/profiles_by_specialty"){
     return [
       { label: "Specialty", key: "SPECIALTY" },
       { label: _.capitalize(entityType(model)), key: "ENTITY_TYPE" }

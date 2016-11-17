@@ -2,7 +2,7 @@ import React from "react";
 import { areRowsExpanded } from "controller_helpers/table_row_expansion";
 import ExpandingContainer from "component_helpers/expanding_container";
 
-const ExpandedReferentInformation = React.createClass({
+const ExpandedProfileInformation = React.createClass({
   render: function(){
     return(
       <ExpandingContainer expanded={areRowsExpanded(this.props.model)}>
@@ -57,4 +57,4 @@ const MiniProfileItem = ({heading, value}) => {
   )
 }
 
-export default ExpandedReferentInformation;
+export default ExpandedProfileInformation;

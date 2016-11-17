@@ -51,7 +51,7 @@ class Ability
           :page_views,
           :sessions,
           :csv_usage,
-          :referents_by_specialty,
+          :profiles_by_specialty,
           :entity_page_views,
           :user_ids,
           :archived_feedback_items,

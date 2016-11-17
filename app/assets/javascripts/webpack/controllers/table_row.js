@@ -14,7 +14,7 @@ import { memoizePerRender } from "utils";
 import ChangeRequestRow from "controllers/table_row/change_request";
 import EntityPageViewRow from "controllers/table_row/entity_page_view";
 import IssueRow from "controllers/table_row/issue";
-import ReferentRow from "controllers/table_row/referent";
+import ProfileRow from "controllers/table_row/profile";
 import Tags from "component_helpers/tags";
 
 const TableRow = ({model, dispatch, decoratedRecord}) => {
@@ -27,7 +27,7 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
   ], route)) {
     if(_.includes(["specialists", "clinics"], collectionShownName(model))) {
       return(
-        <ReferentRow
+        <ProfileRow
           model={model}
           dispatch={dispatch}
           decoratedRecord={decoratedRecord}
@@ -52,7 +52,7 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
       );
     }
   }
-  else if (route === "/reports/referents_by_specialty" &&
+  else if (route === "/reports/profiles_by_specialty" &&
     filterValues.reportStyle(model) === "summary") {
 
     return(

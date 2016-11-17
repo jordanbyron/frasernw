@@ -2,12 +2,12 @@ import React from "react";
 import showingMultipleSpecializations
   from "controller_helpers/showing_multiple_specializations";
 import { memoizePerRender } from "utils";
-import ReferentStatusIcon from "controllers/referent_status_icon";
+import ProfileStatusIcon from "controllers/profile_status_icon";
 import Tags from "component_helpers/tags";
-import ExpandedReferentInformation from "controllers/expanded_referent_information";
+import ExpandedProfileInformation from "controllers/expanded_profile_information";
 import { route, recordShownByRoute } from "controller_helpers/routing";
 
-const ReferentRow = ({decoratedRecord, model, dispatch}) => {
+const ProfileRow = ({decoratedRecord, model, dispatch}) => {
   return(
     <tr className={rowClass(decoratedRecord)}>
       { Cells(decoratedRecord, model, dispatch) }
@@ -17,9 +17,9 @@ const ReferentRow = ({decoratedRecord, model, dispatch}) => {
 
 const Cells = (decoratedRecord, model, dispatch) => {
   let cells = [
-    <ReferentName decoratedRecord={decoratedRecord} model={model} key="name"/>,
+    <ProfileName decoratedRecord={decoratedRecord} model={model} key="name"/>,
     <td className="datatable__cell" key="status">
-      <ReferentStatusIcon model={model} record={decoratedRecord.raw} tooltip={true}/>
+      <ProfileStatusIcon model={model} record={decoratedRecord.raw} tooltip={true}/>
     </td>,
     <td className="datatable__cell" key="wt">
       { model.app.consultationWaitTimes[decoratedRecord.consultationWaitTimeKey] }
@@ -31,7 +31,7 @@ const Cells = (decoratedRecord, model, dispatch) => {
     cells.splice(
       1,
       0,
-      <ReferentSpecializations decoratedRecord={decoratedRecord} model={model} key="spec"/>
+      <ProfileSpecializations decoratedRecord={decoratedRecord} model={model} key="spec"/>
     )
   }
 
@@ -48,7 +48,7 @@ const rowClass = (decoratedRecord) => {
   return rowClasses.join(" ");
 }
 
-const ReferentSpecializations = ({decoratedRecord}) => {
+const ProfileSpecializations = ({decoratedRecord}) => {
   return(
     <td  key="spec" className="datatable__cell">
       {decoratedRecord.specializationNames}
@@ -56,22 +56,22 @@ const ReferentSpecializations = ({decoratedRecord}) => {
   );
 }
 
-const ReferentName = ({decoratedRecord, model, dispatch}) => {
+const ProfileName = ({decoratedRecord, model, dispatch}) => {
   return (
     <td className="datatable__cell">
       <span>
-        <ReferentNameLink decoratedRecord={decoratedRecord}/>
+        <ProfileNameLink decoratedRecord={decoratedRecord}/>
         <Suffix record={decoratedRecord.raw} model={model}/>
         <Tags record={decoratedRecord.raw}/>
-        <ExpandedReferentInformation record={decoratedRecord.raw} model={model}/>
+        <ExpandedProfileInformation record={decoratedRecord.raw} model={model}/>
       </span>
     </td>
   );
 }
 
-const ReferentNameLink = ({decoratedRecord}) => {
+const ProfileNameLink = ({decoratedRecord}) => {
   return(
-    <a className="datatable__referent_name"
+    <a className="datatable__profile_name"
       href={`/${decoratedRecord.raw.collectionName}/${decoratedRecord.raw.id}`}
     >
       { decoratedRecord.raw.name }
@@ -128,4 +128,4 @@ const isPediatrician = (record, model) => {
 }
 
 
-export default ReferentRow;
+export default ProfileRow;

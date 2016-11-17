@@ -22,7 +22,7 @@ const pageTitleLabel = (model) => {
     return recordShownByRoute(model).name;
   case "/languages/:id":
     return recordShownByRoute(model).name;
-  case "/reports/referents_by_specialty":
+  case "/reports/profiles_by_specialty":
     if (parseInt(filterValues.divisionScope(model)) === 0) {
       var scope = "Pathways";
       var count = model.
@@ -34,8 +34,8 @@ const pageTitleLabel = (model) => {
       var count = model.
         app[filterValues.entityType(model)].
         pwPipe(_.values).
-        filter((referent) => {
-          return _.includes(referent.divisionIds, parseInt(filterValues.divisionScope(model)));
+        filter((profile) => {
+          return _.includes(profile.divisionIds, parseInt(filterValues.divisionScope(model)));
         }).length;
     }
 

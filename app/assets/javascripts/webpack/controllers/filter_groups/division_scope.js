@@ -28,7 +28,7 @@ const shouldShow = (model) => {
 const ROUTES_IMPLEMENTING = [
   "/reports/page_views_by_user",
   "/reports/entity_page_views",
-  "/reports/referents_by_specialty"
+  "/reports/profiles_by_specialty"
 ]
 
 const scopeOptions = (model) => {

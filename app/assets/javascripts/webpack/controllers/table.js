@@ -47,7 +47,7 @@ const shouldShow = (model) => {
     return false;
   }
 
-  if (route === "/reports/referents_by_specialty" &&
+  if (route === "/reports/profiles_by_specialty" &&
     (reportStyle(model) === "expanded")) {
 
     return false;
@@ -72,7 +72,7 @@ const ROUTES_IMPLEMENTING = [
   "/content_categories/:id",
   "/reports/page_views_by_user",
   "/reports/entity_page_views",
-  "/reports/referents_by_specialty",
+  "/reports/profiles_by_specialty",
   "/latest_updates",
   "/hospitals/:id",
   "/languages/:id",

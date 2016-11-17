@@ -1,6 +1,6 @@
 import React from "react";
 
-const ReferentStatusIcon = React.createClass({
+const ProfileStatusIcon = React.createClass({
   componentDidMount: function() {
     if(this.props.tooltip) {
       $(this.refs.icon).tooltip({
@@ -35,4 +35,4 @@ const elemId = (record) => {
   return `${record.collectionName}${record.id}-status-icon`
 };
 
-export default ReferentStatusIcon;
+export default ProfileStatusIcon;
