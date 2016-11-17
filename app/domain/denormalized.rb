@@ -341,14 +341,18 @@ module Denormalized
       end
     end,
     referral_forms: Proc.new do
-      ReferralForm.all.inject({}) do |memo, form|
-        memo.merge(form.id => {
-          id: form.id,
-          filename: form.form_file_name,
-          referrableType: form.referrable_type,
-          referrableId: form.referrable_id,
-          label:  "#{form.referrable.try(:name)} - #{form.form_file_name}"
-        })
+      [ Clinic, Specialist ].inject({}) do |memo, klass|
+        memo.merge(klass.all.includes(:referral_forms).inject({}) do |memo, profile|
+          memo.merge(profile.referral_forms.inject({}) do |memo, form|
+            memo.merge(form.id => {
+              id: form.id,
+              filename: form.form_file_name,
+              referrableType: form.referrable_type,
+              referrableId: form.referrable_id,
+              label:  "#{profile.name} - #{form.form_file_name}"
+            })
+          end)
+        end)
       end
     end,
     news_items: Proc.new do
