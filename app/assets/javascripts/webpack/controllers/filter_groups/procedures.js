@@ -182,7 +182,12 @@ const procedureCheckboxesFromNested = (nestedProcedures, model, dispatch) => {
           label={
             <ProcedureCheckboxLabel
               labelText={model.app.procedures[procedure.id].name}
-              waitTimesSpecified={procedure.waitTimesSpecified[collectionShownName(model)]}
+              waitTimesSpecified={
+                model.
+                  app.
+                  procedures[procedure.id].
+                  waitTimesSpecified[collectionShownName(model)]
+              }
             />
           }
           filterSubkey={procedure.id}
