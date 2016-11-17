@@ -109,7 +109,7 @@ class Specialist < ActiveRecord::Base
 
   # specialists are favorited by users of the system
   has_many :favorites, as: :favoritable, dependent: :destroy
-  has_many :favorite_users,
+  has_many :favoriting_users,
     through: :favorites,
     source: :user,
     class_name: "User"

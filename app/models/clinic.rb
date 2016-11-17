@@ -99,7 +99,7 @@ class Clinic < ActiveRecord::Base
   has_many :healthcare_providers, through: :clinic_healthcare_providers
 
   has_many :favorites, as: :favoritable, dependent: :destroy
-  has_many :favorite_users,
+  has_many :favoriting_users,
     through: :favorites,
     source: :user,
     class_name: "User"
