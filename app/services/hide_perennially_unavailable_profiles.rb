@@ -2,6 +2,7 @@ class HidePerenniallyUnavailableProfiles < ServiceObject
   def call
     Specialist.all.select do |specialist|
       !specialist.practicing? &&
+        !specialist.practice_restart_scheduled? &&
         specialist.practice_end_date < 2.years.ago
     end.map{|specialist| specialist.update_attributes(hidden: true) }
 
