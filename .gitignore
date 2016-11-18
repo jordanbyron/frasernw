@@ -22,6 +22,7 @@ scratchpad/
 config/google_oauth.p12
 node_modules/
 app/assets/javascripts/webpack.bundle.js
+app/assets/javascripts/webpack.bundle.js.map
 dump.rdb
 npm-debug.log
 x.rb
