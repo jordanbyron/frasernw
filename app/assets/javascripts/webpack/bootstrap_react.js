@@ -10,6 +10,7 @@ import ReactDOM from "react-dom";
 import rootReducer from "reducers/root_reducer";
 import React from "react";
 import updateUrlHash from "middlewares/update_url_hash";
+import SecretEditLinks from "controllers/secret_edit_links";
 import { route } from "controller_helpers/routing";
 import {
   parseRenderedData,
@@ -44,6 +45,8 @@ const bootstrapReact = function() {
   })
 
   $(document).ready(function() {
+    // hooked up to global state
+
     const renderTemplateTo = document.getElementById("react_root--template");
     if (renderTemplateTo){
       ReactDOM.render(
@@ -81,6 +84,20 @@ const bootstrapReact = function() {
     }
 
     parseRenderedData(window.pathways.dataForReact, store.dispatch);
+
+    // standalone
+
+    const standaloneComponents = {
+      SecretEditLinks: SecretEditLinks
+    }
+
+    $(".standalone-react-component").each((index, elem) => {
+      const reactElement = React.createElement(
+        standaloneComponents[elem.getAttribute("data-react-component")],
+        JSON.parse(elem.getAttribute("data-react-props"))
+      );
+      ReactDOM.render(reactElement, elem);
+    })
   })
 };
 

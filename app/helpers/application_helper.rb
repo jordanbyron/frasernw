@@ -1,5 +1,15 @@
 module ApplicationHelper
 
+  def react_component(component_name, props, options = {})
+    content_tag(:div,
+      "",
+      class: "standalone-react-component #{options[:class]}",
+      id: options[:id],
+      "data-react-component" => component_name,
+      "data-react-props" => props.to_json
+    )
+  end
+
   def dropdown_specialization(entity, user)
     entity.specializations.for_users_in(*user.as_divisions).first ||
       entity.specializations.first

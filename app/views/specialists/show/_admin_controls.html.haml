@@ -40,7 +40,7 @@
         method: :delete,
         class: "btn")
 
-  #share.collapse
+    = secret_edit_links(@specialist)
 
 - if (can? :update, @specialist) && current_user.as_admin? # fake out delete msg
   #delete-specialist-msg.collapse
