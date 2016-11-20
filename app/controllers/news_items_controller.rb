@@ -60,17 +60,12 @@ class NewsItemsController < ApplicationController
 
   def update
     @news_item = NewsItem.find(params[:id])
-
     if (
-      current_user.as_divisions.include?(@news_item.owner_division) &&
-        !@news_item.update_attributes(params[:news_item])
-    )
-      render(action: :edit)
-    end
-
-    if @news_item.display_in_divisions!(
-      divisions_to_assign(params, @news_item),
-      current_user
+      @news_item.update_attributes(params[:news_item]) &&
+        @news_item.display_in_divisions!(
+          divisions_to_assign(params, @news_item),
+          current_user
+        )
     )
       redirect_to root_path(division_id: current_user.as_divisions.first.id),
         notice: "Successfully updated news item. Please allow a couple minutes"\
