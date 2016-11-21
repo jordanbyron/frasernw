@@ -45,11 +45,6 @@ class NewsItem < ActiveRecord::Base
       division_groups: User.division_groups_for(*divisions),
       delay: true
     )
-    User.division_groups_for(*divisions).each do |division_group|
-      ExpireFragment.call(
-        "front_#{Specialization.cache_key}_#{division_group.join('_')}"
-      )
-    end
   end
 
   def demoable!

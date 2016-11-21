@@ -42,14 +42,30 @@ class Specialization < ActiveRecord::Base
 
   default_scope { order('specializations.name') }
 
-  def self.cache_key
-    max_updated_at = maximum(:updated_at).try(:utc).try(:to_s, :number)
-    sum_of_ids =
-      limit(100).pluck(:id).try(:compact).inject{ |sum, id| sum + id }
-    "specializations/all-#{count}-#{max_updated_at}-#{sum_of_ids}"
-    # since cache_key can act on a subset of Specialization records,
-    # sum_of_ids was added to reduce the chance of an incorrect cache hit
-    # should two collections ever have matching count / max updated_at values
+  def self.procedure_hierarchy
+    all.
+      order("specializations.name ASC").
+      includes(procedure_specializations: :procedure).map do |specialization|
+        [
+          {
+            id: specialization.id,
+            name: specialization.name,
+            type: "Specialization"
+          },
+          specialization.
+            procedure_specializations.
+            arrange_serializable do |parent, children|
+              [
+                {
+                  id: parent.procedure.id,
+                  name: parent.procedure.name,
+                  type: "Procedure"
+                },
+                children
+              ]
+            end
+        ]
+      end
   end
 
   def self.not_family_practice

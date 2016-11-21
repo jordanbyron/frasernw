@@ -1,5 +1,22 @@
 module ProceduresHelper
 
+  def procedure_specializable_form(procedure_specializable)
+    react_component(
+      "ProcedureSpecializableForm",
+      {
+        hierarchy: Specialization.procedure_hierarchy,
+        specialization_links: procedure_specializable.
+          specialization_links.
+          map{ |link| [ link.specialization_id, link.attributes ] }.
+          to_h,
+        procedure_links: procedure_specializable.
+          procedure_links.
+          map{ |link| [ link.procedure_id, link.attributes ] }.
+          to_h
+      }
+    )
+  end
+
   def procedures_listing(nested_procedures, linked_item, depth = 0)
 
     content_tag(:ul, class: "procedures-listing-depth-#{depth}") do

@@ -36,14 +36,6 @@ namespace :pathways do
       front: -> {
         viewable_division_combinations.each do |division_group|
           ExpireFragment.call "featured_content_#{division_group.join('_')}"
-          ExpireFragment.call(
-            "front_#{Specialization.cache_key}_#{division_group.join('_')}"
-          )
-          Specialization.all.each do |specialization|
-            ExpireFragment.call(
-              "front_#{specialization.cache_key}_#{division_group.join('_')}"
-            )
-          end
         end
       },
       latest_updates: -> {

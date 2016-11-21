@@ -936,6 +936,10 @@ class Specialist < ActiveRecord::Base
     specialist_procedures
   end
 
+  def specialization_links
+    specialist_specializations
+  end
+
 private
 
   def destroy_photo?

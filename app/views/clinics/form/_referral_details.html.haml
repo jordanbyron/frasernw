@@ -30,15 +30,15 @@
                 referral_form.form.url,
                 target: "_blank"
 
-  = f.input :lagtime_mask,
+  = f.input :booking_wait_time_key,
     as: :select,
-    collection: Clinic::LAGTIME_LABELS,
+    collection: HasWaitTimes::BOOKING_WAIT_TIMES,
     label_method: :last,
     value_method: :first
 
-  = f.input :waittime_mask,
+  = f.input :consultation_wait_time_key,
     as: :select,
-    collection: Clinic::WAITTIME_LABELS,
+    collection: HasWaitTimes::CONSULTATION_WAIT_TIMES,
     label_method: :last,
     value_method: :first
 

@@ -28,7 +28,7 @@
     - if can? :destroy, @clinic
       = delete_button(clinic_path(@clinic), "Delete #{@clinic.name}?")
 
-    = secret_edit_links(@specialist)
+    = secret_edit_links(@clinic)
 
 - if current_user.as_admin_or_super? && !current_user.as_super_admin?
   .alert.alert-info{ style: "margin-top: 10px" }

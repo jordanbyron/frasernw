@@ -480,4 +480,8 @@ class Clinic < ActiveRecord::Base
   def procedure_links
     clinic_procedures
   end
+
+  def specialization_links
+    clinic_specializations
+  end
 end

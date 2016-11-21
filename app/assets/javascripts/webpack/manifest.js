@@ -8,7 +8,6 @@ import "console-polyfill";
 import "core_extensions";
 
 import setupTabHistory from "window_scripts/setup_tab_history";
-import standaloneBootstrapReact from "window_scripts/standalone_bootstrap_react";
 import bootstrapReact from "bootstrap_react";
 import { openFeedbackModal } from "action_creators";
 import * as profileForms from "window_scripts/profile_forms";

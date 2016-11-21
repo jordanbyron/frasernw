@@ -18,6 +18,7 @@ import {
   parseUrl
 } from "action_creators";
 import FeedbackModal from "controllers/feedback_modal";
+import ProcedureSpecializableForm from "controllers/procedure_specializable_form";
 
 const bootstrapReact = function() {
   let middlewares = [];
@@ -88,7 +89,8 @@ const bootstrapReact = function() {
     // standalone
 
     const standaloneComponents = {
-      SecretEditLinks: SecretEditLinks
+      SecretEditLinks: SecretEditLinks,
+      ProcedureSpecializableForm: ProcedureSpecializableForm
     }
 
     $(".standalone-react-component").each((index, elem) => {

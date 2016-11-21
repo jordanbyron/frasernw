@@ -344,6 +344,10 @@ class ScItem < ActiveRecord::Base
     sc_item_procedures
   end
 
+  def specialization_links
+    sc_item_specializations
+  end
+
   alias_attribute :label, :title
   alias_attribute :name, :title
 end
