@@ -5,14 +5,41 @@ module ProceduresHelper
       "ProcedureSpecializableForm",
       {
         hierarchy: Specialization.procedure_hierarchy,
-        specialization_links: procedure_specializable.
-          specialization_links.
-          map{ |link| [ link.specialization_id, link.attributes ] }.
-          to_h,
-        procedure_links: procedure_specializable.
-          procedure_links.
-          map{ |link| [ link.procedure_id, link.attributes ] }.
-          to_h
+        specialization_links: Specialization.all.map do |specialization|
+            existing_link = procedure_specializable.
+              specialization_links.
+              find{|link| link.specialization_id == specialization.id }
+
+            link =
+              if existing_link.nil?
+                {
+                  specialization_id: specialization.id,
+                  checked: false
+                }
+              else
+                existing_link.attributes.merge(checked: true)
+              end
+
+            [ specialization.id, link ]
+          end.to_h,
+        procedure_links: Procedure.all.map do |procedure|
+            existing_link = procedure_specializable.
+              procedure_links.
+              find{|link| link.procedure_id == procedure.id }
+
+            link =
+              if existing_link.nil?
+                {
+                  procedure_id: procedure.id,
+                  checked: false
+                }
+              else
+                existing_link.attributes.merge(checked: true)
+              end
+
+            [ procedure.id, link ]
+          end.to_h,
+        procedure_specializable_type: procedure_specializable.class.to_s.tableize.singularize
       }
     )
   end

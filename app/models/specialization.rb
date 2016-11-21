@@ -46,25 +46,21 @@ class Specialization < ActiveRecord::Base
     all.
       order("specializations.name ASC").
       includes(procedure_specializations: :procedure).map do |specialization|
-        [
-          {
-            id: specialization.id,
-            name: specialization.name,
-            type: "Specialization"
-          },
-          specialization.
+        {
+          id: specialization.id,
+          name: specialization.name,
+          type: "specialization",
+          children: specialization.
             procedure_specializations.
             arrange_serializable do |parent, children|
-              [
-                {
-                  id: parent.procedure.id,
-                  name: parent.procedure.name,
-                  type: "Procedure"
-                },
-                children
-              ]
+              {
+                id: parent.procedure.id,
+                name: parent.procedure.name,
+                type: "procedure",
+                children: children
+              }
             end
-        ]
+        }
       end
   end
 
