@@ -1,16 +1,18 @@
 - set_page_specific_title "Areas of Practice"
 
 .content-wrapper
-
   %h2 Areas of Practice
 
   .btn-group
-    %a.btn.btn-bottom-pad.btn-top-pad.dropdown-toggle{"href" => "#", "data-toggle" => "dropdown"}
-      = "<i class='icon-plus-sign'></i>".html_safe + " New Area of Practice in"
+    %a.btn.btn-bottom-pad.btn-top-pad.dropdown-toggle{ href: "#",
+      data: { toggle: "dropdown" } }
+      %i.icon-plus-sign
+      New Area of Practice in
       %span.caret
     %ul.dropdown-menu
       - Specialization.all.each do |specialization|
-        %li=link_to specialization.name, new_specialization_procedure_path(specialization), :class => 'ajax'
+        %li= link_to specialization.name,
+          new_specialization_procedure_path(specialization)
 
   %table.table.table-condensed.table-striped
     %tr
@@ -21,13 +23,25 @@
     - if (@specialization.present?)
       - procedures = @specialization.procedures
     - else
-      - procedures = Procedure.all(:order => "name")
+      - procedures = Procedure.order("name")
 
     - procedures.each do |procedure|
       %tr
-        %td= link_to procedure.name, procedure_path(procedure), :class => 'ajax'
+        %td= link_to procedure.name, procedure_path(procedure)
         %td
-          %ul= procedure.procedure_specializations.collect(){ |ps| "<li><span class='#{ ps.specialization.hidden_in?(*Division.all) ? "hidden-from-users" : ""}'>#{compressed_ancestry(ps)} (#{ps.classification_text})</span></li>" }.join().html_safe
+          %ul
+            - procedure.procedure_specializations.collect do |ps|
+              %li
+                %span{ class: "#{ps.specialization.hidden_in?(*Division.all) ? 'hidden-from-users' : ''}" }
+                  = "#{compressed_ancestry(ps)} (#{ps.classification_text})"
         %td.admin.btn-group
-          = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_procedure_path(procedure), :class => "btn btn-mini ajax")
-          = link_to("<i class='icon-trash'></i>".html_safe + " Delete", procedure, :data => { :confirm => "Delete #{procedure.name}?" }, :method => :delete, :class => "btn btn-mini")
+          = link_to  edit_procedure_path(procedure),
+            class: "btn btn-mini" do
+            %i.icon-pencil
+            Edit
+          = link_to procedure,
+            data: { confirm: "Delete #{procedure.name}?" },
+            method: :delete,
+            class: "btn btn-mini" do
+            %i.icon-trash
+            Delete

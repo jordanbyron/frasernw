@@ -4,8 +4,10 @@
     window.pathways = window.pathways || {};
     (function( formData ) {
       formData.overlayChanges = true;
-      formData.baseReviewItem = #{@review_item.transformed_base_object(@clinic) || 'null'};
-      formData.reviewItem = #{@review_item.transformed_review_object(@clinic) || 'null'};
+      formData.baseReviewItem =
+        #{@review_item.transformed_base_object(@clinic) || 'null'};
+      formData.reviewItem =
+        #{@review_item.transformed_review_object(@clinic) || 'null'};
       formData.maxLocations = #{Clinic::MAX_LOCATIONS};
       formData.interactionType = "#{@form_modifier.interaction_type.to_s}";
       formData.recordKey = "clinic";
@@ -14,8 +16,11 @@
 
 :javascript
   $(document).ready(function(){
-    if(window.pathways.formData && window.pathways.formData.overlayChanges){
-      window.pathways.profileForms.overlayFormChanges(window.pathways.formData);
+    if(window.pathways.formData && window.pathways.formData.overlayChanges) {
+      window.
+        pathways.
+        referentForms.
+        overlayFormChanges(window.pathways.formData);
     }
 
     window.pathways.profileForms.emphasizeLocationTabs();
@@ -23,5 +28,10 @@
     $(".chzn-select").chosen()
     window.pathways.profileForms.setupVisibilityToggles.clinic();
 
-    document.getElementById("hiding-container").classList.remove("hidden");
-  })
+    document.getElementById("hiding-container").className =
+      document.
+        getElementById("hiding-container").
+        className.
+        replace("hidden", "").
+        trim();
+  });

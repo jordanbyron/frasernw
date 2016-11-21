@@ -6,11 +6,11 @@
       %i.icon-arrow-right.icon-blue.icon-small
 
 %ul
-  - category.featured_for_divisions(@as_divisions).each do |featured_sc_item|
+  - category.featured_for_divisions(@as_divisions).uniq.each do |featured_sc_item|
     %li.dropdown.featured_contents__dropdown
       = content_tag :div,
         class: "dropdown-toggle",
-        "data-toggle" => "dropdown",
+        data: { toggle: "dropdown" },
         target: "_blank",
         onclick: "window.pathways.trackContentItem(_gaq, #{featured_sc_item.id})" do
         %span.icon-stack.featured_contents__arrow_icon_stack

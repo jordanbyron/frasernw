@@ -9,11 +9,13 @@ class ReportsController < ApplicationController
     @page_title = "User Page Views"
     @data_path = "/api/v1/reports/page_views"
     @annotation = <<-STR
-      This report shows the number of times users have viewed pages on Pathways for each week in the given month range.
-      The divisional series show the number of page views that are made by each division's users.
-      All series exclude page views by admins and users who are not logged in,
-      as well as page views on external sites (i.e. external resource links and uploaded items).
-      Only complete weeks (Mon-Sun) are shown.
+      This report shows the number of times users have viewed pages on Pathways
+       for each week in the given month range. The divisional series show the
+      number of page views that are made by each division's users. All series
+      exclude page views by admins and users who are not logged in, as well as
+      page views on external sites (i.e. external resource links and uploaded
+      items). Only complete weeks (Mon-Sun) are shown. Click on division names
+      in the legend to the right to select which divisions to display.
     STR
 
     render :analytics_chart
@@ -25,11 +27,14 @@ class ReportsController < ApplicationController
     @page_title = "User Sessions"
     @data_path = "/api/v1/reports/sessions"
     @annotation = <<-STR
-      This report shows the number of sessions that have been recorded on Pathways for each week in the given month range.
-      A session is a group of page views by the same user which are no more than 30 minutes apart.
-      The divisional series show the number of sessions attributable to each division's users.
-      All series exclude sessions attributable to admins and users who are not logged in.
-      Only complete weeks (Mon-Sun) are shown.
+      This report shows the number of sessions that have been recorded on
+      Pathways for each week in the given month range. A session is a group of
+      page views by the same user which are no more than 30 minutes apart. The
+      divisional series show the number of sessions attributable to each
+      division's users. All series exclude sessions attributable to admins and
+      users who are not logged in. Only complete weeks (Mon-Sun) are shown.
+      Click on division names in the legend to the right to select which
+      divisions to display.
     STR
 
     render :analytics_chart
@@ -43,9 +48,10 @@ class ReportsController < ApplicationController
     @annotation = <<-STR
       This report shows the number of user IDs (email and password combinations)
       that have logged into Pathways for each week in the given month range.
-      The divisional series show the number of logged in user IDs linked to each division.
-      All series exclude admin user IDs.
-      Only complete weeks (Mon-Sun) are shown.
+      The divisional series show the number of logged in user IDs linked to
+      each division. All series exclude admin user IDs. Only complete weeks
+      (Mon-Sun) are shown. Click on division names in the legend to the right
+      to select which divisions to display.
     STR
 
     render :analytics_chart
@@ -82,34 +88,38 @@ class ReportsController < ApplicationController
     Specialist.preload_associations(@specialists, :controlling_users)
     Specialist.preload_associations(@specialists, :review_items)
 
-    @specialization_specialists = Specialization.all.inject({}) do |memo, specialization|
-      specialization_entries = @specialists.select do |specialist|
-        specialist.specializations.to_a.include?(specialization)
-      end.map do |specialist|
-        last_review_item = specialist.review_items.sort_by(&:created_at).last
-        active_controlling_users = specialist.
-          controlling_users.
-          reject{ |user| user.pending? || !user.active? }
+    @specialization_specialists =
+      Specialization.all.inject({}) do |memo, specialization|
+        specialization_entries = @specialists.select do |specialist|
+          specialist.specializations.to_a.include?(specialization)
+        end.map do |specialist|
+          last_review_item = specialist.review_items.sort_by(&:created_at).last
+          active_controlling_users = specialist.
+            controlling_users.
+            reject{ |user| user.pending? || !user.active? }
 
-        {
-          id: specialist.id,
-          name: specialist.name,
-          user_email: active_controlling_users.
-            map(&:email).
-            map(&:split).
-            flatten.
-            select{ |email| email.include?('@') },
-          moa_email: specialist.
-            contact_email.
-            split.
-            flatten.
-            select{ |email| email.include?('@') },
-          updated_at: specialist.updated_at,
-          reviewed_at: (last_review_item.present? ? last_review_item.updated_at : nil),
-          linked_active_account_count: active_controlling_users.count,
-          linked_pending_account_count: specialist.controlling_users.select(&:pending?).count
-        }
-      end
+          {
+            id: specialist.id,
+            name: specialist.name,
+            user_email: active_controlling_users.
+              map(&:email).
+              map(&:split).
+              flatten.
+              select{ |email| email.include?('@') },
+            moa_email: specialist.
+              contact_email.
+              split.
+              flatten.
+              select{ |email| email.include?('@') },
+            updated_at: specialist.updated_at,
+            reviewed_at: (
+              last_review_item.present? ? last_review_item.updated_at : nil
+            ),
+            linked_active_account_count: active_controlling_users.count,
+            linked_pending_account_count:
+              specialist.controlling_users.select(&:pending?).count
+          }
+        end
 
       memo.merge(specialization.name => specialization_entries)
     end

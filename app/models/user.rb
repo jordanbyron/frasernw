@@ -45,7 +45,7 @@ class User < ActiveRecord::Base
 
   has_many :divisions, through: :user_divisions
 
-  has_many :favorites
+  has_many :favorites, dependent: :destroy
   has_many :issue_assignments, dependent: :destroy, foreign_key: :assignee_id
   has_many :assigned_issues,
     through: :issue_assignments,

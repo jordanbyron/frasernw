@@ -90,4 +90,17 @@ module ReportsHelper
         end.join.html_safe
     end
   end
+
+  def self.included_entities(specialization, divisions, entity)
+    if divisions.one?
+      specialization.send(entity).in_divisions(divisions)
+    else
+      specialization.send(entity)
+    end.select do |entity|
+      entity.show_waittimes? && (
+        !entity.respond_to?(:unavailable_for_a_while?) ||
+          !entity.unavailable_for_a_while?
+        )
+    end
+  end
 end
