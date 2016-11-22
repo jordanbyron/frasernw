@@ -22,13 +22,7 @@
       .row
         .span12
           - @news_items.each do |news_item|
-            .news_item.breaking
-              .news_item_date= news_item.date if news_item.date.present?
-              %div{ class: FrontHelper.news_item_class(news_item) }
-                = news_item.title if news_item.title.present?
-              .news_item_body
-                = BlueCloth.new(news_item.body).to_html.html_safe
-
+            = render_news_item(news_item)
     .row
       .span3.hidden-phone.front
 
@@ -179,6 +173,11 @@
               class: "btn btn-mini" do
               %i.icon-pencil
               Edit Shared Care Updates
+
+        %h2 Breaking News Archive
+        = surround 'You can see an archive of past breaking news ', '.' do
+          = link_to "here",
+            news_items_archive_path(type: NewsItem::TYPE_BREAKING)
 
 
       .span4.offsethalf
