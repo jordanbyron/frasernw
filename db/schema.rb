@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161109211549) do
+ActiveRecord::Schema.define(version: 20161122205256) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -226,7 +226,7 @@ ActiveRecord::Schema.define(version: 20161109211549) do
 
   create_table "division_display_news_items", force: true do |t|
     t.integer  "division_id",  null: false
-    t.integer  "news_item_id", null: false
+    t.integer  "news_item_id"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
   end
@@ -926,8 +926,8 @@ ActiveRecord::Schema.define(version: 20161109211549) do
 
   create_table "teleservices", force: true do |t|
     t.integer  "teleservice_provider_id"
-    t.integer  "teleservice_provider_type"
-    t.integer  "service_type"
+    t.string   "teleservice_provider_type"
+    t.integer  "service_type_key"
     t.boolean  "telephone",                 default: false
     t.boolean  "video",                     default: false
     t.boolean  "email",                     default: false

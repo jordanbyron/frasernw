@@ -111,7 +111,7 @@ module Denormalized
             teleserviceFeeTypes: specialist.
               teleservices.
               select(&:offered?).
-              map(&:service_type),
+              map(&:service_type_key),
             interest: Denormalized.
               sanitize(specialist.interest).
               try(:convert_newlines_to_br),
@@ -179,7 +179,7 @@ module Denormalized
             teleserviceFeeTypes: clinic.
               teleservices.
               select(&:offered?).
-              map(&:service_type),
+              map(&:service_type_key),
             interest: Denormalized.
               sanitize(clinic.interest).
               try(:convert_newlines_to_br),

@@ -21,9 +21,9 @@
       %th.span6.teleservices-row__final-th Booking & Contact
     %tbody
       = f.simple_fields_for :teleservices,
-        f.object.teleservices.sort_by(&:service_type) do |ts|
+        f.object.teleservices.sort_by(&:service_type_key) do |ts|
         %tr.teleservices-row.row
-          = ts.input :service_type, as: :hidden
+          = ts.input :service_type_key, as: :hidden
           %td.span2.teleservices-row__first-td
             = ts.object.name
           %td.span1.teleservices-row__input-td
