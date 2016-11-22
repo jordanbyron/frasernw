@@ -267,8 +267,6 @@ class NewsItem < ActiveRecord::Base
   end
 
   def self.type_in_divisions(type, divisions)
-    in_divisions(divisions).
-    where(type_mask: type).
-      current
+    in_divisions(divisions).where(type_mask: type)
   end
 end

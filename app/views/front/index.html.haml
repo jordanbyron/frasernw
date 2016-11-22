@@ -80,13 +80,14 @@
             If you have any comments or questions while using the site, please
             = link_to("contact us", contact_path) + "."
 
-        %h2 Latest Specialist and Clinic Updates
+        %h2
+          = link_to "Latest Specialist and Clinic Updates",
+            @more_updates_url,
+            class: "front_page__news_item_heading"
+
         - if ENV["HIDE_LATEST_UPDATES"] != "true"
           - LatestUpdates.for(:front, @as_divisions).each do |event|
             %p= event[:markup]
-
-        %p
-          = link_to "More...", @more_updates_url
 
         - if current_user.as_admin_or_super? && @can_edit_division
           %p.admin.btn-group
@@ -122,16 +123,13 @@
 
         - if @divisional_updates.any?
 
-          %h2 Division Updates
+          %h2
+            = link_to "Division Updates",
+              news_items_archive_path(type: NewsItem::TYPE_DIVISIONAL),
+              class: "front_page__news_item_heading"
 
           - @divisional_updates.each do |news_item|
-
-            .news_item
-              .news_item_date= news_item.date if news_item.date.present?
-              %div{ class: FrontHelper.news_item_class(news_item) }
-                = news_item.title if news_item.title.present?
-              .news_item_body
-                = BlueCloth.new(news_item.body).to_html.html_safe
+            = render_news_item(news_item)
 
         - if @can_edit_division
           %p.admin.btn-group

@@ -24,6 +24,9 @@ class NewsItemsController < ApplicationController
     }
   end
 
+  def archive
+  end
+
   def show
     @news_item = NewsItem.find(params[:id])
   end

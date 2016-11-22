@@ -124,6 +124,9 @@ Frasernw::Application.routes.draw do
     as: 'update_borrowed'
 
   resources :subscriptions
+
+  get "/news_items/archive" => "news_items#archive",
+    as: "news_items_archive"
   resources :news_items do
     member do
       get :update_borrowing
