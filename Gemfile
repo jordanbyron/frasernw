@@ -115,7 +115,7 @@ group :development, :test do
   gem 'pry-stack_explorer'
 end
 
-gem 'ancestry', '~> 2.1.0'
+gem 'ancestry'
 
 gem 'validates_email_format_of'
 gem "safety_mailer" # prevent emails getting sent in staging

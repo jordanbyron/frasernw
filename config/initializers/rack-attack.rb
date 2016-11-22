@@ -1,6 +1,6 @@
 if ENV['RACK_ATTACK'].to_b
   class Rack::Attack
-    whitelist('allow all cloudflare IPs') do |req|
+    safelist('allow all cloudflare IPs') do |req|
       # Requests are allowed if the return value is truthy
       # They don't hit the throttles or filters at all
       [
@@ -21,7 +21,7 @@ if ENV['RACK_ATTACK'].to_b
       ].include?(req.ip)
     end
 
-    whitelist("localhost") do |req|
+    safelist("localhost") do |req|
       req.ip == '127.0.0.1'
     end
 
@@ -30,8 +30,8 @@ if ENV['RACK_ATTACK'].to_b
     # If you don't want to use Rails.cache (Rack::Attack's default), then
     # configure it here.
     #
-    # Note: The store is only used for throttling (not blacklisting and
-    # whitelisting). It must implement .increment and .write like
+    # Note: The store is only used for throttling (not blocklisting and
+    # safelisting). It must implement .increment and .write like
     # ActiveSupport::Cache::Store
 
     # Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
@@ -93,7 +93,7 @@ if ENV['RACK_ATTACK'].to_b
 
     # Lockout IP addresses that are hammering your login page.
     # After 20 requests in 1 minute, block all requests from that IP for 1 hour.
-    blacklist('allow2ban login scrapers') do |req|
+    blocklist('allow2ban login scrapers') do |req|
       # `filter` returns false value if request is to your login page (but still
       # increments the count) so request below the limit are not blocked until
       # they hit the limit.  At that point, filter will return true and block.
