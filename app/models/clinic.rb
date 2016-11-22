@@ -68,13 +68,19 @@ class Clinic < ActiveRecord::Base
     :accepting_new_referrals,
     :referrals_limited,
     :closure_scheduled,
-    :closure_date
+    :closure_date,
+    :clinic_specializations_attributes,
+    :clinic_procedures_attributes
 
   has_many :procedure_links, class_name: "ClinicProcedure"
   has_many :clinic_procedures
   has_many :procedures, through: :clinic_procedures
+  accepts_nested_attributes_for :clinic_procedures,
+    allow_destroy: true
 
   has_many :clinic_specializations, dependent: :destroy
+  accepts_nested_attributes_for :clinic_specializations,
+    allow_destroy: true
   has_many :specializations, through: :clinic_specializations
 
   MAX_LOCATIONS = 9
