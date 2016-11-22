@@ -30,15 +30,3 @@
     hint: "Please only use this tag when linking an Internal Medicine specialist to another specialty in which they do not have a fellowship."
   = f.input :sees_only_children,
     label: "Does not see adult patients"
-
-= f.association :specializations,
-  as: :check_boxes,
-  hint: @form_modifier.specializations_hint,
-  disabled: @form_modifier.restrict_editing?,
-  label: @form_modifier.specializations_label_text,
-  checked: ->(specialization){ specialization_checked?(specialization, @specialist, params) }
-- if @form_modifier.show_comment_boxes?
-  = f.input :specializations_comments,
-    label: @form_modifier.specialization_comments_label,
-    input_html: { value: "" },
-    as: :text

@@ -76,15 +76,7 @@ class Specialist < ActiveRecord::Base
     :practice_details,
     :accepting_new_indirect_referrals
 
-  # specialists can have multiple specializations
-  has_many :specialist_specializations, dependent: :destroy
-  has_many :specializations, through: :specialist_specializations
-
-  # specialists have the capacity to perform procedures
-
-  has_many :procedure_links, class_name: "SpecialistProcedure"
-  has_many :specialist_procedures
-  has_many :procedures, through: :specialist_procedures
+  procedure_specialize_as "specialist"
 
   # specialists attend clinics
   has_many :attendances, dependent: :destroy
@@ -931,14 +923,6 @@ class Specialist < ActiveRecord::Base
     ["Offices", true],
     ["Hospitals or clinics only", false]
   ]
-
-  def procedure_links
-    specialist_procedures
-  end
-
-  def specialization_links
-    specialist_specializations
-  end
 
 private
 

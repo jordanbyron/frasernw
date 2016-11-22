@@ -72,16 +72,7 @@ class Clinic < ActiveRecord::Base
     :clinic_specializations_attributes,
     :clinic_procedures_attributes
 
-  has_many :procedure_links, class_name: "ClinicProcedure"
-  has_many :clinic_procedures
-  has_many :procedures, through: :clinic_procedures
-  accepts_nested_attributes_for :clinic_procedures,
-    allow_destroy: true
-
-  has_many :clinic_specializations, dependent: :destroy
-  accepts_nested_attributes_for :clinic_specializations,
-    allow_destroy: true
-  has_many :specializations, through: :clinic_specializations
+  procedure_specialize_as "clinic"
 
   MAX_LOCATIONS = 9
   has_many :clinic_locations, dependent: :destroy
@@ -481,13 +472,5 @@ class Clinic < ActiveRecord::Base
 
   def closed?
     closure_scheduled? && closure_date <= Date.current
-  end
-
-  def procedure_links
-    clinic_procedures
-  end
-
-  def specialization_links
-    clinic_specializations
   end
 end

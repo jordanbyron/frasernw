@@ -1,0 +1,11 @@
+= f.input :booking_wait_time_key,
+  as: :select,
+  collection: HasWaitTimes::BOOKING_WAIT_TIMES,
+  label_method: :last,
+  value_method: :first
+
+= f.input :consultation_wait_time_key,
+  as: :select,
+  collection: HasWaitTimes::CONSULTATION_WAIT_TIMES,
+  label_method: :last,
+  value_method: :first

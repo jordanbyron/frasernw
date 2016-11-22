@@ -43,9 +43,15 @@ class ProcedureSpecialization < ActiveRecord::Base
       "OR classification = #{ProcedureSpecialization::CLASSIFICATION_ASSUMED_BOTH}"
     ) }
   scope :non_assumed,
-    -> (klass) { where(
-      "#{"#{klass.to_s.tableize}_presentation_key"} != (?)",
-      PRESENTATION_OPTIONS.key(:assumed))
+    -> (klass) {
+      if [Specialist, Clinic].include?(klass)
+        where(
+          "#{"#{klass.to_s.tableize}_presentation_key"} != (?)",
+          PRESENTATION_OPTIONS.key(:assumed)
+        )
+      else
+        all
+      end
     }
   scope :classification,
     -> (classification){ where(

@@ -6,6 +6,7 @@ class ScItem < ActiveRecord::Base
   include Feedbackable
   include PaperTrailable
   include DivisionAdministered
+  include ProcedureSpecializable
 
   include ApplicationHelper
 
@@ -22,17 +23,11 @@ class ScItem < ActiveRecord::Base
     :borrowable,
     :division_id,
     :evidence_id,
-    :demoable,
-    :sc_item_procedures_attributes
+    :demoable
 
   belongs_to :sc_category
 
-  has_many :sc_item_specializations, dependent: :destroy
-  has_many :specializations, through: :sc_item_specializations
-
-  has_many :procedure_links, class_name: "ScItemProcedure"
-  has_many :sc_item_procedures
-  has_many :procedures, through: :sc_item_procedures
+  procedure_specialize_as "sc_item"
 
   has_many :favorites, as: :favoritable, dependent: :destroy
   has_many :favoriting_users,
@@ -338,14 +333,6 @@ class ScItem < ActiveRecord::Base
 
   def in_category?(category_name)
     sc_category.name == category_name
-  end
-
-  def procedure_links
-    sc_item_procedures
-  end
-
-  def specialization_links
-    sc_item_specializations
   end
 
   alias_attribute :label, :title

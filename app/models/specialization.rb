@@ -42,7 +42,7 @@ class Specialization < ActiveRecord::Base
 
   default_scope { order('specializations.name') }
 
-  def self.procedure_hierarchy
+  def self.procedure_hierarchy(target_klass)
     all.
       order("specializations.name ASC").
       includes(procedure_specializations: :procedure).map do |specialization|
@@ -52,6 +52,7 @@ class Specialization < ActiveRecord::Base
           type: "specialization",
           children: specialization.
             procedure_specializations.
+            non_assumed(target_klass).
             arrange_serializable do |parent, children|
               {
                 id: parent.procedure.id,

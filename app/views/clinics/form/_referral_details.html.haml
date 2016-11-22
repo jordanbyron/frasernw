@@ -30,17 +30,7 @@
                 referral_form.form.url,
                 target: "_blank"
 
-  = f.input :booking_wait_time_key,
-    as: :select,
-    collection: HasWaitTimes::BOOKING_WAIT_TIMES,
-    label_method: :last,
-    value_method: :first
-
-  = f.input :consultation_wait_time_key,
-    as: :select,
-    collection: HasWaitTimes::CONSULTATION_WAIT_TIMES,
-    label_method: :last,
-    value_method: :first
+  = render "has_wait_time/form", f: f
 
   %label Our clinic will respond to referral requests:
   = f.input :respond_by_fax, as: :boolean, wrapper: :bootstrap_tight

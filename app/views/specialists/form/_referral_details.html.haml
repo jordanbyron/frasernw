@@ -30,17 +30,7 @@
                 referral_form.form.url,
                 target: "_blank"
 
-  = f.input :lagtime_mask,
-    as: :select,
-    collection: Specialist::LAGTIME_LABELS,
-    label_method: :last,
-    value_method: :first
-
-  = f.input :waittime_mask,
-    as: :select,
-    collection: Specialist::WAITTIME_LABELS,
-    label_method: :last,
-    value_method: :first
+  = render "has_wait_time/form", f: f
 
   %label Our office will respond to referral requests:
   = f.input :respond_by_fax, as: :boolean, wrapper: :bootstrap_tight

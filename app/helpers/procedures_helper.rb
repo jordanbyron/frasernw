@@ -4,7 +4,9 @@ module ProceduresHelper
     react_component(
       "ProcedureSpecializableForm",
       {
-        hierarchy: Specialization.procedure_hierarchy,
+        hierarchy: Specialization.procedure_hierarchy(
+          procedure_specializable.class
+        ),
         specialization_links: Specialization.all.map do |specialization|
             existing_link = procedure_specializable.
               specialization_links.

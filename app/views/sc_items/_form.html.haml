@@ -14,17 +14,7 @@
     .control-label
       Item Specialties & Areas of Practice
     .controls{style: "max-width: none;"}
-      - Specialization.all.each do |specialization|
-        %label
-          = check_box_tag "#{form_target_type(f.object)}[specialization_ids][]",
-            specialization.id,
-            f.object.specializations.include?(specialization),
-            class: "ps-tree-node-input specialty-input",
-            "data-ps-tree-id" => "Specialization#{specialization.id}"
-          = specialization.name
-
-        .procedures_list
-          = nested_procedure_checkboxes(f.object, specialization, specialization.arranged_procedure_specializations(:non_assumed))
+      = procedure_specializable_form(@sc_item)
 
 
   %h3 Content Options
