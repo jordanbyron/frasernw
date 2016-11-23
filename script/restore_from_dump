@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# $1: import target
+# $2: dumpfile path (download from s3 or heroku)
+
+dropdb $1
+createdb -O rusl $1
+pg_restore --no-owner -U rusl -d $1 $2

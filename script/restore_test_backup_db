@@ -1,8 +1,0 @@
-#!/bin/bash
-
-# given a '.dump' in the app directory, downloaded via the S3 GUI:
-
-# pg_restore --no-owner -U rusl -d pathways_test_backup the_downloaded.dump
-# heroku pg:reset DATABASE --app pathwaysbctest --confirm pathwaysbctest
-# heroku pg:push pathways_test_backup DATABASE_URL --app pathwaysbctest
-# heroku run rake reset_pkey_sequence --app pathwaysbctest
