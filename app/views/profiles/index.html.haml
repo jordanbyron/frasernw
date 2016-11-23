@@ -4,6 +4,7 @@
   %h2
     %span= params[:hidden] ? "Hidden" : "All"
     %span= @model[:label]
+    %span= params[:teleservices_require_review] ? "requiring telehealth review" : ""
     %small= "(#{@model[:profiles].count} total)"
 
   .tabbable
