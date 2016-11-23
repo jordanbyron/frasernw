@@ -69,7 +69,8 @@ class Clinic < ActiveRecord::Base
     :accepting_new_referrals,
     :referrals_limited,
     :closure_scheduled,
-    :closure_date
+    :closure_date,
+    :teleservices_require_review
 
   has_many :clinic_specializations, dependent: :destroy
   has_many :specializations, through: :clinic_specializations

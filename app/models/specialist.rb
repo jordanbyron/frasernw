@@ -76,7 +76,8 @@ class Specialist < ActiveRecord::Base
     :practice_restart_scheduled,
     :practice_end_reason_key,
     :practice_details,
-    :accepting_new_indirect_referrals
+    :accepting_new_indirect_referrals,
+    :teleservices_require_review
 
   # specialists can have multiple specializations
   has_many :specialist_specializations, dependent: :destroy
