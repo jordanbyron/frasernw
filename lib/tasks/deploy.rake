@@ -28,6 +28,31 @@ namespace :deploy do
         print_exec "heroku run rake db:migrate --app #{config[1]}"
         print_exec "heroku restart --app #{config[1]}"
       end
+
+      task :push_local_database do
+        if config[0] == "production"
+          puts "Comment these lines if you are certain we need to replace the "\
+            "production database."
+          return
+        end
+
+        puts "Are you sure you would like to replace the database at #{config[1]} with "\
+          "your local database?  Confirm by typing the name of the remote."
+        if STDIN.gets.chomp != config[1]
+          puts "Aborting"
+          return
+        end
+
+        puts "Please confirm again.  This will overwrite the database at #{config[1]}! "
+        if STDIN.gets.chomp != config[1]
+          puts "Aborting"
+          return
+        end
+
+        print_exec "heroku pg:reset DATABASE --app #{config[1]} --confirm #{config[1]}"
+        print_exec "heroku pg:push pathways_development DATABASE_URL --app #{config[1]}"
+        print_exec "heroku run rake reset_pkey_sequence --app #{config[1]}"
+      end
     end
   end
 
@@ -54,14 +79,6 @@ namespace :deploy do
       print_exec "git pull"
       print_exec "git checkout -b deploy-test"
       print_exec "git push origin deploy-test:deploy-test --set-upstream"
-    end
-  end
-
-  namespace :demo do
-    task :push_local_database do
-      print_exec "heroku pg:reset DATABASE --app pathwaysbcdemo --confirm pathwaysbcdemo"
-      print_exec "heroku pg:push pathways_development DATABASE_URL --app pathwaysbcdemo"
-      print_exec "heroku run rake reset_pkey_sequence --app pathwaysbcdemo"
     end
   end
 end
