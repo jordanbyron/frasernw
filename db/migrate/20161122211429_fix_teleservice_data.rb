@@ -1,14 +1,24 @@
 class FixTeleserviceData < ActiveRecord::Migration
   def change
+    add_column :specialists,
+      :teleservices_require_review,
+      :boolean,
+      default: false
+    add_column :clinics,
+      :teleservices_require_review,
+      :boolean,
+      default: false
+
     Teleservice.all.reject do |teleservice|
       teleservice.telephone.present? ||
         teleservice.video.present? ||
         teleservice.email.present? ||
         teleservice.store.present? ||
-        teleservice.contact_note.present?
-    end.each do |teleservice|
-      teleservice.destroy
-    end
+        teleservice.contact_note.present? ||
+        # if there could have been data there at some point, and there may
+        # be multiple provider matches, it needs review
+        teleservice.updated_at != teleservice.created_at
+    end.each(&:destroy)
 
     Teleservice.all.each do |teleservice|
       associated = find_associated(teleservice)
@@ -17,6 +27,14 @@ class FixTeleserviceData < ActiveRecord::Migration
         teleservice.update_attributes(
           teleservice_provider_type: associated.class.to_s
         )
+      end
+    end
+
+    [ Specialist, Clinic].each do |klass|
+      klass.all.each do |record|
+        if record.teleservices.count > 4
+          puts "More than 4 teleservices for #{klass} #{record.id}"
+        end
       end
     end
   end
@@ -31,6 +49,11 @@ class FixTeleserviceData < ActiveRecord::Migration
       return matches_id[0]
     elsif matches_id.none?
       puts "No matching ids @ #{teleservice.id}"
+    end
+
+    # where there are multiple ID matches a manual review will be necessary
+    matches_id.each do |match|
+      match.update_attributes(teleservices_require_review: true)
     end
 
     matches_timestamp_exactly = matches_id.select do |record|

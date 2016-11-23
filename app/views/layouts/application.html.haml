@@ -208,6 +208,9 @@
                             %li
                               = link_to "Hidden Clinics",
                                 clinics_path(hidden: true)
+                            %li
+                              = link_to "Telehealth requires review",
+                                clinics_path(teleservices_require_review: true)
                             - Specialization.all_cached.each do |specialization|
                               %li= link_to "#{specialization.name} Clinics",
                                 specialization_clinics_path(specialization),
@@ -267,6 +270,9 @@
                             %li
                               = link_to "Hidden Specialists",
                                 specialists_path(hidden: true)
+                            %li
+                              = link_to "Telehealth requires review",
+                                specialists_path(teleservices_require_review: true)
                             - Specialization.all_cached.each do |specialization|
                               %li= link_to specialization.member_name.pluralize,
                                 specialization_specialists_path(specialization),

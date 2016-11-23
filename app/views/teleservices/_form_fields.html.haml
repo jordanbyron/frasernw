@@ -41,3 +41,7 @@
           %td.span6.teleservices-row__final-input-td
             = ts.input_field :contact_note,
               class: "teleservices-row__input"
+
+  - if f.object.teleservices_require_review? && current_user.as_admin_or_super?
+    = f.input :teleservices_require_review,
+      label: "Telehealth services require review"

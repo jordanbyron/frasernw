@@ -178,6 +178,7 @@ ActiveRecord::Schema.define(version: 20161122211429) do
     t.boolean  "accepting_new_referrals"
     t.boolean  "referrals_limited"
     t.boolean  "closure_scheduled",                     default: false
+    t.boolean  "teleservices_require_review",           default: false
   end
 
   create_table "contacts", force: true do |t|
@@ -840,6 +841,7 @@ ActiveRecord::Schema.define(version: 20161122211429) do
     t.boolean  "practice_restart_scheduled",       default: false
     t.integer  "practice_end_reason_key",          default: 2
     t.text     "practice_details"
+    t.boolean  "teleservices_require_review",      default: false
   end
 
   add_index "specialists", ["referral_clinic_id"], name: "index_specialists_on_referral_clinic_id", using: :btree
