@@ -35,6 +35,15 @@ class FixTeleserviceData < ActiveRecord::Migration
         if record.teleservices.count > 4
           puts "More than 4 teleservices for #{klass} #{record.id}"
         end
+
+        if record.
+          teleservices.
+          count_by(&:service_type_key).
+          values.
+          any?{|count| count > 1 }
+
+          puts "More than one teleservice of a given type for  #{klass} #{record.id}"
+        end
       end
     end
   end
