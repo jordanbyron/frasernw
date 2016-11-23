@@ -1,4 +1,6 @@
 class Teleservice < ActiveRecord::Base
+  include PaperTrailable
+
   attr_accessible :teleservice_provider_id,
     :teleservice_provider_type,
     :service_type_key,
