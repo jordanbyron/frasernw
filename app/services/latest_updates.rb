@@ -1,5 +1,6 @@
 class LatestUpdates < ServiceObject
   attribute :force, Axiom::Types::Boolean, default: false
+  attribute :only_current_manual_events, Axiom::Types::Boolean, default: true
   attribute :show_hidden, Axiom::Types::Boolean, default: false
   attribute :force_automatic, Axiom::Types::Boolean, default: false
   attribute :max_automatic_events, Integer, default: 100000
@@ -8,6 +9,11 @@ class LatestUpdates < ServiceObject
   MAX_EVENTS = {
     front: 5,
     index: 100000
+  }
+
+  CURRENT_ONLY = {
+    front: true,
+    index: false
   }
 
   SHOW_HIDDEN = {
@@ -35,6 +41,7 @@ class LatestUpdates < ServiceObject
     MAX_EVENTS.each_with_index do |(context, max), index|
       call(
         max_automatic_events: max,
+        only_current_manual_events: CURRENT_ONLY[context],
         division_ids: division_ids,
         force: true,
         force_automatic: force_automatic,
@@ -46,6 +53,7 @@ class LatestUpdates < ServiceObject
   def self.for(context, divisions)
     call(
       max_automatic_events: MAX_EVENTS[context],
+      only_current_manual_events: CURRENT_ONLY[context],
       division_ids: divisions.map(&:id),
       show_hidden: SHOW_HIDDEN[context]
     )
@@ -87,7 +95,11 @@ class LatestUpdates < ServiceObject
   end
 
   def manual_events
-    NewsItem.
+    if only_current_manual_events
+      NewsItem.current
+    else
+      NewsItem
+    end.
       specialist_clinic_in_divisions(divisions).
       inject([]) do |memo, news_item|
         if news_item.title.present?

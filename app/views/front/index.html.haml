@@ -18,10 +18,10 @@
                 = link_to division.name, root_path(division_id: division.id)
       %hr
 
-    - if @news_items.any?
+    - if @news_items.current.any?
       .row
         .span12
-          - @news_items.each do |news_item|
+          - @news_items.current.each do |news_item|
             = render_news_item(news_item)
     .row
       .span3.hidden-phone.front
@@ -74,13 +74,18 @@
             If you have any comments or questions while using the site, please
             = link_to("contact us", contact_path) + "."
 
-        %h2= link_to "Latest Specialist and Clinic Updates",
-          scoped_news_item_archive_path(:latest_updates_path),
-          class: "front_page__news_item_heading"
-
         - if ENV["HIDE_LATEST_UPDATES"] != "true"
+          %h2= link_to "Latest Specialist and Clinic Updates",
+            scoped_news_item_archive_path(:latest_updates_path),
+            class: "front_page__news_item_heading"
+
           - LatestUpdates.for(:front, @as_divisions).uniq.each do |event|
             %p= event[:markup]
+
+          %p
+            You can see past specialist and clinic updates
+            = link_to("here",
+              scoped_news_item_archive_path(:latest_updates_path)) + "."
 
         - if current_user.as_admin_or_super? && @can_edit_division
           %p.admin.btn-group
@@ -91,7 +96,10 @@
 
         - if @current_newsletter.present?
           %div{ style: "margin-top: 18px;" }
-            %h2= newsletter_section_heading(@current_newsletter)
+            %h2= link_to newsletter_section_heading(@current_newsletter),
+              @current_newsletter.url,
+              target: "_blank",
+              class: "front_page__news_item_heading"
 
             %div{ style: "margin-top: 10px;" }
               = image_tag "pathways_newsletter.png",
@@ -100,10 +108,10 @@
                 The current Pathways newsletter (
                 = @current_newsletter.month
                 Edition ) is available
-                = link_to @current_newsletter.url, target: '_blank' do
-                  here
-                  %span>= "."
-                %span= " It includes:"
+                = link_to("here",
+                  @current_newsletter.url,
+                  target: "_blank") + "."
+                It includes:
               %ul{ style: "margin-bottom: 20px;" }
                 - @current_newsletter.description_items.each do |item|
                   %li{ style: "list-style-type: disc;" }
@@ -114,14 +122,20 @@
               %div{ style: "clear: both;" }
 
         - if @divisional_updates.any?
-
           %h2= link_to "Division Updates",
             scoped_news_item_archive_path(:news_items_archive_path,
             type: NewsItem::TYPE_DIVISIONAL),
             class: "front_page__news_item_heading"
 
-          - @divisional_updates.each do |news_item|
-            = render_news_item(news_item)
+          - if @divisional_updates.current.any?
+            - @divisional_updates.current.each do |news_item|
+              = render_news_item(news_item)
+
+          %p
+            You can see an archive of divisional updates
+            = link_to("here",
+              scoped_news_item_archive_path(:news_items_archive_path,
+              type: NewsItem::TYPE_DIVISIONAL)) + "."
 
         - if @can_edit_division
           %p.admin.btn-group
@@ -131,15 +145,20 @@
               Edit Division Updates
 
         - if @attachment_updates.any?
+          %h2= link_to "Attachment Updates",
+            scoped_news_item_archive_path(:news_items_archive_path,
+            type: NewsItem::TYPE_ATTACHMENT_UPDATE),
+            class: "front_page__news_item_heading"
 
-          %h2
-            = link_to "Attachment Updates",
+          - if @attachment_updates.current.any?
+            - @attachment_updates.current.each do |news_item|
+              = render_news_item(news_item)
+
+          %p
+            You can see an archive of attachment updates
+            = link_to("here",
               scoped_news_item_archive_path(:news_items_archive_path,
-              type: NewsItem::TYPE_ATTACHMENT_UPDATE),
-              class: "front_page__news_item_heading"
-
-          - @attachment_updates.each do |news_item|
-            = render_news_item(news_item)
+              type: NewsItem::TYPE_ATTACHMENT_UPDATE)) + "."
 
         - if current_user.as_admin_or_super? && @can_edit_division
           %p.admin.btn-group
@@ -149,7 +168,6 @@
               Edit Attachment Updates
 
         - if @shared_care_updates.any?
-
           %h2
             = link_to scoped_news_item_archive_path(:news_items_archive_path,
               type: NewsItem::TYPE_SHARED_CARE),
@@ -157,8 +175,15 @@
               %i.icon-red.icon-star
               Shared Care Updates
 
-          - @shared_care_updates.each do |news_item|
-            = render_news_item(news_item)
+          - if @shared_care_updates.current.any?
+            - @shared_care_updates.current.each do |news_item|
+              = render_news_item(news_item)
+
+          %p
+            You can see an archive of Shared Care updates
+            = link_to("here",
+              scoped_news_item_archive_path(:news_items_archive_path,
+              type: NewsItem::TYPE_SHARED_CARE)) + "."
 
         - if current_user.as_admin_or_super? && @can_edit_division
           %p.admin.btn-group
@@ -167,15 +192,16 @@
               %i.icon-pencil
               Edit Shared Care Updates
 
-        %h2= link_to "Breaking News Archive",
-          scoped_news_item_archive_path(:news_items_archive_path,
-          type: NewsItem::TYPE_BREAKING),
-          class: "front_page__news_item_heading"
-        = surround 'You can see an archive of past breaking news ', '.' do
-          = link_to "here",
+        - if @news_items.any?
+          %h2= link_to "Breaking News Archive",
             scoped_news_item_archive_path(:news_items_archive_path,
-            type: NewsItem::TYPE_BREAKING)
-
+            type: NewsItem::TYPE_BREAKING),
+            class: "front_page__news_item_heading"
+          %p
+            You can see an archive of past breaking news
+            = link_to("here",
+              scoped_news_item_archive_path(:news_items_archive_path,
+              type: NewsItem::TYPE_BREAKING)) + "."
 
       .span4.offsethalf
         .well
