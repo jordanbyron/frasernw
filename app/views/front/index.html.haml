@@ -74,10 +74,9 @@
             If you have any comments or questions while using the site, please
             = link_to("contact us", contact_path) + "."
 
-        %h2
-          = link_to "Latest Specialist and Clinic Updates",
-            @more_updates_url,
-            class: "front_page__news_item_heading"
+        %h2= link_to "Latest Specialist and Clinic Updates",
+          @more_updates_url,
+          class: "front_page__news_item_heading"
 
         - if ENV["HIDE_LATEST_UPDATES"] != "true"
           - LatestUpdates.for(:front, @as_divisions).each do |event|
@@ -92,8 +91,7 @@
 
         - if @current_newsletter.present?
           %div{ style: "margin-top: 18px;" }
-            %h2
-              = newsletter_section_heading(@current_newsletter)
+            %h2= newsletter_section_heading(@current_newsletter)
 
             %div{ style: "margin-top: 10px;" }
               = image_tag "pathways_newsletter.png",
@@ -117,10 +115,9 @@
 
         - if @divisional_updates.any?
 
-          %h2
-            = link_to "Division Updates",
-              news_items_archive_path(type: NewsItem::TYPE_DIVISIONAL),
-              class: "front_page__news_item_heading"
+          %h2= link_to "Division Updates",
+            news_items_archive_path(type: NewsItem::TYPE_DIVISIONAL),
+            class: "front_page__news_item_heading"
 
           - @divisional_updates.each do |news_item|
             = render_news_item(news_item)
@@ -134,16 +131,12 @@
 
         - if @attachment_updates.any?
 
-          %h2 Attachment Updates
+          %h2= link_to "Attachment Updates",
+            news_items_archive_path(type: NewsItem::TYPE_ATTACHMENT_UPDATE),
+            class: "front_page__news_item_heading"
 
           - @attachment_updates.each do |news_item|
-
-            .news_item
-              .news_item_date= news_item.date if news_item.date.present?
-              %div{ class: FrontHelper.news_item_class(news_item) }
-                = news_item.title if news_item.title.present?
-              .news_item_body
-                = BlueCloth.new(news_item.body).to_html.html_safe
+            = render_news_item(news_item)
 
         - if current_user.as_admin_or_super? && @can_edit_division
           %p.admin.btn-group
@@ -155,17 +148,13 @@
         - if @shared_care_updates.any?
 
           %h2
-            %i.icon-red.icon-star
-            Shared Care Updates
+            = link_to news_items_archive_path(type: NewsItem::TYPE_SHARED_CARE),
+              class: "front_page__news_item_heading" do
+              %i.icon-red.icon-star
+              Shared Care Updates
 
           - @shared_care_updates.each do |news_item|
-
-            .news_item
-              .news_item_date= news_item.date if news_item.date.present?
-              %div{ class: FrontHelper.news_item_class(news_item) }
-                = news_item.title if news_item.title.present?
-              .news_item_body
-                = BlueCloth.new(news_item.body).to_html.html_safe
+            = render_news_item(news_item)
 
         - if current_user.as_admin_or_super? && @can_edit_division
           %p.admin.btn-group
@@ -174,7 +163,9 @@
               %i.icon-pencil
               Edit Shared Care Updates
 
-        %h2 Breaking News Archive
+        %h2= link_to "Breaking News Archive",
+          news_items_archive_path(type: NewsItem::TYPE_BREAKING),
+          class: "front_page__news_item_heading"
         = surround 'You can see an archive of past breaking news ', '.' do
           = link_to "here",
             news_items_archive_path(type: NewsItem::TYPE_BREAKING)
@@ -192,7 +183,7 @@
 
           .featured-content
             %i.icon-star.icon-blue
-            %span= "Indicates content from our Shared Care initiative"
+            Indicates content from our Shared Care initiative
 
         - if current_user.as_admin_or_super? && @can_edit_division
           %p.admin.btn-group
