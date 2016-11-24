@@ -21,8 +21,4 @@ module NewsItemsHelper
       )
     end
   end
-
-  def all_divisions_selected
-    params[:division_ids].map(&:to_i) == Division.all.map(&:id)
-  end
 end
