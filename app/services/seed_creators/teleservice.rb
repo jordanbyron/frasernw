@@ -3,7 +3,7 @@ module SeedCreators
     Handlers = {
       teleservice_provider_id: :pass_through,
       teleservice_provider_type: :pass_through,
-      service_type: :pass_through,
+      service_type_key: :pass_through,
       telephone: Proc.new{ rand() < 0.03 },
       video: Proc.new{ rand() < 0.03 },
       email: Proc.new{ rand() < 0.03 },

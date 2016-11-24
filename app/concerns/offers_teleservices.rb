@@ -2,7 +2,7 @@ module OffersTeleservices
   extend ActiveSupport::Concern
 
   def offered_teleservices
-    teleservices.sort_by(&:service_type).select(&:offered?)
+    teleservices.sort_by(&:service_type_key).select(&:offered?)
   end
 
   included do
