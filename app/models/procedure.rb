@@ -35,25 +35,20 @@ class Procedure < ActiveRecord::Base
       sort_by(&:specialization_name)
   end
 
-  def parents_name_array
-    ps_with_parents = procedure_specializations.reject{ |ps| ps.parent.blank? }
-    if ps_with_parents.count > 0
-      ps_with_parents.first.parent.procedure.parents_name_array +
-        ps_with_parents.first.parent.procedure.name.uncapitalize_first_letter.split(' ')
-    else
-      []
-    end
+  def parent
+    @parent ||=
+      procedure_specializations.
+        map(&:parent).
+        compact.
+        first.
+        try(:procedure)
   end
 
   def full_name
-    ps_with_parents = procedure_specializations.reject{ |ps| ps.parent.blank? }
-
-    if ps_with_parents.count > 0
-      "#{ps_with_parents.first.parent.procedure.full_name} -> "\
-        "#{name_relative_to_parents}"
-    else
-      self.name
-    end
+    ancestors.
+      map(&:name_relative_to_parents).
+      push(name_relative_to_parents).
+      join(" -> ")
   end
 
   def ancestor_ids
@@ -67,20 +62,27 @@ class Procedure < ActiveRecord::Base
     end
   end
 
-  def name_relative_to_parents
-    # remove any words that also appear in the parents' names
-    parents_names = parents_name_array
-
-    self.name.uncapitalize_first_letter.split(' ').
-    reject{ |word| parents_names.include? word }.join(' ').capitalize_first_letter
+  def names
+    name.
+      uncapitalize_first_letter.
+      split(' ')
   end
 
-  def has_children?
-    result = false
-    procedure_specializations.each do |ps|
-      result |= ps.has_children?
+  def ancestors
+    if parent.nil?
+      []
+    else
+      parent.ancestors.unshift(parent)
     end
-    return result
+  end
+
+  def name_relative_to_parents
+    ancestor_names = ancestors.map(&:names).flatten
+
+    names.
+      reject{ |name| ancestor_names.include?(name) }.
+      join(' ').
+      capitalize_first_letter
   end
 
   def children

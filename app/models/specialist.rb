@@ -813,18 +813,6 @@ class Specialist < ActiveRecord::Base
     end
   end
 
-  def child_procedures(procedure)
-    result = []
-    procedure.procedure_specializations.each do |ps|
-      next if not ps.has_children?
-      result += (
-        ProcedureSpecialization.descendants_of(ps) & self.procedure_specializations
-      )
-    end
-    result.uniq!
-    return (result ? result.compact.collect{ |ps| ps.procedure } : [])
-  end
-
   def opened_recently?
     specialist_offices.reject{ |so| !so.opened_recently? }.present?
   end
