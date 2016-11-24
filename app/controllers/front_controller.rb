@@ -16,12 +16,10 @@ class FrontController < ApplicationController
 
       @as_divisions = [ @as_division ]
       @specializations = Specialization.all
-      @more_updates_url = latest_updates_path(division_id: @as_division.id)
     else
       @as_divisions = current_user.as_divisions
       @specializations =
         Specialization.for_users_in(*current_user.as_divisions)
-      @more_updates_url = latest_updates_path
     end
 
     @current_newsletter = Newsletter.current

@@ -75,7 +75,7 @@
             = link_to("contact us", contact_path) + "."
 
         %h2= link_to "Latest Specialist and Clinic Updates",
-          @more_updates_url,
+          scoped_news_item_archive_path(:latest_updates_path),
           class: "front_page__news_item_heading"
 
         - if ENV["HIDE_LATEST_UPDATES"] != "true"
@@ -116,8 +116,8 @@
         - if @divisional_updates.any?
 
           %h2= link_to "Division Updates",
-            news_items_archive_path(type: NewsItem::TYPE_DIVISIONAL,
-            division_ids: current_user.as_divisions.map(&:id)),
+            scoped_news_item_archive_path(:news_items_archive_path,
+            type: NewsItem::TYPE_DIVISIONAL),
             class: "front_page__news_item_heading"
 
           - @divisional_updates.each do |news_item|
@@ -132,10 +132,11 @@
 
         - if @attachment_updates.any?
 
-          %h2= link_to "Attachment Updates",
-            news_items_archive_path(type: NewsItem::TYPE_ATTACHMENT_UPDATE,
-            division_ids: current_user.as_divisions.map(&:id)),
-            class: "front_page__news_item_heading"
+          %h2
+            = link_to "Attachment Updates",
+              scoped_news_item_archive_path(:news_items_archive_path,
+              type: NewsItem::TYPE_ATTACHMENT_UPDATE),
+              class: "front_page__news_item_heading"
 
           - @attachment_updates.each do |news_item|
             = render_news_item(news_item)
@@ -150,8 +151,8 @@
         - if @shared_care_updates.any?
 
           %h2
-            = link_to news_items_archive_path(type: NewsItem::TYPE_SHARED_CARE,
-            division_ids: current_user.as_divisions.map(&:id)),
+            = link_to scoped_news_item_archive_path(:news_items_archive_path,
+              type: NewsItem::TYPE_SHARED_CARE),
               class: "front_page__news_item_heading" do
               %i.icon-red.icon-star
               Shared Care Updates
@@ -167,13 +168,13 @@
               Edit Shared Care Updates
 
         %h2= link_to "Breaking News Archive",
-          news_items_archive_path(type: NewsItem::TYPE_BREAKING,
-          division_ids: current_user.as_divisions.map(&:id)),
+          scoped_news_item_archive_path(:news_items_archive_path,
+          type: NewsItem::TYPE_BREAKING),
           class: "front_page__news_item_heading"
         = surround 'You can see an archive of past breaking news ', '.' do
           = link_to "here",
-            news_items_archive_path(type: NewsItem::TYPE_BREAKING,
-            division_ids: current_user.as_divisions.map(&:id))
+            scoped_news_item_archive_path(:news_items_archive_path,
+            type: NewsItem::TYPE_BREAKING)
 
 
       .span4.offsethalf

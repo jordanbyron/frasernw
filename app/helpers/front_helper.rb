@@ -1,4 +1,15 @@
 module FrontHelper
+  def scoped_news_item_archive_path(path, options = {})
+    division_scope =
+      if current_user.as_admin_or_super?
+        { division_id: @as_division }
+      else
+        {}
+      end
+
+    send(path, options.merge(division_scope))
+  end
+
   def favorite_featured_item(sc_item)
     id = sc_item.id
     title = escape_javascript(sc_item.title)
