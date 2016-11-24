@@ -116,7 +116,8 @@
         - if @divisional_updates.any?
 
           %h2= link_to "Division Updates",
-            news_items_archive_path(type: NewsItem::TYPE_DIVISIONAL),
+            news_items_archive_path(type: NewsItem::TYPE_DIVISIONAL,
+            division_ids: current_user.as_divisions.map(&:id)),
             class: "front_page__news_item_heading"
 
           - @divisional_updates.each do |news_item|
@@ -132,7 +133,8 @@
         - if @attachment_updates.any?
 
           %h2= link_to "Attachment Updates",
-            news_items_archive_path(type: NewsItem::TYPE_ATTACHMENT_UPDATE),
+            news_items_archive_path(type: NewsItem::TYPE_ATTACHMENT_UPDATE,
+            division_ids: current_user.as_divisions.map(&:id)),
             class: "front_page__news_item_heading"
 
           - @attachment_updates.each do |news_item|
@@ -148,7 +150,8 @@
         - if @shared_care_updates.any?
 
           %h2
-            = link_to news_items_archive_path(type: NewsItem::TYPE_SHARED_CARE),
+            = link_to news_items_archive_path(type: NewsItem::TYPE_SHARED_CARE,
+            division_ids: current_user.as_divisions.map(&:id)),
               class: "front_page__news_item_heading" do
               %i.icon-red.icon-star
               Shared Care Updates
@@ -164,11 +167,13 @@
               Edit Shared Care Updates
 
         %h2= link_to "Breaking News Archive",
-          news_items_archive_path(type: NewsItem::TYPE_BREAKING),
+          news_items_archive_path(type: NewsItem::TYPE_BREAKING,
+          division_ids: current_user.as_divisions.map(&:id)),
           class: "front_page__news_item_heading"
         = surround 'You can see an archive of past breaking news ', '.' do
           = link_to "here",
-            news_items_archive_path(type: NewsItem::TYPE_BREAKING)
+            news_items_archive_path(type: NewsItem::TYPE_BREAKING,
+            division_ids: current_user.as_divisions.map(&:id))
 
 
       .span4.offsethalf

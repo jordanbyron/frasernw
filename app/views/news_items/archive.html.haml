@@ -1,10 +1,20 @@
 - set_page_specific_title "#{NewsItem::TYPE_HASH[params[:type].to_i]}s Archive"
 
 .content-wrapper#front
+  %h2
+    = "#{NewsItem::TYPE_HASH[params[:type].to_i]}s Archive for"
+    - if all_divisions_selected
+      all divisions
+    - else
+      = @divisions.to_sentence
+  - if current_user.as_super_admin? && !all_divisions_selected
+    %p
+      = link_to news_items_archive_path(type: params[:type],
+        division_ids: Division.all.map(&:id)) do
+        = "#{NewsItem::TYPE_HASH[params[:type].to_i]}s Archive for all divisions"
+  %br
 
-  %h2= "#{NewsItem::TYPE_HASH[params[:type].to_i]}s Archive"
-
-  - NewsItem.type_in_divisions(params[:type].to_i, current_user.as_divisions).each do |item|
+  - NewsItem.type_in_divisions(params[:type].to_i, @divisions).each do |item|
     = render_news_item(item)
 
     %hr

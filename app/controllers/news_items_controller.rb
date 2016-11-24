@@ -25,6 +25,12 @@ class NewsItemsController < ApplicationController
   end
 
   def archive
+    @divisions =
+      if params[:division_ids].present?
+        Division.find(params[:division_ids].map(&:to_i))
+      else
+        current_user.as_divisions
+      end
   end
 
   def show
