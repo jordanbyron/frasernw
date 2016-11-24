@@ -20,7 +20,7 @@ class LatestUpdatesController < ApplicationController
             current_user.as_divisions.include?(@divisions.first)) ||
             current_user.as_super_admin?)
         },
-        latestUpdates: LatestUpdates.for(:index, @divisions)
+        latestUpdates: LatestUpdates.for(:index, @divisions).uniq
       }
     }
 

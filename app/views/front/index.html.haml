@@ -79,7 +79,7 @@
           class: "front_page__news_item_heading"
 
         - if ENV["HIDE_LATEST_UPDATES"] != "true"
-          - LatestUpdates.for(:front, @as_divisions).each do |event|
+          - LatestUpdates.for(:front, @as_divisions).uniq.each do |event|
             %p= event[:markup]
 
         - if current_user.as_admin_or_super? && @can_edit_division
