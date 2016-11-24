@@ -56,7 +56,7 @@ class LatestUpdates < ServiceObject
       only_current_manual_events: CURRENT_ONLY[context],
       division_ids: divisions.map(&:id),
       show_hidden: SHOW_HIDDEN[context]
-    )
+    ).uniq
   end
 
   def self.automatic(division, force: false)

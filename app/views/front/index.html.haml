@@ -18,11 +18,10 @@
                 = link_to division.name, root_path(division_id: division.id)
       %hr
 
-    - if @news_items.current.any?
-      .row
-        .span12
-          - @news_items.current.each do |news_item|
-            = render_news_item(news_item)
+    .row
+      .span12
+        - @news_items.current.each do |news_item|
+          = render_news_item(news_item)
     .row
       .span3.hidden-phone.front
 
@@ -79,7 +78,7 @@
             scoped_news_item_archive_path(:latest_updates_path),
             class: "front_page__news_item_heading"
 
-          - LatestUpdates.for(:front, @as_divisions).uniq.each do |event|
+          - LatestUpdates.for(:front, @as_divisions).each do |event|
             %p= event[:markup]
 
           %p
@@ -127,9 +126,8 @@
             type: NewsItem::TYPE_DIVISIONAL),
             class: "front_page__news_item_heading"
 
-          - if @divisional_updates.current.any?
-            - @divisional_updates.current.each do |news_item|
-              = render_news_item(news_item)
+          - @divisional_updates.current.each do |news_item|
+            = render_news_item(news_item)
 
           %p
             You can see an archive of divisional updates
@@ -150,9 +148,8 @@
             type: NewsItem::TYPE_ATTACHMENT_UPDATE),
             class: "front_page__news_item_heading"
 
-          - if @attachment_updates.current.any?
-            - @attachment_updates.current.each do |news_item|
-              = render_news_item(news_item)
+          - @attachment_updates.current.each do |news_item|
+            = render_news_item(news_item)
 
           %p
             You can see an archive of attachment updates
@@ -175,9 +172,8 @@
               %i.icon-red.icon-star
               Shared Care Updates
 
-          - if @shared_care_updates.current.any?
-            - @shared_care_updates.current.each do |news_item|
-              = render_news_item(news_item)
+          - @shared_care_updates.current.each do |news_item|
+            = render_news_item(news_item)
 
           %p
             You can see an archive of Shared Care updates
