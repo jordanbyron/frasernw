@@ -4,8 +4,6 @@
   %h2
     = "#{NewsItem::TYPE_HASH[params[:type].to_i]}s Archive for #{@divisions.to_sentence}"
 
-  %br
-
   - NewsItem.type_in_divisions(params[:type].to_i, @divisions).each do |item|
     = render_news_item(item)
 
