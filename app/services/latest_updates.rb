@@ -1,92 +1,46 @@
 class LatestUpdates < ServiceObject
   attribute :force, Axiom::Types::Boolean, default: false
-  attribute :only_current_manual_events, Axiom::Types::Boolean, default: true
-  attribute :show_hidden, Axiom::Types::Boolean, default: false
   attribute :force_automatic, Axiom::Types::Boolean, default: false
-  attribute :max_automatic_events, Integer, default: 100000
   attribute :division_ids, Array
+  attribute :context, Symbol
 
-  MAX_EVENTS = {
-    front: 5,
-    index: 100000
-  }
-
-  CURRENT_ONLY = {
-    front: true,
-    index: false
-  }
-
-  SHOW_HIDDEN = {
-    front: false,
-    index: true
-  }
-
-  def self.event_code(event)
-    LatestUpdatesMask::EVENTS.key(event)
-  end
+  CONTEXTS = [
+    :front,
+    :index
+  ]
 
   def self.recache_for_groups(division_id_groups, force_automatic: false)
+    # we only want to regenerate automatic events once per division, so we
+    # do it separately, first
     if force_automatic
       division_id_groups.flatten.uniq.each do |id|
-        self.automatic(Division.find(id), force: true)
+        self.division_automatic_events(Division.find(id), force: true)
       end
     end
 
     division_id_groups.each do |group|
-      self.recache_for(group)
-    end
-  end
-
-  def self.recache_for(division_ids, force_automatic: false)
-    MAX_EVENTS.each_with_index do |(context, max), index|
-      call(
-        max_automatic_events: max,
-        only_current_manual_events: CURRENT_ONLY[context],
-        division_ids: division_ids,
-        force: true,
-        force_automatic: force_automatic,
-        show_hidden: SHOW_HIDDEN[context]
-      )
-    end
-  end
-
-  def self.for(context, divisions)
-    call(
-      max_automatic_events: MAX_EVENTS[context],
-      only_current_manual_events: CURRENT_ONLY[context],
-      division_ids: divisions.map(&:id),
-      show_hidden: SHOW_HIDDEN[context]
-    ).uniq
-  end
-
-  def self.automatic(division, force: false)
-    Rails.cache.fetch(
-      "latest_updates:automatic:division:#{division.id}",
-      force: force
-    ) do
-        [Specialists, Clinics].inject([]) do |memo, klass|
-          memo + klass.call(division: division)
-        end
+      CONTEXTS.each do |context|
+        call(
+          context: context,
+          division_ids: group,
+          force: true,
+          force_automatic: false
+        )
       end
+    end
   end
 
   def call
     Rails.cache.fetch(
-      "latest_updates:#{division_ids.sort.join('_')}:"\
-        "#{max_automatic_events}:#{show_hidden}",
+      "latest_updates:#{division_ids.sort.join('_')}:#{context}",
       force: force
     ) do
-      automatic_events = begin
-        if show_hidden
-          all_automatic_events
-        else
-          all_automatic_events.select{ |event| !event[:hidden] }
-        end
-      end.take(max_automatic_events)
-
       (manual_events + automatic_events).
         sort_by{ |event| [ event[:date].to_s, event[:markup] ] }.
-        reverse
+        each_with_index.
+        map{|event, index| event.merge(index: index)}.
+        reverse.
+        uniq
     end
   end
 
@@ -203,9 +157,12 @@ class LatestUpdates < ServiceObject
     }
   }
 
-  def all_automatic_events
-    divisions.inject([]) do |memo, division|
-      memo + LatestUpdates.automatic(division, force: force_automatic)
+  def automatic_events
+    returning = divisions.inject([]) do |memo, division|
+      memo + LatestUpdates.division_automatic_events(
+        division,
+        force: force_automatic
+      )
     end.map do |event|
       event.merge(hidden: LatestUpdatesMask.exists?(event.except(:markup)))
     end.group_by do |event|
@@ -215,6 +172,40 @@ class LatestUpdates < ServiceObject
     end.
       sort_by{ |event| event[:date].to_s }.
       reverse
+
+    if !show_hidden
+      returning = returning.select{ |event| !event[:hidden] }
+    end
+
+    returning.take(max_automatic_events)
+  end
+
+  def max_automatic_events
+    case context
+    when :front
+      5
+    when :index
+      100000
+    end
+  end
+
+  def only_current_manual_events
+    context == :front
+  end
+
+  def show_hidden
+    context == :index
+  end
+
+  def self.division_automatic_events(division, force: false)
+    Rails.cache.fetch(
+      "latest_updates:automatic:division:#{division.id}",
+      force: force
+    ) do
+        [Specialists, Clinics].inject([]) do |memo, klass|
+          memo + klass.call(division: division)
+        end
+      end
   end
 
   CONDITIONS_TO_HIDE_FROM_FEED = [
@@ -230,6 +221,10 @@ class LatestUpdates < ServiceObject
     },
     -> (item, division) { item.hidden? }
   ]
+
+  def self.event_code(event)
+    LatestUpdatesMask::EVENTS.key(event)
+  end
 
   class Clinics < ServiceObject
     attribute :division, Division

@@ -42,7 +42,7 @@ const decorate = (record, model) => {
   let decorated = { raw: record };
 
   if (route === "/latest_updates") {
-    decorated.reactKey = _.values(_.omit(record, "markup")).join(".")
+    decorated.reactKey = record.index;
   }
   else {
     decorated.reactKey = `${record.collectionName}${record.id}`;

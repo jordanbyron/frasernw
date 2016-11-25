@@ -78,7 +78,7 @@
             scoped_news_item_archive_path(:latest_updates_path),
             class: "front_page__news_item_heading"
 
-          - LatestUpdates.for(:front, @as_divisions).each do |event|
+          - LatestUpdates.call(context: :front, division_ids: @as_divisions.map(&:id)).each do |event|
             %p= event[:markup]
 
           %p
