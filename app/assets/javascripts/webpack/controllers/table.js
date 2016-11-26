@@ -76,6 +76,7 @@ const ROUTES_IMPLEMENTING = [
   "/latest_updates",
   "/hospitals/:id",
   "/languages/:id",
+  "/news_items/archive",
   "/news_items",
   "/issues",
   "/change_requests"

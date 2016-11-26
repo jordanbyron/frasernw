@@ -31,6 +31,17 @@ class NewsItemsController < ApplicationController
       else
         current_user.as_divisions
       end
+
+    @init_data = {
+      app: {
+        newsItems: Denormalized.generate(:news_items)
+      },
+      ui: {
+        persistentConfig: {
+          divisionIds: @divisions.map(&:id)
+        }
+      }
+    }
   end
 
   def show

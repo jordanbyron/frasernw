@@ -20,7 +20,7 @@ export const collectionShownName = ((model) => {
     else if (selectedTabKey(model).includes("contentCategory")){
       return "contentItems";
     }
-    else if (route === "/news_items"){
+    else if (route === "/news_items" || route === "/news_items/archive"){
       return "newsItems";
     }
     else if (route === "/issues") {

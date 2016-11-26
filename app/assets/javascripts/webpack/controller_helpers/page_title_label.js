@@ -48,6 +48,11 @@ const pageTitleLabel = (model) => {
     return `Latest Specialist and Clinic Updates for ${toSentence(divisionNames)}`;
   case "/reports/entity_page_views":
     return entityPageViews(model);
+  case "/news_items/archive":
+    return "News Items Archive for " +
+      toSentence(model.ui.persistentConfig.divisionIds.map((id) => {
+        return model.app.divisions[id].name
+      }));
   case "/news_items":
     return "News Items for " +
       model.app.divisions[model.ui.persistentConfig.divisionId].name;

@@ -57,6 +57,15 @@ export const matchesTabKey = (record, model, tabKey) => {
       record.categoryId
     );
   }
+  else if (_.includes(model.app.news_items.map(_.property("type")).uniq, tabKey)){
+    return _.intersection(
+      recordShownByTabKey(model, tabKey),
+      _.intersection(
+        model.app.divisions.map(_.property("id")),
+        record.divisionDisplayIds
+      )
+    ).pwPipe(_.any);
+  }
   else if (tabKey === "ownedNewsItems"){
     return staticDivisionalScope(model).id === record.ownerDivisionId;
   }
