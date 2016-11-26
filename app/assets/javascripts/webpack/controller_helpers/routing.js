@@ -11,7 +11,6 @@ export const Routes = [
   "/reports/page_views_by_user",
   "/hospitals/:id",
   "/languages/:id",
-  "/news_items/archive",
   "/news_items",
   "/issues",
   "/change_requests",
@@ -56,8 +55,6 @@ export const recordShownByRoute = ((model) => {
     return model.app.clinics[routeParams.id];
   case "/content_items/:id":
     return model.app.contentItems[routeParams.id];
-  case "/news_items/archive":
-    return model.ui.persistentConfig.divisionIds.map((id) => model.app.divisions[id]);
   case "/news_items":
     return model.app.divisions[model.ui.persistentConfig.divisionId];
   }

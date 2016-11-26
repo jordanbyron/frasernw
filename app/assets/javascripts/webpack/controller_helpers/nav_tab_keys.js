@@ -14,8 +14,6 @@ export const navTabKeys = ((model) => {
   switch(route){
   case "/hospitals/:id":
     return [ "specialistsWithPrivileges", "clinicsIn", "specialistsWithOffices" ];
-  case "/news_items/archive":
-    return model.app.news_items.map(_.property("type")).uniq;
   case "/news_items":
     return [ "ownedNewsItems", "showingNewsItems", "availableNewsItems" ];
   case "/change_requests":
@@ -72,7 +70,6 @@ const ALWAYS_IN_ROUTES = [
   "/areas_of_practice/:id",
   "/hospitals/:id",
   "/languages/:id",
-  "/news_items/archive",
   "/news_items",
   "/issues",
   "/change_requests"

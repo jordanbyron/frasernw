@@ -1,7 +1,10 @@
-- set_page_specific_title "News Items Archive"
+- set_page_specific_title "#{NewsItem::TYPE_HASH[params[:type].to_i]}s Archive"
 
-.tabbable
-  #react_root--template
+.content-wrapper#front
+  %h2
+    = "#{NewsItem::TYPE_HASH[params[:type].to_i]}s Archive for #{@divisions.to_sentence}"
 
-:javascript
-  window.pathways.dataForReact.push(#{Oj.dump(@init_data)});
+  - NewsItem.type_in_divisions(params[:type].to_i, @divisions).each do |item|
+    = render_news_item(item)
+
+    %hr

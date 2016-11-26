@@ -21,7 +21,7 @@ const sortOrders = (model) => {
     return reversed(model);
   }
 
-  if((route === "/news_items" || route == "/news_items/archive") &&
+  if(route === "/news_items" &&
     _.includes(["TYPE", "DIVISION", "TITLE"], selectedTableHeadingKey(model))) {
 
     return reversed(model);

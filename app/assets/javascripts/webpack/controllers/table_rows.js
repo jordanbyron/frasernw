@@ -21,7 +21,7 @@ const TableRows = (model, dispatch) => {
     pwPipe((decoratedRecords) => {
       return _.sortByOrder(decoratedRecords, sortIteratees(model), sortOrders(model));
     }).pwPipe((decoratedRecords) => {
-      if(route === "/news_items" || route === "/news_items/archive") {
+      if(route === "/news_items") {
         return paginate(model, decoratedRecords)
       }
       else {

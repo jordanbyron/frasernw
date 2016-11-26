@@ -95,7 +95,7 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
       </tr>
     )
   }
-  else if (route === "/news_items" || route === "/news_items/archive") {
+  else if (route === "/news_items") {
     return(
       <NewsItemRow
         decoratedRecord={decoratedRecord}
