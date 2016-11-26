@@ -31,6 +31,11 @@ class NewsItemsController < ApplicationController
       else
         current_user.as_divisions
       end
+
+    @news_items_by_type_key = {}
+    NewsItem::TYPE_HASH.each do |key, type|
+      @news_items_by_type_key[key] = NewsItem.type_in_divisions(key, @divisions)
+    end
   end
 
   def show
