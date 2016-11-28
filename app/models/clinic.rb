@@ -70,7 +70,8 @@ class Clinic < ActiveRecord::Base
     :closure_scheduled,
     :closure_date,
     :clinic_specializations_attributes,
-    :clinic_procedures_attributes
+    :clinic_procedures_attributes,
+    :teleservices_require_review
 
   procedure_specialize_as "clinic"
 

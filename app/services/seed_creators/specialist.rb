@@ -66,7 +66,8 @@ module SeedCreators
       practice_restart_date: Proc.new{ rand(Date.civil(2012, 1, 26)..Date.civil(2017, 4, 1)) },
       practice_restart_scheduled: Proc.new{ false },
       practice_details: Proc.new{ "Some details" },
-      accepting_new_indirect_referrals: Proc.new{ rand() < 0.05 }
+      accepting_new_indirect_referrals: Proc.new{ rand() < 0.05 },
+      teleservices_require_review: Proc.new{ false }
     }
   end
 end

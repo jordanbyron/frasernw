@@ -67,6 +67,10 @@ class ProfilesIndex < ServiceObject
         scope = scope.hidden
       end
 
+      if params[:teleservices_require_review]
+        scope = scope.where(teleservices_require_review: true)
+      end
+
       scope
     end
   end

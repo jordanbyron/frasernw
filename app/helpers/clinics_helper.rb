@@ -63,6 +63,8 @@ module ClinicsHelper
         clinic.visible_attendances.any?
     when :sidebar
       clinic.open?
+    when :teleservices
+      !clinic.teleservices_require_review && clinic.teleservices.any?(&:offered?)
     end
   end
 end

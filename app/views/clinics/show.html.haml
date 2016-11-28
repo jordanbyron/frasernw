@@ -21,7 +21,7 @@
 
         = render "clinics/show/urgent_referrals"
 
-        - if @clinic.teleservices.any?(&:offered?)
+        - if show_clinic_section?(@clinic, :teleservices)
           = render "teleservices/index", provider: @clinic
 
         = render "clinics/show/patient_information"

@@ -1,7 +1,9 @@
 class Teleservice < ActiveRecord::Base
+  include PaperTrailable
+
   attr_accessible :teleservice_provider_id,
     :teleservice_provider_type,
-    :service_type,
+    :service_type_key,
     :telephone,
     :video,
     :email,
@@ -18,7 +20,7 @@ class Teleservice < ActiveRecord::Base
   }
 
   def name
-    Teleservice::SERVICE_TYPES[service_type]
+    Teleservice::SERVICE_TYPES[service_type_key]
   end
 
   def offered_modalities_list

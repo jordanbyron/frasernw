@@ -13,7 +13,7 @@ export default function clinic() {
   $(".scheduled").on("change", updateScheduleDay);
 
   $(".is_specialist").each(updateAttendances);
-  $(".is_specialist").on("change", updateAttendances);
+  $(document).on("change", ".is_specialist", updateAttendances);
 
   $(".location_is").each(updateClinicLocation);
   $(".location_is").on("change", updateClinicLocation);

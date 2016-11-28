@@ -72,6 +72,10 @@ module SpecialistsHelper
         specialist.works_from_offices &&
         specialist.indirect_referrals_only? &&
         specialist.specialist_offices.select(&:has_data?).any?
+    when :teleservices
+      specialist.practicing? &&
+        !specialist.teleservices_require_review &&
+        specialist.teleservices.any?(&:offered?)
     end
   end
 

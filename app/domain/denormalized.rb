@@ -114,10 +114,16 @@ module Denormalized
             updatedAt: specialist.updated_at.to_date.to_s,
             hospitalsWithOfficesInIds: specialist.hospitals_with_offices_in.map(&:id),
             billingNumber: specialist.padded_billing_number,
-            teleserviceFeeTypes: specialist.
-              teleservices.
-              select(&:offered?).
-              map(&:service_type),
+            teleserviceFeeTypes: (
+              if specialist.teleservices_require_review?
+                []
+              else
+                specialist.
+                  teleservices.
+                  select(&:offered?).
+                  map(&:service_type_key)
+              end
+            ),
             interest: Denormalized.
               sanitize(specialist.interest).
               try(:convert_newlines_to_br),
@@ -177,10 +183,16 @@ module Denormalized
             createdAt: clinic.created_at.to_date.to_s,
             updatedAt: clinic.updated_at.to_date.to_s,
             hospitalsInIds: clinic.hospitals_in.map(&:id),
-            teleserviceFeeTypes: clinic.
-              teleservices.
-              select(&:offered?).
-              map(&:service_type),
+            teleserviceFeeTypes: (
+              if clinic.teleservices_require_review?
+                []
+              else
+                clinic.
+                  teleservices.
+                  select(&:offered?).
+                  map(&:service_type_key)
+              end
+            ),
             interest: Denormalized.
               sanitize(clinic.interest).
               try(:convert_newlines_to_br),
