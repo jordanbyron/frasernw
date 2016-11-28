@@ -13,6 +13,7 @@ import sidebarFilters from "controller_helpers/sidebar_filters";
 import { paginate } from "controller_helpers/pagination";
 import { useProcedureSpecificWaitTimes, specificWaitTimeProcedureId }
   from "controller_helpers/procedure_specific_wait_times";
+import divisionIds from "controller_helpers/division_ids";
 import _ from "lodash";
 
 const TableRows = (model, dispatch) => {
@@ -81,7 +82,7 @@ const decorate = (record, model) => {
         filter((profile) => {
           if(sidebarFilters.divisionScope.isActivated(model)){
             return _.includes(
-              profile.divisionIds,
+              divisionIds(model, profile),
               parseInt(filterValues.divisionScope(model))
             ) && _.includes(profile.specializationIds, record.id)
           }

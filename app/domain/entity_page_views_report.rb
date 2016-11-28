@@ -55,7 +55,7 @@ class EntityPageViewsReport < ServiceObject
         link: link_to(label, url),
         usage: row[:page_views],
         label: label,
-        collectionName: "#{row[:serialized_collection]}pageViewData",
+        collectionName: "#{row[:resource]}pageViewData",
         id: row[:id]
       }
     end.sort_by{ |row| [ row[:usage], row[:label] ] }.reverse()

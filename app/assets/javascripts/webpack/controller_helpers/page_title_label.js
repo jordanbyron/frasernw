@@ -3,6 +3,7 @@ import * as filterValues from "controller_helpers/filter_values";
 import { toSentence } from "utils";
 import _ from "lodash";
 import entityPageViews from "controller_helpers/page_title_label/entity_page_views";
+import divisionIds from "controller_helpers/division_ids";
 
 const pageTitleLabel = (model) => {
   switch(route){
@@ -35,7 +36,8 @@ const pageTitleLabel = (model) => {
         app[filterValues.entityType(model)].
         pwPipe(_.values).
         filter((profile) => {
-          return _.includes(profile.divisionIds, parseInt(filterValues.divisionScope(model)));
+          return _.includes(divisionIds(model, profile),
+            parseInt(filterValues.divisionScope(model)));
         }).length;
     }
 

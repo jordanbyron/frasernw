@@ -34,11 +34,22 @@ class EntityPageViews < ServiceObject
       next memo unless record_exists?(resource, id)
       next memo if resource == :content_items && !markdown_ids.include?(id)
 
-      memo << {
-        resource: resource,
-        id: id,
-        page_views: row[:page_views].to_i
-      }
+      matching_row = memo.find do |record|
+        record[:resource] == resource &&
+          record[:id] == id
+      end
+
+      if matching_row.nil?
+        memo << {
+          resource: resource,
+          id: id,
+          page_views: row[:page_views].to_i
+        }
+      else
+        matching_row[:page_views] += row[:page_views].to_i
+
+        memo
+      end
     end
   end
 

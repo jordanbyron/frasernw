@@ -161,7 +161,7 @@ class Specialist < ActiveRecord::Base
       :specializations,
       :languages,
       :teleservices
-    ]).includes(specialist_procedures: :procedure).with_cities
+    ]).includes(procedure_links: :procedure).with_cities
   end
 
   def self.cache_key

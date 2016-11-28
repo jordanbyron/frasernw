@@ -4,6 +4,7 @@ import activatedFilterSubkeys from "controller_helpers/activated_filter_subkeys"
 import { route } from "controller_helpers/routing";
 import * as filterValues from "controller_helpers/filter_values";
 import { memoizePerRender } from "utils";
+import divisionIds from "controller_helpers/division_ids";
 
 const sidebarFilters = {
   cities: {
@@ -232,7 +233,7 @@ const sidebarFilters = {
     },
     predicate: function(record, model) {
       return _.includes(
-        record.divisionIds,
+        divisionIds(model, record),
         parseInt(filterValues.divisionScope(model))
       );
     }

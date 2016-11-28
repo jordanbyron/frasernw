@@ -77,7 +77,6 @@ module Denormalized
             firstName: specialist.firstname,
             lastName: specialist.lastname,
             referralIconKey: specialist.referral_icon_key,
-            divisionIds: specialist.divisions.map(&:id),
             consultationWaitTimeKey: (
               if specialist.show_waittimes?
                 specialist.consultation_wait_time_key
@@ -142,7 +141,7 @@ module Denormalized
         Clinic.
           includes([:procedures, :specializations, :languages, :teleservices]).
           includes(:healthcare_providers).
-          includes(clinic_procedures: :procedure).
+          includes(procedure_links: :procedure).
           includes_location_data.
           includes_location_schedules.
           inject({}) do |memo, clinic|
@@ -165,7 +164,6 @@ module Denormalized
             patientsCanBook: clinic.patient_can_book?,
             scheduledDayIds: clinic.scheduled_day_ids,
             languageIds: clinic.languages.map(&:id),
-            divisionIds: clinic.divisions.map(&:id),
             specializationIds: clinic.specializations.map(&:id),
             wheelchairAccessible: clinic.wheelchair_accessible?,
             procedureSpecificBookingWaitTimes: Denormalized.procedure_specific_wait_times(
@@ -278,10 +276,11 @@ module Denormalized
       end
     end,
     cities: Proc.new do
-      City.all.inject({}) do |memo, city|
+      City.includes(:divisions).all.inject({}) do |memo, city|
         memo.merge(city.id => {
           id: city.id,
-          name: city.name
+          name: city.name,
+          divisionsEncompassingIds: city.divisions.map(&:id)
         })
       end
     end,

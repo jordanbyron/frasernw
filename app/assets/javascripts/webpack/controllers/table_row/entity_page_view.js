@@ -1,5 +1,6 @@
 import React from "react";
 import * as filterValues from "controller_helpers/filter_values";
+import divisionIds from "controller_helpers/division_ids";
 
 const EntityPageViewRow = ({decoratedRecord, model}) => {
   return(
@@ -29,7 +30,8 @@ const EntityDivisions = ({decoratedRecord, model}) => {
 const entityDivisionNames = (decoratedRecord, model) => {
   return (
     model.app[filterValues.entityType(model)][decoratedRecord.raw.id].
-      divisionIds.map((id) => model.app.divisions[id].name).
+      pwPipe((record) => divisionIds(model, record)).
+      map((id) => model.app.divisions[id].name).
       sort().
       to_sentence()
   )
