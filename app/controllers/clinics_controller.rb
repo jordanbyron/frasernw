@@ -35,11 +35,7 @@ class ClinicsController < ApplicationController
 
   def new
     @form_modifier = ClinicFormModifier.new(:new, current_user)
-    # specialization passed in to facilitate javascript "checking off" of
-    # starting speciality, since build below doesn't seem to work
-    @specialization = Specialization.find(params[:specialization_id])
     @clinic = Clinic.new
-    @clinic.clinic_specializations.build(specialization_id: @specialization.id)
     while @clinic.clinic_locations.length < Clinic::MAX_LOCATIONS
       cl = @clinic.clinic_locations.build
       s = cl.build_schedule

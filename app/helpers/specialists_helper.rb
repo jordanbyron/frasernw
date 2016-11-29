@@ -1,4 +1,13 @@
 module SpecialistsHelper
+  def clinic_location_options
+    ClinicLocation.
+      includes(:clinic, :location).
+      reject(&:empty).
+      map do |clinic_location|
+        [ "#{clinic.name} - #{clinic_location.location.short_address}", id]
+      end.sort_by{|pair| pair[0] }
+  end
+
   def clinic_associations(clinics)
     clinics.uniq.map do |clinic|
       if clinic.hidden?

@@ -150,14 +150,7 @@
                           - if can? :create, City
                             %li= link_to "New City", new_city_path
                           - if can? :create, Clinic
-                            %li
-                              = link_to "New Clinic in...",
-                                "#",
-                                class: "arrow-right-after"
-                              %ul.dropdown-menu
-                                - Specialization.all_cached.each do |specialization|
-                                  %li= link_to specialization.name,
-                                    new_specialization_clinic_path(specialization)
+                            %li= link_to "New Clinic", new_clinic_path
                           - if can? :create, Division
                             %li= link_to "New Division", new_division_path
                           - if can? :create, HealthcareProvider
@@ -172,14 +165,7 @@
                           - if can? :create, Office
                             %li= link_to "New Office", new_office_path
                           - if can? :create, Specialist
-                            %li
-                              = link_to "New Specialist in...",
-                                "#",
-                                class: "arrow-right-after"
-                              %ul.dropdown-menu
-                                - Specialization.all_cached.each do |specialization|
-                                  %li= link_to specialization.name,
-                                    new_specialization_specialist_path(specialization)
+                            %li= link_to "New Specialist", new_specialist_path
                           - if can? :create, Specialization
                             %li= link_to "New Specialty",
                               new_specialization_path

@@ -29,19 +29,13 @@ class SpecialistsController < ApplicationController
   def new
     load_form_variables
     @form_modifier = SpecialistFormModifier.new(:new, current_user)
-    # specialization passed in to facilitate javascript "checking off" of
-    # starting speciality, since build below doesn't seem to work
-    @specialization = Specialization.find(params[:specialization_id])
     @specialist = Specialist.new
-    @specialist.
-      specialist_specializations.
-      build(specialization_id: @specialization.id)
 
     BuildTeleservices.call(provider: @specialist)
     build_specialist_offices
 
     @specializations_clinics, @specializations_clinic_locations =
-      GenerateClinicLocationInputs.exec([ @specialization ])
+      GenerateClinicLocationInputs.exec([  ])
   end
 
   def create

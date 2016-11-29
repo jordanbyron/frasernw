@@ -82,8 +82,11 @@
             %div{ class: "clinic_#{index}" }
               = l.association :location_in,
                 as: :select,
-                collection: @specializations_clinics,
-                include_blank: true
+                collection: clinic_location_options,
+                label_method: :first,
+                value_method: :last,
+                include_blank: true,
+                class: "chzn-select"
             %div{ class: "details_#{index}" }
               = l.input :suite_in, input_html: { class: "span1" }
               = l.input :details_in
