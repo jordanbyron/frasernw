@@ -19,7 +19,7 @@
 
     .row
       .span12
-        - @news_items.current.each do |news_item|
+        - @news_items[NewsItem::TYPE_BREAKING].current.each do |news_item|
           = render_news_item(news_item)
     .row
       .span3.hidden-phone.front
@@ -106,9 +106,9 @@
                 = link_to('browse previous issues', newsletters_path) + "."
               %div{ style: "clear: both;" }
 
-        - if @divisional_updates.current.any?
+        - if @news_items[NewsItem::TYPE_DIVISIONAL].current.any?
           %h2 Division Updates
-          - @divisional_updates.current.each do |news_item|
+          - @news_items[NewsItem::TYPE_DIVISIONAL].current.each do |news_item|
             = render_news_item(news_item)
 
         - if @can_edit_division

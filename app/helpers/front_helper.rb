@@ -26,15 +26,11 @@ module FrontHelper
   end
 
   def news_item_types_present
-    [
-      @news_items,
-      @divisional_updates,
-      @attachment_updates,
-      @shared_care_updates
-    ].
-      reject(&:empty?).
-      map do |news_items_type_batch|
-        NewsItem::TYPE_HASH[news_items_type_batch.first.type_mask].pluralize
+    @news_items.
+      keys.
+      reject{|key| @news_items[key].none? }
+      map do |key|
+        NewsItem::TYPE_HASH[key].pluralize
       end.to_sentence
   end
 

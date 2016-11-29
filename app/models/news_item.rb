@@ -218,24 +218,8 @@ class NewsItem < ActiveRecord::Base
       )
   end
 
-  def self.breaking_in_divisions(divisions)
-    type_in_divisions(TYPE_BREAKING, divisions)
-  end
-
-  def self.divisional_in_divisions(divisions)
-    type_in_divisions(TYPE_DIVISIONAL, divisions)
-  end
-
-  def self.shared_care_in_divisions(divisions)
-    type_in_divisions(TYPE_SHARED_CARE, divisions)
-  end
-
   def self.specialist_clinic_in_divisions(divisions)
     type_in_divisions(TYPE_SPECIALIST_CLINIC_UPDATE, divisions)
-  end
-
-  def self.attachment_in_divisions(divisions)
-    type_in_divisions(TYPE_ATTACHMENT_UPDATE, divisions)
   end
 
   def current?
