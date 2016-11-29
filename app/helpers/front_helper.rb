@@ -25,6 +25,19 @@ module FrontHelper
     end
   end
 
+  def news_item_types_present
+    [
+      @news_items,
+      @divisional_updates,
+      @attachment_updates,
+      @shared_care_updates
+    ].
+      reject(&:empty?).
+      map do |news_items_type_batch|
+        NewsItem::TYPE_HASH[news_items_type_batch.first.type_mask].pluralize
+      end.to_sentence
+  end
+
   def self.news_item_class(news_item)
     news_item.date.present? ? "news_item_title" : "news_item_date"
   end

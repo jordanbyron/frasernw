@@ -7,7 +7,6 @@
 
 .content-wrapper
   .content#front{ style: current_user.as_admin_or_super? && 'margin-top: -15px' }
-
     - if current_user.as_admin_or_super?
       .row
         .span12
@@ -24,9 +23,7 @@
           = render_news_item(news_item)
     .row
       .span3.hidden-phone.front
-
         %h2 Specialties
-
         %ul.space
           - @specializations.each do |specialization|
             %li
@@ -40,7 +37,6 @@
       .span4half.front
 
         %h2 What is Pathways?
-
         %p
           Pathways is a web based resource to streamline and optimize patient
           referrals.
@@ -55,32 +51,26 @@
             and now being rolled out to Divisions of Family Practice across BC,
             Pathways provides a comprehensive database of specialists,
             specialty clinics, and services that are searchable and filterable.
-
           %p
             Pathways contributes to improved patient outcomes by improving
             timely access to specialists, and providing a central hub for
             decision aids, guidelines, pearls, red flags, and patient education
             materials.
-
           %p
             To learn more about Pathways, please visit our
             %a{ href: pathways_info_path, target: '_blank' }
               Pathways Information page
             or access the user guide and training videos located in the ‘You’
             tab above.
-
           %p
             If you have any comments or questions while using the site, please
             = link_to("contact us", contact_path) + "."
 
         - if ENV["HIDE_LATEST_UPDATES"] != "true"
-          %h2= link_to "Latest Specialist and Clinic Updates",
-            scoped_news_item_archive_path(:latest_updates_path),
-            class: "front_page__news_item_heading"
-
-          - LatestUpdates.call(context: :front, division_ids: @as_divisions.map(&:id)).each do |event|
+          %h2 Latest Specialist and Clinic Updates
+          - LatestUpdates.call(context: :front,
+            division_ids: @as_divisions.map(&:id)).each do |event|
             %p= event[:markup]
-
           %p
             You can see past specialist and clinic updates
             = link_to("here",
@@ -95,11 +85,7 @@
 
         - if @current_newsletter.present?
           %div{ style: "margin-top: 18px;" }
-            %h2= link_to newsletter_section_heading(@current_newsletter),
-              @current_newsletter.url,
-              target: "_blank",
-              class: "front_page__news_item_heading"
-
+            %h2= newsletter_section_heading(@current_newsletter)
             %div{ style: "margin-top: 10px;" }
               = image_tag "pathways_newsletter.png",
                 class: "newsletter__thumbnail"
@@ -120,20 +106,10 @@
                 = link_to('browse previous issues', newsletters_path) + "."
               %div{ style: "clear: both;" }
 
-        - if @divisional_updates.any?
-          %h2= link_to "Division Updates",
-            scoped_news_item_archive_path(:news_items_archive_path,
-            type: NewsItem::TYPE_DIVISIONAL),
-            class: "front_page__news_item_heading"
-
+        - if @divisional_updates.current.any?
+          %h2 Division Updates
           - @divisional_updates.current.each do |news_item|
             = render_news_item(news_item)
-
-          %p
-            You can see an archive of divisional updates
-            = link_to("here",
-              scoped_news_item_archive_path(:news_items_archive_path,
-              type: NewsItem::TYPE_DIVISIONAL)) + "."
 
         - if @can_edit_division
           %p.admin.btn-group
@@ -142,20 +118,10 @@
               %i.icon-pencil
               Edit Division Updates
 
-        - if @attachment_updates.any?
-          %h2= link_to "Attachment Updates",
-            scoped_news_item_archive_path(:news_items_archive_path,
-            type: NewsItem::TYPE_ATTACHMENT_UPDATE),
-            class: "front_page__news_item_heading"
-
+        - if @attachment_updates.current.any?
+          %h2 Attachment Updates
           - @attachment_updates.current.each do |news_item|
             = render_news_item(news_item)
-
-          %p
-            You can see an archive of attachment updates
-            = link_to("here",
-              scoped_news_item_archive_path(:news_items_archive_path,
-              type: NewsItem::TYPE_ATTACHMENT_UPDATE)) + "."
 
         - if current_user.as_admin_or_super? && @can_edit_division
           %p.admin.btn-group
@@ -164,22 +130,12 @@
               %i.icon-pencil
               Edit Attachment Updates
 
-        - if @shared_care_updates.any?
+        - if @shared_care_updates.current.any?
           %h2
-            = link_to scoped_news_item_archive_path(:news_items_archive_path,
-              type: NewsItem::TYPE_SHARED_CARE),
-              class: "front_page__news_item_heading" do
-              %i.icon-red.icon-star
-              Shared Care Updates
-
+            %i.icon-red.icon-star
+            Shared Care Updates
           - @shared_care_updates.current.each do |news_item|
             = render_news_item(news_item)
-
-          %p
-            You can see an archive of Shared Care updates
-            = link_to("here",
-              scoped_news_item_archive_path(:news_items_archive_path,
-              type: NewsItem::TYPE_SHARED_CARE)) + "."
 
         - if current_user.as_admin_or_super? && @can_edit_division
           %p.admin.btn-group
@@ -188,20 +144,15 @@
               %i.icon-pencil
               Edit Shared Care Updates
 
-        - if @news_items.any?
-          %h2= link_to "Breaking News Archive",
-            scoped_news_item_archive_path(:news_items_archive_path,
-            type: NewsItem::TYPE_BREAKING),
-            class: "front_page__news_item_heading"
-          %p
-            You can see an archive of past breaking news
-            = link_to("here",
-              scoped_news_item_archive_path(:news_items_archive_path,
-              type: NewsItem::TYPE_BREAKING)) + "."
+        %h2 News Archive
+        %p
+          You can see an archive of past
+          = news_item_types_present
+          = link_to("here",
+            scoped_news_item_archive_path(:news_items_archive_path)) + "."
 
       .span4.offsethalf
         .well
-
           %h2.center Featured Content
           - division_ids = @as_divisions.map{ |division| division.id }.join('_')
           - cache("featured_content_#{division_ids}") do

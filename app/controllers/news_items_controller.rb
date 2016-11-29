@@ -33,7 +33,8 @@ class NewsItemsController < ApplicationController
       end
 
     @news_items_by_type_key = {}
-    NewsItem::TYPE_HASH.each do |key, type|
+    NewsItem::TYPE_HASH.reject{ |key| key == 4 }.each do |key, type|
+      # exclude type "Specialst / Clinic Update", covered by LatestUpdates
       @news_items_by_type_key[key] = NewsItem.type_in_divisions(key, @divisions)
     end
   end
