@@ -106,12 +106,13 @@
         style: "margin-left: 10px; margin-bottom: 7px;"
       %p{ style: "margin-left: 0px;" }
         %i
-          If enabled, cities will be sorted on specialization pages by the
-          rankings below. When new cities are added they will automatically be
-          assigned the lowest priority rating (3). If this feature is disabled,
-          the local referral area for that specialization will be used to sort
-          by city instead. (Cities outside of your referral area will appear
-          after those inside it)
+          When enabled, filter tables will sort results by a city's priority
+          ranking (1-3). New cities are automatically assigned the lowest
+          priority rating (3). When disabled, filter tables will sort results
+          by the local referral area of each specialization instead. Cities
+          located outside of the “cities encompassed” by your default local
+          referral area will appear after those inside it, when assigned a level
+          2 or 3 priority.
       %br
       #city_priority_checkboxes
         %p{ style: "margin-left: 0px;" }
