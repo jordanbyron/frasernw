@@ -6,7 +6,7 @@
   .tabbable
     %ul.nav.nav-tabs
       - NewsItem::TYPE_HASH.reject do |key|
-        - @news_items_by_type_key[key].blank?
+        - @news_items[key].blank?
       - end.each do |type|
         %li
           %a{ href: "#type_#{type[0]}_tab", data: { toggle: "tab" } }
@@ -14,7 +14,7 @@
 
     %br
     .tab-content
-      - @news_items_by_type_key.each do |key, items|
+      - @news_items.each do |key, items|
         .tab-pane{ id: "type_#{key.to_s}_tab" }
           - items.each do |item|
             = render_news_item(item)

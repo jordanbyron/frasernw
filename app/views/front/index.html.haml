@@ -118,9 +118,9 @@
               %i.icon-pencil
               Edit Division Updates
 
-        - if @attachment_updates.current.any?
+        - if @news_items[NewsItem::TYPE_ATTACHMENT_UPDATE].current.any?
           %h2 Attachment Updates
-          - @attachment_updates.current.each do |news_item|
+          - @news_items[NewsItem::TYPE_ATTACHMENT_UPDATE].current.each do |news_item|
             = render_news_item(news_item)
 
         - if current_user.as_admin_or_super? && @can_edit_division
@@ -130,11 +130,11 @@
               %i.icon-pencil
               Edit Attachment Updates
 
-        - if @shared_care_updates.current.any?
+        - if @news_items[NewsItem::TYPE_SHARED_CARE].current.any?
           %h2
             %i.icon-red.icon-star
             Shared Care Updates
-          - @shared_care_updates.current.each do |news_item|
+          - @news_items[NewsItem::TYPE_SHARED_CARE].current.each do |news_item|
             = render_news_item(news_item)
 
         - if current_user.as_admin_or_super? && @can_edit_division

@@ -32,11 +32,12 @@ class NewsItemsController < ApplicationController
         current_user.as_divisions
       end
 
-    @news_items_by_type_key = {}
-    NewsItem::TYPE_HASH.reject{ |key| key == 4 }.each do |key, type|
-      # exclude type "Specialst / Clinic Update", covered by LatestUpdates
-      @news_items_by_type_key[key] = NewsItem.type_in_divisions(key, @divisions)
-    end
+    @news_items = NewsItem::TYPE_HASH.
+      keys.
+      except(NewsItem::TYPE_SPECIALIST_CLINIC_UPDATE).
+      inject({}) do |memo, key|
+        memo.merge(key => NewsItem.type_in_divisions(key, @divisions))
+      end
   end
 
   def show

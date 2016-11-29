@@ -28,7 +28,7 @@ module FrontHelper
   def news_item_types_present
     @news_items.
       keys.
-      reject{|key| @news_items[key].none? }
+      reject{ |key| @news_items[key].none? }.
       map do |key|
         NewsItem::TYPE_HASH[key].pluralize
       end.to_sentence
