@@ -136,4 +136,18 @@
                           class: "auto",
                           minute_step: 15,
                           include_blank: true
+                    .break
+                      .changed_wrapper
+                        .from closed for lunch from
+                        = d.input_field :break_from,
+                          class: "auto",
+                          minute_step: 15,
+                          include_blank: true
+                      .changed_wrapper
+                        .to to
+                        = d.input_field :break_to,
+                          class: "auto",
+                          minute_step: 15,
+                          include_blank: true
+
         - index += 1
