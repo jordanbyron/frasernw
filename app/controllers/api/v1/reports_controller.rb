@@ -8,7 +8,8 @@ module Api
         render json: AnalyticsChart.call({
           metric: params[:metric].to_sym,
           divisions: current_user.reporting_divisions,
-          user_type_key: params[:user_type_key].to_i
+          user_type_key: params[:user_type_key].to_i,
+          period_type: params[:period_type]
         }.merge(params.slice(:start_month_key, :end_month_key)))
       end
 
