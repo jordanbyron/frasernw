@@ -36,11 +36,9 @@ class UserMasksController < ApplicationController
           " in the following divisions: "\
           "#{current_user.as_divisions.to_sentence}."
     else
-      flash[:notice] = "Invalid divisions or role."
-
+      redirect_to new_user_mask_path,
+        notice: "Invalid divisions or role."
       @cancel_text = cancel_text(@user_mask)
-
-      render :new
     end
   end
 
@@ -65,7 +63,7 @@ class UserMasksController < ApplicationController
           "#{current_user.as_divisions.to_sentence}."
     else
       redirect_to new_user_mask_path,
-        notice: "Invalid division or role"
+        notice: "Invalid divisions or role."
     end
   end
 
