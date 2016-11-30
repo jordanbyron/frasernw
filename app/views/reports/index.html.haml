@@ -72,10 +72,10 @@
     = report_row :csv_usage,
       manual_label: "Usage (CSV Report)"
     = report_row :entity_page_views
-    = report_row :specialist_contact_history, divisional: true
-    = report_row :specialist_wait_times, divisional: true
-    = report_row :clinic_wait_times, divisional: true
-    = report_row :entity_statistics, divisional: true
+    = report_row :specialist_contact_history, divisional: true, restricted: true
+    = report_row :specialist_wait_times, divisional: true, restricted: true
+    = report_row :clinic_wait_times, divisional: true, restricted: true
+    = report_row :entity_statistics, divisional: true, restricted: true
     = report_row :archived_feedback_items, divisional: true
 
 :javascript
