@@ -8,8 +8,10 @@ class FrontController < ApplicationController
       @as_division = begin
         if params[:division_id].present?
           Division.find(params[:division_id])
-        else
+        elsif current_user.as_divisions.any?
           current_user.as_divisions.first
+        else
+          Division.find(1)
         end
       end
       @can_edit_division = current_user.as_super_admin? || current_user.as_divisions.include?(@as_division)
