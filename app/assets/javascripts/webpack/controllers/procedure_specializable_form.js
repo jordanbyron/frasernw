@@ -48,12 +48,24 @@ const ProcedureSpecializableNodes = ({model, nodes, offset, setState}) => {
                   checked={link.checked}
                   onChange={_.partial(onNodeChange, node.type, node.id, setState, model)}
                 />
-                <span
+                <div
                   style={{
+                    display: "inline-block",
+                    minHeight: "28px",
                     marginLeft: "5px",
                     fontWeight: (node.type === "specialization" ? "bold" : "normal")
                   }}
-                >{node.name}</span>
+                >{node.name}</div>
+                {
+                  (_.includes(["specialist", "clinic"], model.procedure_specializable_type)  &&
+                    node.type === "procedure") &&
+                    link.checked ?
+                    <span style={{marginLeft: "5px"}}>
+                      (
+                      <input type="text" style={{margin: "0px 5px"}}></input>
+                      )
+                    </span> : <span></span>
+                }
                 {
                   link.id ?
                     <input type="hidden" name={`${inputNameRoot}[id]`} value={link.id}/>
