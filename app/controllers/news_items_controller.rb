@@ -24,6 +24,22 @@ class NewsItemsController < ApplicationController
     }
   end
 
+  def archive
+    @divisions =
+      if params[:division_id].present?
+        [ Division.find(params[:division_id]) ]
+      else
+        current_user.as_divisions
+      end
+
+    @news_items = NewsItem::TYPE_HASH.
+      keys.
+      except(NewsItem::TYPE_SPECIALIST_CLINIC_UPDATE).
+      inject({}) do |memo, key|
+        memo.merge(key => NewsItem.type_in_divisions(key, @divisions))
+      end
+  end
+
   def show
     @news_item = NewsItem.find(params[:id])
   end

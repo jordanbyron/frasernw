@@ -119,7 +119,7 @@ class Ability
           :update_password
         ], User
 
-        can [:index, :new, :create, :show, :copy], NewsItem
+        can [:index, :new, :create, :show, :copy, :archive], NewsItem
         can [:edit, :update], NewsItem do |news_item|
           user.as_divisions.include? news_item.owner_division
         end
@@ -185,6 +185,8 @@ class Ability
         can :view_history, Historical
 
       elsif user.as_user?
+        can :archive, NewsItem
+
         can :show, [Specialist, Clinic] do |entity|
           !entity.hidden? ||
             entity.controlling_users.include?(user)
