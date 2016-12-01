@@ -72,7 +72,7 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @user.attributes = params[:user]
     if invalid_user_notice
-      redirect_to new_user_url, notice: invalid_user_notice
+      redirect_to edit_user_url, notice: invalid_user_notice
     elsif @user.save(validate: false) # so we can edit a pending account
       redirect_to @user, notice: "Successfully updated user."
     else
