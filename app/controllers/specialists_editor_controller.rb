@@ -12,10 +12,7 @@ class SpecialistsEditorController < ApplicationController
 
     build_specialist_offices
     BuildTeleservices.call(provider: @specialist)
-    load_form_variables(:visible?)
-
-    @specializations_clinics, @specializations_clinic_locations =
-      GenerateClinicLocationInputs.exec(@specialist.specializations, :visible?)
+    load_form_variables
 
     @view = @specialist.views.build(notes: request.remote_ip)
     @view.save
@@ -75,9 +72,9 @@ class SpecialistsEditorController < ApplicationController
 
   private
 
-  def load_form_variables(scope = :presence)
-    @offices = Office.all_formatted_for_form(scope: scope)
-    @hospitals = Hospital.all_formatted_for_form(scope)
+  def load_form_variables
+    @offices = Office.all_formatted_for_form
+    @hospitals = Hospital.all_formatted_for_form
   end
 
   def build_specialist_offices

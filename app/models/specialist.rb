@@ -81,6 +81,7 @@ class Specialist < ActiveRecord::Base
 
   # specialists attend clinics
   has_many :attendances, dependent: :destroy
+  accepts_nested_attributes_for :attendances
   has_many :clinic_locations, through: :attendances
   has_many :clinics, through: :clinic_locations
 

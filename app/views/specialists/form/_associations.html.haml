@@ -2,10 +2,27 @@
 
   %hr
 
-  %h3 Associations
+  %h3 Hospital Associations
 
   = f.association :hospitals, as: :check_boxes, collection: @hospitals
 
-  = f.association :clinic_locations,
-    as: :check_boxes,
-    collection: @specializations_clinic_locations
+  %h3 Clinic Associations
+
+  = f.simple_fields_for :attendances do |fields|
+    .row.spaced
+      .span7
+        = fields.input :clinic_location_id,
+          label: false,
+          wrapper: :no_wrapper,
+          include_blank: false,
+          as: :select,
+          collection: clinic_location_options,
+          input_html: { class: "span1 chzn-select" }
+      .spanhalf
+        = fields.hidden_field :_destroy
+        = fields.link_to_remove do
+          %i.icon-minus-sign
+  .row
+    = f.link_to_add(:attendances, class: "btn offset3") do
+      %i.icon-plus-sign
+      Add another clinic

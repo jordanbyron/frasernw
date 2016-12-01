@@ -81,20 +81,6 @@ class Address < ActiveRecord::Base
     return ""
   end
 
-  def empty_old?
-    (
-      suite.blank? and
-      address1.blank? and
-      address2.blank? and
-      (not city) and
-      postalcode.blank? and
-      phone1.blank? and
-      fax.blank? and
-      hospital_id.blank? and
-      clinic_id.blank?
-    )
-  end
-
   def empty?
     (
       suite.blank? and

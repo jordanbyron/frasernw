@@ -33,9 +33,6 @@ class SpecialistsController < ApplicationController
 
     BuildTeleservices.call(provider: @specialist)
     build_specialist_offices
-
-    @specializations_clinics, @specializations_clinic_locations =
-      GenerateClinicLocationInputs.exec([  ])
   end
 
   def create
@@ -61,9 +58,6 @@ class SpecialistsController < ApplicationController
     BuildTeleservices.call(provider: @specialist)
 
     build_specialist_offices
-
-    @specializations_clinics, @specializations_clinic_locations =
-      GenerateClinicLocationInputs.exec(@specialist.specializations)
   end
 
   def update
@@ -160,9 +154,6 @@ class SpecialistsController < ApplicationController
     else
       build_specialist_offices
 
-      @specializations_clinics, @specializations_clinic_locations =
-        GenerateClinicLocationInputs.exec(@specialist.specializations)
-
       @secret_token_id =
         @specialist.
           review_item.
@@ -185,11 +176,7 @@ class SpecialistsController < ApplicationController
       redirect_to root_path,
         notice: "There is no profile for this specialist to re-review."
     else
-
       build_specialist_offices
-
-      @specializations_clinics, @specializations_clinic_locations =
-        GenerateClinicLocationInputs.exec(@specialist.specializations)
       @secret_token_id =
         @review_item.decoded_review_object["specialist"]["secret_token_id"]
       BuildTeleservices.call(provider: @specialist)

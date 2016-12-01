@@ -23,12 +23,7 @@ namespace :pathways do
         end
       },
       offices: -> {
-        [
-          :visible?,
-          :presence
-        ].each do |scope|
-          Office.all_formatted_for_form(force: true, scope: scope)
-        end
+        Office.all_formatted_for_form(force: true)
       },
       serialized_indices: -> {
         Denormalized.regenerate_all

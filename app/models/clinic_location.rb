@@ -110,10 +110,6 @@ class ClinicLocation < ActiveRecord::Base
     !empty?
   end
 
-  def visible?
-    city && !city.hidden?
-  end
-
   LOCATION_IS_OPTIONS = {
     1 => "Not used",
     2 => "Standalone",

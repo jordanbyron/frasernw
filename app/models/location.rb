@@ -65,10 +65,6 @@ class Location < ActiveRecord::Base
     return address.to_s
   end
 
-  def visible?
-    city && !city.hidden?
-  end
-
   def divisions
     resolved_address.try(:divisions) || []
   end

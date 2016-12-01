@@ -1,10 +1,13 @@
 module SpecialistsHelper
-  def clinic_location_options
+  def clinic_location_options(target = :itself)
     ClinicLocation.
-      includes(:clinic, :location).
-      reject(&:empty).
+      includes(:clinic, {location: :address}).
+      reject(&:empty?).
       map do |clinic_location|
-        [ "#{clinic.name} - #{clinic_location.location.short_address}", id]
+        [
+          "#{clinic_location.clinic.name} - #{clinic_location.location.short_address}",
+          clinic_location.send(target).id
+        ]
       end.sort_by{|pair| pair[0] }
   end
 

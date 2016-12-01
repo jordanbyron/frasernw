@@ -10,8 +10,9 @@
  *= require ./all/icons
  *= require ./all/frasernw
  *= require ./all/bootstrap.responsive
- *= require ./all/chosen
  *= require_directory ./components
  *= require_tree ./all
+ *= require chosen.1.6.2.min
+ *= require chosen_fix
  *= require vendor
 */

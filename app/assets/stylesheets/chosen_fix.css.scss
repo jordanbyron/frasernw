@@ -1,0 +1,7 @@
+// fixes known issue where chosen containers are 0px wide by default
+// see https://github.com/harvesthq/chosen/pull/2495
+// and https://github.com/harvesthq/chosen/issues/1548
+
+.chosen-container {
+  min-width: 500px !important;
+}

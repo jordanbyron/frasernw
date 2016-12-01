@@ -133,12 +133,4 @@ class FormModifier
         "again to update the available options."
     end
   end
-
-  def scope
-    if token_edit?
-      :visible?
-    else
-      :presence
-    end
-  end
 end

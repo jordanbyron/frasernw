@@ -82,7 +82,7 @@
             %div{ class: "clinic_#{index}" }
               = l.association :location_in,
                 as: :select,
-                collection: clinic_location_options,
+                collection: clinic_location_options(:location),
                 label_method: :first,
                 value_method: :last,
                 include_blank: true,

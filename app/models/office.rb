@@ -104,9 +104,9 @@ class Office < ActiveRecord::Base
     self.in_cities(divisions.map{ |division| division.cities }.flatten.uniq)
   end
 
-  def self.all_formatted_for_form(scope: :presence, force: false)
+  def self.all_formatted_for_form(force: false)
     Rails.cache.fetch(
-      [name, "all_offices_formatted_for_form:#{scope}"],
+      [name, "all_offices_formatted_for_form"],
       force: force
     ) do
       includes(location: [
@@ -115,9 +115,7 @@ class Office < ActiveRecord::Base
           { address: :city },
           { hospital_in: { location: { address: :city } } }
         ] }
-      ] ).
-        reject{ |o| o.empty? }.
-        select(&scope).
+      ] ).reject(&:empty?).
         sort{ |a,b| "#{a.city} #{a.short_address}" <=> "#{b.city} #{b.short_address}" }.
         collect{ |o| ["#{o.short_address}, #{o.city}", o.id] }
     end
@@ -127,25 +125,9 @@ class Office < ActiveRecord::Base
     Rails.cache.fetch([name, id]){find(id)}
   end
 
-  def visible?
-    city && !(city.hidden?)
-  end
-
   def flush_cache
-    Rails.cache.delete([self.class.name, "all_offices_formatted_for_form:visible?"])
-    Rails.cache.delete([self.class.name, "all_offices_formatted_for_form:presence"])
+    Rails.cache.delete([self.class.name, "all_offices_formatted_for_form"])
     Rails.cache.delete([self.class.name, id])
-  end
-
-  def self.refresh_cache
-    Rails.cache.write(
-      [name, "all_offices_formatted_for_form:presence"],
-      self.all_formatted_for_form
-    )
-    Rails.cache.write(
-      [name, "all_offices_formatted_for_form:visible?"],
-      self.all_formatted_for_form(:visible?)
-    )
   end
 
   def empty?
