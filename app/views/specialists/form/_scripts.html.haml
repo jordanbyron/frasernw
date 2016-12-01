@@ -32,4 +32,8 @@
         className.
         replace("hidden", "").
         trim();
+
+    $(document).on('nested:fieldAdded', function(event){
+      event.field.find('.chzn-select').chosen();
+    });
   });

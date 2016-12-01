@@ -75,13 +75,14 @@ class Specialist < ActiveRecord::Base
     :practice_end_reason_key,
     :practice_details,
     :accepting_new_indirect_referrals,
-    :teleservices_require_review
+    :teleservices_require_review,
+    :attendances_attributes
 
   procedure_specialize_as "specialist"
 
   # specialists attend clinics
   has_many :attendances, dependent: :destroy
-  accepts_nested_attributes_for :attendances
+  accepts_nested_attributes_for :attendances, allow_destroy: true
   has_many :clinic_locations, through: :attendances
   has_many :clinics, through: :clinic_locations
 
