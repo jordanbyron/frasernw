@@ -2,13 +2,12 @@ module ReportsHelper
   def report_row(
     report_type,
     divisional: false,
-    restricted: false,
     manual_label: nil
   )
     if can?(:view_report, report_type)
       content_tag :tr do
         report_index_label(report_type, manual_label) +
-        report_index_scope_options(report_type, divisional, restricted)
+        report_index_scope_options(report_type, divisional)
       end
     else
       ""
@@ -40,18 +39,13 @@ module ReportsHelper
     end
   end
 
-  def report_index_scope_options(report_type, divisional, restricted)
-    system_wide_link =
-      if current_user.as_super_admin? || !restricted
-        link_to(
-          "System-wide",
-          send("#{report_type}_reports_path")
-        )
-      else
-        ""
-      end
+  def report_index_scope_options(report_type, divisional)
+    system_wide_link = link_to(
+      "System-wide",
+      send("#{report_type}_reports_path")
+    )
     conjunction =
-      if system_wide_link.present? && divisional
+      if divisional
         content_tag(
           :span,
           " or ",
@@ -60,6 +54,7 @@ module ReportsHelper
       else
         ""
       end
+
     divisional_link =
       if divisional
         report_index_division_selector(report_type)
@@ -72,13 +67,6 @@ module ReportsHelper
     end
   end
 
-  def permitted_divisions
-    if current_user.as_super_admin?
-      Division.all
-    else
-      current_user.as_divisions
-    end
-  end
 
   def report_index_dropdown_option(report_type, division = nil)
     label = division.nil? ? "Choose Division" : division.name
@@ -98,10 +86,17 @@ module ReportsHelper
   end
 
   def report_index_division_selector(report_type)
-    if permitted_divisions.one?
-      link_to(permitted_divisions.first.name, send(
+    showing_divisions =
+      if current_user.as_super_admin?
+        Division.all
+      else
+        current_user.as_divisions
+      end
+
+    if showing_divisions.one?
+      link_to(showing_divisions.first.name, send(
         "#{report_type}_reports_path",
-        division_id: permitted_divisions.first.id
+        division_id: showing_divisions.first.id
       ))
     else
       content_tag(
@@ -110,7 +105,7 @@ module ReportsHelper
         style: "margin-top: 4px; margin-bottom: 4px;"
       ) do
         report_index_dropdown_option(report_type) +
-          permitted_divisions.map do |division|
+          showing_divisions.map do |division|
             report_index_dropdown_option(
               report_type,
               division

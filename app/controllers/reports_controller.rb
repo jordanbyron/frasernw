@@ -80,11 +80,8 @@ class ReportsController < ApplicationController
   end
 
   def specialist_contact_history
-    authorize! :view_report, :specialist_contact_history
     set_divisions_from_params!
-    redirect_to root_path,
-      notice: "The page you have requested is restricted." and
-      return if @divisions == nil
+    authorize! :view_report, :specialist_contact_history
 
     @specialists = Specialist.in_divisions(@divisions)
     Specialist.preload_associations(@specialists, :specializations)
@@ -130,31 +127,22 @@ class ReportsController < ApplicationController
   end
 
   def specialist_wait_times
-    authorize! :view_report, :specialist_wait_times
     set_divisions_from_params!
-    redirect_to root_path,
-      notice: "The page you have requested is restricted." and
-      return if @divisions == nil
+    authorize! :view_report, :specialist_wait_times
     @entity = "specialists"
     render :wait_times
   end
 
   def clinic_wait_times
-    authorize! :view_report, :clinic_wait_times
     set_divisions_from_params!
-    redirect_to root_path,
-      notice: "The page you have requested is restricted." and
-      return if @divisions == nil
+    authorize! :view_report, :clinic_wait_times
     @entity = "clinics"
     render :wait_times
   end
 
   def entity_statistics
-    authorize! :view_report, :entity_statistics
     set_divisions_from_params!
-    redirect_to root_path,
-      notice: "The page you have requested is restricted." and
-      return if @divisions == nil
+    authorize! :view_report, :entity_statistics
     render :stats
   end
 
@@ -204,26 +192,15 @@ class ReportsController < ApplicationController
   def set_divisions_from_params!
     @divisions =
       if params[:division_id].present?
-        if (current_user.as_super_admin? ||
-          current_user.as_divisions.map(&:id).include?(params[:division_id].to_i)
-        )
-          [Division.find(params[:division_id])]
-        else
-          nil
-        end
-      elsif !params[:restricted].present? || current_user.as_super_admin?
-        Division.all
+        [Division.find(params[:division_id])]
       else
-        nil
+        Division.all
       end
-
-    if !@divisions.nil?
-      @report_scope =
-        if @divisions.length > 1
-          "all divisions"
-        else
-          @divisions.first.name
-        end
-    end
+    @report_scope =
+      if @divisions.length > 1
+        "all divisions"
+      else
+        @divisions.first.name
+      end
   end
 end
