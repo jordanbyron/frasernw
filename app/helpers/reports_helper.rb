@@ -1,5 +1,9 @@
 module ReportsHelper
-  def report_row(report_type, divisional: false, manual_label: nil)
+  def report_row(
+    report_type,
+    divisional: false,
+    manual_label: nil
+  )
     if can?(:view_report, report_type)
       content_tag :tr do
         report_index_label(report_type, manual_label) +
@@ -10,39 +14,59 @@ module ReportsHelper
     end
   end
 
+  def self.included_entities(specialization, divisions, entity)
+    if divisions.one?
+      specialization.send(entity).in_divisions(divisions)
+    else
+      specialization.send(entity)
+    end.select do |entity|
+      entity.show_waittimes? && (
+        !entity.respond_to?(:unavailable_for_a_while?) ||
+          !entity.unavailable_for_a_while?
+        )
+    end
+  end
+
+  private
+
   def report_index_label(report_type, manual_label)
-    label =
+    content_tag :td do
       if manual_label.nil?
         report_type.to_s.split("_").map(&:capitalize).join(" ")
       else
         manual_label
       end
-
-    content_tag :td do
-      link_to(label, send("#{report_type}_reports_path"))
     end
   end
 
   def report_index_scope_options(report_type, divisional)
-    content_tag :td do
-      contents = link_to(
-        "System-wide",
-        send("#{report_type}_reports_path")
-      )
-
+    system_wide_link = link_to(
+      "System-wide",
+      send("#{report_type}_reports_path")
+    )
+    conjunction =
       if divisional
-        contents = contents +
-          content_tag(
-            :span,
-            " or ",
-            style: "margin-left: 10px; margin-right: 10px;"
-          ) +
-          report_index_dropdown(report_type)
+        content_tag(
+          :span,
+          " or ",
+          style: "margin-left: 10px; margin-right: 10px;"
+        )
+      else
+        ""
       end
 
-      contents
+    divisional_link =
+      if divisional
+        report_index_division_selector(report_type)
+      else
+        ""
+      end
+
+    content_tag :td do
+      (system_wide_link + conjunction + divisional_link).html_safe
     end
   end
+
 
   def report_index_dropdown_option(report_type, division = nil)
     label = division.nil? ? "Choose Division" : division.name
@@ -61,46 +85,33 @@ module ReportsHelper
     )
   end
 
-  def report_index_dropdown(report_type)
-    divisions_shown =
+  def report_index_division_selector(report_type)
+    showing_divisions =
       if current_user.as_super_admin?
         Division.all
       else
         current_user.as_divisions
       end
 
-    content_tag(
-      :select,
-      onChange: "window.location = event.target.value",
-      style: "margin-top: 4px; margin-bottom: 4px;"
-    ) do
-      permitted_divisions =
-        if current_user.as_super_admin?
-          Division.all
-        else
-          current_user.as_divisions
-        end
-
-      report_index_dropdown_option(report_type) +
-        permitted_divisions.map do |division|
-          report_index_dropdown_option(
-            report_type,
-            division
-          )
-        end.join.html_safe
-    end
-  end
-
-  def self.included_entities(specialization, divisions, entity)
-    if divisions.one?
-      specialization.send(entity).in_divisions(divisions)
+    if showing_divisions.one?
+      link_to(showing_divisions.first.name, send(
+        "#{report_type}_reports_path",
+        division_id: showing_divisions.first.id
+      ))
     else
-      specialization.send(entity)
-    end.select do |entity|
-      entity.show_waittimes? && (
-        !entity.respond_to?(:unavailable_for_a_while?) ||
-          !entity.unavailable_for_a_while?
-        )
+      content_tag(
+        :select,
+        onChange: "window.location = event.target.value",
+        style: "margin-top: 4px; margin-bottom: 4px;"
+      ) do
+        report_index_dropdown_option(report_type) +
+          showing_divisions.map do |division|
+            report_index_dropdown_option(
+              report_type,
+              division
+            )
+          end.join.html_safe
+      end
     end
   end
 end

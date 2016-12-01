@@ -11,9 +11,8 @@
   %table.table.table-condensed.table-striped
     %tr
       %th Specialist
-      %th Controlling User Email(s)
-      %th MOA Contact Email(s)
-      %th{ style: "min-width:100px" } Last modified
+      %th Active Controlling User Email(s)
+      %th Senior Office Contact Email(s)
       %th{ style: "min-width:100px" } Last updated via review queue
     - @specialization_specialists.each do |specialization_name, entries|
       %tr
@@ -30,7 +29,6 @@
             %ul
               - entry[:moa_email].map{ |email| mail_to(email) }.each do |link|
                 %li= link.html_safe
-          %td= entry[:updated_at].strftime("%Y-%m-%d")
           %td
             - if entry[:reviewed_at].present?
               = entry[:reviewed_at].strftime("%Y-%m-%d")

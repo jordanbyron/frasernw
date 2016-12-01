@@ -143,7 +143,6 @@ class ReportsController < ApplicationController
   def entity_statistics
     set_divisions_from_params!
     authorize! :view_report, :entity_statistics
-    render :stats
   end
 
   def archived_feedback_items
