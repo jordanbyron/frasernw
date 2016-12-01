@@ -58,7 +58,9 @@ class Specialization < ActiveRecord::Base
                 id: parent.procedure.id,
                 name: parent.procedure.name,
                 type: "procedure",
-                children: children
+                children: children,
+                specialists_specify_wait_times: parent.procedure.specialists_specify_wait_times,
+                clinics_specify_wait_times: parent.procedure.clinics_specify_wait_times
               }
             end
         }

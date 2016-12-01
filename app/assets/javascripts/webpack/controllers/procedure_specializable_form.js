@@ -67,6 +67,22 @@ const ProcedureSpecializableNodes = ({model, nodes, offset, setState}) => {
                     </span> : <span></span>
                 }
                 {
+                  (_.includes(["specialist", "clinic"], model.procedure_specializable_type)  &&
+                    node.type === "procedure") &&
+                    node[`${model.procedure_specializable_type}s_specify_wait_times`] &&
+                    link.checked ?
+                    <span>
+                      <i style={{marginRight: "5px"}}>, Booking Wait Time:</i>
+                      <select style={{width: "70px", marginRight: "5px"}}>
+                        <option>1 week</option>
+                      </select>
+                      <i style={{marginRight: "5px"}}>, Consultation Wait Time:</i>
+                      <select style={{width: "70px", marginRight: "5px"}}>
+                        <option>1 week</option>
+                      </select>
+                    </span> : <span></span>
+                }
+                {
                   link.id ?
                     <input type="hidden" name={`${inputNameRoot}[id]`} value={link.id}/>
                     : <div></div>
