@@ -5,16 +5,28 @@ class AnalyticsChart < ServiceObject
   attribute :divisions
   attribute :force, Axiom::Types::Boolean, default: false
   attribute :user_type_key
+  attribute :period_type, String
 
-  SUPPORTED_METRICS = [
+  METRICS = [
     :page_views,
     :sessions,
     :user_ids
   ]
 
+  PERIOD_TYPES = [
+    "month",
+    "week"
+  ]
+
+  def self.period_type_options
+    PERIOD_TYPES.map{|period_type| [ period_type.capitalize, period_type ]}
+  end
+
   def self.regenerate_all
-    SUPPORTED_METRICS.each do |metric|
-      regenerate(metric)
+    METRICS.each do |metric|
+      PERIOD_TYPES.each do |period_type|
+        regenerate(metric, period_type)
+      end
     end
   end
 
@@ -40,7 +52,7 @@ class AnalyticsChart < ServiceObject
       },
       xAxis: {
         title: {
-          text: "Week Starting On"
+          text: "#{period_type.capitalize} Starting On"
         },
         labels: {
           staggerLines: 1,
@@ -51,7 +63,7 @@ class AnalyticsChart < ServiceObject
       },
       yAxis: {
         title: {
-          text: "#{metric_label}/ Week"
+          text: "#{metric_label}/ #{period_type.capitalize}"
         },
         plotLines: [{
             value: 0,
@@ -86,22 +98,22 @@ class AnalyticsChart < ServiceObject
     (divisions.map(&:id) << 0).map do |division_id|
       {
         name: (division_id == 0 ? "All Divisions" : Division.find(division_id).name),
-        data: weeks.map do |week|
+        data: periods.map do |period|
           [
-            (week.start_date.at_midnight.to_i*1000),
-            division_week_data(week, division_id)[user_type_key]
+            (period.start_date.at_midnight.to_i*1000),
+            division_period_data(period, division_id)[user_type_key]
           ]
         end
       }
     end
   end
 
-  def division_week_data(week, division_id)
+  def division_period_data(period, division_id)
     Rails.cache.fetch(
-      "non_admin_#{metric.to_s}:#{week.start_date.to_s}:#{division_id}",
+      "non_admin_#{metric.to_s}:#{period_type}:#{period.start_date.to_s}:#{division_id}",
       force: force
     ) do
-      division_rows = filter_by_division(week_data(week), division_id)
+      division_rows = filter_by_division(period_data(period), division_id)
 
       User::TYPES.keys.map do |key|
         [
@@ -116,19 +128,19 @@ class AnalyticsChart < ServiceObject
     end
   end
 
-  def week_data(week)
-    @weeks_data ||= {}
+  def period_data(period)
+    @periods_data ||= {}
 
-    if @weeks_data[week].nil?
-      @weeks_data[week] = Analytics::ApiAdapter.get(
-        start_date: week.start_date,
-        end_date: week.end_date,
+    if @periods_data[period].nil?
+      @periods_data[period] = Analytics::ApiAdapter.get(
+        start_date: period.start_date,
+        end_date: period.end_date,
         metrics: [:page_views, :sessions],
         dimensions: query_dimensions
       )
     end
 
-    @weeks_data[week]
+    @periods_data[period]
   end
 
   def query_dimensions
@@ -155,9 +167,13 @@ class AnalyticsChart < ServiceObject
     end
   end
 
-  def weeks
-    @weeks = Week.for_interval(start_date, end_date).reject do |week|
-      week.end_date > Date.current
+  def periods
+    @periods ||= period_type.
+      classify.
+      constantize.
+      for_interval(start_date, end_date).reject do |period|
+
+      period.end_date > Date.current
     end
   end
 
