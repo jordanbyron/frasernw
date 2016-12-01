@@ -2,9 +2,27 @@
 
   %hr
 
+
   %h3 Hospital Associations
 
-  = f.association :hospitals, as: :check_boxes, collection: @hospitals
+  = f.simple_fields_for :privileges do |fields|
+    .row.spaced
+      .span7
+        = fields.input :hospital_id,
+          label: false,
+          wrapper: :no_wrapper,
+          include_blank: false,
+          as: :select,
+          collection: Hospital.all_formatted_for_form,
+          input_html: { class: "span1 chzn-select" }
+      .spanhalf
+        = fields.hidden_field :_destroy
+        = fields.link_to_remove do
+          %i.icon-minus-sign
+  .row
+    = f.link_to_add(:privileges, class: "btn offset3") do
+      %i.icon-plus-sign
+      Add a Hospital
 
   %h3 Clinic Associations
 
@@ -25,4 +43,4 @@
   .row
     = f.link_to_add(:attendances, class: "btn offset3") do
       %i.icon-plus-sign
-      Add another clinic
+      Add a Clinic

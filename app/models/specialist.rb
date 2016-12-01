@@ -76,7 +76,8 @@ class Specialist < ActiveRecord::Base
     :practice_details,
     :accepting_new_indirect_referrals,
     :teleservices_require_review,
-    :attendances_attributes
+    :attendances_attributes,
+    :privileges_attributes
 
   procedure_specialize_as "specialist"
 
@@ -88,6 +89,7 @@ class Specialist < ActiveRecord::Base
 
   # specialists have "priviliges" at hospitals
   has_many :privileges, dependent: :destroy
+  accepts_nested_attributes_for :privileges, allow_destroy: true
   has_many :hospitals, through: :privileges
 
   # specialists "speak" many languages
