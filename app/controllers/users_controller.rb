@@ -48,11 +48,10 @@ class UsersController < ApplicationController
     @user = User.new(
       params[:user].merge({ persist_in_demo: (ENV['DEMO_SITE'] == "true") })
     )
-    if requirement_missing
-      redirect_to new_user_url, notice: requirement_missing and return
-    end
-    # so we can avoid setting up with emails or passwords
-    if @user.save validate: false
+    if invalid_user_notice
+      redirect_to new_user_url, notice: invalid_user_notice
+    elsif @user.save(validate: false)
+      # so we can avoid setting up with emails or passwords
       redirect_to @user, notice: "User #{@user.name} successfully created."
     else
       render action: 'new', notice: "User Create Failed"
@@ -72,10 +71,9 @@ class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
     @user.attributes = params[:user]
-    if requirement_missing
-      redirect_to new_user_url, notice: requirement_missing and return
-    end
-    if @user.save validate: false # so we can edit a pending account
+    if invalid_user_notice
+      redirect_to new_user_url, notice: invalid_user_notice
+    elsif @user.save(validate: false) # so we can edit a pending account
       redirect_to @user, notice: "Successfully updated user."
     else
       @new_user = false
@@ -216,7 +214,7 @@ class UsersController < ApplicationController
 
   private
 
-  def requirement_missing
+  def invalid_user_notice
     if (@user.name.blank? && @user.divisions.blank?)
       "User create failed: User is missing a Name and a Division"
     elsif @user.name.blank?
