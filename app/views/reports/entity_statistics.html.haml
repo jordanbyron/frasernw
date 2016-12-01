@@ -43,18 +43,10 @@
 
     %tr
       %th
-      %th Total Focused & Non Focused
-      %th Focused
-      %th Non Focused
-      %th Assumed for Specialists
-      %th Assumed for Clinics
+      %th Total
     %tr
       %th Areas of practice
       %td= procedures.length
-      %td= procedures.reject{ |p| !p.procedure_specializations.first.try(:focused?) }.length
-      %td= procedures.reject{ |p| !p.procedure_specializations.first.try(:nonfocused?) }.length
-      %td= Procedure.all.reject{ |p| !p.procedure_specializations.first.try(:assumed_specialist?) }.length
-      %td= Procedure.all.reject{ |p| !p.procedure_specializations.first.try(:assumed_clinic?) }.length
     %tr
       %th
 
@@ -63,17 +55,17 @@
       %th Total
       %th Completed Survey
       %th Not Completed Survey
-      %th Hospital/Clinic Only
+      %th Works Only Out of Hospitals/Clinics
       %th Moved Away
       %th Retired
     %tr
       %th Specialists
       %td= specialists.length
-      %td= specialists.select{ |s| s.completed_survey? }.length
-      %td= specialists.select{ |s| !s.completed_survey? }.length
+      %td= specialists.select(&:completed_survey?).length
+      %td= specialists.reject(&:completed_survey?).length
       %td= specialists.select{ |s| s.practicing? && !s.works_from_offices? }.length
-      %td= specialists.reject{ |s| !s.moved_away? }.length
-      %td= specialists.reject{ |s| !s.retired? }.length
+      %td= specialists.select(&:moved_away?).length
+      %td= specialists.select(&:retired?).length
     %tr
       %th
 
@@ -85,8 +77,8 @@
     %tr
       %th Clinics
       %td= clinics.length
-      %td= clinics.select{ |s| s.completed_survey? }.length
-      %td= clinics.select{ |s| !s.completed_survey? }.length
+      %td= clinics.select(&:completed_survey?).length
+      %td= clinics.reject(&:completed_survey?).length
     %tr
       %th
 
@@ -131,17 +123,17 @@
         %th Total
         %th Completed Survey
         %th Not Completed Survey
-        %th Hospital/Clinic Only
+        %th Works Only Out of Hospitals/Clinics
         %th Moved Away
         %th Retired
       %tr
         %th= specialization.name
         %td= @specialization_specialists.length
-        %td= @specialization_specialists.select{ |s| s.completed_survey? }.length
-        %td= @specialization_specialists.select{ |s| !s.completed_survey? }.length
+        %td= @specialization_specialists.select(&:completed_survey?).length
+        %td= @specialization_specialists.reject(&:completed_survey?).length
         %td= @specialization_specialists.select{ |s| s.practicing? && !s.works_from_offices? }.length
-        %td= @specialization_specialists.reject{ |s| !s.moved_away? }.length
-        %td= @specialization_specialists.reject{ |s| !s.retired? }.length
+        %td= @specialization_specialists.select(&:moved_away?).length
+        %td= @specialization_specialists.select(&:retired?).length
       %th
     %tr
       %th
