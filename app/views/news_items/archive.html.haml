@@ -5,7 +5,7 @@
 
   .tabbable
     %ul.nav.nav-tabs
-      - @news_items.each do |key, items|
+      - @news_items.sort.each do |key, items|
         - if items.any?
           %li
             %a{ href: "#type_#{key}_tab", data: { toggle: "tab" } }
