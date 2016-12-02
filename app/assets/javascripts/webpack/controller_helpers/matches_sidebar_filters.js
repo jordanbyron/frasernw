@@ -13,7 +13,7 @@ export const sidebarFilterKeys = ((model) => {
         "procedures",
         "acceptsReferralsViaPhone",
         "patientsCanCall",
-        "respondsWithin",
+        "bookingWaitTime",
         "sex",
         "scheduleDays",
         "interpreterAvailable",
@@ -63,7 +63,7 @@ export const sidebarFilterKeys = ((model) => {
       return [
         "acceptsReferralsViaPhone",
         "patientsCanCall",
-        "respondsWithin",
+        "bookingWaitTime",
         "sex",
         "scheduleDays",
         "interpreterAvailable",
@@ -89,7 +89,7 @@ export const sidebarFilterKeys = ((model) => {
       return [
         "acceptsReferralsViaPhone",
         "patientsCanCall",
-        "respondsWithin",
+        "bookingWaitTime",
         "sex",
         "scheduleDays",
         "interpreterAvailable",

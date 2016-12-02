@@ -31,7 +31,7 @@ module HasWaitTimes
   }
 
   BOOKING_WAIT_TIMES = {
-    1 => "Book by phone when office calls for referral",
+    1 => "Immediate",
     2 => "Within one week",
     3 => "1-2 weeks",
     4 => "2-4 weeks",

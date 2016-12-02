@@ -23,9 +23,9 @@ const ReferralsFilters = ({model, dispatch}) => {
           dispatch={dispatch}
         />
         <FilterSelector
-          label="Responded To Within"
-          filterKey="respondsWithin"
-          options={respondsWithinOptions(model)}
+          label="Booking Wait Time"
+          filterKey="bookingWaitTime"
+          options={bookingWaitTimeOptions(model)}
           model={model}
           dispatch={dispatch}
         />
@@ -43,8 +43,8 @@ const ReferralsFilters = ({model, dispatch}) => {
   }
 }
 
-const respondsWithinOptions = (model) => {
-  return _.map(model.app.respondsWithinOptions, (label, key) => {
+const bookingWaitTimeOptions = (model) => {
+  return _.map(model.app.bookingWaitTimes, (label, key) => {
     return {
       key: parseInt(key),
       label: label

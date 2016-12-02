@@ -70,11 +70,11 @@ const sidebarFilterSummaries = {
     },
     placement: "trailing"
   },
-  respondsWithin: {
+  bookingWaitTime: {
     label: function(model) {
 
       return ("respond to referrals " +
-        respondsWithinSummaryLabels(model)[filterValues.respondsWithin(model)]);
+        bookingWaitTimeSummaryLabels(model)[filterValues.bookingWaitTime(model)]);
     },
     placement: "trailing"
   },
@@ -192,7 +192,7 @@ const sidebarFilterSummaries = {
   }
 }
 
-const respondsWithinSummaryLabels = (model) => {
+const bookingWaitTimeSummaryLabels = (model) => {
   return model.
     app.
     bookingWaitTimes.

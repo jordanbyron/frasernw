@@ -69,7 +69,7 @@ const cellConfigs = (model, dispatch) => {
     var configs = [
       { label: collectionShownPluralLabel(model), key: "NAME", showExpansionToggle: true},
       { label: "Accepting New Referrals?", key: "REFERRALS" },
-      { label: "Average Non-urgent Patient Waittime", key: "WAITTIME"},
+      { label: "Average Non-urgent Consultation Wait Time", key: "WAITTIME"},
       { label: "City", key: "CITY" }
     ];
 

@@ -80,8 +80,8 @@ export const patientsCanCall = factory({
   defaultValue: false
 });
 
-export const respondsWithin = factory({
-  key: "respondsWithin",
+export const bookingWaitTime = factory({
+  key: "bookingWaitTime",
   hasSubkeys: false,
   defaultValue: 0
 });
