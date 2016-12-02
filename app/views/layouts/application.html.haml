@@ -144,7 +144,7 @@
                                 "#",
                                 class: "arrow-right-after"
                               %ul.dropdown-menu.sub-menu
-                                - Specialization.all_cached.each do |specialization|
+                                - Specialization.all.each do |specialization|
                                   %li= link_to specialization.name,
                                     new_specialization_procedure_path(specialization)
                           - if can? :create, City
@@ -155,7 +155,7 @@
                                 "#",
                                 class: "arrow-right-after"
                               %ul.dropdown-menu
-                                - Specialization.all_cached.each do |specialization|
+                                - Specialization.all.each do |specialization|
                                   %li= link_to specialization.name,
                                     new_specialization_clinic_path(specialization)
                           - if can? :create, Division
@@ -177,7 +177,7 @@
                                 "#",
                                 class: "arrow-right-after"
                               %ul.dropdown-menu
-                                - Specialization.all_cached.each do |specialization|
+                                - Specialization.all.each do |specialization|
                                   %li= link_to specialization.name,
                                     new_specialization_specialist_path(specialization)
                           - if can? :create, Specialization
@@ -195,7 +195,7 @@
                             class: "arrow-right-after"
                           %ul.dropdown-menu.sub-menu
                             %li= link_to "All Specialties", procedures_path
-                            - Specialization.all_cached.each do |specialization|
+                            - Specialization.all.each do |specialization|
                               %li= link_to specialization.name,
                                 specialization_procedures_path(specialization)
                       - if can? :index, City
@@ -211,7 +211,7 @@
                             %li
                               = link_to "Requiring telehealth review",
                                 clinics_path(teleservices_require_review: true)
-                            - Specialization.all_cached.each do |specialization|
+                            - Specialization.all.each do |specialization|
                               %li= link_to "#{specialization.name} Clinics",
                                 specialization_clinics_path(specialization),
                                 class: 'division'
@@ -273,7 +273,7 @@
                             %li
                               = link_to "Requiring telehealth review",
                                 specialists_path(teleservices_require_review: true)
-                            - Specialization.all_cached.each do |specialization|
+                            - Specialization.all.each do |specialization|
                               %li= link_to specialization.member_name.pluralize,
                                 specialization_specialists_path(specialization),
                                 class: 'division'
