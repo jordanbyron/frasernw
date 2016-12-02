@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   include ControllerAuthentication
   before_filter :require_authentication
   before_filter :set_heartbeat_loader
+  before_filter :set_specializations
   protect_from_forgery with: :exception
   check_authorization
 
@@ -24,6 +25,11 @@ class ApplicationController < ActionController::Base
 
   def set_heartbeat_loader
     @layout_heartbeat_loader = true
+  end
+
+  def set_specializations
+    @layout_specializations ||=
+      Specialization.pluck_to_hash([:id, :name, :member_name])
   end
 
   def origin_path(request_origin)
