@@ -1,4 +1,4 @@
-import overlayFormDatasets from "window_scripts/profile_forms/overlay_form_changes";
+import overlayFormDatasets from "window_scripts/profile_forms/overlay_form_datasets";
 import * as setupVisibilityToggles from
   "window_scripts/profile_forms/setup_visibility_toggles"
 
@@ -18,8 +18,8 @@ export const emphasizeLocationTabs = () => {
   })
 }
 
-export const highlightNewNote = function(formData) {
-  $('li[review_node_id="' + formData.reviewId + '"]').
+export const highlightNewNote = function(formOverlayConfig) {
+  $('li[review_node_id="' + formOverlayConfig.reviewId + '"]').
     addClass('changed');
 }
 

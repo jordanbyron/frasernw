@@ -1,8 +1,8 @@
 export default function overlayFormDatasets(formOverlayConfig){
   if (formOverlayConfig.interactionType == 'rereview'){
-    mimicBeforeUserEdit();
+    mimicBeforeUserEdit(formOverlayConfig);
   }
-  applyUserChanges();
+  applyUserChanges(formOverlayConfig);
 }
 
 const mimicBeforeUserEdit = (formOverlayConfig) => {
@@ -50,11 +50,11 @@ const overlayArrayValue = (path, value, options) => {
   $(`input:checkbox[name='${inputName(path)}[]']`).each((index, elem) => {
     if (_.includes(value, elem.value) && elem.checked === false){
       elem.checked = true;
-      showPreviousValue($(elem), "unchecked", options)
+      showPreviousValue(elem, "unchecked", options)
     }
     else if (!_.includes(value, elem.value) && elem.checked == true){
       elem.checked = false;
-      showPreviousValue($(elem), "checked", options)
+      showPreviousValue(elem, "checked", options)
     }
   })
 }
@@ -67,8 +67,8 @@ const overlayStringValue = (path, value, options) => {
       const previouslyChecked = matchingElements.filter(":checked")[0];
 
       if (previouslyChecked.value !== value){
-        $(matchingElements).filter(`[value='${value}'`)[0].checked = true;
-        showPreviousValue($(previouslyChecked), "checked", options)
+        $(matchingElements).filter(`[value='${value}']`)[0].checked = true;
+        showPreviousValue(previouslyChecked, "checked", options)
       }
     }
     else if (matchingElements.length === 2 &&
@@ -77,18 +77,18 @@ const overlayStringValue = (path, value, options) => {
 
       if (value === "0" && matchingElements[1].checked){
         matchingElements[1].checked = false;
-        showPreviousValue($(matchingElements[1]), "checked", options)
+        showPreviousValue(matchingElements[1], "checked", options)
       }
       else if (value === "1" && !matchingElements[1].checked){
         matchingElements[1].checked = true;
-        showPreviousValue($(matchingElements[1]), "unchecked", options)
+        showPreviousValue(matchingElements[1], "unchecked", options)
       }
     }
     else {
       raiseWithAlert(`Can't handle multiple inputs for formdata path: ${path}`);
     }
   }
-  else {
+  else if (matchingElements.length === 1){
     const matchingElement = matchingElements[0]
 
     switch(matchingElement.tagName){
@@ -96,7 +96,7 @@ const overlayStringValue = (path, value, options) => {
       if(_.includes(["text", "tel", "email", "url"], matchingElement.type)){
         if (matchingElement.value !== value){
           showPreviousValue(
-            $(matchingElement),
+            matchingElement,
             (matchingElement.value === "" ? "blank" : matchingElement.value),
             options
           );
@@ -104,15 +104,19 @@ const overlayStringValue = (path, value, options) => {
           matchingElement.value = value;
         }
       }
+      else if (matchingElement.type === "hidden"){
+      }
       else {
-        raiseWithAlert(`Unrecognized input type found for path: ${path}`);
+        raiseWithAlert(
+          `Unrecognized input type found for path: ${path}, type: ${matchingElement.type}`
+        );
       }
       break;
     case "TEXTAREA":
       if (matchingElement.value.replace(textAreaRegexp, "") !==
         value.replace(textAreaRegexp, "")) {
         showPreviousValue(
-          $(matchingElement),
+          matchingElement,
           (matchingElement.value === "" ? "blank" : matchingElement.value),
           options
         )
@@ -120,13 +124,13 @@ const overlayStringValue = (path, value, options) => {
       }
       break;
     case "SELECT":
-      if (matchingElement !== value){
+      if (matchingElement.value !== value){
         //console.log("SELECT: old_entry_value = " + old_entry_value + ", new_entry_value = " + new_entry_value);
         showPreviousValue(
-          $(matchingElement),
+          matchingElement,
           (matchingElement.value == "" ?
             "blank" :
-            $(matchingElement).find(`option[value='${matchingElement.value}'`).text()),
+            $(matchingElement).find(`option[value='${matchingElement.value}']`).text()),
           options
         )
         matchingElement.value = value;
@@ -136,6 +140,9 @@ const overlayStringValue = (path, value, options) => {
     default:
       raiseWithAlert(`Unrecognized element tagname found for path: ${path}`);
     }
+  }
+  else {
+    console.log(`No match for ${path}`);
   }
 }
 const textAreaRegexp = /(\r\n|\n|\r)/gm;
@@ -151,12 +158,12 @@ const inputName = (formDatasetPath) => {
 
 const showPreviousValue = (formElement, previousValue, options) => {
   if(options.showPreviousValue){
-    formElement.closest('div.control-group, div.changed_wrapper').addClass('changed');
+    $(formElement).closest('div.control-group, div.changed_wrapper').addClass('changed');
 
     const annotation = $(document.createElement('span'));
     annotation.addClass('help-inline');
     annotation.text(`Was: ${previousValue}`);
 
-    formElement.parent().append(annotation);
+    $(formElement).parent().append(annotation);
   }
 }
