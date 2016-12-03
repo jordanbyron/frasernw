@@ -1,10 +1,5 @@
 module ActiveRecord
   class Base
-
-    def self.random(column)
-      unscoped.select(column).first(order: "RANDOM()")[column]
-    end
-
     def self.random_id
       random(:id)
     end
@@ -15,12 +10,6 @@ module ActiveRecord
 
     def self.pluck_to_hash(keys)
       pluck(*keys).map{ |plucked_attribute| Hash[keys.zip(plucked_attribute)] }
-    end
-
-    def self.id_hash(value)
-      pluck(:id).inject({}) do |memo, id|
-        memo.merge(id => value)
-      end
     end
 
     def creator
