@@ -16,8 +16,6 @@ class City < ActiveRecord::Base
 
   validates_presence_of :name, on: :create, message: "can't be blank"
 
-  after_commit :flush_cached_find
-
   PRIORITY_SETTINGS = 3
   def self.priority_setting_options
     (1..PRIORITY_SETTINGS).map do |t|
@@ -35,10 +33,6 @@ class City < ActiveRecord::Base
     end
   end
 
-  def self.cached_find(id)
-    Rails.cache.fetch([name, id]) { find(id) }
-  end
-
   def self.all_formatted_for_select(scope = :presence)
     self.select(&scope).map(&:formatted_for_select)
   end
@@ -50,10 +44,6 @@ class City < ActiveRecord::Base
       in_divisions(user.as_divisions).
         all_formatted_for_select(*scope)
     end
-  end
-
-  def flush_cached_find
-    Rails.cache.delete([self.class.name, id])
   end
 
   def to_s

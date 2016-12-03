@@ -60,16 +60,6 @@ class ProcedureSpecialization < ActiveRecord::Base
   include PaperTrailable
   has_ancestry
 
-  after_commit :flush_cached_find
-
-  def self.cached_find(id)
-    Rails.cache.fetch([name, id]) { find(id) }
-  end
-
-  def flush_cached_find
-    Rails.cache.delete([self.class.name, id])
-  end
-
   def self.for_specialization(specialization)
     where('procedure_specializations.specialization_id = (?)', specialization.id)
   end
