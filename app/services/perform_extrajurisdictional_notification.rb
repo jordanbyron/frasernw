@@ -49,7 +49,13 @@ class PerformExtrajurisdictionalNotification < ServiceObject
 
   def linked_entity
     if locatable.is_a?(Office)
-      locatable
+      if version.item.is_a?(SpecialistOffice)
+        version.item.specialist
+      elsif locatable.specialists.where(:updated_at == version.created_at).one?
+        locatable.specialists.where(:updated_at == version.created_at).first
+      else
+        locatable
+      end
     else
       locatable.clinic
     end

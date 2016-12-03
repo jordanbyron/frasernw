@@ -3,19 +3,18 @@
   %head
     %title #{@owner.name} -- Pathways: Externally-created new record update
   %body
-    %p
-      = "Hi #{@owner.name},"
+    %p= "Hi #{@owner.name},"
     %br
     %p
       = @editor.name
       from
       = @editor.divisions.first.name
-      has created a new
+      has created a new location in
+      = @owner_division.name
+      for the
       = link_to @created_entity_name.to_s,
         @linked_entity_path,
         target: "_blank"
-      in
-      = "#{@owner_division.name}."
+      = "with ID #{@linked_entity.id}."
     %br
-    %p
-      You are receiving this message as a service to Pathways administrators.
+    %p You are receiving this message as a service to Pathways administrators.
