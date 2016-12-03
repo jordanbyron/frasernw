@@ -1,8 +1,8 @@
-import overlayFormChanges from "window_scripts/profile_forms/overlay_form_changes";
+import overlayFormDatasets from "window_scripts/profile_forms/overlay_form_changes";
 import * as setupVisibilityToggles from
   "window_scripts/profile_forms/setup_visibility_toggles"
 
-export { overlayFormChanges };
+export { overlayFormDatasets };
 export { setupVisibilityToggles };
 
 export const emphasizeLocationTabs = () => {
@@ -16,6 +16,11 @@ export const emphasizeLocationTabs = () => {
       $(".tabbable.location_tabs").find("." + location_name).addClass("emphasized");
     }
   })
+}
+
+export const highlightNewNote = function(formData) {
+  $('li[review_node_id="' + formData.reviewId + '"]').
+    addClass('changed');
 }
 
 export const stashPreEditForm = () => {

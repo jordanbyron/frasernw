@@ -1,3 +1,5 @@
+var webpack = require("webpack");
+var path = require("path");
 
 /**
  * @see http://webpack.github.io/docs/configuration.html
@@ -29,7 +31,10 @@ module.exports = {
     sourceMapFilename: "webpack.bundle.js.map",
   },
   resolve: {
-    root: __dirname + '/app/assets/javascripts/webpack'
+    root: __dirname + '/app/assets/javascripts/webpack',
+    alias: {
+      'raiseWithAlert': (__dirname + '/app/assets/javascripts/webpack/utils/raise_with_alert.js')
+    }
   },
 
   // The 'module' and 'loaders' options tell webpack to use loaders.
@@ -46,10 +51,17 @@ module.exports = {
         loader: [ 'babel-loader' ],
         exclude: /node_modules/,
         query: {
-          plugins: ['transform-flow-strip-types'],
+          plugins: [
+            'transform-flow-strip-types'
+          ],
           presets: ['react', 'es2015']
         }
       }
     ]
-  }
+  },
+  plugins: [
+    new webpack.ProvidePlugin({
+      raiseWithAlert: "raiseWithAlert"
+    })
+  ]
 };

@@ -1,24 +1,28 @@
 - if @review_item.present?
   :javascript
-    (function(formData) {
-      formData.overlayChanges = true;
-      formData.baseReviewItem =
+    (function(formOverlayConfig) {
+      formOverlayConfig.overlayChanges = true;
+      formOverlayConfig.baseReviewItem =
         #{@review_item.transformed_base_object(@specialist) || 'null'};
-      formData.reviewItem =
+      formOverlayConfig.reviewItem =
         #{@review_item.transformed_review_object(@specialist) || 'null'};
-      formData.maxLocations = #{Specialist::MAX_OFFICES};
-      formData.interactionType = "#{@form_modifier.interaction_type.to_s}";
-      formData.recordKey = "specialist";
-      formData.reviewId = #{@review_item.id};
-    }( window.pathways.formData = {} ));
+      formOverlayConfig.interactionType = "#{@form_modifier.interaction_type.to_s}";
+      formOverlayConfig.recordType = "specialist";
+      formOverlayConfig.reviewId = #{@review_item.id};
+    }( window.pathways.formOverlayConfig = {} ));
 
 :javascript
   $(document).ready(function() {
-    if(window.pathways.formData && window.pathways.formData.overlayChanges) {
+    if(window.pathways.formOverlayConfig && window.pathways.formOverlayConfig.overlayChanges) {
       window.
         pathways.
-        referentForms.
-        overlayFormChanges(window.pathways.formData);
+        profileForms.
+        overlayFormDatasets(window.pathways.formOverlayConfig);
+
+      window.
+        pathways.
+        profileForms.
+        highlightNewNote();
     }
 
     window.pathways.profileForms.emphasizeLocationTabs();
