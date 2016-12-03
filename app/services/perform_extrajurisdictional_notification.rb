@@ -28,16 +28,20 @@ class PerformExtrajurisdictionalNotification < ServiceObject
   def relevant_fields_changed?
     (version.item_type == "Address" &&
       version.changeset.has_key?("city_id")) ||
-      (version.item_type == "Location" &&
-        (version.changeset.has_key?("hospital_in_id") &&
-          version.changeset["hospital_in_id"][1].present?) ||
-        (version.changeset.has_key?("location_in_id") &&
-          version.changeset["location_in_id"][1].present?))
+      (version.item_type == "SpecialistOffice" &&
+        version.changeset.has_key?("office_id")) ||
+        (version.item_type == "Location" &&
+          (version.changeset.has_key?("hospital_in_id") &&
+            version.changeset["hospital_in_id"][1].present?) ||
+          (version.changeset.has_key?("location_in_id") &&
+            version.changeset["location_in_id"][1].present?))
   end
 
   def location
     if version.item_type == "Address"
       version.item.locations.first
+    elsif version.item_type == "SpecialistOffice"
+      version.item.location
     else
       version.item
     end
