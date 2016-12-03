@@ -60,6 +60,13 @@ const overlayArrayValue = (path, value, options) => {
 }
 
 const overlayStringValue = (path, value, options) => {
+  // if path includes procedure links, specialization links
+  // handle separately:
+  // determine collection need to be changed on form model
+  // map fieldname to its corresponding attr name on the model
+  // for annotating previous values: add a 'previous' verison of the record as a
+  // subkey on the model
+
   const matchingElements = $(`*[name='${inputName(path)}']`);
 
   if (matchingElements.length > 1){
