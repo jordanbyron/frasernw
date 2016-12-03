@@ -32,7 +32,7 @@
     - if cl.scheduled?
       %p
         %strong Schedule:
-        = cl.schedule.collapsed_days_and_hours.join(". ").end_with_period
+        = cl.schedule.collapsed_days_and_hours_and_breaks.to_sentence
 
   - if @clinic.languages.present?
     %p.space.languages

@@ -78,11 +78,9 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
     );
   }
   else if (route === "/latest_updates"){
+    var className = "latest_updates__update"
     if (model.ui.persistentConfig.canHide){
-      var className = "latest_updates__update--editable";
-    }
-    else {
-      var className = "";
+      className += " latest_updates__update--editable";
     }
 
     return(

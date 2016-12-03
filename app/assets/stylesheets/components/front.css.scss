@@ -1,5 +1,11 @@
-#content #container #front {
-  .news_item_body ul li {
-    list-style-type: disc;
+#content #container {
+  #front {
+    .news_item_body ul li {
+      list-style-type: disc;
+    }
+  }
+
+  a.front_page__news_item_heading {
+    color: #c44d58
   }
 }

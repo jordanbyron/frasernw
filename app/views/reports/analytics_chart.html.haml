@@ -33,6 +33,13 @@
           id: "user_type_key",
           class: "report_parameter"
 
+      .control-group
+        = label_tag "Period:"
+        = select_tag "period_type",
+          options_for_select(AnalyticsChart.period_type_options),
+          id: "period_type",
+          class: "report_parameter"
+
 
       %br
       %a.print.btn.btn-default.pull-right{style: "margin-top: 20px;"}
@@ -49,6 +56,7 @@
     var startMonthKey = $("#start_month_key").val();
     var endMonthKey = $("#end_month_key").val();
     var userTypeKey = $("#user_type_key").val();
+    var periodType = $("#period_type").val();
 
     if (endMonthKey < startMonthKey) {
       $("#start_month_key").val(parseInt(endMonthKey));
@@ -60,6 +68,7 @@
         start_month_key: startMonthKey,
         end_month_key: endMonthKey,
         user_type_key: userTypeKey,
+        period_type: periodType,
         metric: "#{action_name}"
       });
 

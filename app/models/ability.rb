@@ -48,14 +48,18 @@ class Ability
 
       elsif user.as_admin?
         can :view_report, [
+          :change_requests,
           :page_views,
           :sessions,
-          :csv_usage,
-          :referents_by_specialty,
-          :entity_page_views,
           :user_ids,
-          :archived_feedback_items,
-          :change_requests
+          :referents_by_specialty,
+          :csv_usage,
+          :entity_page_views,
+          :specialist_contact_history,
+          :specialist_wait_times,
+          :clinic_wait_times,
+          :entity_statistics,
+          :archived_feedback_items
         ]
 
         can [:show, :toggle_subscription], Issue
@@ -119,7 +123,7 @@ class Ability
           :update_password
         ], User
 
-        can [:index, :new, :create, :show, :copy], NewsItem
+        can [:index, :new, :create, :show, :copy, :archive], NewsItem
         can [:edit, :update], NewsItem do |news_item|
           user.as_divisions.include? news_item.owner_division
         end
@@ -185,6 +189,8 @@ class Ability
         can :view_history, Historical
 
       elsif user.as_user?
+        can :archive, NewsItem
+
         can :show, [Specialist, Clinic] do |entity|
           !entity.hidden? ||
             entity.controlling_users.include?(user)

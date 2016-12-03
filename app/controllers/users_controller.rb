@@ -48,17 +48,10 @@ class UsersController < ApplicationController
     @user = User.new(
       params[:user].merge({ persist_in_demo: (ENV['DEMO_SITE'] == "true") })
     )
-    redirect_to new_user_url,
-      notice: "User create failed: User is missing a Name and a Division" and
-      return if (@user.name.blank? && @user.divisions.blank?)
-    redirect_to new_user_url,
-      notice: "User create failed: User is missing a Name" and
-      return if @user.name.blank?
-    redirect_to new_user_url,
-      notice: "User create failed: User is missing a Division" and
-      return if @user.divisions.blank?
-    # so we can avoid setting up with emails or passwords
-    if @user.save validate: false
+    if invalid_user_notice
+      redirect_to new_user_url, notice: invalid_user_notice
+    elsif @user.save(validate: false)
+      # so we can avoid setting up with emails or passwords
       redirect_to @user, notice: "User #{@user.name} successfully created."
     else
       render action: 'new', notice: "User Create Failed"
@@ -78,7 +71,9 @@ class UsersController < ApplicationController
   def update
     @user = User.find(params[:id])
     @user.attributes = params[:user]
-    if @user.save validate: false # so we can edit a pending account
+    if invalid_user_notice
+      redirect_to edit_user_url, notice: invalid_user_notice
+    elsif @user.save(validate: false) # so we can edit a pending account
       redirect_to @user, notice: "Successfully updated user."
     else
       @new_user = false
@@ -218,6 +213,18 @@ class UsersController < ApplicationController
   end
 
   private
+
+  def invalid_user_notice
+    if (@user.name.blank? && @user.divisions.blank?)
+      "User create failed: User is missing a Name and a Division"
+    elsif @user.name.blank?
+      "User create failed: User is missing a Name"
+    elsif @user.divisions.blank?
+      "User create failed: User is missing a Division"
+    else
+      nil
+    end
+  end
 
   def user_for_paper_trail
     if self.action_name == "setup"

@@ -1,4 +1,15 @@
 module FrontHelper
+  def scoped_news_item_archive_path(path, options = {})
+    division_scope =
+      if current_user.as_admin_or_super?
+        { division_id: @as_division }
+      else
+        {}
+      end
+
+    send(path, options.merge(division_scope))
+  end
+
   def favorite_featured_item(sc_item)
     id = sc_item.id
     title = escape_javascript(sc_item.title)
@@ -12,6 +23,15 @@ module FrontHelper
     else
       "Pathways Newsletter"
     end
+  end
+
+  def news_item_types_present
+    @news_items.
+      keys.
+      reject{ |key| @news_items[key].none? }.
+      map do |key|
+        NewsItem::TYPE_HASH[key].pluralize
+      end.to_sentence
   end
 
   def self.news_item_class(news_item)

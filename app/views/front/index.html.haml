@@ -7,7 +7,6 @@
 
 .content-wrapper
   .content#front{ style: current_user.as_admin_or_super? && 'margin-top: -15px' }
-
     - if current_user.as_admin_or_super?
       .row
         .span12
@@ -18,22 +17,13 @@
                 = link_to division.name, root_path(division_id: division.id)
       %hr
 
-    - if @news_items.any?
-      .row
-        .span12
-          - @news_items.each do |news_item|
-            .news_item.breaking
-              .news_item_date= news_item.date if news_item.date.present?
-              %div{ class: FrontHelper.news_item_class(news_item) }
-                = news_item.title if news_item.title.present?
-              .news_item_body
-                = BlueCloth.new(news_item.body).to_html.html_safe
-
+    .row
+      .span12
+        - @news_items[NewsItem::TYPE_BREAKING].current.each do |news_item|
+          = render_news_item(news_item)
     .row
       .span3.hidden-phone.front
-
         %h2 Specialties
-
         %ul.space
           - @specializations.each do |specialization|
             %li
@@ -47,7 +37,6 @@
       .span4half.front
 
         %h2 What is Pathways?
-
         %p
           Pathways is a web based resource to streamline and optimize patient
           referrals.
@@ -62,31 +51,30 @@
             and now being rolled out to Divisions of Family Practice across BC,
             Pathways provides a comprehensive database of specialists,
             specialty clinics, and services that are searchable and filterable.
-
           %p
             Pathways contributes to improved patient outcomes by improving
             timely access to specialists, and providing a central hub for
             decision aids, guidelines, pearls, red flags, and patient education
             materials.
-
           %p
             To learn more about Pathways, please visit our
             %a{ href: pathways_info_path, target: '_blank' }
               Pathways Information page
             or access the user guide and training videos located in the ‘You’
             tab above.
-
           %p
             If you have any comments or questions while using the site, please
             = link_to("contact us", contact_path) + "."
 
-        %h2 Latest Specialist and Clinic Updates
         - if ENV["HIDE_LATEST_UPDATES"] != "true"
-          - LatestUpdates.for(:front, @as_divisions).each do |event|
+          %h2 Latest Specialist and Clinic Updates
+          - LatestUpdates.call(context: :front,
+            division_ids: @as_divisions.map(&:id)).each do |event|
             %p= event[:markup]
-
-        %p
-          = link_to "More...", @more_updates_url
+          %p
+            You can see past specialist and clinic updates
+            = link_to("here",
+              scoped_news_item_archive_path(:latest_updates_path)) + "."
 
         - if current_user.as_admin_or_super? && @can_edit_division
           %p.admin.btn-group
@@ -97,9 +85,7 @@
 
         - if @current_newsletter.present?
           %div{ style: "margin-top: 18px;" }
-            %h2
-              = newsletter_section_heading(@current_newsletter)
-
+            %h2= newsletter_section_heading(@current_newsletter)
             %div{ style: "margin-top: 10px;" }
               = image_tag "pathways_newsletter.png",
                 class: "newsletter__thumbnail"
@@ -107,10 +93,10 @@
                 The current Pathways newsletter (
                 = @current_newsletter.month
                 Edition ) is available
-                = link_to @current_newsletter.url, target: '_blank' do
-                  here
-                  %span>= "."
-                %span= " It includes:"
+                = link_to("here",
+                  @current_newsletter.url,
+                  target: "_blank") + "."
+                It includes:
               %ul{ style: "margin-bottom: 20px;" }
                 - @current_newsletter.description_items.each do |item|
                   %li{ style: "list-style-type: disc;" }
@@ -120,18 +106,10 @@
                 = link_to('browse previous issues', newsletters_path) + "."
               %div{ style: "clear: both;" }
 
-        - if @divisional_updates.any?
-
+        - if @news_items[NewsItem::TYPE_DIVISIONAL].current.any?
           %h2 Division Updates
-
-          - @divisional_updates.each do |news_item|
-
-            .news_item
-              .news_item_date= news_item.date if news_item.date.present?
-              %div{ class: FrontHelper.news_item_class(news_item) }
-                = news_item.title if news_item.title.present?
-              .news_item_body
-                = BlueCloth.new(news_item.body).to_html.html_safe
+          - @news_items[NewsItem::TYPE_DIVISIONAL].current.each do |news_item|
+            = render_news_item(news_item)
 
         - if @can_edit_division
           %p.admin.btn-group
@@ -140,18 +118,10 @@
               %i.icon-pencil
               Edit Division Updates
 
-        - if @attachment_updates.any?
-
+        - if @news_items[NewsItem::TYPE_ATTACHMENT_UPDATE].current.any?
           %h2 Attachment Updates
-
-          - @attachment_updates.each do |news_item|
-
-            .news_item
-              .news_item_date= news_item.date if news_item.date.present?
-              %div{ class: FrontHelper.news_item_class(news_item) }
-                = news_item.title if news_item.title.present?
-              .news_item_body
-                = BlueCloth.new(news_item.body).to_html.html_safe
+          - @news_items[NewsItem::TYPE_ATTACHMENT_UPDATE].current.each do |news_item|
+            = render_news_item(news_item)
 
         - if current_user.as_admin_or_super? && @can_edit_division
           %p.admin.btn-group
@@ -160,20 +130,12 @@
               %i.icon-pencil
               Edit Attachment Updates
 
-        - if @shared_care_updates.any?
-
+        - if @news_items[NewsItem::TYPE_SHARED_CARE].current.any?
           %h2
             %i.icon-red.icon-star
             Shared Care Updates
-
-          - @shared_care_updates.each do |news_item|
-
-            .news_item
-              .news_item_date= news_item.date if news_item.date.present?
-              %div{ class: FrontHelper.news_item_class(news_item) }
-                = news_item.title if news_item.title.present?
-              .news_item_body
-                = BlueCloth.new(news_item.body).to_html.html_safe
+          - @news_items[NewsItem::TYPE_SHARED_CARE].current.each do |news_item|
+            = render_news_item(news_item)
 
         - if current_user.as_admin_or_super? && @can_edit_division
           %p.admin.btn-group
@@ -182,10 +144,15 @@
               %i.icon-pencil
               Edit Shared Care Updates
 
+        %h2 News Archive
+        %p
+          You can see an archive of past
+          = news_item_types_present
+          = link_to("here",
+            scoped_news_item_archive_path(:news_items_archive_path)) + "."
 
       .span4.offsethalf
         .well
-
           %h2.center Featured Content
           - division_ids = @as_divisions.map{ |division| division.id }.join('_')
           - cache("featured_content_#{division_ids}") do
@@ -195,7 +162,7 @@
 
           .featured-content
             %i.icon-star.icon-blue
-            %span= "Indicates content from our Shared Care initiative"
+            Indicates content from our Shared Care initiative
 
         - if current_user.as_admin_or_super? && @can_edit_division
           %p.admin.btn-group
