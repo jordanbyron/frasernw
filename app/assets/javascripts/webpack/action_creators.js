@@ -186,7 +186,7 @@ export function toggleSpecializationFilter(dispatch, model, proposed) {
 }
 
 export const toggleUpdateVisibility = (dispatch, update) => {
-  const updateIdentifiers = _.omit(update, "markup", "hidden", "manual");
+  const updateIdentifiers = _.omit(update, "markup", "hidden", "manual", "index");
   const params = _.assign(
     {},
     updateIdentifiers,
