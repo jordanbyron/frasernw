@@ -208,10 +208,6 @@ class Specialist < ActiveRecord::Base
     self.in_cities_cached(divs.map{ |division| division.cities }.flatten.uniq)
   end
 
-  def self.cached_find(id)
-    Rails.cache.fetch([name, id], expires_in: 4000.seconds) { find(id) }
-  end
-
   def expire_cache
     Rails.cache.delete([self.class.name, self.id])
     cities(force: true)

@@ -116,8 +116,6 @@ class Clinic < ActiveRecord::Base
 
   scope :hidden, -> { where(hidden: true) }
 
-  after_commit :flush_cached_find
-
   def self.includes_location_data
     includes_clinic_locations.includes_locations
   end
@@ -154,14 +152,6 @@ class Clinic < ActiveRecord::Base
         { hospital_in: { location: { address: :city } } },
       ]
     )
-  end
-
-  def self.cached_find(id)
-    Rails.cache.fetch([name, id]) { find(id) }
-  end
-
-  def flush_cached_find
-    Rails.cache.delete([self.class.name, id])
   end
 
   CATEGORIZATION_LABELS = {

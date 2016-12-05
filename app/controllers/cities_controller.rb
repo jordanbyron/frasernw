@@ -6,7 +6,7 @@ class CitiesController < ApplicationController
   end
 
   def show
-    @city = City.cached_find(params[:id])
+    @city = City.find(params[:id])
   end
 
   def new

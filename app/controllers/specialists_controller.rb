@@ -22,7 +22,7 @@ class SpecialistsController < ApplicationController
   end
 
   def show
-    @specialist = Specialist.cached_find(params[:id])
+    @specialist = Specialist.find(params[:id])
     if @specialist.controlling_users.include?(current_user)
       current_user.viewed_controlled_specialist!(@specialist)
     end
@@ -267,20 +267,20 @@ class SpecialistsController < ApplicationController
   end
 
   def print_office_information
-    @specialist = Specialist.cached_find(params[:id])
+    @specialist = Specialist.find(params[:id])
     @specialist_office = SpecialistOffice.find(params[:office_id])
     render :print_information, layout: 'print'
   end
 
   def print_clinic_information
-    @specialist = Specialist.cached_find(params[:id])
+    @specialist = Specialist.find(params[:id])
     @clinic = Clinic.find(params[:clinic_id])
     @clinic_location = ClinicLocation.find(params[:location_id])
     render :print_information, layout: 'print'
   end
 
   def photo
-    @specialist = Specialist.cached_find(params[:id])
+    @specialist = Specialist.find(params[:id])
   end
 
   def update_photo
@@ -305,7 +305,7 @@ class SpecialistsController < ApplicationController
   def refresh_cache
     @specialist = Specialist.find(params[:id])
     @specialist.expire_cache
-    @specialist = Specialist.cached_find(params[:id])
+    @specialist = Specialist.find(params[:id])
     render :show
   end
 

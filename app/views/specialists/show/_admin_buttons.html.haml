@@ -1,0 +1,48 @@
+- if current_user.as_admin_or_super?
+  %p.admin.btn-group
+
+    - if @specialist.review_item.present?
+      = link_to review_specialist_path(@specialist), class: "btn" do
+        %i.icon-list-alt
+        Review Pending Changes
+
+    - elsif can? :update, @specialist
+      = link_to edit_specialist_path(@specialist), class: "btn" do
+        %i.icon-pencil
+        Edit Specialist
+      = link_to edit_referral_forms_path(parent_type: "Specialist",
+        parent_id: @specialist.id),
+        class: "btn" do
+        %i.icon-file
+        Referral Forms
+      = link_to photo_specialist_path(@specialist), class: "btn" do
+        %i.icon-picture
+        Photo
+      %a.btn{ href: "javascript:void(0)",
+        data: { toggle: "collapse", target: "#share" } }
+        %i.icon-share
+        Share
+
+    - if can? :view_history, @specialist
+      = large_history_button(@specialist)
+
+    - if current_user.as_admin? # fake out delete button for normal admins
+      %a.btn{ href: "javascript:void(0)",
+        data: { toggle: "collapse", target: "#delete-specialist-msg" } }
+        %i.icon-trash
+        Delete Specialist
+
+    - elsif can? :destroy, @specialist
+      = link_to @specialist,
+        data: { confirm: "Delete #{@specialist.name}?" },
+        method: :delete,
+        class: "btn" do
+        %i.icon-trash
+        Delete Specialist
+
+  #share.collapse
+
+  #delete-specialist-msg.collapse
+    .alert.alert-info{ style: "margin-top: 10px" }
+      If you would like to have this specialist deleted, please contact a
+      provincial administrator.

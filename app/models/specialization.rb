@@ -56,18 +56,6 @@ class Specialization < ActiveRecord::Base
     where("specializations.name != 'Family Practice'")
   end
 
-  def self.all_cached
-    @_all_specializations_cached ||= Rails.cache.
-      fetch(
-        [name, "all_specializations"],
-        expires_in: 6.hours
-      ) { self.all }
-  end
-
-  def self.cached_find(id)
-    Rails.cache.fetch([name, id]) { find(id) }
-  end
-
   def self.refresh_cache
     Rails.cache.write([name, "all_specializations"], self.all)
     SpecialistOffice.all.each do |office|
