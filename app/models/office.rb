@@ -123,10 +123,6 @@ class Office < ActiveRecord::Base
     end
   end
 
-  def self.cached_find(id)
-    Rails.cache.fetch([name, id]){find(id)}
-  end
-
   def visible?
     city && !(city.hidden?)
   end

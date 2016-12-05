@@ -73,22 +73,12 @@ class ScItem < ActiveRecord::Base
 
   default_scope { order('sc_items.title') }
 
-  after_commit :flush_cached_find
-
   def self.demoable
     where(demoable: true)
   end
 
   def self.provincial
     where(division_id: 13)
-  end
-
-  def self.cached_find(id)
-    Rails.cache.fetch([name, id]) { find(id) }
-  end
-
-  def flush_cached_find
-    Rails.cache.delete([self.class.name, id])
   end
 
   def self.borrowable_by_divisions(divisions)

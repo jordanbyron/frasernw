@@ -53,25 +53,15 @@ class Division < ActiveRecord::Base
 
   validates_presence_of :name, on: :create, message: "can't be blank"
 
-  after_commit :flush_cached_find
   after_commit :flush_cache
-  after_touch  :flush_cached_find
   after_touch  :flush_cache
 
   def self.except_provincial
     where('"divisions".name != (?)', "Provincial")
   end
 
-  def self.cached_find(id)
-    Rails.cache.fetch([name, id]) { find(id) }
-  end
-
   def self.provincial
     where(name: "Provincial").first
-  end
-
-  def flush_cached_find
-    Rails.cache.delete([self.class.name, id])
   end
 
   def showing_specializations

@@ -64,10 +64,6 @@ class SpecialistOffice < ActiveRecord::Base
     ) { self.all_formatted_for_user_form }
   end
 
-  def self.cached_find(id)
-    Rails.cache.fetch([name, id]){find(id)}
-  end
-
   def flush_cache
     Rails.cache.delete(
       [self.class.name, "all_specialist_office_formatted_for_user_form"]
