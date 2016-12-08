@@ -7,10 +7,6 @@ class Hash
     end
   end
 
-  def except(*keys)
-    dup.except!(*keys)
-  end
-
   def all_values(new_value)
     new_hash = self.dup
 

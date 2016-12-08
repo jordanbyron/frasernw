@@ -2,6 +2,8 @@ require File.expand_path('../../config/boot',        __FILE__)
 require File.expand_path('../../config/environment', __FILE__)
 require 'clockwork'
 
+PaperTrail.whodunnit = "system"
+
 module Clockwork
   error_handler do |error|
     SystemNotifier.error(error)
@@ -34,7 +36,7 @@ module Clockwork
       'bundle exec rake pathways:remove_deceased_specialist_records',
       at: 'Sunday 08:20',
       tz: 'UTC'
-    ) { `bundle exec rake pathways:remove_deceased_specialist_records` }
+    ) { RemoveDeceasedSpecialistRecords.call(delay: true) }
 
   end
 
