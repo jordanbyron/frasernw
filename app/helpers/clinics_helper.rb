@@ -46,6 +46,12 @@ module ClinicsHelper
         (clinic.clinic_locations.select(&:has_data?).any? ||
           clinic.languages.any? ||
           clinic.interpreter_available)
+    when :healthcare_providers
+      clinic.open? && clinic.healthcare_providers.present?
+    when :patient_information
+      clinic.open? &&
+        (clinic.patient_instructions.present? ||
+          clinic.cancellation_policy.present?)
     when :referrals
       clinic.open? &&
         (clinic.accepts_referrals_via.present? ||
