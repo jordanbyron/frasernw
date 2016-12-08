@@ -6,8 +6,7 @@ Frasernw::Application.routes.draw do
 
   match '/delayed_job' => DelayedJobWeb, anchor: false, via: [:get, :post]
 
-  get '/versions' => 'versions#show_all', as: 'all_versions'
-  get '/versions/:id' => 'versions#show', as: 'version'
+  resources :versions, only: [:show, :index]
 
   resources :user_masks, only: [:new, :create, :update] do
     collection do
