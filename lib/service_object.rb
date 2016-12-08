@@ -1,16 +1,15 @@
 class ServiceObject
   include Virtus.model(strict: true)
   include ApplicationJob
+  attribute :paper_trail_whodunnit
 
   def self.call(args = {})
     if args[:delay]
-      args.delete(:delay)
-
-      Delayed::Job.enqueue(new(args))
+      Delayed::Job.enqueue(new(
+        args.except(:delay).merge(paper_trail_whodunnit: PaperTrail.whodunnit)
+      ))
     else
-      args.delete(:delay)
-
-      new(args).call
+      new(args.except(:delay)).call
     end
   end
 
@@ -19,6 +18,8 @@ class ServiceObject
   end
 
   def perform
+    PaperTrail.whodunnit = paper_trail_whodunnit
+
     call
   end
 end
