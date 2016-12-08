@@ -28,13 +28,13 @@
 
     - if show_specialist_section?(@specialist, :ongoing_care)
       %p.space.no_indent
-        = "This physician also sees their own patients for ongoing care at " + |
-          "their office listed below." |
+        This physician also sees their own patients for ongoing care at their
+        office listed below.
 
     - elsif !@specialist.completed_survey?
       %p.space.no_indent
-        = "They may be out of our current catchment area, or in a speciality we " + |
-          "have yet to fully survey." |
+        They may be out of our current catchment area, or in a speciality we
+        have yet to fully survey.
 
     - if show_specialist_section?(@specialist, :practice_details)
       %p.space.no_indent
