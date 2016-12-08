@@ -5,10 +5,10 @@
     %h4 You are viewing a prior version of this #{instance_name} record.
 
   - if @version.previous.present?
-    This version was saved 
+    This version was saved
     = @version.previous.created_at.to_s(:date_ordinal)
     by
-    = whodunnit_name(@version.previous) + "."
+    = @version.previous.safe_user.name + "."
   = link_to "View live site version.", url_for(@version.reify)
 
   %ul.pager

@@ -52,4 +52,18 @@ module ActiveRecord
       [ saved_token ]
     end
   end
+
+  module SetPaperTrailWhodunnit
+    def initialize(*args)
+      # we do this here because we'll forget otherwise
+      PaperTrail.whodunnit = "system"
+
+      super(*args)
+    end
+  end
+
+  class Migration
+    # see http://stackoverflow.com/questions/4470108/when-monkey-patching-a-method-can-you-call-the-overridden-method-from-the-new-i
+    prepend SetPaperTrailWhodunnit
+  end
 end

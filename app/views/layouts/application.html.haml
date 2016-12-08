@@ -98,7 +98,7 @@
                     %ul.dropdown-menu
                       - if current_user.as_super_admin?
                         %li= link_to "Activity Feed",
-                          all_versions_path,
+                          versions_path,
                           class: "history"
                       %li
                         - if pending_reviews.count > 0
