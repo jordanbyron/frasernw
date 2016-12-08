@@ -42,35 +42,31 @@ module ClinicsHelper
   def show_clinic_section?(clinic, section_key)
     case section_key
     when :clinic_information
-      clinic.open? &&
-        (clinic.clinic_locations.select(&:has_data?).any? ||
-          clinic.languages.any? ||
-          clinic.interpreter_available)
+      clinic.clinic_locations.select(&:has_data?).any? ||
+        clinic.languages.any? ||
+        clinic.interpreter_available
     when :healthcare_providers
-      clinic.open? && clinic.healthcare_providers.present?
+      clinic.healthcare_providers.present?
     when :patient_information
-      clinic.open? &&
-        (clinic.patient_instructions.present? ||
-          clinic.cancellation_policy.present?)
-    when :referrals
-      clinic.open? &&
-        (clinic.accepts_referrals_via.present? ||
-          clinic.responds_via.present? ||
-          clinic.referral_form_mask != 3  ||
-          clinic.required_investigations.present? ||
-          clinic.waittime.present? ||
-          clinic.lagtime.present? ||
-          clinic.patient_can_book_mask != 3)
-    when :urgent_referrals
-      clinic.open? &&
-        (clinic.red_flags.present? || clinic.urgent_referrals_via.present?)
+      clinic.patient_instructions.present? ||
+        clinic.cancellation_policy.present?
     when :physicians
-      clinic.open? &&
-        clinic.visible_attendances.any?
+      clinic.visible_attendances.any?
+    when :referrals
+      clinic.accepts_referrals_via.present? ||
+        clinic.responds_via.present? ||
+        clinic.referral_form_mask != 3  ||
+        clinic.required_investigations.present? ||
+        clinic.waittime.present? ||
+        clinic.lagtime.present? ||
+        clinic.patient_can_book_mask != 3
     when :sidebar
-      clinic.open?
+      true
     when :teleservices
-      !clinic.teleservices_require_review && clinic.teleservices.any?(&:offered?)
-    end
+      !clinic.teleservices_require_review &&
+        clinic.teleservices.any?(&:offered?)
+    when :urgent_referrals
+      clinic.red_flags.present? || clinic.urgent_referrals_via.present?
+    end && clinic.open?
   end
 end
