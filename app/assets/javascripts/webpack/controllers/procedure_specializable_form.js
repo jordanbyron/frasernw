@@ -34,7 +34,12 @@ const ProcedureSpecializableNodes = ({model, nodes, offset, setState}) => {
             return(
               <div
                 key={`${node.id}${node.type}`}
-                style={{marginBottom: "5px", marginTop: "5px", marginLeft: `${offset * 30}px`}}
+                style={{
+                  marginBottom: "5px",
+                  marginTop: "5px",
+                  marginLeft: `${offset * 30}px`,
+                  minHeight: "28px"
+                }}
               >
                 <input type="hidden"
                   name={`${inputNameRoot}[${node.type}_id]`}
@@ -51,7 +56,7 @@ const ProcedureSpecializableNodes = ({model, nodes, offset, setState}) => {
                 <div
                   style={{
                     display: "inline-block",
-                    minHeight: "28px",
+                    lineHeight: "28px",
                     marginLeft: "5px",
                     fontWeight: (node.type === "specialization" ? "bold" : "normal")
                   }}
