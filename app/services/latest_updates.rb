@@ -4,11 +4,6 @@ class LatestUpdates < ServiceObject
   attribute :division_ids, Array
   attribute :context, Symbol
 
-  CONTEXTS = [
-    :front,
-    :index
-  ]
-
   def self.recache_for_groups(division_id_groups, force_automatic: false)
     # we only want to regenerate automatic events once per division, so we
     # do it separately, first
@@ -43,6 +38,13 @@ class LatestUpdates < ServiceObject
         uniq
     end
   end
+
+  private
+
+  CONTEXTS = [
+    :front,
+    :index
+  ]
 
   def divisions
     @divisions ||= Division.find(division_ids)
@@ -158,7 +160,8 @@ class LatestUpdates < ServiceObject
         clinic_link =
           link_to(clinic.name, "/clinics/#{clinic.id}")
         closed =
-          "(#{clinic.specializations.map{ |s| s.name }.to_sentence}) has closed."
+          "(#{clinic.specializations.map{ |s| s.name }.to_sentence}) has "\
+            "closed."
 
         "#{clinic_link} #{closed}".html_safe
       }
@@ -210,9 +213,7 @@ class LatestUpdates < ServiceObject
       "latest_updates:automatic:division:#{division.id}",
       force: force
     ) do
-        [Specialists, Clinics].inject([]) do |memo, klass|
-          memo + klass.call(division: division)
-        end
+        Entities.call(division: division)
       end
   end
 
@@ -234,152 +235,108 @@ class LatestUpdates < ServiceObject
     LatestUpdatesMask::EVENTS.key(event)
   end
 
-  class Clinics < ServiceObject
+  class Entities < ServiceObject
     attribute :division, Division
 
     def call
-      Clinic.
-        includes_location_data.
-        includes(:specializations).
-        inject([]) do |memo, clinic|
-          memo + ClinicEvents.call(clinic: clinic, division: division)
-        end
+      [Specialists, Clinics].inject([]) do |memo, klass|
+        memo + klass.call(division: division)
+      end
     end
 
-    class ClinicEvents < ServiceObject
-      attribute :clinic, Clinic
+    class Clinics < ServiceObject
+      attribute :division, Division
+      def call
+        Clinic.
+          includes_location_data.
+          includes(:specializations).
+          inject([]) do |memo, clinic|
+            memo + EntityEvents.call(entity: clinic, division: division)
+          end
+      end
+    end
+
+    class Specialists < ServiceObject
+      attribute :division, Division
+      def call
+        Specialist.
+          includes_specialization_page.
+          includes(:versions).
+          includes(specialist_offices: :versions).
+          inject([]) do |memo, specialist|
+            memo + EntityEvents.call(
+              entity: specialist,
+              division: division
+            )
+          end
+      end
+    end
+
+    class EntityEvents < ServiceObject
+      attribute :entity
       attribute :division, Division
 
-      CLINIC_EVENTS = [
+      ENTITY_EVENTS = [
         {
-          test: -> (clinic) { clinic.closed? },
-          event: -> (clinic, division) {
+          test: -> (entity) { entity.try(:closed?) },
+          event: -> (entity, division) {
             {
-              item_id: clinic.id,
-              item_type: "Clinic",
+              item_id: entity.id,
+              item_type: entity.class.to_s,
               event_code: LatestUpdates.event_code(:closed),
               division_id: division.id,
-              date: clinic.change_date(&:closed?),
-              markup: LatestUpdates::MARKUP["Clinic"][:closed].call(clinic)
+              date: entity.change_date(&:closed?),
+              markup:
+                LatestUpdates::MARKUP[entity.class.to_s][:closed].call(entity)
             }
           }
-        }
-      ]
-
-      def call
-        LatestUpdates::CONDITIONS_TO_HIDE_FROM_FEED.each do |condition|
-          return [] if condition.call(clinic, division)
-        end
-
-        clinic_events + collapse(clinic_location_events)
-      end
-
-      def clinic_events
-        CLINIC_EVENTS.inject([]) do |memo, event|
-          if event[:test].call(clinic)
-            memo << event[:event].call(clinic, division)
-          else
-            memo
-          end
-        end
-      end
-
-      def clinic_location_events
-        return [] unless clinic.accepting_new_referrals?
-
-        clinic.clinic_locations.inject([]) do |memo, clinic_location|
-          if clinic_location.opened_recently?
-            memo << {
-              date: clinic_location.change_date(&:opened_recently?),
-              record: clinic_location
-            }
-          else
-            memo
-          end
-        end
-      end
-
-      def collapse(clinic_location_events)
-        clinic_location_events.group_by do |event|
-          event[:date]
-        end.map do |date, events|
-          {
-            item_id: clinic.id,
-            item_type: "Clinic",
-            event_code: LatestUpdates.event_code(:opened_recently),
-            division_id: division.id,
-            date: date,
-            markup: LatestUpdates::MARKUP["Clinic"][:opened_recently].call(
-              clinic,
-              events.map{|event| event[:record] }
-            )
-          }
-        end
-      end
-    end
-  end
-
-  class Specialists < ServiceObject
-    attribute :division, Division
-
-    def call
-      Specialist.
-        includes_specialization_page.
-        includes(:versions).
-        includes(specialist_offices: :versions).
-        inject([]) do |memo, specialist|
-          memo + SpecialistEvents.call(
-            specialist: specialist,
-            division: division
-          )
-        end
-    end
-
-    class SpecialistEvents < ServiceObject
-      attribute :specialist, Specialist
-      attribute :division, Division
-
-      SPECIALIST_EVENTS = [
+        },
         {
-          test: -> (specialist) { specialist.moved_away? },
-          event: -> (specialist, division) {
+          test: -> (entity) { entity.try(:moved_away?) },
+          event: -> (entity, division) {
             {
-              item_id: specialist.id,
-              item_type: "Specialist",
+              item_id: entity.id,
+              item_type: entity.class.to_s,
               event_code: LatestUpdates.event_code(:moved_away),
               division_id: division.id,
-              date: specialist.change_date(&:moved_away?),
-              markup: LatestUpdates::MARKUP["Specialist"][:moved_away].call(specialist)
+              date: entity.change_date(&:moved_away?),
+              markup:
+                LatestUpdates::MARKUP[entity.class.to_s][:moved_away].
+                  call(entity)
             }
           }
         },
         {
-          test: -> (specialist) { specialist.retired? },
-          event: -> (specialist, division) {
+          test: -> (entity) { entity.try(:retired?) },
+          event: -> (entity, division) {
             {
-              item_id: specialist.id,
-              item_type: "Specialist",
+              item_id: entity.id,
+              item_type: entity.class.to_s,
               event_code: LatestUpdates.event_code(:retired),
               division_id: division.id,
-              date: (specialist.practice_end_date ||
-                specialist.change_date(&:retired?)),
-              markup: LatestUpdates::MARKUP["Specialist"][:retired].call(specialist)
+              date: (entity.practice_end_date ||
+                entity.change_date(&:retired?)),
+              markup:
+                LatestUpdates::MARKUP[entity.class.to_s][:retired].call(entity)
             }
           }
         },
         {
-          test: -> (specialist) {
-            specialist.retiring? &&
-              specialist.practice_end_date > Date.new(2016, 10, 18)
+          test: -> (entity) {
+            entity.try(:retiring?) &&
+              entity.try(:practice_end_date) do
+                entity.practice_end_date > Date.new(2016, 10, 18)
+              end
           },
-          event: -> (specialist, division) {
+          event: -> (entity, division) {
             {
-              item_id: specialist.id,
-              item_type: "Specialist",
+              item_id: entity.id,
+              item_type: entity.class.to_s,
               event_code: LatestUpdates.event_code(:retiring),
               division_id: division.id,
-              date: specialist.change_date(&:retiring?),
-              markup: LatestUpdates::MARKUP["Specialist"][:retiring].call(specialist)
+              date: entity.change_date(&:retiring?),
+              markup:
+                LatestUpdates::MARKUP[entity.class.to_s][:retiring].call(entity)
             }
           }
         }
@@ -387,51 +344,57 @@ class LatestUpdates < ServiceObject
 
       def call
         LatestUpdates::CONDITIONS_TO_HIDE_FROM_FEED.each do |condition|
-          return [] if condition.call(specialist, division)
+          return [] if condition.call(entity, division)
         end
 
-        specialist_events + collapse(specialist_office_events)
+        entity_events + entity_office_events
       end
 
-      def specialist_events
-        SPECIALIST_EVENTS.inject([]) do |memo, event|
-          if event[:test].call(specialist)
-            memo << event[:event].call(specialist, division)
+      def entity_events
+        ENTITY_EVENTS.inject([]) do |memo, event|
+          if event[:test].call(entity)
+            memo << event[:event].call(entity, division)
           else
             memo
           end
         end
       end
 
-      def specialist_office_events
-        return [] unless specialist.accepting_new_direct_referrals?
+      def entity_office_events
+        if (entity.class == Clinic) && entity.accepting_new_referrals?
+          offices = entity.clinic_locations
+        elsif (
+          (entity.class == Specialist) &&
+            entity.accepting_new_direct_referrals?
+        )
+          offices = entity.specialist_offices
+        end
 
-        specialist.specialist_offices.inject([]) do |memo, specialist_office|
-          if specialist_office.opened_recently?
+        return [] unless offices
+
+        offices.inject([]) do |memo, office|
+          if office.opened_recently?
             memo << {
-              record: specialist_office,
-              date: specialist_office.change_date(&:opened_recently?)
+              date: office.change_date(&:opened_recently?),
+              record: office
             }
           else
             memo
           end
-        end
-      end
-
-      def collapse(specialist_office_events)
-        specialist_office_events.group_by do |event|
+        end.group_by do |event|
           event[:date]
         end.map do |date, events|
           {
-            item_id: specialist.id,
-            item_type: "Specialist",
+            item_id: entity.id,
+            item_type: entity.class.to_s,
             event_code: LatestUpdates.event_code(:opened_recently),
             division_id: division.id,
             date: date,
-            markup: LatestUpdates::MARKUP["Specialist"][:opened_recently].call(
-              specialist,
-              events.map{ |event| event[:record] }
-            )
+            markup:
+              LatestUpdates::MARKUP[entity.class.to_s][:opened_recently].call(
+                entity,
+                events.map{|event| event[:record] }
+              )
           }
         end
       end
