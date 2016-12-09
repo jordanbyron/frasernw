@@ -103,8 +103,8 @@ class LatestUpdates < ServiceObject
         specialist_link =
           link_to(specialist.name, "/specialists/#{specialist.id}")
         is_retiring =
-          "(#{specialist.specializations.map{ |s| s.name }.to_sentence}) is retiring "\
-            "on #{specialist.practice_end_date.to_s(:long_ordinal)}"
+          "(#{specialist.specializations.map{ |s| s.name }.to_sentence}) is "\
+            "retiring on #{specialist.practice_end_date.to_s(:long_ordinal)}"
 
         "#{specialist_link} #{is_retiring}".html_safe
       },
@@ -153,6 +153,14 @@ class LatestUpdates < ServiceObject
 
           "#{clinic_link} #{recently_opened}".html_safe
         end
+      },
+      closed: -> (clinic) {
+        clinic_link =
+          link_to(clinic.name, "/clinics/#{clinic.id}")
+        closed =
+          "(#{clinic.specializations.map{ |s| s.name }.to_sentence}) has closed."
+
+        "#{clinic_link} #{closed}".html_safe
       }
     }
   }
@@ -242,12 +250,38 @@ class LatestUpdates < ServiceObject
       attribute :clinic, Clinic
       attribute :division, Division
 
+      CLINIC_EVENTS = [
+        {
+          test: -> (clinic) { clinic.closed? },
+          event: -> (clinic, division) {
+            {
+              item_id: clinic.id,
+              item_type: "Clinic",
+              event_code: LatestUpdates.event_code(:closed),
+              division_id: division.id,
+              date: clinic.change_date(&:closed?),
+              markup: LatestUpdates::MARKUP["Clinic"][:closed].call(clinic)
+            }
+          }
+        }
+      ]
+
       def call
         LatestUpdates::CONDITIONS_TO_HIDE_FROM_FEED.each do |condition|
           return [] if condition.call(clinic, division)
         end
 
-        collapse(clinic_location_events)
+        clinic_events + collapse(clinic_location_events)
+      end
+
+      def clinic_events
+        CLINIC_EVENTS.inject([]) do |memo, event|
+          if event[:test].call(clinic)
+            memo << event[:event].call(clinic, division)
+          else
+            memo
+          end
+        end
       end
 
       def clinic_location_events
