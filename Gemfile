@@ -6,11 +6,6 @@ gem 'rails', '~> 4.0.0'
 
 gem 'pg'
 
-group :production do
-  gem 'heroku_cloud_backup',
-    git: "https://github.com/pathwaysmedical/heroku_cloud_backup.git"
-end
-
 gem 'redis'
 
 gem 'sass-rails',   '~> 4.0.0'
