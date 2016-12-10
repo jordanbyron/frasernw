@@ -17,7 +17,11 @@ module Pathways
     end
 
     def self.bucket(collection)
-      repo.buckets[switchable_bucket_name(collection)]
+      if PERSISTENT_BUCKETS.include?(collection)
+        repo.buckets[switchable_bucket_name(collection)]
+      else
+        repo.buckets[bucket_name(collection)]
+      end
     end
 
     def self.switchable_bucket_name(collection)
