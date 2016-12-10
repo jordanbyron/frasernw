@@ -113,7 +113,7 @@ class Ability
         #can edit non-admin/super-admin users
         can [:index, :new, :create, :show], User
         can [:edit, :update, :destroy], User do |target_user|
-          !target_user.super_admin? &&
+          !target_user.admin_or_super? &&
             (target_user.divisions & user.as_divisions).present?
         end
         can [

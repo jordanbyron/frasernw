@@ -193,7 +193,8 @@ class User < ActiveRecord::Base
 
   def self.active_admin_only
     where(
-      "users.role = 'admin' AND users.active = (?) AND COALESCE(users.email,'') != ''",
+      "users.role = 'admin' AND users.active = (?) "\
+        "AND COALESCE(users.email,'') != ''",
       true
     )
   end
@@ -208,7 +209,8 @@ class User < ActiveRecord::Base
 
   def self.active_super_admin
     where(
-      "users.role = 'super' AND users.active = (?) AND COALESCE(users.email,'') != ''",
+      "users.role = 'super' AND users.active = (?) "\
+        "AND COALESCE(users.email,'') != ''",
       true
     )
   end
@@ -415,12 +417,16 @@ class User < ActiveRecord::Base
     end
   end
 
-  def can_assign_roles
+  def can_assign_mask_roles
     super_admin? ? User::ROLE_LABELS : User::ROLE_LABELS.except("super")
   end
 
   def as_can_assign_roles
-    as_super_admin? ? User::ROLE_LABELS : User::ROLE_LABELS.except("super")
+    if as_super_admin?
+      User::ROLE_LABELS
+    else
+      User::ROLE_LABELS.except("super", "admin")
+    end
   end
 
   def can_assign_divisions
