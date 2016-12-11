@@ -165,7 +165,7 @@ function onChangeFavoriteSuccess(data, type, id, name){
     favorite_heart.addClass('icon-red');   //make the heart red
     $('#add_favorites').hide();                 //hide the favorites description
     $('#' + type + '_favorites').show();        //show the favorites section header if it isn't already
-    $('#' + type + '_favorites').after('<li class=\"favorite\" id=\"' + type + '_' + id + '\"><a class=\"ajax\" href=\"/' + type + '/' + id + '\">' + name + '</a></li>');
+    $('#' + type + '_favorites').after('<li class=\"favorite\" id=\"' + type + '_' + id + '\"><a href=\"/' + type + '/' + id + '\">' + name + '</a></li>');
   }
   else
   {

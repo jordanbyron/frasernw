@@ -4,12 +4,22 @@
 
   %h2 Reset your password
 
-  %p.space.no_indent Please enter the e-mail address you use as your Pathways log in, and a password reset link will be mailed to you.
+  %p.space.no_indent
+    Please enter the e-mail address you use as your Pathways log in, and a
+    password reset link will be mailed to you.
 
-  = simple_form_for @user, :url => {:controller => "password_resets", :action => "create"}, :html => { :class => "form-horizontal" } do |f|
+  = simple_form_for @user,
+    url: { controller: "password_resets",
+    action: "create" },
+    html: { class: "form-horizontal" } do |f|
 
-    = f.input :email, :input_html => {"autocorrect" => "off", "autocapitalize" => "none", :value => @email}
+    = f.input :email,
+      input_html: { autocorrect: "off",
+      autocapitalize: "none",
+      value: @email }
 
     .form-actions
-      = f.button :submit, "E-mail me a password reset link", :class => "btn btn-primary"
-      %a.btn.btn-danger.ajax{"href" => login_url} Cancel
+      = f.button :submit,
+        "E-mail me a password reset link",
+        class: "btn btn-primary"
+      %a.btn.btn-danger{ href: login_url } Cancel
