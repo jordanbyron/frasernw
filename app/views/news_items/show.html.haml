@@ -26,19 +26,24 @@
           %li
             %span= division.name
             - if @news_item.user_can_unborrow?(current_user, division)
-              = link_to "(Stop Showing)", update_borrowing_news_item_path(@news_item, division_id: division.id, borrow: false)
+              = link_to "(Stop Showing)",
+                update_borrowing_news_item_path(@news_item,
+                division_id: division.id,
+                borrow: false)
 
   .btn-group
     - if can? :update, @news_item
-      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_news_item_path(@news_item), :class => "btn ajax")
+      = link_to edit_news_item_path(@news_item), class: "btn" do
+        %i.icon-pencil
+        Edit
     - if can? :destroy, @news_item
-      = link_to("<i class='icon-trash'></i>".html_safe + " Delete", @news_item, :data => { :confirm => "Delete #{@news_item.title}?" }, :method => :delete, :class => "btn")
+      = delete_button(@news_item, "Delete #{@news_item.title}?")
     - if @news_item.copyable_to(current_user).any?
-      %button{"class" => "btn dropdown-toggle", "data-toggle" => "dropdown"}
+      %button{ class: "btn dropdown-toggle", data: { toggle: "dropdown" } }
         %i.icon-copy
-        %span= "Copy to"
+        Copy to
         %span.caret
-      %ul.dropdown-menu{style: "margin-top: 0px"}
+      %ul.dropdown-menu{ style: "margin-top: 0px" }
         - @news_item.copyable_to(current_user).each do |division|
           %li
             = link_to division.name,

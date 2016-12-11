@@ -10,17 +10,17 @@
     %ul#content_tabs.nav.nav-tabs
       - Division.all.each do |division|
         %li
-          %a{"href" => "##{division.id}_tab",
-            "data-toggle" => "tab"}= division.name
+          %a{ href: "##{division.id}_tab",
+            data: { toggle: "tab" } }= division.name
 
     .tab-content
       - Division.all.each do |division|
-        .tab-pane{id: "#{division.id}_tab"}
+        .tab-pane{ id: "#{division.id}_tab" }
           - hospitals = Hospital.in_divisions([division])
           %table.table.table-condensed.table-striped
             %tr
-              %th{style: "width:50%"} Hospital
-              %th{style: "width:50%"} City
+              %th{ style: "width:50%" } Hospital
+              %th{ style: "width:50%" } City
               %th.admin
 
             - hospitals.each do |hospital|
@@ -32,20 +32,17 @@
                     = link_to edit_hospital_path(hospital),
                       class: "btn btn-mini" do
                       %i.icon-pencil
-                      %span= " Edit"
+                      Edit
                   - if can? :destroy, hospital
-                    = link_to hospital,
-                      data: { confirm: "Delete #{hospital.name}?" },
-                      method: :delete,
-                      class: "btn btn-mini" do
-                      %i.icon-trash
-                      %span= " Delete"
+                    = delete_button(hospital,
+                      "Delete #{hospital.name}?",
+                      mini: true)
 
   %p.admin
     = link_to new_hospital_path,
       class: "btn" do
       %i.icon-plus-sign
-      %span= " New Hospital"
+      New Hospital
 
 :javascript
   window.pathways.setupTabHistory();

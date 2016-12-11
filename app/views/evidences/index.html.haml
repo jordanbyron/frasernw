@@ -15,18 +15,26 @@
 
     - @evidences.each do |evidence|
       %tr
-        %td{:style => "width:5%;"}= link_to evidence.level, evidence
-        %td{:style => "width:13%;"}= evidence.quality_of_evidence
-        %td{:style => "width:45%;"}= evidence.definition_as_html
-        %td{:style => "width:10%;"}= link_to evidence.sc_items.count, evidence
-        %td.admin.btn-group{:style => "width:20%;"}
+        %td{ style: "width:5%;" }= link_to evidence.level, evidence
+        %td{ style: "width:13%;" }= evidence.quality_of_evidence
+        %td{ style: "width:45%;" }= evidence.definition_as_html
+        %td{ style: "width:10%;" }= link_to evidence.sc_items.count, evidence
+        %td.admin.btn-group{ style: "width:20%;" }
           - if can? :update, evidence
-            = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_evidence_path(evidence.id), :class => "btn btn-mini ajax")
+            = link_to edit_evidence_path(evidence.id), class: "btn btn-mini" do
+              %i.icon-pencil
+              Edit
           - if can? :destroy, evidence
-            = delete_button evidence_path(evidence),
-              "Please do not delete levels of evidence without consulting IT or a Medical Lead.  Are you sure you want to delete Level of Evidence: #{evidence.level} #{evidence.definition}?",
-              mini: true
+            = delete_button(evidence_path(evidence),                          |
+              "Please do not delete levels of evidence without consulting a " |
+              "Pathways Developer or Medical Lead. Are you sure you want to " |
+              "delete Level of Evidence: #{evidence.level} "                  |
+              "#{evidence.definition}?",                                      |
+              mini: true)                                                     |
 
   %br
   - if can? :create, Evidence
-    %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New Level of Evidence", new_evidence_path, :class => "btn ajax")
+    %p.admin
+      = link_to new_evidence_path, class: "btn" do
+        %i.icon-plus-sign
+        New Level of Evidence

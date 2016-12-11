@@ -12,12 +12,17 @@
       %th.admin
 
     - @cities.each do |city|
-      %tr{:class => city.hidden? && "hidden-from-users"}
-        %td= link_to city.name, city, :class => 'ajax'
+      %tr{ class: city.hidden? && "hidden-from-users" }
+        %td= link_to city.name, city
         %td= city.province
-        %td= city.divisions.map{ |d| d.name }.to_sentence
+        %td= city.divisions.map{ |division| division.name }.to_sentence
         %td.admin.btn-group
-          = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_city_path(city), :class => "btn btn-mini ajax")
+          = link_to edit_city_path(city), class: "btn btn-mini" do
+            %i.icon-pencil
+            Edit
           = delete_button(city_path(city), "Delete #{city.name}?", mini: true)
 
-  %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New City", new_city_path, :class => "btn ajax")
+  %p.admin
+    = link_to new_city_path, class: "btn" do
+      %i.icon-plus-sign
+      New City

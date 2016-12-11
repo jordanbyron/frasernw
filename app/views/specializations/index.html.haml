@@ -48,17 +48,14 @@
           = link_to edit_specialization_path(specialization),
             class: "btn btn-mini" do
             %i.icon-pencil
-            %span= " Edit"
-          - if can? :destory, @specialization
-            = link_to specialization,
-              data: { confirm: "Delete #{specialization.name}?" },
-              method: :delete,
-              class: "btn btn-mini" do
-              %i.icon-trash
-              %span= " Delete"
+            Edit
+          - if can? :destory, specialization
+            = delete_button(specialization,
+              "Delete #{specialization.name}?",
+              mini: true)
 
   - if can? :create, Specialization
     %p.admin
       = link_to new_specialization_path, class: "btn" do
         %i.icon-plus-sign
-        %span= " New Specialty"
+        New Specialty

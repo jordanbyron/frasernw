@@ -30,12 +30,7 @@
         Delete Clinic
 
     - elsif can? :destroy, @clinic
-      = link_to @clinic,
-        data: { confirm: "Delete #{@clinic.name}?" },
-        method: :delete,
-        class: "btn" do
-        %i.icon-trash
-        Delete Clinic
+      = delete_button(@clinic, "Delete #{@clinic.name}?")
 
   #share.collapse
 

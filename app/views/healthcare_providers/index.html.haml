@@ -11,9 +11,17 @@
 
     - @healthcare_providers.each do |healthcare_provider|
       %tr
-        %td= link_to healthcare_provider.name, healthcare_provider, :class => 'ajax'
+        %td= link_to healthcare_provider.name, healthcare_provider
         %td.admin.btn-group
-          = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_healthcare_provider_path(healthcare_provider), :class => "btn btn-mini ajax")
-          = delete_button(healthcare_provider_path(healthcare_provider), "Delete #{healthcare_provider.name}?", mini: true)
+          = link_to edit_healthcare_provider_path(healthcare_provider),
+            class: "btn btn-mini" do
+            %i.icon-pencil
+            Edit
+          = delete_button(healthcare_provider_path(healthcare_provider),
+            "Delete #{healthcare_provider.name}?",
+            mini: true)
 
-  %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New Healthcare Provider", new_healthcare_provider_path, :class => "btn ajax")
+  %p.admin
+    = link_to new_healthcare_provider_path, class: "btn" do
+      %i.icon-plus-sign
+      New Healthcare Provider

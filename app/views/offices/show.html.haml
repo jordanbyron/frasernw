@@ -32,9 +32,4 @@
         %i.icon-pencil
         Edit Office
     - if can? :destroy, @office
-      = link_to @office,
-        data: { confirm: "Delete Office?" },
-        method: :delete,
-        class: "btn" do
-        %i.icon-trash
-        Delete Office
+      = delete_button(@office, "Delete Office?")

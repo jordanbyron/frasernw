@@ -36,14 +36,11 @@
               = link_to edit_subscription_path(subscription),
                 class: "btn btn-mini" do
                 %i.icon-pencil
-                %span= " Edit"
+                Edit
 
-              = link_to subscription,
-                data: { confirm: "Delete Notification Setting #{subscription.id}?" },
-                method: :delete,
-                class: "btn btn-mini" do
-                %i.icon-trash
-                %span= " Delete"
+              = delete_button(subscription,
+                "Delete Notification Setting #{subscription.id}?",
+                mini: true)
 
   - else
     %br
@@ -55,4 +52,4 @@
     = link_to new_subscription_path,
       class: "btn btn btn-primary" do
       %i.icon-plus-sign
-      %span= " Create New Update Notification"
+      Create New Update Notification

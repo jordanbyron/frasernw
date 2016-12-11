@@ -15,9 +15,4 @@
       %i.icon-pencil
       Edit
   - if can? :destroy, @province
-    = link_to @province,
-      data: { confirm: "Delete #{@province.name}?" },
-      method: :delete,
-      class: "btn" do
-      %i.icon-trash
-      Delete
+    = delete_button(@province, "Delete #{@province.name}?")

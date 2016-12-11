@@ -68,12 +68,7 @@
           %i.icon-pencil
           Edit
       - if can? :destroy, @issue
-        = link_to issue_path(@issue),
-          data: { confirm: "Delete #{@issue.code_with_label}?" },
-          method: :delete,
-          class: "btn" do
-          %i.icon-trash
-          Delete
+        = delete_button(issue_path(@issue), "Delete #{@issue.code_with_label}?")
       - if can? :view_history, @issue
         = large_history_button(@issue)
       - if can? :toggle_subscription, @issue

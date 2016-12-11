@@ -10,11 +10,6 @@
       = link_to edit_hospital_path(@hospital),
         class: "btn" do
         %i.icon-pencil
-        %span= " Edit Hospital"
+        Edit Hospital
     - if can? :destroy, @hospital
-      = link_to hospital_path(@hospital),
-        data: { confirm: "Delete #{@hospital.name}?" },
-        method: :delete,
-        class: "btn" do
-        %i.icon-trash
-        %span= " Delete Hospital"
+      = delete_button(hospital_path(@hospital), "Delete #{@hospital.name}?")
