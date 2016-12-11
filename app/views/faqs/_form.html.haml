@@ -9,9 +9,10 @@
   = f.input :answer_markdown,
     as: :text,
     label: "Answer",
-    hint: "*Learn more about markdown syntax #{link_to('here', ' http://daringfireball.net/projects/markdown/syntax')}".html_safe,
+    hint: "*Learn more about markdown syntax #{link_to('here',
+    ' http://daringfireball.net/projects/markdown/syntax')}".html_safe,
     input_html: { class: "faq_editor__textarea faq_editor__textarea--answer" }
 
   = f.button :submit, class: "btn btn-primary inline-buttons"
   - if action == :edit
-    = link_to "Delete", faq_path(faq), method: :delete, class: "btn btn-default inline-button"
+    = delete_button(faq_path(faq), "Delete FAQ?")
