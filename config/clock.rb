@@ -121,4 +121,13 @@ module Clockwork
   ) do
     UpdateReturnedSpecialists.call(delay: true)
   end
+
+  every(
+    1.day,
+    'Unschedule practice end for specialists who have returned',
+    at: '02:00',
+    tz: "Pacific Time (US & Canada)"
+  ) do
+    SystemNotifier.info("Unable to backup database") unless system("bin/backup_database")
+  end
 end

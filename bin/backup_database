@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# adapted from: https://github.com/kbaum/heroku-database-backups
+
+# requires:
+# HEROKU_TOOLBELT_API_EMAIL
+# HEROKU_TOOLBELT_API_PASSWORD
+# AWS_DEFAULT_REGION
+# S3_BACKUP_BUCKET
+# toolbelt buildpack
+
+# terminate script as soon as any command fails
+set -e
+
+if [[ -z "$APP_NAME" ]]; then
+  echo "Missing APP_NAME variable which must be set to the name of your app where the db is located"
+  exit 1
+fi
+
+if [[ -z "$S3_BACKUP_BUCKET" ]]; then
+  echo "Missing S3_BUCKET_PATH variable which must be set the directory in s3 where you would like to store your database backups"
+  exit 1
+fi
+
+#install aws-cli
+curl https://s3.amazonaws.com/aws-cli/awscli-bundle.zip -o awscli-bundle.zip
+unzip awscli-bundle.zip
+chmod +x ./awscli-bundle/install
+./awscli-bundle/install -i /tmp/aws
+
+BACKUP_FILE_NAME="$(date +"%Y-%m-%d-%H-%M")-$APP_NAME.dump"
+
+/app/vendor/heroku-toolbelt/bin/heroku pg:backups capture --app $APP_NAME
+curl -o $BACKUP_FILE_NAME `/app/vendor/heroku-toolbelt/bin/heroku pg:backups public-url --app $APP_NAME`
+/tmp/aws/bin/aws s3 cp $BACKUP_FILE_NAME s3://$S3_BACKUP_BUCKET/$APP_NAME/$DATABASE/$BACKUP_FILE_NAME
+echo "backup $BACKUP_FILE_NAME complete"
