@@ -29,6 +29,19 @@ class NotesController < ApplicationController
     end
   end
 
+  def update
+    @note = Note.find(params[:id])
+
+    authorize! :update, @note
+
+    @note.update_attributes(content: params[:content])
+
+    render json: {
+      raw_content: @note.content,
+      content: BlueCloth.new(@note.content).to_html
+    }
+  end
+
   def destroy
     @note = Note.find params[:id]
     authorize! :destroy, @note
