@@ -8,12 +8,6 @@ module HerokuCloudBackup
         reject{|transfer| transfer[:to_type] == "pg_restore" }.
         first
 
-      directory = connection.directories.get(bucket_name)
-
-      if !directory
-        directory = connection.directories.create(key: bucket_name)
-      end
-
       public_url = client.transfers_public_url(backup[:uuid])[:url]
       backup_created_at = DateTime.parse backup[:created_at]
       uri = URI(public_url)

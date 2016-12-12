@@ -126,6 +126,9 @@ gem 'rails_12factor', group: :production
 # Added to deal with error booting in Ruby 2.2: https://github.com/drapergem/draper/issues/690
 gem 'test-unit', '~> 3.0'
 
+# for backing heroku PG backups to s3
+gem 'rest-client'
+
 #New Relic guide recommends placing New Relic gem at bottom of Gemfile
 group :development, :production do
   gem 'newrelic_rpm'
