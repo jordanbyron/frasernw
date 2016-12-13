@@ -59,7 +59,8 @@ namespace :deploy do
   namespace :test do
     task :import_production_database do
       puts 'Copying production database to test'
-      print_exec "heroku pg:copy pathwaysbc::DATABASE_URL pathwaysbctest::DATABASE_URL"\
+      print_exec "heroku pg:copy pathwaysbc::HEROKU_POSTGRESQL_GOLD_URL "\
+        "pathwaysbctest::HEROKU_POSTGRESQL_WHITE_URL "\
         "--app pathwaysbctest --confirm pathwaysbctest"
     end
 
