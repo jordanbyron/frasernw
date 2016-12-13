@@ -15,9 +15,11 @@
         %th.admin
     %tbody
       - @offices.each do |office|
-        - address = office.location.present? ? office.location.resolved_address : nil
         %tr
-          %td= link_to office.short_address, office
+          %td
+            = link_to "#{office.short_address.present? ? office.short_address |
+              : 'Office'}",                                                   |
+              office
           %td
             %ul
               - office.specialists.each do |specialist|
@@ -27,8 +29,9 @@
               class: "btn btn-mini stacked-button" do
               %i.icon-pencil
               Edit
-            = link_to office,
-              data: { confirm: "Delete #{office.short_address.present? ? office.short_address : "office"}?" },
+            = link_to office,                                            |
+              data: { confirm: "Delete #{office.short_address.present? ? |
+              office.short_address : "office"}?" },                      |
               method: :delete,
               class: "btn btn-mini stacked-button" do
               %i.icon-trash

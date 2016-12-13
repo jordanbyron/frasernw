@@ -943,7 +943,10 @@ class Specialist < ActiveRecord::Base
   end
 
   def valid_clinic_locations
-    @valid_clinic_locations = clinic_locations.reject(&:empty?)
+    @valid_clinic_locations =
+      clinic_locations.reject(&:empty?).reject do |clinic_location|
+        clinic_location.resolved_address.blank?
+      end
   end
 
   def hospitals_with_offices_in
