@@ -1,18 +1,4 @@
 module VersionsHelper
-  def whodunnit_name(version)
-    if version.terminator.to_i.to_s == version.terminator
-      if User.find_by_id(version.terminator).present?
-        User.find_by_id(version.terminator).name
-      else
-        'unknown'
-      end
-    elsif version.whodunnit == "MOA"
-      version.whodunnit
-    else
-      'unknown'
-    end
-  end
-
   def version_event(version)
     case version.item_type
       when "Specialization"
