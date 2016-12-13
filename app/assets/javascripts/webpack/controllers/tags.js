@@ -11,7 +11,7 @@ const Tags = ({record, model}) => {
 
       tags.push(
         <span style={{marginLeft: "5px"}} className="suffix" key="suffix">
-          { model.app.specializations[record.taggedSpecializationid].memberTag }
+          { model.app.specializations[record.taggedSpecializationId].memberTag }
         </span>
       )
     }
