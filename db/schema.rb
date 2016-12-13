@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161213021554) do
+ActiveRecord::Schema.define(version: 20161213211401) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -879,7 +879,6 @@ ActiveRecord::Schema.define(version: 20161213021554) do
     t.string   "saved_token"
     t.string   "member_name"
     t.boolean  "deprecated_open_to_clinic_tab", default: false
-    t.string   "label_name",                    default: "Specialist"
     t.string   "member_tag"
     t.boolean  "mask_filters_by_referral_area", default: false
     t.boolean  "members_are_physicians",        default: true

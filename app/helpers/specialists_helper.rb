@@ -24,7 +24,7 @@ module SpecialistsHelper
     if specialist.is_gp?
       listing += "GP "
 
-      if specialist.specializations.many?
+      if specialist.specializations.any?
         listing += "with a focus in "
       end
     end
