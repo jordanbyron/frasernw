@@ -3,7 +3,7 @@ import showingMultipleSpecializations
   from "controller_helpers/showing_multiple_specializations";
 import { memoizePerRender } from "utils";
 import ReferentStatusIcon from "controllers/referent_status_icon";
-import Tags from "component_helpers/tags";
+import Tags from "controllers/tags";
 import ExpandedReferentInformation from "controllers/expanded_referent_information";
 import { route, recordShownByRoute } from "controller_helpers/routing";
 
@@ -59,8 +59,7 @@ const ReferentName = ({decoratedRecord, model, dispatch}) => {
     <td className="datatable__cell">
       <span>
         <ReferentNameLink decoratedRecord={decoratedRecord}/>
-        <Suffix record={decoratedRecord.raw} model={model}/>
-        <Tags record={decoratedRecord.raw}/>
+        <Tags record={decoratedRecord.raw} model={model}/>
         <ExpandedReferentInformation record={decoratedRecord.raw} model={model}/>
       </span>
     </td>
@@ -76,54 +75,4 @@ const ReferentNameLink = ({decoratedRecord}) => {
     </a>
   );
 }
-
-const Suffix = ({record, model}) => {
-  return(
-    <span style={{marginLeft: "5px"}} className="suffix" key="suffix">
-      {suffix(record, model)}
-    </span>
-  )
-}
-
-const suffix = (record, model) => {
-  if (record.collectionName === "clinics") {
-    return "";
-  }
-  else if (record.isGp) {
-    return "GP";
-  }
-  else if (record.isInternalMedicine) {
-    return "Int Med";
-  }
-  else if (showPedSuffix(record, model)) {
-    return "Ped";
-  }
-  else {
-    return _.find(
-      record.specializationIds.map((id) => model.app.specializations[id].suffix),
-      (suffix) => suffix && suffix.length > 0
-    );
-  }
-};
-
-const showPedSuffix = (record, model) => {
-  return record.seesOnlyChildren &&
-    record.specializationIds.length > 1 &&
-    isPediatrician(record, model) &&
-    (route !== "/specialties/:id" ||
-      recordShownByRoute(model).id !== parseInt(pediatricsId(model)));
-}
-
-const pediatricsId = ((model) => {
-  return _.find(
-    model.app.specializations,
-    (specialization) => specialization.name === "Pediatrics"
-  ).id;
-}).pwPipe(memoizePerRender)
-
-const isPediatrician = (record, model) => {
-  return _.includes(record.specializationIds, parseInt(pediatricsId(model)));
-}
-
-
 export default ReferentRow;

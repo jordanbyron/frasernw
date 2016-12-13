@@ -2,7 +2,7 @@ class Specialization < ActiveRecord::Base
   attr_accessible :name,
     :member_name,
     :label_name,
-    :suffix,
+    :member_tag,
     :specialization_options_attributes,
     :open_to_clinic
 

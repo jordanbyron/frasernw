@@ -22,15 +22,6 @@
   label: "Additional details about practice and referrals (if any)",
   hint: "Will be displayed on profile page in blue header."
 
-= f.input :is_gp
-
-- if current_user.as_admin_or_super?
-  = f.input :is_internal_medicine,
-    label: "Show 'Internal Medicine' Tag",
-    hint: "Please only use this tag when linking an Internal Medicine specialist to another specialty in which they do not have a fellowship."
-  = f.input :sees_only_children,
-    label: "Does not see adult patients"
-
 = f.association :specializations,
   as: :check_boxes,
   hint: @form_modifier.specializations_hint,
@@ -42,3 +33,11 @@
     label: @form_modifier.specialization_comments_label,
     input_html: { value: "" },
     as: :text
+
+- if current_user.as_admin_or_super?
+  = f.input :tagged_specialization_id,
+    collection: tagged_specialization_options,
+    label: "Tag as:",
+    label_method: :last,
+    value_method: :first,
+    include_blank: false

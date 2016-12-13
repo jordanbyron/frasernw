@@ -99,10 +99,6 @@ module Denormalized
             specializationIds: specialist.specializations.map(&:id),
             customLagtimes: custom_procedure_times(specialist, :lagtime_mask),
             customWaittimes: custom_procedure_times(specialist, :waittime_mask),
-            isGp: specialist.is_gp,
-            suffix: specialist.suffix,
-            isInternalMedicine: specialist.is_internal_medicine?,
-            seesOnlyChildren: specialist.sees_only_children?,
             isNew: specialist.new?,
             createdAt: specialist.created_at.to_date.to_s,
             updatedAt: specialist.updated_at.to_date.to_s,
@@ -118,6 +114,7 @@ module Denormalized
                   map(&:service_type_key)
               end
             ),
+            taggedSpecializationId: specialist.tagged_specialization_id,
             interest: Denormalized.
               sanitize(specialist.interest).
               try(:convert_newlines_to_br),
@@ -263,7 +260,8 @@ module Denormalized
             ),
             collectionName: "specializations",
             maskFiltersByReferralArea: specialization.mask_filters_by_referral_area,
-            suffix: specialization.suffix,
+            memberTag: specialization.member_tag,
+            globalMemberTag: specialization.global_member_tag,
             newInDivisionIds: specialization.
               specialization_options.
               where(is_new: true).

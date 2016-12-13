@@ -8,7 +8,8 @@ module SeedCreators
       member_name: :pass_through,
       deprecated_open_to_clinic_tab: :pass_through,
       label_name: :pass_through,
-      suffix: :pass_through,
+      member_tag: :pass_through,
+      global_member_tag: :pass_through,
       mask_filters_by_referral_area: :pass_through,
       members_are_physicians: :pass_through,
     }

@@ -9,6 +9,15 @@ module SpecialistsHelper
     end.to_sentence
   end
 
+  def tagged_specialization_options
+    Specialization.
+      order(:name).
+      where("specializations.member_tag IS NOT NULL AND specializations.member_tag != ''").
+      map{|s| [ s.id, s.member_tag ]}.
+      sort_by(&:second).
+      unshift([nil, "Not Specified"])
+  end
+
   def specialist_specializations_listing(specialist)
     listing = ""
 

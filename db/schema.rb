@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161122211429) do
+ActiveRecord::Schema.define(version: 20161213021554) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -842,6 +842,7 @@ ActiveRecord::Schema.define(version: 20161122211429) do
     t.integer  "practice_end_reason_key",          default: 2
     t.text     "practice_details"
     t.boolean  "teleservices_require_review",      default: false
+    t.integer  "tagged_specialization_id"
   end
 
   add_index "specialists", ["referral_clinic_id"], name: "index_specialists_on_referral_clinic_id", using: :btree
@@ -879,9 +880,10 @@ ActiveRecord::Schema.define(version: 20161122211429) do
     t.string   "member_name"
     t.boolean  "deprecated_open_to_clinic_tab", default: false
     t.string   "label_name",                    default: "Specialist"
-    t.string   "suffix"
+    t.string   "member_tag"
     t.boolean  "mask_filters_by_referral_area", default: false
     t.boolean  "members_are_physicians",        default: true
+    t.boolean  "global_member_tag",             default: false
   end
 
   create_table "subscription_divisions", force: true do |t|
