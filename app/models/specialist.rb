@@ -77,7 +77,8 @@ class Specialist < ActiveRecord::Base
     :practice_end_reason_key,
     :practice_details,
     :accepting_new_indirect_referrals,
-    :teleservices_require_review
+    :teleservices_require_review,
+    :tagged_specialization_id
 
   # specialists can have multiple specializations
   has_many :specialist_specializations, dependent: :destroy
