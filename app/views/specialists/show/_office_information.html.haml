@@ -23,6 +23,8 @@
       %p
         Website:
         = link_to specialist_office.url, specialist_office.url, target: '_blank'
+    - if specialist_office.contact_details.present?
+      %p= specialist_office.contact_details.convert_newlines_to_br
     - if specialist_office.office.present?
       - num_specialists = specialist_office.office.specialists.reject do |specialist|
         - !specialist.practicing? || specialist.hidden?
