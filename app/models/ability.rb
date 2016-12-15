@@ -182,7 +182,7 @@ class Ability
         can :manage, Subscription
 
         can [:create], Note
-        can :destroy, Note do |note|
+        can [:destroy, :update], Note do |note|
           note.user == user
         end
 

@@ -85,7 +85,7 @@ Frasernw::Application.routes.draw do
     end
   end
 
-  resources :notes, only: [:create, :destroy]
+  resources :notes, only: [:create, :destroy, :update]
   get '/history' => 'history#index'
 
   resources :review_items, only: [:index] do

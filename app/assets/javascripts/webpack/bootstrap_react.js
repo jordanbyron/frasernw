@@ -18,6 +18,7 @@ import {
 } from "action_creators";
 import FeedbackModal from "controllers/feedback_modal";
 import SecretEditLinks from "controllers/secret_edit_links";
+import IssueComment from "controllers/issue_comment";
 
 const bootstrapReact = function() {
   let middlewares = [];
@@ -86,7 +87,8 @@ const bootstrapReact = function() {
     // standalone
 
     const standaloneComponents = {
-      SecretEditLinks: SecretEditLinks
+      SecretEditLinks: SecretEditLinks,
+      IssueComment: IssueComment
     }
 
     $(".standalone-react-component").each((index, elem) => {
