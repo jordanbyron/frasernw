@@ -6,6 +6,7 @@ class SpecialistOffice < ActiveRecord::Base
     :fax,
     :direct_phone,
     :direct_phone_extension,
+    :contact_details,
     :sector_mask,
     :public_email,
     :email,

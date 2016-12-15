@@ -15,6 +15,7 @@ module SeedCreators
       direct_phone_extension: Proc.new{ Faker::PhoneNumber.extension },
       url: Proc.new{ "http://www.google.ca" },
       email: Proc.new{ Faker::Internet.email },
+      contact_details: Proc.new{ |klass| "Some details." },
       open_saturday: :pass_through,
       open_sunday: :pass_through,
       schedule_id: :pass_through,
