@@ -17,6 +17,7 @@ import {
   parseUrl
 } from "action_creators";
 import FeedbackModal from "controllers/feedback_modal";
+import SecretEditLinks from "controllers/secret_edit_links";
 
 const bootstrapReact = function() {
   let middlewares = [];
@@ -81,6 +82,20 @@ const bootstrapReact = function() {
     }
 
     parseRenderedData(window.pathways.dataForReact, store.dispatch);
+
+    // standalone
+
+    const standaloneComponents = {
+      SecretEditLinks: SecretEditLinks
+    }
+
+    $(".standalone-react-component").each((index, elem) => {
+      const reactElement = React.createElement(
+        standaloneComponents[elem.getAttribute("data-react-component")],
+        JSON.parse(elem.getAttribute("data-react-props"))
+      );
+      ReactDOM.render(reactElement, elem);
+    })
   })
 };
 
