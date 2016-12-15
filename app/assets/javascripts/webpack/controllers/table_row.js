@@ -15,7 +15,7 @@ import ChangeRequestRow from "controllers/table_row/change_request";
 import EntityPageViewRow from "controllers/table_row/entity_page_view";
 import IssueRow from "controllers/table_row/issue";
 import ReferentRow from "controllers/table_row/referent";
-import Tags from "component_helpers/tags";
+import Tags from "controllers/tags";
 
 const TableRow = ({model, dispatch, decoratedRecord}) => {
   if(_.includes([
@@ -37,7 +37,7 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
     else if (collectionShownName(model) === "contentItems"){
       return(
         <tr>
-          <ContentItemTitle decoratedRecord={decoratedRecord}/>
+          <ContentItemTitle decoratedRecord={decoratedRecord} model={model}/>
           <td>{ decoratedRecord.subcategoryName }</td>
           <td>
             <FavoriteIcon
@@ -112,7 +112,7 @@ const TableRow = ({model, dispatch, decoratedRecord}) => {
   }
 };
 
-const ContentItemTitle = ({decoratedRecord}) => {
+const ContentItemTitle = ({decoratedRecord, model}) => {
   return(
     <td>
       <span>
@@ -122,7 +122,7 @@ const ContentItemTitle = ({decoratedRecord}) => {
           target="_blank"
           onClick={function() { window.pathways.trackContentItem(_gaq, decoratedRecord.raw.id) }}
         >{ decoratedRecord.raw.title }</a>
-        <Tags record={decoratedRecord.raw}/>
+        <Tags record={decoratedRecord.raw} model={model}/>
       </span>
     </td>
   )

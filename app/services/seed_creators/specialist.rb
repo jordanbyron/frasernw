@@ -67,7 +67,8 @@ module SeedCreators
       practice_restart_scheduled: Proc.new{ false },
       practice_details: Proc.new{ "Some details" },
       accepting_new_indirect_referrals: Proc.new{ rand() < 0.05 },
-      teleservices_require_review: Proc.new{ false }
+      teleservices_require_review: Proc.new{ false },
+      tagged_specialization_id: Proc.new{ nil }
     }
   end
 end

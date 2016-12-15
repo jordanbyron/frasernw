@@ -16,20 +16,11 @@
     = f.input :name
     = f.input :member_name,
       hint: "e.g. 'Opthalmologist', 'Cardiothoracic surgeon', 'Nurse practitioner', 'Sports medicine specialist'"
-    = f.input :label_name,
-      hint: "Defines how this Specialty is labeled on columns and tables; e.g. as a 'Specialist', 'Family Physician', 'Nurse Practitioner', etc."
-    = f.input :suffix,
-      hint: "Use carefully, otherwise leave blank. Globally adds bold shordhand abbreviation next to the name of people with this specialty in filter tables (e.g. <span>John Smith<span class='suffix'>GP</span></span> if 'GP') </br> </br> Suffix: <span>Jane Doe<span class='suffix' id='specialization_suffix_demo'>#{@specialization.suffix}</span></span>".html_safe
-
-    :javascript
-      $("#specialization_suffix").bind("keyup", autoFillSuffix);
-      function autoFillSuffix() {
-        var str = "";
-        $( "#specialization_suffix" ).each(function() {
-          str += $( this ).val() + " ";
-        });
-        $( "div #specialization_suffix_demo" ).text( str );
-      }
+    = f.input :member_tag,
+      hint: "(Optional) Define the tags to appear beside tagged specialists' names."
+    = f.input :global_member_tag,
+      label: "Show tags everywhere",
+      hint: "Tags appear in all tables, not just on other specialties' pages."
 
     - divisions = Division.all
   - else

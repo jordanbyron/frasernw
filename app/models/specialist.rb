@@ -77,7 +77,8 @@ class Specialist < ActiveRecord::Base
     :practice_end_reason_key,
     :practice_details,
     :accepting_new_indirect_referrals,
-    :teleservices_require_review
+    :teleservices_require_review,
+    :tagged_specialization_id
 
   # specialists can have multiple specializations
   has_many :specialist_specializations, dependent: :destroy
@@ -915,18 +916,6 @@ class Specialist < ActiveRecord::Base
     name
   end
 
-  def suffix
-    if is_gp?
-      "GP"
-    elsif is_internal_medicine?
-      "Int Med"
-    elsif sees_only_children?
-      "Ped"
-    else
-      specializations.map(&:suffix).select(&:present?).first || ""
-    end
-  end
-
   def ordered_specialist_offices
     @ordered_specialist_offices ||= specialist_offices.sort_by do |office|
       [ (office.has_data? ? 0 : 1), ( office.created_at || DateTime.now ) ]
@@ -974,6 +963,10 @@ class Specialist < ActiveRecord::Base
 
   def open_clinics
     @open_clinics ||= clinics.select(&:open?)
+  end
+
+  def is_gp?
+    tagged_specialization_id == Specialization.find_by(name: "Family Practice").id
   end
 
   WORKS_FROM_OFFICES_OPTIONS = [
