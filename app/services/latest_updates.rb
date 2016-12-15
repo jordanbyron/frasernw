@@ -213,7 +213,7 @@ class LatestUpdates < ServiceObject
       "latest_updates:automatic:division:#{division.id}",
       force: force
     ) do
-        Entities.call(division: division)
+        Profiles.call(division: division)
       end
   end
 
@@ -235,7 +235,7 @@ class LatestUpdates < ServiceObject
     LatestUpdatesMask::EVENTS.key(event)
   end
 
-  class Entities < ServiceObject
+  class Profiles < ServiceObject
     attribute :division, Division
 
     def call
@@ -251,7 +251,7 @@ class LatestUpdates < ServiceObject
           includes_location_data.
           includes(:specializations).
           inject([]) do |memo, clinic|
-            memo + EntityEvents.call(entity: clinic, division: division)
+            memo + ProfileEvents.call(profile: clinic, division: division)
           end
       end
     end
@@ -264,79 +264,79 @@ class LatestUpdates < ServiceObject
           includes(:versions).
           includes(specialist_offices: :versions).
           inject([]) do |memo, specialist|
-            memo + EntityEvents.call(
-              entity: specialist,
+            memo + ProfileEvents.call(
+              profile: specialist,
               division: division
             )
           end
       end
     end
 
-    class EntityEvents < ServiceObject
-      attribute :entity
+    class ProfileEvents < ServiceObject
+      attribute :profile
       attribute :division, Division
 
-      ENTITY_EVENTS = [
+      PROFILE_EVENTS = [
         {
-          test: -> (entity) { entity.try(:closed?) },
-          event: -> (entity, division) {
+          test: -> (profile) { profile.try(:closed?) },
+          event: -> (profile, division) {
             {
-              item_id: entity.id,
-              item_type: entity.class.to_s,
+              item_id: profile.id,
+              item_type: profile.class.to_s,
               event_code: LatestUpdates.event_code(:closed),
               division_id: division.id,
-              date: entity.change_date(&:closed?),
+              date: profile.change_date(&:closed?),
               markup:
-                LatestUpdates::MARKUP[entity.class.to_s][:closed].call(entity)
+                LatestUpdates::MARKUP[profile.class.to_s][:closed].call(profile)
             }
           }
         },
         {
-          test: -> (entity) { entity.try(:moved_away?) },
-          event: -> (entity, division) {
+          test: -> (profile) { profile.try(:moved_away?) },
+          event: -> (profile, division) {
             {
-              item_id: entity.id,
-              item_type: entity.class.to_s,
+              item_id: profile.id,
+              item_type: profile.class.to_s,
               event_code: LatestUpdates.event_code(:moved_away),
               division_id: division.id,
-              date: entity.change_date(&:moved_away?),
+              date: profile.change_date(&:moved_away?),
               markup:
-                LatestUpdates::MARKUP[entity.class.to_s][:moved_away].
-                  call(entity)
+                LatestUpdates::MARKUP[profile.class.to_s][:moved_away].
+                  call(profile)
             }
           }
         },
         {
-          test: -> (entity) { entity.try(:retired?) },
-          event: -> (entity, division) {
+          test: -> (profile) { profile.try(:retired?) },
+          event: -> (profile, division) {
             {
-              item_id: entity.id,
-              item_type: entity.class.to_s,
+              item_id: profile.id,
+              item_type: profile.class.to_s,
               event_code: LatestUpdates.event_code(:retired),
               division_id: division.id,
-              date: (entity.practice_end_date ||
-                entity.change_date(&:retired?)),
+              date: (profile.practice_end_date ||
+                profile.change_date(&:retired?)),
               markup:
-                LatestUpdates::MARKUP[entity.class.to_s][:retired].call(entity)
+                LatestUpdates::MARKUP[profile.class.to_s][:retired].call(profile)
             }
           }
         },
         {
-          test: -> (entity) {
-            entity.try(:retiring?) &&
-              entity.try(:practice_end_date) do
-                entity.practice_end_date > Date.new(2016, 10, 18)
+          test: -> (profile) {
+            profile.try(:retiring?) &&
+              profile.try(:practice_end_date) do
+                profile.practice_end_date > Date.new(2016, 10, 18)
               end
           },
-          event: -> (entity, division) {
+          event: -> (profile, division) {
             {
-              item_id: entity.id,
-              item_type: entity.class.to_s,
+              item_id: profile.id,
+              item_type: profile.class.to_s,
               event_code: LatestUpdates.event_code(:retiring),
               division_id: division.id,
-              date: entity.change_date(&:retiring?),
+              date: profile.change_date(&:retiring?),
               markup:
-                LatestUpdates::MARKUP[entity.class.to_s][:retiring].call(entity)
+                LatestUpdates::MARKUP[profile.class.to_s][:retiring].call(profile)
             }
           }
         }
@@ -344,30 +344,30 @@ class LatestUpdates < ServiceObject
 
       def call
         LatestUpdates::CONDITIONS_TO_HIDE_FROM_FEED.each do |condition|
-          return [] if condition.call(entity, division)
+          return [] if condition.call(profile, division)
         end
 
-        entity_events + entity_office_events
+        profile_events + location_events
       end
 
-      def entity_events
-        ENTITY_EVENTS.inject([]) do |memo, event|
-          if event[:test].call(entity)
-            memo << event[:event].call(entity, division)
+      def profile_events
+        PROFILE_EVENTS.inject([]) do |memo, event|
+          if event[:test].call(profile)
+            memo << event[:event].call(profile, division)
           else
             memo
           end
         end
       end
 
-      def entity_office_events
-        if (entity.class == Clinic) && entity.accepting_new_referrals?
-          offices = entity.clinic_locations
+      def location_events
+        if (profile.class == Clinic) && profile.accepting_new_referrals?
+          offices = profile.clinic_locations
         elsif (
-          (entity.class == Specialist) &&
-            entity.accepting_new_direct_referrals?
+          (profile.class == Specialist) &&
+            profile.accepting_new_direct_referrals?
         )
-          offices = entity.specialist_offices
+          offices = profile.specialist_offices
         end
 
         return [] unless offices
@@ -385,14 +385,14 @@ class LatestUpdates < ServiceObject
           event[:date]
         end.map do |date, events|
           {
-            item_id: entity.id,
-            item_type: entity.class.to_s,
+            item_id: profile.id,
+            item_type: profile.class.to_s,
             event_code: LatestUpdates.event_code(:opened_recently),
             division_id: division.id,
             date: date,
             markup:
-              LatestUpdates::MARKUP[entity.class.to_s][:opened_recently].call(
-                entity,
+              LatestUpdates::MARKUP[profile.class.to_s][:opened_recently].call(
+                profile,
                 events.map{|event| event[:record] }
               )
           }
