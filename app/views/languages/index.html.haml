@@ -11,9 +11,14 @@
 
     - @languages.each do |language|
       %tr
-        %td= link_to language.name, language, :class => 'ajax'
+        %td= link_to language.name, language
         %td.admin.btn-group
-          = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_language_path(language), :class => "btn btn-mini ajax")
-          = link_to("<i class='icon-trash'></i>".html_safe + " Delete", language, :data => { :confirm => "Delete #{language.name}?" }, :method => :delete, :class => "btn btn-mini")
+          = link_to edit_language_path(language), class: "btn btn-mini" do
+            %i.icon-pencil
+            Edit
+          = delete_button(language, "Delete #{language.name}?", mini: true)
 
-  %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New Language", new_language_path, :class => "btn ajax")
+  %p.admin
+    = link_to new_language_path, class: "btn" do
+      %i.icon-plus-sign
+      New Language

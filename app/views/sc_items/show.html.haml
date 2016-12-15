@@ -108,9 +108,4 @@
         %i.icon-pencil
         Edit
     - if can? :destroy, @sc_item
-      = link_to @sc_item,
-        data: { confirm: "Delete #{@sc_item.title}?" },
-        method: :delete,
-        class: "btn" do
-        %i.icon-trash
-        Delete
+      = delete_button(@sc_item, "Delete #{@sc_item.title}?")

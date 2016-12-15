@@ -1,5 +1,5 @@
 = simple_nested_form_for @procedure,
-  html: { class: "form-horizontal ajax" } do |f|
+  html: { class: "form-horizontal" } do |f|
   - if !f.error_messages.blank?
     .alert.alert-error
       = f.error_messages
@@ -16,11 +16,10 @@
         %th Has Custom Specialist Wait Time
         %th Has Custom Clinic Wait Time
 
-
       = f.simple_fields_for :procedure_specializations,
         @procedure.procedure_specializations.sort_by(&:specialization_name) do |f|
         %tr.procedure_specialization_row
-          %td{:style => "white-space: nowrap"}
+          %td{ style: "white-space: nowrap" }
             = f.hidden_field :specialization_id
             = label_tag "check_#{f.object.specialization.id}",
               f.object.specialization.name,
@@ -50,6 +49,10 @@
             = f.input_field :clinic_wait_time,
               class:  "check input--clinic_wait_time span1"
 
+  .form-actions
+    = f.button :submit, class: "btn btn-primary"
+    = link_to 'Cancel', procedures_path, class: "btn btn-danger"
+
   :javascript
     $(".input--mapped").each(function(index, elem) {
       toggleProcedureMappings(elem)
@@ -57,7 +60,3 @@
     $(".input--mapped").change(function(e) {
       toggleProcedureMappings(e.target)
     });
-
-  .form-actions
-    = f.button :submit, class: "btn btn-primary"
-    = link_to 'Cancel', procedures_path, class: "btn btn-danger ajax"

@@ -1,4 +1,4 @@
-= simple_nested_form_for @province, :html => { :class => "form-horizontal ajax" } do |f|
+= simple_nested_form_for @province, html: { class: "form-horizontal" } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
 
@@ -7,5 +7,5 @@
   = f.input :symbol
 
   .form-actions
-    = f.button :submit, :class => "btn btn-primary ajax"
-    = link_to 'Cancel', provinces_path, :class => "btn btn-danger ajax"
+    = f.button :submit, class: "btn btn-primary"
+    = link_to 'Cancel', provinces_path, class: "btn btn-danger"

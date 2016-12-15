@@ -1,11 +1,14 @@
-= simple_form_for @city, html: { class: "form-horizontal ajax" } do |f|
+= simple_form_for @city, html: { class: "form-horizontal" } do |f|
   - if not f.error_messages.blank?
     .alert.alert-error= f.error_messages
 
   = f.input :name
-  = f.association :province, as: :select, collection: Province.order("name ASC"), include_blank: true
+  = f.association :province,
+    as: :select,
+    collection: Province.order("name ASC"),
+    include_blank: true
   = f.input :hidden
 
   .form-actions
     = f.button :submit, class: "btn btn-primary"
-    = link_to 'Cancel', cities_path, class: "btn btn-danger ajax"
+    = link_to 'Cancel', cities_path, class: "btn btn-danger"

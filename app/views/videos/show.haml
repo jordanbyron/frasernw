@@ -4,36 +4,32 @@
 
   %h2= @video.title
 
-  %video#video-window{align: "center",
+  %video#video-window{ align: "center",
     title: "Video Player",
     src: "#{@expiring_s3_url}",
     height: "315px;",
     width: "560px;",
     frameborder: "0",
     allowfullscreen: "true",
-    controls: "true"}
+    controls: "true" }
 
   %p.admin.btn-group
     - if can? :update, @video
       = link_to edit_video_path(@video),
         class: "btn" do
         %i.icon-pencil
-        %span= " Edit"
+        Edit
     - if can? :destroy, @video
-      = link_to @video,
-        data: { confirm: "Delete #{@video.title}?" },
-        method: :delete,
-        class: "btn" do
-        %i.icon-trash
-        %span= " Delete"
+      = delete_button(@video, "Delete #{@video.title}?")
 
 :javascript
   function notifyExpired(){
     $('#video-window').replaceWith(
-      '<div id="timeout-message" class="alert">Please refresh the page to view the video.</div>'
+      '<div id="timeout-message" class="alert">' +
+        'Please refresh the page to view the video.</div>'
     );
   };
   $(document).ready(function() {
-    window.setTimeout(notifyExpired,1800100);
-    $(document).bind('contextmenu',function() { return false; });
+    window.setTimeout(notifyExpired, 1800100);
+    $(document).bind('contextmenu', function() { return false; });
   });

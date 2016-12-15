@@ -13,17 +13,24 @@
 
     - @divisions.each do |division|
       %tr
-        %td= link_to division.name, division, :class => 'ajax'
+        %td= link_to division.name, division
         %td
           %ul
             - division.primary_contacts.each do |primary_contact|
-              %li= link_to primary_contact.name, primary_contact, :class => 'ajax'
+              %li= link_to primary_contact.name, primary_contact
         %td
           %ul
             -division.cities.each do |city|
-              %li= link_to city.name, city_path(city), :class => 'ajax'
+              %li= link_to city.name, city_path(city)
         %td.admin.btn-group
-          = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_division_path(division), :class => "btn btn-mini ajax")
-          = delete_button(division_path(division), "Delete #{division.name}?", mini: true)
+          = link_to edit_division_path(division), class: "btn btn-mini" do
+            %i.icon-pencil
+            Edit
+          = delete_button(division_path(division),
+            "Delete #{division.name}?",
+            mini: true)
 
-  %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New division", new_division_path, :class => "btn ajax")
+  %p.admin
+    = link_to new_division_path, class: "btn" do
+      %i.icon-plus-sign
+      New division

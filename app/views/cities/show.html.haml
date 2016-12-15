@@ -2,13 +2,15 @@
 
 .content-wrapper
 
-  %h2{:class => @city.hidden? && "hidden-from-users"}= @city.name
+  %h2{ class: @city.hidden? && "hidden-from-users" }= @city.name
   %p.no_indent
     %strong Province:
-    = link_to @city.province, province_path(@city.province), :class => 'ajax'
+    = link_to @city.province, province_path(@city.province)
 
   %p.admin.btn-group
     - if can? :update, @city
-      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_city_path(@city), :class => "btn ajax")
+      = link_to edit_city_path(@city), class: "btn" do
+        %i.icon-pencil
+        Edit
     - if can? :destroy, @city
       = delete_button(city_path(@city), "Delete #{@city.name}?")

@@ -30,15 +30,10 @@
       %a.btn{ href: "javascript:void(0)",
         data: { toggle: "collapse", target: "#delete-specialist-msg" } }
         %i.icon-trash
-        Delete Specialist
+        Delete
 
     - elsif can? :destroy, @specialist
-      = link_to @specialist,
-        data: { confirm: "Delete #{@specialist.name}?" },
-        method: :delete,
-        class: "btn" do
-        %i.icon-trash
-        Delete Specialist
+      = delete_button(@specialist, "Delete #{@specialist.name}?")
 
   = secret_edit_links_admin(@specialist)
 

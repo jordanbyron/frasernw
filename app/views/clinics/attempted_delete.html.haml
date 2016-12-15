@@ -4,18 +4,19 @@
 
   %h2= "Cannot Delete #{@clinic.name}"
 
-  %p{style: "margin-left: 0px; margin-top: 10px;"}
-    = "Specialists still have offices at this clinic. " + |
-      "Please delete or change the addresses of these offices before deleting the clinic:" |
+  %p{ style: "margin-left: 0px; margin-top: 10px;" }
+    Specialists still have offices at this clinic. Please delete or change the
+    addresses of these offices before deleting the clinic:
 
-  %ul{style: "margin-left: 5px; margin-top: 10px;"}
+  %ul{ style: "margin-left: 5px; margin-top: 10px;" }
     - @clinic.specialists_with_offices_in.each do |specialist|
       %li
         = link_to specialist.name,
           specialist_path(specialist)
 
   %br
-  %p{style: "margin-left: 0px;"}
+  %p{ style: "margin-left: 0px;" }
     = link_to "Re-attempt Deletion",
       clinic_path(@clinic),
+      data: { confirm: "Delete #{@clinic.name}?" },
       method: :delete

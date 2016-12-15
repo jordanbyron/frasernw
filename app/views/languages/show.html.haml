@@ -12,9 +12,4 @@
         %i.icon-pencil
         Edit Language
     - if can? :destroy, @language
-      = link_to language_path(@language),
-        data: { confirm: "Delete #{@language.name}?" },
-        method: :delete,
-        class: "btn" do
-        %i.icon-trash
-        Delete Language
+      = delete_button(@language, "Delete #{@language.name}?")

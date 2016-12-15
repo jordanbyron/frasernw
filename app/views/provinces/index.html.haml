@@ -13,11 +13,16 @@
 
     - @provinces.each do |province|
       %tr
-        %td= link_to province.name, province, :class => 'ajax'
+        %td= link_to province.name, province
         %td= province.abbreviation
         %td= province.symbol
         %td.admin.btn-group
-          = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_province_path(province), :class => "btn btn-mini ajax")
-          = link_to("<i class='icon-trash'></i>".html_safe + " Delete", province, :data => { :confirm => "Delete #{province.name}?" }, :method => :delete, :class => "btn btn-mini")
+          = link_to edit_province_path(province), class: "btn btn-mini" do
+            %i.icon-pencil
+            Edit
+          = delete_button(province, "Delete #{province.name}?", mini: true)
 
-  %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New Province", new_province_path, :class => "btn ajax")
+  %p.admin
+    = link_to new_province_path, class: "btn" do
+      %i.icon-plus-sign
+      New Province

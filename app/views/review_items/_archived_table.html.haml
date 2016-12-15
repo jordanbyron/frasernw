@@ -8,7 +8,9 @@
     %th Any Updates?
     %th
 
-  - review_items.reject{ |item| item.item.blank? || item.item_type != target_type }.each do |review_item|
+  - review_items.reject do |item|
+    - item.item.blank? || item.item_type != target_type
+    - end.each do |review_item|
     %tr
       %td= review_item.item.name
       %td= review_item.item.specializations.map{ |s| s.name }.to_sentence
@@ -19,11 +21,14 @@
             - cities.each do |city|
               %li= city.name
         - else
-          #{cities.map{ |c| c.name }.to_sentence}
+          #{cities.map{ |city| city.name }.to_sentence}
       %td= review_item.editor.name
       %td= "#{time_ago_in_words(review_item.created_at)} ago"
       %td= ReviewItem::STATUS_HASH[review_item.status]
       %td
         -if review_item.base_object.present?
-          = link_to("<i class='icon-pencil'></i>".html_safe + " Re-review", CustomPathHelper.smart_duck_path(review_item), :class => "btn btn-mini stacked-button ajax")
+          = link_to CustomPathHelper.smart_duck_path(review_item),
+            class: "btn btn-mini stacked-button" do
+            %i.icon-pencil
+            Re-review
         = history_button(review_item)

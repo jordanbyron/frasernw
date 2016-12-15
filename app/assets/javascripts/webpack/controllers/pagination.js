@@ -66,7 +66,7 @@ const Arrow = ({direction, setPage}) => {
       style={buttonIsh}
     >
       <a
-        className={`#{direction}_page disabled ajax`}
+        className={`#{direction}_page disabled`}
         style={buttonIsh}
       >{_.capitalize(direction)}</a>
     </li>

@@ -18,7 +18,7 @@
 
     - @sc_categories.each do |sc_category|
       %tr
-        %td= link_to sc_category.name, sc_category, :class => 'ajax'
+        %td= link_to sc_category.name, sc_category
         %td= sc_category.parent.present? ? sc_category.parent.name : ""
         %td= sc_category.parent.present? ? "" : sc_category.sort_order
         %td= sc_category.parent.present? ? "" : sc_category.display
@@ -27,7 +27,14 @@
         %td= sc_category.show_on_front_page? ? "Yes" : "No"
         %td= sc_category.sc_items.length
         %td.admin.btn-group
-          = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_sc_category_path(sc_category), :class => "btn btn-mini ajax")
-          = link_to("<i class='icon-trash'></i>".html_safe + " Delete", sc_category, :data => { :confirm => "Delete #{sc_category.name}?" }, :method => :delete, :class => "btn btn-mini")
+          = link_to edit_sc_category_path(sc_category), class: "btn btn-mini" do
+            %i.icon-pencil
+            Edit
+          = delete_button(sc_category,
+            "Delete #{sc_category.name}?",
+            mini: true)
 
-  %p.admin= link_to("<i class='icon-plus-sign'></i>".html_safe + " New Content Category", new_sc_category_path, :class => "btn ajax")
+  %p.admin
+    = link_to new_sc_category_path, class: "btn" do
+      %i.icon-plus-sign
+      New Content Category

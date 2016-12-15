@@ -69,6 +69,7 @@ const DeleteButton = ({record, model}) => {
       <a
         href={`/news_items/${record.id}`}
         data-method="delete"
+        data-confirm={`Delete ${record.title}?`}
         className="btn btn-mini button--right_margin"
       >
         <i className="icon icon-trash icon--right_margin"/>

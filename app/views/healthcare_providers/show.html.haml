@@ -6,6 +6,10 @@
 
   %p.admin.btn-group
     - if can? :update, @healthcare_provider
-      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit", edit_healthcare_provider_path(@healthcare_provider), :class => "btn ajax")
+      = link_to edit_healthcare_provider_path(@healthcare_provider),
+        class: "btn" do
+        %i.icon-pencil
+        Edit
     - if can? :destroy, @healthcare_provider
-      = delete_button(healthcare_provider_path(@healthcare_provider), "Delete #{@healthcare_provider.name}?")
+      = delete_button(healthcare_provider_path(@healthcare_provider),
+        "Delete #{@healthcare_provider.name}?")

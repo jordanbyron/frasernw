@@ -49,7 +49,8 @@
                         %li
                           = link_to is.specialization.name, is.specialization
                           - if is.procedure_specializations.present?
-                            = "- #{is.procedure_specializations.map{ |ps| link_to ps.procedure.name, ps.procedure }.to_sentence}".html_safe
+                            = "- #{is.procedure_specializations.map{ |ps| link_to ps.procedure.name,
+                              ps.procedure }.to_sentence}".html_safe
                             %br
                   %td= sc_item.type
                   %td= sc_item.evidence.present? ? link_to(sc_item.evidence.level,
@@ -85,12 +86,9 @@
                         %i.icon-pencil
                         Edit
                     - if can? :destroy, sc_item
-                      = link_to sc_item,
-                        data: { confirm: "Delete #{sc_item.title}?" },
-                        method: :delete,
-                        class: "btn btn-mini" do
-                        %i.icon-trash
-                        Delete
+                      = delete_button(sc_item,
+                        "Delete #{sc_item.title}?",
+                        mini: true)
 
   %p.admin
     = link_to new_sc_item_path, class: "btn" do

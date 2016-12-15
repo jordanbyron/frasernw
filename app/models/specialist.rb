@@ -768,7 +768,7 @@ class Specialist < ActiveRecord::Base
     end
 
     if referral_clinic.present?
-      through = "through <a class='ajax' "\
+      through = "through <a "\
         "href='/clinics/#{referral_clinic.id}'>#{referral_clinic.name}</a>"
       output = output.blank? ? through : "#{through}, or #{output}"
     end

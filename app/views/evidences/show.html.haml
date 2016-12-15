@@ -22,20 +22,17 @@
       - if @evidence.definition.blank?
         = " - "
     %p= @evidence.definition_as_html
-
     %br
-
 
   .pad10
 
   - if @evidence.sc_items.present?
-
     %table.table.table-condensed.table-striped.tablesorter
       %thead
         %tr
-          %th{:class => "{sorter: 'text'}"} Content with this Level of Evidence
-          %th{:class => "{sorter: 'text'}"} Category
-          %th{:class => "{sorter: 'text'}"} Parent Category
+          %th{ class: "{sorter: 'text'}" } Content with this Level of Evidence
+          %th{ class: "{sorter: 'text'}" } Category
+          %th{ class: "{sorter: 'text'}" } Parent Category
       %tbody
         - @evidence.sc_items.each do |sc_item|
           %tr
@@ -45,15 +42,15 @@
 
   %p.admin.btn-group
     - if can? :update, @evidence
-      = link_to("<i class='icon-pencil'></i>".html_safe + " Edit Level of Evidence #{@evidence.level}", edit_evidence_path(@evidence), :class => "btn ajax")
+      = link_to edit_evidence_path(@evidence), class: "btn" do
+        %i.icon-pencil
+        = " Edit Level of Evidence #{@evidence.level}"
     - if can? :view_history, @evidence
       = large_history_button(@evidence)
   %p.no_indent.space
     = link_to "<< Back to all Levels of Evidence", evidences_path
 
-  %script{"type" => "text/javascript"}
-    :plain
-      $(document).ready(function() {
-        $('.tablesorter').tablesorter({sortList: [[0,0]]});
-      });
-
+  :javascript
+    $(document).ready(function() {
+      $('.tablesorter').tablesorter({sortList: [[0,0]]});
+    });

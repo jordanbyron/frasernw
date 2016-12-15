@@ -39,9 +39,4 @@
             class: "btn btn-mini" do
             %i.icon-pencil
             Edit
-          = link_to procedure,
-            data: { confirm: "Delete #{procedure.name}?" },
-            method: :delete,
-            class: "btn btn-mini" do
-            %i.icon-trash
-            Delete
+          = delete_button(procedure, "Delete #{procedure.name}?", mini: true)

@@ -1,5 +1,5 @@
 = simple_nested_form_for @entity,
-  html: { :class => "form-horizontal", :multipart => true },
+  html: { class: "form-horizontal", multipart: true },
   url: referral_forms_path(parent_type: @entity.class, parent_id: @entity.id),
   method: :patch do |f|
   - if not f.error_messages.blank?
@@ -18,12 +18,10 @@
       label: false,
       wrapper: :no_wrapper
 
-
   .content#referral_forms
-
     %h4 Referral Forms
 
-    = f.simple_fields_for :referral_forms, :class => "row" do |fields|
+    = f.simple_fields_for :referral_forms, class: "row" do |fields|
       .well.referral_form_editor__fieldset
         .pull-right
           = fields.hidden_field :_destroy
@@ -31,8 +29,8 @@
         - if fields.object.present? && fields.object.form.present?
           %p.referral_form_editor__form_link_item
             = link_to fields.object.form.url,
-              "target" => "_blank",
-              "onClick" => "window.pathways.trackForm(_gaq, #{fields.object.id})" do
+              target: "_blank",
+              onclick: "window.pathways.trackForm(_gaq, #{fields.object.id})" do
               %i.icon-share
               %span= fields.object.form_file_name
         - else
@@ -45,7 +43,7 @@
         = fields.input :description,
           label: false,
           wrapper: :no_wrapper,
-          input_html: {class: "referral_form_editor__input"},
+          input_html: { class: "referral_form_editor__input" },
           placeholder: "Description"
         .referral_form_editor__history_nodes
           - if can? :view_history, fields.object
@@ -56,12 +54,13 @@
             = render "notes/fields",
               parent_fields: fields,
               user: current_user
-    = f.link_to_add( "<i class='icon-plus-sign'></i>".html_safe + " Add another referral form", :referral_forms, class: "btn")
-
-  %script{"type" => "text/javascript"}
-    :plain
-      $(".referral_form_mask").each( initReferralForms );
+    = f.link_to_add :referral_forms, class: "btn" do
+      %i.icon-plus-sign
+      Add another referral form
 
   .form-actions
-    = f.button :submit, :class => "btn btn-primary", :value => "Update referral forms"
-    = link_to 'Cancel', url_for(@entity), :class => "btn btn-danger ajax"
+    = f.button :submit, class: "btn btn-primary", value: "Update referral forms"
+    = link_to 'Cancel', url_for(@entity), class: "btn btn-danger"
+
+  :javascript
+    $(".referral_form_mask").each( initReferralForms );

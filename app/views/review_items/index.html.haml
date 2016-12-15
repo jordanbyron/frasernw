@@ -4,7 +4,6 @@
 
   %h2 Review Queue
 
-  - cuser = current_user
   - divisions = current_user.as_super_admin? ? Division.all : current_user.as_divisions
 
   - specialist_reviews = @review_items.reject{ |review_item| review_item.item.class != Specialist }
@@ -12,20 +11,24 @@
 
   - specialist_count        = specialist_reviews.length
   - clinic_count            = clinic_reviews.length
-  - user_specialist_reviews = specialist_reviews.reject{ |review_item| !review_item.item.owners.include? cuser }.length
-  - user_clinic_reviews     = clinic_reviews.reject{ |review_item| !review_item.item.owners.include? cuser }.length
+  - user_specialist_reviews = specialist_reviews.select do |review_item|
+    - review_item.item.owners.include? current_user
+    - end.length
+  - user_clinic_reviews     = clinic_reviews.select do |review_item|
+    - review_item.item.owners.include? current_user
+    - end.length
 
   .tabbable
     %ul.nav.nav-tabs
       %li
-        %a{"href" => "#specialists_tab", "data-toggle" => "tab"}
+        %a{ href: "#specialists_tab", data: { toggle: "tab" } }
           Specialist Review Items
           - if user_specialist_reviews > 0
             %span.badge.badge-warning #{user_specialist_reviews}/#{specialist_count}
           - else
             %span.badge= specialist_count
       %li
-        %a{"href" => "#clinics_tab", "data-toggle" => "tab"}
+        %a{ href: "#clinics_tab", data: { toggle: "tab" } }
           Clinic Review Items
           - if user_clinic_reviews > 0
             %span.badge.badge-warning #{user_clinic_reviews}/#{clinic_count}
@@ -45,11 +48,12 @@
             %th
 
           - specialist_reviews.each do |review_item|
-            %tr{:class => (review_item.item.owners.include? cuser) && "owned"}
+            %tr{ class: (review_item.item.owners.include? current_user) && "owned" }
               %td
-                = link_to review_item.item.name, review_item.item, :class => 'ajax'
+                = link_to review_item.item.name, review_item.item
                 %br
-                #{review_item.item.specializations.map{ |s| s.name }.to_sentence} - #{review_item.item.cities.map{ |c| c.name }.to_sentence}
+                #{review_item.item.specializations.map{ |s| s.name }.to_sentence} -
+                #{review_item.item.cities.map{ |c| c.name }.to_sentence}
               %td
                 - if review_item.item.owners.present?
                   %ul
@@ -61,9 +65,15 @@
               %td= "#{time_ago_in_words(review_item.created_at)} ago"
               %td= ReviewItem::STATUS_HASH[review_item.status]
               %td.admin
-                = link_to("<i class='icon-pencil'></i>".html_safe + " Review changes", review_specialist_path(review_item.item), :class => "btn btn-mini ajax stacked-button")
+                = link_to review_specialist_path(review_item.item),
+                  class: "btn btn-mini stacked-button" do
+                  %i.icon-pencil
+                  Review changes
                 - if review_item.no_updates?
-                  = link_to("<i class='icon-pencil'></i>".html_safe + " Archive", archive_specialist_path(review_item.item), :class => "btn btn-mini ajax stacked-button")
+                  = link_to archive_specialist_path(review_item.item),
+                    class: "btn btn-mini stacked-button" do
+                    %i.icon-pencil
+                    Archive
                 = history_button(review_item)
 
       #clinics_tab.tab-pane
@@ -78,11 +88,12 @@
             %th
 
           - clinic_reviews.each do |review_item|
-            %tr{:class => (review_item.item.owners.include? cuser) && "owned"}
+            %tr{ class: (review_item.item.owners.include? current_user) && "owned" }
               %td
-                = link_to review_item.item.name, review_item.item, :class => 'ajax'
+                = link_to review_item.item.name, review_item.item
                 %br
-                #{review_item.item.specializations.map{ |s| s.name }.to_sentence} - #{review_item.item.cities.map{ |c| c.name }.to_sentence}
+                #{review_item.item.specializations.map{ |s| s.name }.to_sentence} -
+                #{review_item.item.cities.map{ |c| c.name }.to_sentence}
               %td
                 - if review_item.item.owners.present?
                   %ul
@@ -94,13 +105,21 @@
               %td= "#{time_ago_in_words(review_item.created_at)} ago"
               %td= ReviewItem::STATUS_HASH[review_item.status]
               %td.admin
-                = link_to("<i class='icon-pencil'></i>".html_safe + " Review changes", review_clinic_path(review_item.item), :class => "btn btn-mini ajax stacked-button")
+                = link_to review_clinic_path(review_item.item),
+                  class: "btn btn-mini stacked-button" do
+                  %i.icon-pencil
+                  Review changes
                 - if review_item.no_updates?
-                  = link_to("<i class='icon-pencil'></i>".html_safe + " Archive", archive_clinic_path(review_item.item), :class => "btn btn-mini ajax stacked-button")
+                  = link_to archive_clinic_path(review_item.item),
+                    class: "btn btn-mini stacked-button" do
+                    %i.icon-pencil
+                    Archive
                 = history_button(review_item)
 
-  .btn-group= link_to "View archived review queue items", archived_review_items_path, :class => 'btn ajax'
-
+  .btn-group
+    = link_to "View archived review queue items",
+      archived_review_items_path,
+      class: 'btn'
 
 :javascript
   window.pathways.setupTabHistory();
