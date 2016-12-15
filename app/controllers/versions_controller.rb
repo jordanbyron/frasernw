@@ -37,7 +37,7 @@ class VersionsController < ApplicationController
     end
   end
 
-  def show_all
+  def index
     @versions =
       Version.
         order('id desc').

@@ -65,7 +65,7 @@ class Division < ActiveRecord::Base
   end
 
   def showing_specializations
-    Specialization.for_users_in(self)
+    @showing_specializations ||= Specialization.for_users_in(self)
   end
 
   def flush_cache

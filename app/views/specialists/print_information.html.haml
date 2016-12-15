@@ -39,7 +39,7 @@
 %p.indent#future_appointment_followup_block.empty
   %input#future_appointment_followup_check{ type: "checkbox" }
   :preserve
-    If you haven't had heard about your appointment date within 
+    If you haven't heard about your appointment date within
 
   %select.future_appointment_followup#followup_interval>
     %option
@@ -64,7 +64,7 @@
 
   -if @specialist.patient_instructions.present?
     %p= @specialist.patient_instructions.end_with_period.convert_newlines_to_br
-  
+
   %textarea#custom_patient_instructions{ placeholder: "Additional patient instructions" }
   #custom_patient_instructions_print
 
@@ -88,30 +88,26 @@
       - if location.in_hospital?
         - located_in = location.hospital_in
         %p
-          = "In #{link_to located_in.name, url_for(located_in)}".html_safe
+          In
+          = link_to located_in.name, url_for(located_in)
           - if located_in.location.present? && located_in.location.in_hospital?
             - hopsital = located_in.location.hospital_in
-            = "which is in #{link_to hopsital.name, hospital_path(hopsital)}".html_safe
-        %p= address.address if address.present? && !address.empty?
+            which is in
+            = link_to hopsital.name, hospital_path(hopsital)
         %p= location.in_details if location.in_details.present?
-        %img{ src: address.map_image(640,240,15,2),
-          width: "640",
-          height: "240" }
       - elsif location.in_clinic?
         - located_in = location.location_in.locatable
         - clinic = located_in.clinic
         %p
-          = "In #{link_to clinic.name, url_for(clinic)}".html_safe
+          In
+          = link_to clinic.name, url_for(clinic)
           - if located_in.location.present? && located_in.location.in_hospital?
             - hopsital = located_in.location.hospital_in
-            = "which is in #{link_to hopsital.name, hospital_path(hopsital)}".html_safe
-        %p= address.address if address.present? && !address.empty?
+            which is in
+            = link_to hopsital.name, hospital_path(hopsital)
         %p= location.in_details if location.in_details.present?
-        %img{ src: address.map_image(640,240,15,2),
-          width: "640",
-          height: "240" }
-      - elsif address.present?
-        %p= address.address if address.present? && !address.empty?
+      - if address.present? && !address.empty?
+        %p= address.address
         %img{ src: address.map_image(640,240,15,2),
           width: "640",
           height: "240" }
@@ -130,7 +126,8 @@
       %p= "In #{hospital.name}"
       - if address.present? && !address.empty?
         %p= address.address
-        %p= @clinic_location.location.in_details if @clinic_location.location.in_details.present?
+        - if @clinic_location.location.in_details.present?
+          %p= @clinic_location.location.in_details
         %img{ src: address.map_image(640,240,15,2),
           width: "640",
           height: "240" }
@@ -140,82 +137,97 @@
         width: "640",
         height: "240" }
 
-%script{ type: "text/javascript" }
-  :plain
-    function print_information() {
+:javascript
+  function print_information() {
+    copy_to_print_helper();
+    replace_inputs_with_values();
+    window.print();
+  }
+
+  function copy_to_print_helper() {
+    $('#custom_patient_instructions_print').text(
+      $('#custom_patient_instructions').val()
+    );
+    if ( $('#custom_patient_instructions').val().trim() == "" ) {
+      $('#patient_instruction_header').addClass('empty');
+    } else {
+      $('#patient_instruction_header').removeClass('empty');
+    }
+    if ( $('#name .name').val().trim() == "" ) {
+      $('#name #for').addClass('empty');
+      $('#name .name').addClass('empty');
+    } else {
+      $('#name #for').removeClass('empty');
+      $('#name .name').removeClass('empty');
+    }
+  }
+
+  function set_future_followup_block_print_visibility() {
+    if ( $('#future_appointment_followup_check').attr('checked') ) {
+      $('#future_appointment_followup_block').removeClass('empty');
+    } else {
+      $('#future_appointment_followup_block').addClass('empty');
+    }
+  }
+
+  $('#custom_patient_instructions, .name').bind(
+    'keydown keyup keypress cut copy past blur change', function() {
       copy_to_print_helper();
-      replace_inputs_with_values();
-      window.print();
     }
+  );
 
-    function copy_to_print_helper() {
-      $('#custom_patient_instructions_print').text($('#custom_patient_instructions').val());
-      if ( $('#custom_patient_instructions').val().trim() == "" ) {
-        $('#patient_instruction_header').addClass('empty');
-      } else {
-        $('#patient_instruction_header').removeClass('empty');
-      }
-      if ( $('#name .name').val().trim() == "" ) {
-        $('#name #for').addClass('empty');
-        $('#name .name').addClass('empty');
-      } else {
-        $('#name #for').removeClass('empty');
-        $('#name .name').removeClass('empty');
-      }
-    }
-
-    function set_future_followup_block_print_visibility() {
-      if ( $('#future_appointment_followup_check').attr('checked') ) {
-        $('#future_appointment_followup_block').removeClass('empty');
-      } else {
-        $('#future_appointment_followup_block').addClass('empty');
-      }
-    }
-
-    $('#custom_patient_instructions, .name').bind('keydown keyup keypress cut copy past blur change', function() {
-      copy_to_print_helper();
-    });
-
-    $('.specific_appointment').bind('keydown keyup keypress cut copy past blur change', function() {
+  $('.specific_appointment').bind(
+    'keydown keyup keypress cut copy past blur change', function() {
       $('#specific_appointment_check').attr('checked', true);
       $('#specific_appointment_block').removeClass('empty');
       $('#future_appointment_block').addClass('empty');
       $('#future_appointment_followup_block').hide();
-    });
-
-    $('.future_appointment').bind('change', function() {
-      $('#specific_appointment_block').addClass('empty');
-      $('#future_appointment_check').attr('checked', true);
-      $('#future_appointment_block').removeClass('empty');
-      $('#future_appointment_followup_block').show();
-    });
-
-    $('.future_appointment_followup').bind('change', function() {
-      $('#future_appointment_followup_check').attr('checked', true);
-      set_future_followup_block_print_visibility();
-    });
-
-    $('#future_appointment_followup_check').bind('change', function() {
-      set_future_followup_block_print_visibility();
-    });
-
-    function replace_inputs_with_values() {
-      $('#name .name').replaceWith('<span class="name">'+$('#name .name').val()+'</span>');
-      $('#specific_appointment_check').detach();
-      $('#specific_appointment_date').
-        replaceWith('<span id="specific_appointment_date">'+$('#specific_appointment_date').val()+'</span>');
-      $('#specific_appointment_time').
-        replaceWith('<span id="specific_appointment_time">'+$('#specific_appointment_time').val()+'</span>');
-      $('#future_appointment_check').detach();
-      $('#future_appointment_call_selection').
-        replaceWith('<span class="future_appointment_call_selection">'+$('#future_appointment_call_selection').
-          val()+'</span>');
-      $('#future_appointment_followup_check').detach();
-      $('#future_appointment_followup_block').removeClass('indent');
-      $('#followup_interval').
-        replaceWith('<span class="followup_interval">'+$('#followup_interval').val()+'</span>');
-      $('#followup_call_selection').
-        replaceWith('<span class="followup_call_selection">'+$('#followup_call_selection').val()+'</span>');
     }
+  );
+
+  $('.future_appointment').bind('change', function() {
+    $('#specific_appointment_block').addClass('empty');
+    $('#future_appointment_check').attr('checked', true);
+    $('#future_appointment_block').removeClass('empty');
+    $('#future_appointment_followup_block').show();
+  });
+
+  $('.future_appointment_followup').bind('change', function() {
+    $('#future_appointment_followup_check').attr('checked', true);
+    set_future_followup_block_print_visibility();
+  });
+
+  $('#future_appointment_followup_check').bind('change', function() {
+    set_future_followup_block_print_visibility();
+  });
+
+  function replace_inputs_with_values() {
+    $('#name .name').replaceWith(
+      '<span class="name">'+$('#name .name').val()+'</span>'
+    );
+    $('#specific_appointment_check').detach();
+    $('#specific_appointment_date').replaceWith(
+      '<span id="specific_appointment_date">'+
+      $('#specific_appointment_date').val()+'</span>'
+    );
+    $('#specific_appointment_time').replaceWith(
+      '<span id="specific_appointment_time">'+
+      $('#specific_appointment_time').val()+'</span>'
+    );
+    $('#future_appointment_check').detach();
+    $('#future_appointment_call_selection').replaceWith(
+      '<span class="future_appointment_call_selection">'+
+      $('#future_appointment_call_selection').val()+'</span>'
+    );
+    $('#future_appointment_followup_check').detach();
+    $('#future_appointment_followup_block').removeClass('indent');
+    $('#followup_interval').replaceWith(
+      '<span class="followup_interval">'+$('#followup_interval').val()+'</span>'
+    );
+    $('#followup_call_selection').replaceWith(
+      '<span class="followup_call_selection">'+
+      $('#followup_call_selection').val()+'</span>'
+    );
+  }
 
 %input.btn{ type: "button", value: "Print", onclick: "print_information()" }

@@ -21,8 +21,7 @@ class CourtesyMailer < ActionMailer::Base
   )
     @owner_division = Division.find(owner_division_id)
     @owner = User.find(owner_id)
-    @linked_entity_klass = linked_entity_klassname.constantize
-    @linked_entity = @linked_entity_klass.find(linked_entity_id)
+    @linked_entity = linked_entity_klassname.constantize.find(linked_entity_id)
     @editor = User.find(editor_id)
     @linked_entity_path = send(
       "#{linked_entity_klassname.downcase.singularize}_url",
@@ -31,8 +30,10 @@ class CourtesyMailer < ActionMailer::Base
     @created_entity_name =
       if linked_entity_klassname == "Office"
         "Office"
+      elsif linked_entity_klassname == "Specialist"
+        "Specialist"
       else
-        "Clinic Location"
+        "Clinic"
       end
 
     mail(

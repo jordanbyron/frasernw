@@ -219,12 +219,14 @@ class LatestUpdates < ServiceObject
 
   CONDITIONS_TO_HIDE_FROM_FEED = [
     -> (item, division) { item.blank? },
-    -> (item, division) { !item.primary_specialization.present? },
-    -> (item, division) { !item.primary_specialization_shown_in?([division]) },
+    -> (item, division) { item.specializations.none? },
+    -> (item, division) { (item.specializations & division.showing_specializations).none? },
     -> (item, division) {
       item_cities = item.cities.flatten.uniq
-      local_referral_cities = division.
-        local_referral_cities(item.primary_specialization)
+      local_referral_cities = (item.specializations & division.showing_specializations).
+        map{ |specialization| division.local_referral_cities(specialization) }.
+        flatten.
+        uniq
 
       (item_cities & local_referral_cities).none?
     },

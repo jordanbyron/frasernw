@@ -15,7 +15,7 @@
       target: "_blank" }
       %i.icon-print.icon-text
       Print Information for Patient
-  - else
+  - elsif specialist_offices.any? || @specialist.print_clinic_info?
     %a.btn.dropdown-toggle{ href: "#", "data-toggle" => "dropdown" }
       %i.icon-print.icon-text
       Print Information for Patient

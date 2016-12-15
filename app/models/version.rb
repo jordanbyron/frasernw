@@ -45,10 +45,14 @@ class Version < PaperTrail::Version
   end
 
   def safe_user
-    User.safe_find(
-      self.whodunnit,
-      UnknownUser
-    )
+    if whodunnit == "system"
+      SystemUser.new
+    else
+      User.safe_find(
+        self.whodunnit,
+        UnknownUser
+      )
+    end
   end
 
   after_commit do

@@ -32,16 +32,6 @@ module ProcedureSpecializable
     end.flatten
   end
 
-  def primary_specialization_shown_in?(divisions)
-    divisions.any? do |division|
-      !primary_specialization.hidden_in?(*divisions)
-    end
-  end
-
-  def primary_specialization
-    specializations.sort_by{ |specialization| specialization.name }.first
-  end
-
   module ClassMethods
     def with_ps_with_ancestry(ancestry)
       all.select do |procedure_specializable|
