@@ -1,4 +1,4 @@
-- if @specialist.practicing?
+- if show_specialist_section?(@specialist, :sidebar)
   .span4.offsethalf
     - areas_of_practice_focused_results = {}
     - areas_of_practice_nonfocused_results = {}

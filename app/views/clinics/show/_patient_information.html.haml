@@ -1,4 +1,4 @@
-- if @clinic.patient_instructions.present? || @clinic.cancellation_policy.present?
+- if show_clinic_section?(@clinic, :patient_information)
   %h6 Patient Information
 
   - if @clinic.patient_instructions.present?
