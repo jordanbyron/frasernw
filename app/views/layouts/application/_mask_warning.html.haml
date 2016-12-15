@@ -1,4 +1,5 @@
-- mask_request_origin = Base64.encode64("#{request.protocol}#{request.host_with_port}#{request.fullpath}")
+- origin_url = "#{request.protocol}#{request.host_with_port}#{request.fullpath}"
+- mask_request_origin = Base64.encode64(origin_url)
 
 .alert.alert-banner.mask_warning
   %i.icon-eye-open{ style: "margin-right: 5px" }
@@ -11,7 +12,7 @@
         %strong= current_user.as_role_label
         %b.caret.user_mask_warning__caret
       %ul.dropdown-menu.user_mask_warning__dropdown_menu
-        - current_user.can_assign_roles.each do |role, label|
+        - current_user.can_assign_mask_roles.each do |role, label|
           %li
             = link_to label,
               user_mask_path(current_user.mask,
