@@ -9,7 +9,7 @@ class LatestUpdates < ServiceObject
     # do it separately, first
     if force_automatic
       division_id_groups.flatten.uniq.each do |id|
-        self.division_automatic_events(Division.find(id), force: true)
+        DivisionAutomaticEvents.call(division: Division.find(id), force: true)
       end
     end
 
@@ -51,7 +51,7 @@ class LatestUpdates < ServiceObject
   end
 
   def manual_events
-    if only_current_manual_events
+    if only_current_manual_events?
       NewsItem.current
     else
       NewsItem
@@ -80,8 +80,8 @@ class LatestUpdates < ServiceObject
 
   def automatic_events
     returning = divisions.inject([]) do |memo, division|
-      memo + LatestUpdates.division_automatic_events(
-        division,
+      memo + DivisionAutomaticEvents.call(
+        division: division,
         force: force_automatic
       )
     end.map do |event|
@@ -94,7 +94,7 @@ class LatestUpdates < ServiceObject
       sort_by{ |event| event[:date].to_s }.
       reverse
 
-    if !show_hidden
+    if !show_hidden?
       returning = returning.select{ |event| !event[:hidden] }
     end
 
@@ -110,15 +110,11 @@ class LatestUpdates < ServiceObject
     end
   end
 
-  def only_current_manual_events
+  def only_current_manual_events?
     context == :front
   end
 
-  def show_hidden
+  def show_hidden?
     context == :index
-  end
-
-  def self.event_code(event)
-    LatestUpdatesMask::EVENTS.key(event)
   end
 end
