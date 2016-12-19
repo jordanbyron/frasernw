@@ -7,7 +7,7 @@ class AddSuffixConfig < ActiveRecord::Migration
     Specialization.where(name: "Pediatrics").update_all(member_tag: "Ped")
     Specialization.where(name: "Internal Medicine").update_all(member_tag: "Int Med")
     Specialization.where(name: "General Surgery").update_all(member_tag: "Gen Surgeon")
-    Specialization.where(name: "Neurology").update_all(member_tag: "Neuro")
+    Specialization.where(name: "Neurology").update_all(member_tag: "Neurologist")
     Specialization.where(name: "ENT / Otolaryngology").update_all(member_tag: "ENT")
 
     Specialization.where(name: "Nurse Practitioner").update_all(global_member_tag: true)
