@@ -15,7 +15,7 @@ module SpecialistsHelper
       where("specializations.member_tag IS NOT NULL AND specializations.member_tag != ''").
       map{|s| [ s.id, s.member_tag ]}.
       sort_by(&:second).
-      unshift([nil, "Not Specified"])
+      unshift([nil, "(No Tag)"])
   end
 
   def specialist_specializations_listing(specialist)
