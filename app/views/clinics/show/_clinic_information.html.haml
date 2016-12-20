@@ -10,7 +10,6 @@
     %p= "Public e-mail (okay for patient use): #{mail_to cl.public_email, cl.public_email, target: '_blank'}".html_safe if cl.public_email.present?
     %p= "Private e-mail (for physician office use only): #{mail_to cl.email, cl.email, target: '_blank'}".html_safe if cl.email.present?
     %p= "Website: #{link_to cl.url, cl.url, target: '_blank'}".html_safe if cl.url.present?
-    %p= cl.contact_details.convert_newlines_to_br if cl.contact_details.present?
     - if cl.location.present? && cl.location.in_hospital?
       - hospital = cl.location.hospital_in
       %p
@@ -24,6 +23,7 @@
     - elsif address.present? && !address.empty?
       %p= "(#{cl.sector})" if cl.sector_info_available?
       %p= link_to address.address, address.map_url, target: "_blank"
+    %p= cl.contact_details.convert_newlines_to_br if cl.contact_details.present?
     - if cl.location_opened.present?
       %p
         This clinic opened at this location
